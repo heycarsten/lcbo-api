@@ -1,0 +1,18 @@
+defaults: &defaults
+  host: localhost
+
+development:
+  <<: *defaults
+  database: lcbo_development
+
+test:
+  <<: *defaults
+  database: lcbo_test
+
+production:
+  <<: *defaults
+  host: <%= ENV['MONGOID_HOST'] %>
+  port: <%= ENV['MONGOID_PORT'] %>
+  username: <%= ENV['MONGOID_USERNAME'] %>
+  password: <%= ENV['MONGOID_PASSWORD'] %>
+  database: <%= ENV['MONGOID_DATABASE'] %>
