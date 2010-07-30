@@ -5,6 +5,7 @@ class Crawl
 
   field :timestamp,                           :type => Integer
   field :did_start,                           :type => Boolean
+  field :state,                               :type => String
   field :did_finish,                          :type => Boolean
   field :did_fail,                            :type => Boolean
   field :total_product_inventory_quantity,    :type => Integer
@@ -34,5 +35,35 @@ class Crawl
   scope :in_progress,
     where(:did_start => true, :did_finish => false, :did_fail => false).
     order_by(:timestamp.desc)
+
+  state_machine :initial => :started, :action => :save do
+    event :fail do
+      transition all => :failed
+    end
+
+    event :abort do
+      transition :crawling => :aborted
+    end
+
+    event :crawl do
+      transition :started => :crawling
+    end
+
+    event :calculate do
+      transition :crawling => :calculating
+    end
+
+    event :export do
+      transition :calculating => :
+    end
+
+    event :fire_webhooks do
+      
+    end
+
+    event :finish do
+      transition :calculating => :finished
+    end
+  end
 
 end

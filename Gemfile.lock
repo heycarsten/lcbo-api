@@ -1,10 +1,10 @@
 GIT
   remote: git@github.com:heycarsten/lcbo.git
-  revision: 765e49c
+  revision: fa7caed
   specs:
-    lcbo (0.27.0)
+    lcbo (0.29.0)
       addressable (= 2.1.2)
-      nokogiri (= 1.4.2)
+      nokogiri (= 1.4.3.1)
       typhoeus (= 0.1.29)
       yajl-ruby (= 0.7.7)
 
@@ -41,6 +41,7 @@ GEM
     addressable (2.1.2)
     arel (0.4.0)
       activesupport (>= 3.0.0.beta)
+    awesome_print (0.2.1)
     bson (1.0.4)
     bson_ext (1.0.4)
     builder (2.1.2)
@@ -82,7 +83,7 @@ GEM
     net-ssh (2.0.23)
     net-ssh-gateway (1.0.1)
       net-ssh (>= 1.99.1)
-    nokogiri (1.4.2)
+    nokogiri (1.4.3.1)
     polyglot (0.3.1)
     rack (1.2.1)
     rack-mount (0.6.9)
@@ -128,6 +129,7 @@ GEM
       json_pure (>= 1.1.7)
     sinatra (1.0)
       rack (>= 1.0)
+    state_machine (0.9.3)
     thor (0.14.0)
     treetop (1.4.8)
       polyglot (>= 0.3.1)
@@ -149,6 +151,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  awesome_print
   bson_ext (= 1.0.4)
   capistrano
   haml
@@ -158,5 +161,6 @@ DEPENDENCIES
   redis (= 2.0.4)
   redis-store (= 1.0.0.beta2)
   resque
-  rspec-rails (>= 2.0.0.beta.19)
+  rspec-rails (= 2.0.0.beta.19)
+  state_machine
   whenever

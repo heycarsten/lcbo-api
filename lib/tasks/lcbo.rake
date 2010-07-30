@@ -24,18 +24,7 @@ namespace :lcbo do
   namespace :crawl do
     desc 'Begin a crawl of everything'
     task :all do
-    end
-
-    desc 'Begin a crawl of all stores'
-    task :stores do
-    end
-
-    desc 'Begin a crawl of all products'
-    task :products do
-    end
-
-    desc 'Begin a crawl of all inventories'
-    task :inventories do
+      Crawler.run
     end
   end
 end
