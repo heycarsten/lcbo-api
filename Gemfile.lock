@@ -159,6 +159,7 @@ DEPENDENCIES
   mongoid (= 2.0.0.beta.14)
   rails (= 3.0.0.rc)
   redis (= 2.0.4)
+  redis-namespace (= 0.8.0)
   redis-store (= 1.0.0.beta2)
   resque
   rspec-rails (= 2.0.0.beta.19)
