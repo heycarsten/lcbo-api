@@ -56,12 +56,24 @@ GEM
     diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
+    excon (0.2.0)
+    fog (0.2.22)
+      builder
+      excon (>= 0.2.0)
+      formatador (>= 0.0.15)
+      json
+      mime-types
+      net-ssh
+      nokogiri (>= 1.4.3.1)
+      ruby-hmac
+    formatador (0.0.15)
     haml (3.0.15)
     highline (1.6.1)
     hoe (2.6.1)
       rake (>= 0.8.7)
       rubyforge (>= 2.0.4)
     i18n (0.4.1)
+    json (1.4.3)
     json_pure (1.4.3)
     mail (2.2.5)
       activesupport (>= 2.3.6)
@@ -125,11 +137,12 @@ GEM
     rspec-rails (2.0.0.beta.19)
       rspec (= 2.0.0.beta.19)
       webrat (>= 0.7.2.beta.1)
+    ruby-hmac (0.4.0)
     rubyforge (2.0.4)
       json_pure (>= 1.1.7)
     sinatra (1.0)
       rack (>= 1.0)
-    state_machine (0.9.3)
+    state_machine (0.9.4)
     thor (0.14.0)
     treetop (1.4.8)
       polyglot (>= 0.3.1)
@@ -154,6 +167,7 @@ DEPENDENCIES
   awesome_print
   bson_ext (= 1.0.4)
   capistrano
+  fog
   haml
   lcbo!
   mongoid (= 2.0.0.beta.14)

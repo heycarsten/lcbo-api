@@ -2,13 +2,7 @@ class Store
 
   include Mongoid::Document
   include Mongoid::Timestamps
-  include FieldTracking
-
-  tracked_fields \
-    :products_count,
-    :inventory_count,
-    :inventory_price_in_cents,
-    :inventory_volume_in_milliliters
+  include Mongoid::Versioning
 
   key :store_no
 
@@ -40,33 +34,15 @@ class Store
   index [[:inventory_count, Mongo::DESCENDING]]
   index [[:inventory_price_in_cents, Mongo::DESCENDING]]
   index [[:inventory_volume_in_milliliters, Mongo::DESCENDING]]
+  index [[:crawl_timestamp, Mongo::ASCENDING]]
+
+  scope :older_than, lambda { |datetime|
+    where(:crawl_timestamp.lt(datetime))
+  }
 
   has_many_related :inventories
 
   before_save :update_geo
-
-  def self.commit(crawl, fields)
-    if (store = where(:store_no => fields[:store_no]).first)
-      store.commit(crawl, fields)
-    else
-      init(crawl, fields)
-    end
-  end
-
-  def self.init(crawl, fields)
-    store = new(fields)
-    store.active_crawl = crawl
-    store.save
-  end
-
-  def commit(crawl, fields)
-    self.active_crawl = crawl
-    update_attributes(fields)
-  end
-
-  def has_geo?
-    latitude && longitude
-  end
 
   protected
 

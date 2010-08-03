@@ -4,8 +4,9 @@ class Crawl
   include Mongoid::Timestamps
 
   field :timestamp,                           :type => Integer
+  field :state
+  field :bot
   field :did_start,                           :type => Boolean
-  field :state,                               :type => String
   field :did_finish,                          :type => Boolean
   field :did_fail,                            :type => Boolean
   field :total_product_inventory_quantity,    :type => Integer
@@ -19,7 +20,7 @@ class Crawl
 
   index [[:timestamp, Mongo::DESCENDING]], :unique => true
 
-  embeds_many :tasks, :class_name => 'CrawlTask'
+  embeds_many :log_items, :class_name => 'CrawlLogItem'
 
   scope :timestamp, lambda { |timestamp|
     where(:timestamp => timestamp.to_i) }
@@ -36,34 +37,38 @@ class Crawl
     where(:did_start => true, :did_finish => false, :did_fail => false).
     order_by(:timestamp.desc)
 
-  state_machine :initial => :started, :action => :save do
-    event :fail do
-      transition all => :failed
+  def self.spawn(params = {})
+    if crawl = in_progress.first(params)
+      crawl
+    else
+      create(params.merge(:timestamp => Time.now.to_i))
     end
+  end
 
-    event :abort do
-      transition :crawling => :aborted
+  def log(message, job = nil, exception = nil)
+    h = {}
+    h[:message] = message
+    h[:job] = job
+    if exception
+      h[:error_class] = exception.class.to_s
+      h[:error_message] = exception.message
+      h[:error_backtrace] = exception.backtrace.join("\n")
     end
+    log_items.create(h)
+  end
 
-    event :crawl do
-      transition :started => :crawling
-    end
+  def start!
+    return if did_fail || did_start
+    update_attributes :did_start => true
+  end
 
-    event :calculate do
-      transition :crawling => :calculating
-    end
+  def fail!
+    update_attributes :did_fail => true
+  end
 
-    event :export do
-      transition :calculating => :
-    end
-
-    event :fire_webhooks do
-      
-    end
-
-    event :finish do
-      transition :calculating => :finished
-    end
+  def finish!
+    return if !did_start || did_fail
+    update_attributes :did_finish => true
   end
 
 end

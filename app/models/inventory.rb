@@ -1,9 +1,7 @@
 class Inventory
 
   include Mongoid::Document
-  include FieldTracking
-
-  tracked_fields :quantity, :updated_on
+  include Mongoid::Versioning
 
   key :product_no, :store_no
 
@@ -15,27 +13,13 @@ class Inventory
   field :updated_on,      :type => DateTime
 
   index [[:product_no, Mongo::ASCENDING], [:store_no, Mongo::ASCENDING]], :unique => true
+  index [[:crawl_timestamp, Mongo::ASCENDING]]
+
+  scope :older_than, lambda { |datetime|
+    where(:crawl_timestamp.lt(datetime))
+  }
 
   belongs_to_related :product
   belongs_to_related :store
-
-  def self.commit(crawl, fields)
-    if (inventory = where(:product_no => fields[:product_no], :store_no => fields[:store_no]).first)
-      inventory.commit(crawl, fields)
-    else
-      init(crawl, fields)
-    end
-  end
-
-  def self.init(crawl, fields)
-    inventory = new(fields)
-    inventory.active_crawl = crawl
-    inventory.save
-  end
-
-  def commit(crawl, fields)
-    self.active_crawl = crawl
-    update_attributes(fields)
-  end
 
 end

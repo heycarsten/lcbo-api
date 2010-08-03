@@ -23,8 +23,8 @@ namespace :lcbo do
 
   namespace :crawl do
     desc 'Begin a crawl of everything'
-    task :all do
-      Crawler.run
+    task :all => :environment do
+      CrawlBot.run
     end
   end
 end

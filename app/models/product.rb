@@ -2,12 +2,7 @@ class Product
 
   include Mongoid::Document
   include Mongoid::Timestamps
-  include FieldTracking
-
-  tracked_fields \
-    :price_in_cents,
-    :inventory_count,
-    :inventory_volume_in_milliliters
+  include Mongoid::Versioning
 
   key :product_no
 
@@ -34,28 +29,14 @@ class Product
   field :producer_name
 
   index [[:product_no, Mongo::ASCENDING]], :unique => true
+  index [[:crawl_timestamp, Mongo::ASCENDING]]
   index [[:inventory_count, Mongo::DESCENDING]]
   index [[:inventory_volume_in_milliliters, Mongo::ASCENDING]]
 
   has_many_related :inventories
 
-  def self.commit(crawl, fields)
-    if (product = where(:product_no => fields[:product_no]).first)
-      product.commit(crawl, fields)
-    else
-      init(crawl, fields)
-    end
-  end
-
-  def self.init(crawl, fields)
-    product = new(fields)
-    product.active_crawl = crawl
-    product.save
-  end
-
-  def commit(crawl, fields)
-    self.active_crawl = crawl
-    update_attributes(fields)
-  end
+  scope :older_than, lambda { |datetime|
+    where(:crawl_timestamp.lt(datetime))
+  }
 
 end
