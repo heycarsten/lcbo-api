@@ -44,6 +44,10 @@ class Store
 
   before_save :update_geo
 
+  def has_geo?
+    latitude && longitude
+  end
+
   protected
 
   def update_geo

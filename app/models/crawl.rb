@@ -6,9 +6,9 @@ class Crawl
   field :timestamp,                           :type => Integer
   field :state
   field :bot
-  field :did_start,                           :type => Boolean
-  field :did_finish,                          :type => Boolean
-  field :did_fail,                            :type => Boolean
+  field :did_start,                           :type => Boolean, :default => false
+  field :did_finish,                          :type => Boolean, :default => false
+  field :did_fail,                            :type => Boolean, :default => false
   field :total_product_inventory_quantity,    :type => Integer
   field :total_product_volume_in_milliliters, :type => Integer
   field :total_product_price_in_cents,        :type => Integer
@@ -25,12 +25,12 @@ class Crawl
   scope :timestamp, lambda { |timestamp|
     where(:timestamp => timestamp.to_i) }
 
-  scope :failed,
-    where(:did_fail => true).
+  scope :finished,
+    where(:did_start => true, :did_finish => true, :did_fail => false).
     order_by(:timestamp.desc)
 
-  scope :active,
-    where(:did_start => true, :did_finish => true, :did_fail => false).
+  scope :failed,
+    where(:did_fail => true).
     order_by(:timestamp.desc)
 
   scope :in_progress,
