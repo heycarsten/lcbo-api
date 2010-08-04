@@ -24,7 +24,7 @@ describe Crawl do
     end
   end
 
-  context '(that is in progress)' do
+  context 'in progress' do
     before :all do
       @crawl = Fabricate(:crawl,
         :did_start => true, :did_finish => false, :did_fail => false)
@@ -34,7 +34,21 @@ describe Crawl do
       @crawl.start!.should be_nil
     end
   end
-  
+
+  context 'has failed' do
+    before :all do
+      @crawl = Fabricate(:crawl, :did_fail => true)
+    end
+
+    it 'should not be allowed to finish' do
+      @crawl.finish!.should be_nil
+    end
+
+    it 'should not be allowed to start' do
+      @crawl.start!.should be_nil
+    end
+  end
+
   context '(logging)' do
     
   end

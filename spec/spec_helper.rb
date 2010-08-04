@@ -10,6 +10,7 @@ Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 RSpec.configure do |config|
   config.mock_with :rr
+
   config.after(:suite) do
     $redis.flushdb
     Mongoid.master.collections.select do |collection|
