@@ -5,18 +5,21 @@ class Crawl
 
   field :timestamp,                           :type => Integer
   field :state
-  field :bot
   field :did_start,                           :type => Boolean, :default => false
   field :did_finish,                          :type => Boolean, :default => false
   field :did_fail,                            :type => Boolean, :default => false
-  field :total_product_inventory_quantity,    :type => Integer
-  field :total_product_volume_in_milliliters, :type => Integer
-  field :total_product_price_in_cents,        :type => Integer
-  field :total_products,                      :type => Integer
-  field :total_stores,                        :type => Integer
-  field :uncrawled_product_nos,               :type => Array, :default => []
-  field :uncrawled_inventory_product_nos,     :type => Array, :default => []
-  field :uncrawled_store_nos,                 :type => Array, :default => []
+  field :total_product_inventory_quantity,    :type => Integer, :default => 0
+  field :total_product_volume_in_milliliters, :type => Integer, :default => 0
+  field :total_product_price_in_cents,        :type => Integer, :default => 0
+  field :existing_product_nos,                :type => Array,   :default => []
+  field :existing_store_nos,                  :type => Array,   :default => []
+  field :crawled_product_nos,                 :type => Array,   :default => []
+  field :crawled_store_nos,                   :type => Array,   :default => []
+  field :new_product_nos,                     :type => Array,   :default => []
+  field :new_store_nos,                       :type => Array,   :default => []
+  field :crawled_product_nos,                 :type => Array,   :default => []
+  field :crawled_store_nos,                   :type => Array,   :default => []
+  field :crawled_inventory_product_nos,       :type => Array,   :default => []
 
   index [[:timestamp, Mongo::DESCENDING]], :unique => true
 
@@ -37,12 +40,8 @@ class Crawl
     where(:did_start => true, :did_finish => false, :did_fail => false).
     order_by(:timestamp.desc)
 
-  def self.spawn(params = {})
-    if crawl = in_progress.first(params)
-      crawl
-    else
-      create(params.merge(:timestamp => Time.now.to_i))
-    end
+  def self.spawn
+    (crawl = in_progress.first) ? crawl : create(:timestamp => Time.now.to_i)
   end
 
   def log(message, job = nil, exception = nil)
@@ -55,6 +54,7 @@ class Crawl
       h[:error_backtrace] = exception.backtrace.join("\n")
     end
     log_items.create(h)
+    save
   end
 
   def start!

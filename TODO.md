@@ -1,9 +1,14 @@
 # Bots
 
-* Update what already exists
-  - Expire caches
-* Discover new stores and products
-  - Expire caches
-* Expire stores and products
-  - Expire caches
-* Calculate
+* Discover new stores
+* Discover new products
+* Update stores (expire) (inv)
+* Update products (expire) (inv)
+* Update inventories
+* Perform post-processing (calculations) (webhooks)
+
+
+
+= ProductCrawl
+= StoreCrawl
+= InventoryCrawl
