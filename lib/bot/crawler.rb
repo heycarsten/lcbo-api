@@ -9,11 +9,12 @@ module Bot
       mod.send(:attr_reader, :crawl)
 
       mod.on(:before_all) do
-        @crawl = Crawl.spawn(:bot => self.class)
-        log ">> Starting crawler bot: #{self.class}"
+        @crawl = Crawl.spawn
         if @crawl.did_start?
-          raise CrawlInProgressError, "a crawl is currently being performed"
+          log ">> Resuming crawler from: #{@crawl.state}"
+          @current_job = @crawl.state
         else
+          log ">> Starting crawler bot: #{self.class}"
           @crawl.start!
         end
       end

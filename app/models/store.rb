@@ -2,8 +2,17 @@ class Store
 
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Mongoid::Archive
 
   key :store_no
+
+  archive :crawl_timestamp, [
+    :is_active,
+    :products_count,
+    :inventory_count,
+    :inventory_price_in_cents,
+    :inventory_volume_in_milliliters
+  ]
 
   field :is_active,                       :type => Boolean, :default => true
   field :crawl_timestamp,                 :type => Integer
@@ -48,8 +57,6 @@ class Store
 
   scope :needing_update, lambda {
     where(:updated_at.lt => 12.hours.ago) }
-
-  references_many :inventories
 
   before_save :update_geo
 

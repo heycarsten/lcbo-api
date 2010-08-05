@@ -20,4 +20,6 @@ group :test, :development do
   gem 'remarkable_mongoid'
   gem 'rr'
   gem 'fabrication'
+  gem 'resque_spec'
+  gem 'database_cleaner'
 end

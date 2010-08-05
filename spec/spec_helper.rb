@@ -8,13 +8,17 @@ require 'rspec/rails'
 # in ./support/ and its subdirectories.
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
+
 RSpec.configure do |config|
   config.mock_with :rr
 
-  config.after(:suite) do
+  config.before(:suite) do
     $redis.flushdb
-    Mongoid.master.collections.select do |collection|
-      collection.name !~ /system/
-    end.each(&:drop)
+    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.orm = 'mongoid'
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.clean
   end
 end

@@ -2,7 +2,7 @@ class CrawlBot
 
   include Bot::Crawler
 
-  after :all do
+  on :after_all do
     # Clear caches
   end
 
