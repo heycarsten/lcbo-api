@@ -23,20 +23,37 @@ class CrawlBot
   job :discover_products do
     product_nos = []
     ProductListsCrawler.run do |response|
-      product_nos << response[:product_nos]
+      product_nos.concat(response[:product_nos])
       dot
     end
-    product_nos = Products.distinct(:product_no) - @crawl.uncrawled_product_nos
-    Product.where(:product_no.in => product_nos).update(:is_active => false)
+    products_to_crawl = (product_nos - @crawl.existing_product_nos)
+    products_to_crawl.each do |no|
+      Product.create(:product_no => no, :was_crawled => false)
+    end
   end
 
   job :update_stores do
+    Store.crawlable.each do |store|
+      attrs = LCBO.store(store.store_no).as_hash
+      store.commit(@crawl, attrs)
+      dot
+    end
   end
 
   job :update_products do
+    Product.crawlable.each do |product|
+      attrs = LCBO.product(product.product_no)
+      product.commit(@crawl, attrs)
+      dot
+    end
   end
 
   job :update_inventories do
+    Product.inventory_crawlable.each do |product|
+      attrs = LCBO.inventory(product.product_no)
+      product.commit_inventory(@crawl, attrs)
+      dot
+    end
   end
 
   job :perform_calculations do
