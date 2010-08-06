@@ -13,12 +13,12 @@ RSpec.configure do |config|
   config.mock_with :rr
 
   config.before(:suite) do
-    $redis.flushdb
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.orm = 'mongoid'
   end
 
-  config.before(:each) do
+  config.after(:suite) do
+    $redis.flushdb
     DatabaseCleaner.clean
   end
 end

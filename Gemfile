@@ -17,9 +17,8 @@ gem 'lcbo',                 :git => 'git@github.com:heycarsten/lcbo.git'
 group :test, :development do
   gem 'awesome_print'
   gem 'rspec-rails',        '2.0.0.beta.19'
-  gem 'remarkable_mongoid'
-  gem 'rr'
   gem 'fabrication'
+  gem 'rr'
   gem 'resque_spec'
   gem 'database_cleaner'
 end

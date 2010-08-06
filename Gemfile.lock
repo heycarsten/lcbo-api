@@ -123,13 +123,6 @@ GEM
       redis (< 3.0.0)
     redis-store (1.0.0.beta2)
       redis (>= 2.0.0)
-    remarkable (4.0.0.alpha4)
-      rspec (>= 2.0.0.alpha11)
-    remarkable_activemodel (4.0.0.alpha4)
-      remarkable (~> 4.0.0.alpha4)
-      rspec (>= 2.0.0.alpha11)
-    remarkable_mongoid (0.4.0)
-      remarkable_activemodel (>= 4.0.0.alpha2)
     resque (1.9.9)
       json_pure (~> 1.4.0)
       redis-namespace (~> 0.8.0)
@@ -189,7 +182,6 @@ DEPENDENCIES
   redis (= 2.0.4)
   redis-namespace (= 0.8.0)
   redis-store (= 1.0.0.beta2)
-  remarkable_mongoid
   resque
   resque_spec
   rr
