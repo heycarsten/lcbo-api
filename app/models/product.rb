@@ -6,20 +6,6 @@ class Product
 
   key :product_no
 
-  archive :crawl_timestamp, [
-    :is_active,
-    :was_discontinued,
-    :was_removed,
-    :price_in_cents,
-    :regular_price_in_cents,
-    :limited_time_offer_savings_in_cents,
-    :limited_time_offer_ends_on,
-    :bonus_reward_miles,
-    :bonus_reward_miles_ends_on,
-    :inventory_count,
-    :inventory_price_in_cents,
-    :inventory_volume_in_milliliters]
-
   field :is_active,             :type => Boolean, :default => true
   field :crawl_timestamp,       :type => Integer
   field :inventory_updated_at,  :type => DateTime
@@ -68,6 +54,20 @@ class Product
   index [[:crawl_timestamp, Mongo::ASCENDING]]
   index [[:inventory_count, Mongo::DESCENDING]]
   index [[:inventory_volume_in_milliliters, Mongo::ASCENDING]]
+
+  archive :crawl_timestamp, [
+    :is_active,
+    :was_discontinued,
+    :was_removed,
+    :price_in_cents,
+    :regular_price_in_cents,
+    :limited_time_offer_savings_in_cents,
+    :limited_time_offer_ends_on,
+    :bonus_reward_miles,
+    :bonus_reward_miles_ends_on,
+    :inventory_count,
+    :inventory_price_in_cents,
+    :inventory_volume_in_milliliters]
 
   scope :crawlable, lambda {
     where(:updated_at.lt => 12.hours.ago).

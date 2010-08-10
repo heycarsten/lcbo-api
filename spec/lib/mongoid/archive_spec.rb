@@ -5,25 +5,24 @@ describe Mongoid::Archive do
   class TestDoc
     include Mongoid::Document
     include Mongoid::Archive
-    archive :day, [:qty]
     field :name
     field :qty, :type => Integer, :default => 0
     field :day, :type => Integer, :default => 0
+    archive :day, [:qty]
   end
 
-  context 'when mixed into a document' do
+  describe TestDoc, 'when mixed into a document' do
     it 'should create a new document for updates' do
       TestDocUpdate.should be_a(Class)
       TestDocUpdate.should respond_to(:index, :field, :key)
     end
 
     it 'should copy tracked fields to the new document' do
-      archive_fields = TestDoc.archive_fields.map(&:to_s)
-      TestDocUpdate.fields.keys.should include(*archive_fields)
+      TestDocUpdate.fields.keys.should include(*TestDoc.archive_fields)
     end
 
     it 'should include the primary field in the list of fields' do
-      TestDoc.archive_fields.should include(:day)
+      TestDoc.archive_fields.should include('day')
     end
 
     it 'should provide an embed_many in the host document' do
@@ -35,17 +34,27 @@ describe Mongoid::Archive do
     end
   end
 
-  context 'when a document is first created' do
+  describe TestDoc do
     before :all do
-      @doc = TestDoc.create(:name => 'test', :qty => 5, :day => 1)
+      @doc = TestDoc.create(:name => 'test', :qty => 1, :day => 1)
     end
 
     it 'should not have any updates' do
       @doc.updates.should be_empty
     end
+
+    it 'should indicate a change when the target field changes' do
+      @doc.day = 2
+      @doc.archived_target_changed?.should be_true
+    end
+
+    it 'should represent the previous state correctly' do
+      @doc.archived_attributes['qty'].should == 1
+      @doc.archived_attributes['day'].should == 1
+    end
   end
 
-  context 'when a document changes but no tracked fields change' do
+  describe TestDoc, 'when a document changes but no tracked fields change' do
     before :all do
       @doc = TestDoc.create(:name => 'test', :qty => 5, :day => 1)
       @doc.update_attributes(:name => 'test2', :qty => 5, :day => 1)
@@ -56,21 +65,23 @@ describe Mongoid::Archive do
     end
   end
 
-  context 'when a document changes and the tracked field changes' do
+  describe TestDoc, 'when a document changes and the tracked field changes' do
     before :all do
       @doc = TestDoc.create(:name => 'test', :qty => 5, :day => 1)
       @doc.update_attributes(:name => 'test', :qty => 4, :day => 2)
+      @doc.update_attributes(:name => 'test', :qty => 5, :day => 2)
     end
 
-    it 'should save one update' do
-      @doc.updates.size.should == 1
+    it 'should save two updates' do
+      @doc.updates.size.should == 2
     end
 
     it 'should save the previous state as an update' do
-      doc = @doc.updates.first.should
+      doc = @doc.updates.first
       doc.qty.should == 5
       doc.day.should == 1
     end
   end
 
 end
+

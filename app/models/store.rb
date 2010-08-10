@@ -6,14 +6,6 @@ class Store
 
   key :store_no
 
-  archive :crawl_timestamp, [
-    :is_active,
-    :products_count,
-    :inventory_count,
-    :inventory_price_in_cents,
-    :inventory_volume_in_milliliters
-  ]
-
   field :is_active,                       :type => Boolean, :default => true
   field :crawl_timestamp,                 :type => Integer
   field :geo,                             :type => Array
@@ -54,6 +46,13 @@ class Store
   index [[:inventory_price_in_cents, Mongo::DESCENDING]]
   index [[:inventory_volume_in_milliliters, Mongo::DESCENDING]]
   index [[:crawl_timestamp, Mongo::ASCENDING]]
+
+  archive :crawl_timestamp, [
+    :is_active,
+    :products_count,
+    :inventory_count,
+    :inventory_price_in_cents,
+    :inventory_volume_in_milliliters]
 
   scope :needing_update, lambda {
     where(:updated_at.lt => 12.hours.ago) }

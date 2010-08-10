@@ -7,10 +7,10 @@ gem 'redis-store',          '1.0.0.beta2'
 gem 'resque'
 gem 'fog'
 gem 'haml'
-gem 'mongoid',              '2.0.0.beta.14'
+gem 'mongoid',              '2.0.0.beta.16'
 gem 'bson_ext',             '1.0.4'
 gem 'whenever'
-gem 'capistrano'
+
 gem 'lcbo',                 :git => 'git@github.com:heycarsten/lcbo.git'
 
 # Bundle gems for certain environments:
