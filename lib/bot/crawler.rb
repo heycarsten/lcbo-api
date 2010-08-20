@@ -12,7 +12,7 @@ module Bot
         @crawl = Crawl.spawn
         if @crawl.did_start?
           log ">> Resuming crawler from: #{@crawl.state}"
-          @current_job = @crawl.state
+          @starting_job = @crawl.state
         else
           log ">> Starting crawler bot: #{self.class}"
           @crawl.start!

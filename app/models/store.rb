@@ -63,6 +63,16 @@ class Store
     store.inventories.update(:is_active => false) if !store.is_active
   end
 
+  def self.commit(crawl, params)
+    params[:crawl_timestamp] = crawl.timestamp
+    if (store = where(:store_no => params[:store_no]).first)
+      store.update_attributes(params)
+      store
+    else
+      create(params)
+    end
+  end
+
   def has_geo?
     latitude && longitude
   end

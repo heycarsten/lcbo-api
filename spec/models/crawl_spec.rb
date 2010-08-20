@@ -27,7 +27,9 @@ describe Crawl do
   context 'in progress' do
     before :all do
       @crawl = Fabricate(:crawl,
-        :did_start => true, :did_finish => false, :did_fail => false)
+        :did_start => true,
+        :did_finish => false,
+        :did_fail => false)
     end
 
     it 'should not allow itself to be started again' do

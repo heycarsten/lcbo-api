@@ -25,8 +25,8 @@ module Bot
         define_method(name.to_sym, &block)
       end
 
-      def run(starting_job = nil)
-        new.run(starting_job)
+      def run
+        new.run
       end
     end
 
@@ -39,24 +39,20 @@ module Bot
       STDOUT.flush
     end
 
-    def next_job
-      @current_job = self.class.jobs[self.class.jobs.index(@current_job) + 1]
-    end
-
-    def run(starting_job = nil)
-      @current_job = starting_job.to_sym if starting_job
-      fire :before_all unless starting_job
-      while @current_job
+    def run
+      current_job = @starting_job.present? ? @starting_job : @current_job
+      fire :before_all if @starting_job.blank?
+      while current_job
         begin
           time = Time.now
-          fire :before_each, job_name
-          send(job_name.to_sym)
-          fire :after_each, job_name, (Time.now - time)
+          fire :before_each, current_job
+          send(current_job.to_sym)
+          fire :after_each, current_job, (Time.now - time)
         rescue => error
-          fire :failure, job_name, (Time.now - time), error
+          fire :failure, current_job, (Time.now - time), error
           raise error
         end
-        next_job
+        current_job = self.class.jobs[self.class.jobs.index(current_job) + 1]
       end
       fire :after_all
     end

@@ -7,13 +7,13 @@ class CrawlBot
   end
 
   job :seed_crawl do
-    @crawl.existing_product_nos = Product.distinct(:product_no)
-    @crawl.existing_store_nos   = Store.distinct(:store_no)
+    @crawl.existing_product_nos = Product.all.distinct(:product_no)
+    @crawl.existing_store_nos   = Store.all.distinct(:store_no)
     @crawl.save
   end
 
   job :discover_stores do
-    store_nos = ((1..850).to_a - @crawl.prior_store_nos)
+    store_nos = ((1..850).to_a - @crawl.existing_store_nos)
     StoresCrawler.run(:store_no => store_nos.pop, :store_nos => store_nos) do |response|
       Store.commit(@crawl, response)
       dot
