@@ -1,62 +1,52 @@
-class Product
+class Product < Ohm::Model
 
-  include Mongoid::Document
-  include Mongoid::Timestamps
-  include Mongoid::Archive
+  include Ohm::Typecast
+  include Ohm::Callbacks
 
-  key :product_no
+  attribute :crawl_timestamp,                     Integer
+  attribute :was_crawled,                         Boolean
+  attribute :was_discontinued,                    Boolean
+  attribute :was_removed,                         Boolean
 
-  field :is_active,             :type => Boolean, :default => true
-  field :crawl_timestamp,       :type => Integer
-  field :inventory_updated_at,  :type => DateTime
-  field :was_crawled,           :type => Boolean, :default => false
-  field :was_discontinued,      :type => Boolean, :default => false
-  field :was_removed,           :type => Boolean, :default => false
+  attribute :product_no,                          Integer
+  attribute :name,                                String
+  attribute :price_in_cents,                      Integer
+  attribute :regular_price_in_cents,              Integer
+  attribute :limited_time_offer_savings_in_cents, Integer
+  attribute :limited_time_offer_ends_on,          String
+  attribute :bonus_reward_miles,                  Integer
+  attribute :bonus_reward_miles_ends_on,          String
+  attribute :stock_type,                          String
+  attribute :primary_category,                    String
+  attribute :secondary_category,                  String
+  attribute :origin,                              String
+  attribute :package,                             String
+  attribute :package_unit_type,                   String
+  attribute :package_unit_volume_in_milliliters,  Integer
+  attribute :total_package_units,                 Integer
+  attribute :total_package_volume_in_milliliters, Integer
+  attribute :volume_in_milliliters,               Integer
+  attribute :alcohol_content,                     Integer
+  attribute :inventory_count,                     Integer
+  attribute :inventory_volume_in_milliliters,     Integer
+  attribute :inventory_price_in_cents,            Integer
+  attribute :sugar_content,                       String
+  attribute :producer_name,                       String
+  attribute :released_on,                         String
+  attribute :is_discontinued,                     Boolean
+  attribute :has_limited_time_offer,              Boolean
+  attribute :has_bonus_reward_miles,              Boolean
+  attribute :is_seasonal,                         Boolean
+  attribute :is_vqa,                              Boolean
+  attribute :description,                         String
+  attribute :serving_suggestion,                  String
+  attribute :tasting_note,                        String
 
-  # Public fields
-  field :product_no,                          :type => Integer
-  field :name
-  field :price_in_cents,                      :type => Integer
-  field :regular_price_in_cents,              :type => Integer
-  field :limited_time_offer_savings_in_cents, :type => Integer
-  field :limited_time_offer_ends_on,          :type => Date
-  field :bonus_reward_miles,                  :type => Integer
-  field :bonus_reward_miles_ends_on,          :type => Date
-  field :stock_type
-  field :primary_category
-  field :secondary_category
-  field :origin
-  field :package
-  field :package_unit_type
-  field :package_unit_volume_in_milliliters,  :type => Integer, :default => 0
-  field :total_package_units,                 :type => Integer, :default => 0
-  field :total_package_volume_in_milliliters, :type => Integer, :default => 0
-  field :volume_in_milliliters,               :type => Integer, :default => 0
-  field :alcohol_content,                     :type => Integer, :default => 0
-  field :inventory_count,                     :type => Integer, :default => 0
-  field :inventory_volume_in_milliliters,     :type => Integer, :default => 0
-  field :inventory_price_in_cents,            :type => Integer, :default => 0
-  field :sugar_content
-  field :producer_name
-  field :released_on,                         :type => Date
-  field :is_discontinued,                     :type => Boolean
-  field :has_limited_time_offer,              :type => Boolean
-  field :has_bonus_reward_miles,              :type => Boolean
-  field :is_seasonal,                         :type => Boolean
-  field :is_vqa,                              :type => Boolean
-  field :description
-  field :serving_suggestion
-  field :tasting_note
-
-  index [[:inventory_updated_at, Mongo::ASCENDING]]
-  index [[:updated_at, Mongo::ASCENDING]]
-  index [[:product_no, Mongo::ASCENDING]], :unique => true
-  index [[:crawl_timestamp, Mongo::ASCENDING]]
-  index [[:inventory_count, Mongo::DESCENDING]]
-  index [[:inventory_volume_in_milliliters, Mongo::ASCENDING]]
+  index :product_no
+  index :was_discontinued
+  index :was_removed
 
   archive :crawl_timestamp, [
-    :is_active,
     :was_discontinued,
     :was_removed,
     :price_in_cents,
@@ -69,21 +59,8 @@ class Product
     :inventory_price_in_cents,
     :inventory_volume_in_milliliters]
 
-  scope :crawlable, lambda {
-    where(:updated_at.lt => 12.hours.ago).
-    or(:was_crawled => false).
-    order_by(:inventory_updated_at.asc) }
-
-  scope :needing_inventory_update, lambda {
-    where(:inventory_updated_at.lt => 12.hours.ago).
-    order_by(:inventory_updated_at.asc) }
-
   after_save do |product|
     product.inventories.update(:is_active => false) if !product.is_active
-  end
-
-  def commit_inventory(crawl, params)
-    
   end
 
 end

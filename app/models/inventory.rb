@@ -1,29 +1,19 @@
-class Inventory
+class Inventory < Ohm::Model
 
-  include Mongoid::Document
-  include Mongoid::Timestamps
-  include Mongoid::Archive
+  include Ohm::Typecast
 
-  key :product_no, :store_no
+  attribute :is_hidden,       Boolean
+  attribute :crawl_timestamp, Integer
 
-  field :is_active,       :type => Boolean, :default => true
-  field :crawl_timestamp, :type => Integer
-  field :store_geo,       :type => Array
+  attribute :product_no,      Integer
+  attribute :store_no,        Integer
+  attribute :quantity,        Integer
+  attribute :updated_on,      Time
 
-  # Public
-  field :product_no,      :type => Integer
-  field :store_no,        :type => Integer
-  field :quantity,        :type => Integer
-  field :updated_on,      :type => DateTime
+  index :product_no
+  index :store_no
+  index :is_hidden
 
-  index [[:geo, Mongo::GEO2D]]
-  index [[:geo, Mongo::GEO2D], [:product_no, Mongo::ASCENDING]]
-  index [[:product_no, Mongo::ASCENDING], [:store_no, Mongo::ASCENDING]], :unique => true
-
-  archive :crawl_timestamp, [:quantity, :updated_on, :is_active]
-
-  def self.commit(crawl, payload)
-    payload
-  end
+  list :updates, InventoryUpdate
 
 end

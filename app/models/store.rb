@@ -1,86 +1,47 @@
-class Store
+class Store < Ohm::Model
 
-  include Mongoid::Document
-  include Mongoid::Timestamps
-  include Mongoid::Archive
+  include Ohm::Typecast
+  include Ohm::Callbacks
 
-  key :store_no
+  attribute :is_hidden,                       Boolean
+  attribute :crawl_timestamp,                 Integer
 
-  field :is_active,                       :type => Boolean, :default => true
-  field :crawl_timestamp,                 :type => Integer
-  field :geo,                             :type => Array
-
-  # Public
-  field :store_no,                        :type => Integer
-  field :name
-  field :address_line_1
-  field :address_line_2
-  field :city
-  field :postal_code
-  field :telephone
-  field :fax
-  field :latitude,                        :type => Float
-  field :longitude,                       :type => Float
-  field :products_count,                  :type => Integer
-  field :inventory_count,                 :type => Integer
-  field :inventory_price_in_cents,        :type => Integer
-  field :inventory_volume_in_milliliters, :type => Integer
-  field :has_wheelchair_accessability
-  field :has_bilingual_services
-  field :has_product_consultant
-  field :has_tasting_bar
-  field :has_beer_cold_room
-  field :has_special_occasion_permits
-  field :has_vintages_corner
-  field :has_parking
-  field :has_transit_access
+  attribute :store_no,                        Integer
+  attribute :name,                            String
+  attribute :address_line_1,                  String
+  attribute :address_line_2,                  String
+  attribute :city,                            String
+  attribute :postal_code,                     String
+  attribute :telephone,                       String
+  attribute :fax,                             String
+  attribute :latitude,                        Float
+  attribute :longitude,                       Float
+  attribute :products_count,                  Integer
+  attribute :inventory_count,                 Integer
+  attribute :inventory_price_in_cents,        Integer
+  attribute :inventory_volume_in_milliliters, Integer
+  attribute :has_wheelchair_accessability,    Boolean
+  attribute :has_bilingual_services,          Boolean
+  attribute :has_product_consultant,          Boolean
+  attribute :has_tasting_bar,                 Boolean
+  attribute :has_beer_cold_room,              Boolean
+  attribute :has_special_occasion_permits,    Boolean
+  attribute :has_vintages_corner,             Boolean
+  attribute :has_parking,                     Boolean
+  attribute :has_transit_access,              Boolean
   Date::DAYNAMES.each do |day|
-    field :"#{day.downcase}_open",        :type => Integer
-    field :"#{day.downcase}_close",       :type => Integer
+    attribute :"#{day.downcase}_open",        Integer
+    attribute :"#{day.downcase}_close",       Integer
   end
 
-  index [[:store_no, Mongo::ASCENDING]], :unique => true
-  index [[:geo, Mongo::GEO2D]]
-  index [[:products_count, Mongo::DESCENDING]]
-  index [[:inventory_count, Mongo::DESCENDING]]
-  index [[:inventory_price_in_cents, Mongo::DESCENDING]]
-  index [[:inventory_volume_in_milliliters, Mongo::DESCENDING]]
-  index [[:crawl_timestamp, Mongo::ASCENDING]]
+  index :store_no
+  index :is_hidden
 
   archive :crawl_timestamp, [
-    :is_active,
+    :is_hidden,
     :products_count,
     :inventory_count,
     :inventory_price_in_cents,
     :inventory_volume_in_milliliters]
-
-  scope :needing_update, lambda {
-    where(:updated_at.lt => 12.hours.ago) }
-
-  before_save :update_geo
-
-  after_save do |store|
-    store.inventories.update(:is_active => false) if !store.is_active
-  end
-
-  def self.commit(crawl, params)
-    params[:crawl_timestamp] = crawl.timestamp
-    if (store = where(:store_no => params[:store_no]).first)
-      store.update_attributes(params)
-      store
-    else
-      create(params)
-    end
-  end
-
-  def has_geo?
-    latitude && longitude
-  end
-
-  protected
-
-  def update_geo
-    self.geo = [self.longitude, self.latitude] if has_geo?
-  end
 
 end

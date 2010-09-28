@@ -1,74 +1,69 @@
-class Crawl
+class Crawl < Ohm::Model
 
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  STATES = %w[ started finished failed ]
 
-  field :timestamp,                           :type => Integer
-  field :state
-  field :did_start,                           :type => Boolean, :default => false
-  field :did_finish,                          :type => Boolean, :default => false
-  field :did_fail,                            :type => Boolean, :default => false
-  field :total_product_inventory_quantity,    :type => Integer, :default => 0
-  field :total_product_volume_in_milliliters, :type => Integer, :default => 0
-  field :total_product_price_in_cents,        :type => Integer, :default => 0
-  field :existing_product_nos,                :type => Array,   :default => []
-  field :existing_store_nos,                  :type => Array,   :default => []
-  field :crawled_product_nos,                 :type => Array,   :default => []
-  field :crawled_store_nos,                   :type => Array,   :default => []
-  field :new_product_nos,                     :type => Array,   :default => []
-  field :new_store_nos,                       :type => Array,   :default => []
-  field :crawled_product_nos,                 :type => Array,   :default => []
-  field :crawled_store_nos,                   :type => Array,   :default => []
-  field :crawled_inventory_product_nos,       :type => Array,   :default => []
+  include Ohm::Typecast
+  include Ohm::Callbacks
+  include Ohm::Timestamping
+  include Ohm::ExtraValidations
 
-  index [[:timestamp, Mongo::DESCENDING]], :unique => true
+  attribute :timestamp,                           Integer
+  attribute :state,                               String
+  attribute :job,                                 String
+  attribute :total_product_inventory_quantity,    Integer
+  attribute :total_product_volume_in_milliliters, Integer
+  attribute :total_product_price_in_cents,        Integer
 
-  embeds_many :log_items, :class_name => 'CrawlLogItem'
+  list :product_nos
+  list :store_nos
+  list :inventory_product_nos
+  list :completed_product_nos
+  list :completed_store_nos
+  list :completed_inventory_product_nos
 
-  scope :timestamp, lambda { |timestamp|
-    where(:timestamp => timestamp.to_i) }
+  index :timestamp
+  index :state
 
-  scope :finished,
-    where(:did_start => true, :did_finish => true, :did_fail => false).
-    order_by(:timestamp.desc)
+  list :logs, CrawlLog
 
-  scope :failed,
-    where(:did_fail => true).
-    order_by(:timestamp.desc)
+  before :create, :set_defaults
 
-  scope :in_progress,
-    where(:did_start => true, :did_finish => false, :did_fail => false).
-    order_by(:timestamp.desc)
+  def self.in_progress
+    all.find(:state => 'started').sort_by(:timestamp, :order => 'DESC').first
+  end
 
   def self.spawn
-    (crawl = in_progress.first) ? crawl : create(:timestamp => Time.now.to_i)
+    (crawl = in_progress) ? crawl : create(:timestamp => Time.now.to_i)
   end
 
   def log(message, job = nil, exception = nil)
     h = {}
     h[:message] = message
-    h[:job] = job
+    if job
+      h[:job] = job
+      self.job = job
+    end
     if exception
       h[:error_class] = exception.class.to_s
       h[:error_message] = exception.message
-      h[:error_backtrace] = exception.backtrace.join("\n")
+      h[:error_backtrace] = exception.backtrace.join(?\n)
     end
-    log_items.create(h)
+    logs << CrawlLogItem.create(h)
     save
   end
 
-  def start!
-    return if did_fail || did_start
-    update_attributes :did_start => true
+  protected
+
+  def validate
+    super
+    assert_member :state, STATES
   end
 
-  def fail!
-    update_attributes :did_fail => true
-  end
-
-  def finish!
-    return if !did_start || did_fail
-    update_attributes :did_finish => true
+  def set_defaults
+    self.state = 'started' unless state
+    self.total_product_inventory_quantity = 0 unless total_product_inventory_quantity
+    self.total_product_volume_in_milliliters = 0 unless total_product_volume_in_milliliters
+    self.total_product_price_in_cents = 0 unless total_product_price_in_cents
   end
 
 end

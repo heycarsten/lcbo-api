@@ -1,24 +1,14 @@
 source :rubygems
 
-gem 'rails',                '3.0.0.rc'
-gem 'redis',                '2.0.4'
-gem 'redis-namespace',      '0.8.0'
-gem 'redis-store',          '1.0.0.beta2'
+gem 'rails',       '3.0.0'
+gem 'ohm'
+gem 'ohm-contrib', :require => 'ohm/contrib'
+gem 'sunspot'
+gem 'lcbo'
 gem 'resque'
-gem 'fog'
 gem 'haml'
-gem 'mongoid',              '2.0.0.beta.16'
-gem 'bson_ext',             '1.0.4'
 gem 'whenever'
 
-gem 'lcbo',                 :git => 'git@github.com:heycarsten/lcbo.git'
-
-# Bundle gems for certain environments:
 group :test, :development do
-  gem 'awesome_print'
-  gem 'rspec-rails',        '2.0.0.beta.19'
   gem 'fabrication'
-  gem 'rr'
-  gem 'resque_spec'
-  gem 'database_cleaner'
 end
