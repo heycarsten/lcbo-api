@@ -3,9 +3,7 @@ class Store < Ohm::Model
   include Ohm::Typecast
   include Ohm::Callbacks
 
-  attribute :is_hidden,                       Boolean
-  attribute :crawl_timestamp,                 Integer
-
+  attribute :crawled_at,                      Time
   attribute :store_no,                        Integer
   attribute :name,                            String
   attribute :address_line_1,                  String
@@ -35,7 +33,7 @@ class Store < Ohm::Model
   end
 
   index :store_no
-  index :is_hidden
+  index :crawled_at
 
   archive :crawl_timestamp, [
     :is_hidden,
