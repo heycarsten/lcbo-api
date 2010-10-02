@@ -2,19 +2,7 @@ class Product < Ohm::Model
 
   include Ohm::Typecast
   include Ohm::Callbacks
-
-  ARCHIVE = [
-    :was_discontinued,
-    :was_removed,
-    :price_in_cents,
-    :regular_price_in_cents,
-    :limited_time_offer_savings_in_cents,
-    :limited_time_offer_ends_on,
-    :bonus_reward_miles,
-    :bonus_reward_miles_ends_on,
-    :inventory_count,
-    :inventory_price_in_cents,
-    :inventory_volume_in_milliliters]
+  include Ohm::Archive
 
   attribute :crawled_at,                          Time
   attribute :inventory_crawled_at,                Time
@@ -55,5 +43,18 @@ class Product < Ohm::Model
   index :product_no
   index :crawled_at
   index :inventory_crawled_at
+
+  archive \
+    :was_discontinued,
+    :was_removed,
+    :price_in_cents,
+    :regular_price_in_cents,
+    :limited_time_offer_savings_in_cents,
+    :limited_time_offer_ends_on,
+    :bonus_reward_miles,
+    :bonus_reward_miles_ends_on,
+    :inventory_count,
+    :inventory_price_in_cents,
+    :inventory_volume_in_milliliters
 
 end

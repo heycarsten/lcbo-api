@@ -31,7 +31,9 @@ GEM
     activesupport (3.0.0)
     arel (1.0.1)
       activesupport (~> 3.0.0)
+    awesome_print (0.2.1)
     builder (2.1.2)
+    diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
     escape (0.0.4)
@@ -85,6 +87,18 @@ GEM
       vegas (~> 0.1.2)
     rsolr (0.12.1)
       builder (>= 2.1.2)
+    rspec (2.0.0.beta.22)
+      rspec-core (= 2.0.0.beta.22)
+      rspec-expectations (= 2.0.0.beta.22)
+      rspec-mocks (= 2.0.0.beta.22)
+    rspec-core (2.0.0.beta.22)
+    rspec-expectations (2.0.0.beta.22)
+      diff-lcs (>= 1.1.2)
+    rspec-mocks (2.0.0.beta.22)
+      rspec-core (= 2.0.0.beta.22)
+      rspec-expectations (= 2.0.0.beta.22)
+    rspec-rails (2.0.0.beta.22)
+      rspec (= 2.0.0.beta.22)
     sinatra (1.0)
       rack (>= 1.0)
     sunspot (1.2.rc4)
@@ -107,6 +121,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  awesome_print
   fabrication
   haml
   lcbo
@@ -114,5 +129,6 @@ DEPENDENCIES
   ohm-contrib
   rails (= 3.0.0)
   resque
+  rspec-rails (= 2.0.0.beta.22)
   sunspot (= 1.2.rc4)
   whenever
