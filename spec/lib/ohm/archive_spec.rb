@@ -1,78 +1,63 @@
 require 'spec_helper'
 
-# describe Ohm::Archive do
-# 
-#   describe TestDoc, 'when mixed into a document' do
-#     it 'should create a new document for updates' do
-#       TestDocUpdate.should be_a(Class)
-#       TestDocUpdate.should respond_to(:index, :field, :key)
-#     end
-# 
-#     it 'should copy tracked fields to the new document' do
-#       TestDocUpdate.fields.keys.should include(*TestDoc.archive_fields)
-#     end
-# 
-#     it 'should include the primary field in the list of fields' do
-#       TestDoc.archive_fields.should include('day')
-#     end
-# 
-#     it 'should provide an embed_many in the host document' do
-#       TestDoc.associations.keys.should include('updates')
-#     end
-# 
-#     it 'should reflect an embed_many in the update document' do
-#       TestDocUpdate.embedded?.should be_true
-#     end
-#   end
-# 
-#   describe TestDoc do
-#     before :all do
-#       @doc = TestDoc.create(:name => 'test', :qty => 1, :day => 1)
-#     end
-# 
-#     it 'should not have any updates' do
-#       @doc.updates.should be_empty
-#     end
-# 
-#     it 'should indicate a change when the target field changes' do
-#       @doc.day = 2
-#       @doc.archived_target_changed?.should be_true
-#     end
-# 
-#     it 'should represent the previous state correctly' do
-#       @doc.archived_attributes['qty'].should == 1
-#       @doc.archived_attributes['day'].should == 1
-#     end
-#   end
-# 
-#   describe TestDoc, 'when a document changes but no tracked fields change' do
-#     before :all do
-#       @doc = TestDoc.create(:name => 'test', :qty => 5, :day => 1)
-#       @doc.update_attributes(:name => 'test2', :qty => 5, :day => 1)
-#     end
-# 
-#     it 'should create any updates' do
-#       @doc.updates.should be_empty
-#     end
-#   end
-# 
-#   describe TestDoc, 'when a document changes and the tracked field changes' do
-#     before :all do
-#       @doc = TestDoc.create(:name => 'test', :qty => 5, :day => 1)
-#       @doc.update_attributes(:name => 'test', :qty => 4, :day => 2)
-#       @doc.update_attributes(:name => 'test', :qty => 5, :day => 2)
-#     end
-# 
-#     it 'should save two updates' do
-#       @doc.updates.size.should == 2
-#     end
-# 
-#     it 'should save the previous state as an update' do
-#       doc = @doc.updates.first
-#       doc.qty.should == 5
-#       doc.day.should == 1
-#     end
-#   end
-# 
-# end
-# 
+class Post < Ohm::Model
+  include Ohm::Typecast
+  include Ohm::Archive
+  attribute :name, String
+  attribute :msg,  String
+  attribute :qty,  Integer
+  attribute :date, String
+  archive :date, [:msg, :qty]
+end
+
+describe Ohm::Archive do
+  before :all do
+    @post = Post.create(
+      :name => 'tim',
+      :msg => 'hi',
+      :qty => 0,
+      :date => '2010-01-01')
+  end
+
+  describe 'commiting for the first time' do
+    before :all do
+      @post.commit
+    end
+
+    it 'should create a revision' do
+      @post.revisions.count.should == 1
+    end
+  end
+
+  describe 'commiting a second time without changing the indexed attribute' do
+    before :all do
+      @post.update_attributes(:msg => 'hello')
+      @post.save
+    end
+
+    it 'should not create a new revision' do
+      @post.revisions.count.should == 1
+    end
+
+    it 'should update the existing revision' do
+      @post.revisions.first.msg.should == 'hello'
+    end
+  end
+
+  describe 'updating the object and the indexed field' do
+    before :all do
+      @post.update_attributes(:qty => 1, :date => '2010-01-02')
+      @post.save
+      @post.commit
+    end
+
+    it 'should update fields that changed' do
+      @post.qty.should == 1
+      @post.date.should == '2010-01-02'
+    end
+
+    it 'should create a new revision' do
+      @post.revisions.count.should == 2
+    end
+  end
+end

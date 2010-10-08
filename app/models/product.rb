@@ -44,7 +44,7 @@ class Product < Ohm::Model
   index :crawled_at
   index :inventory_crawled_at
 
-  archive \
+  archive :product_no, [
     :was_discontinued,
     :was_removed,
     :price_in_cents,
@@ -55,6 +55,6 @@ class Product < Ohm::Model
     :bonus_reward_miles_ends_on,
     :inventory_count,
     :inventory_price_in_cents,
-    :inventory_volume_in_milliliters
+    :inventory_volume_in_milliliters]
 
 end

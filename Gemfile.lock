@@ -51,7 +51,7 @@ GEM
     mime-types (1.16)
     nest (0.0.7)
     nokogiri (1.4.3.1)
-    ohm (0.1.0.rc6)
+    ohm (0.1.0)
       nest (~> 0.0.7)
       redis (~> 2.0.0)
     ohm-contrib (0.0.35)
@@ -125,7 +125,7 @@ DEPENDENCIES
   fabrication
   haml
   lcbo
-  ohm (= 0.1.0.rc6)
+  ohm (= 0.1.0)
   ohm-contrib
   rails (= 3.0.0)
   resque

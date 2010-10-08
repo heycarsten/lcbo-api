@@ -1,14 +1,8 @@
 class Store < Ohm::Model
 
-  ARCHIVE = [
-    :is_hidden,
-    :products_count,
-    :inventory_count,
-    :inventory_price_in_cents,
-    :inventory_volume_in_milliliters]
-
   include Ohm::Typecast
   include Ohm::Callbacks
+  include Ohm::Archive
 
   attribute :crawled_at,                      Time
   attribute :store_no,                        Integer
@@ -41,5 +35,12 @@ class Store < Ohm::Model
 
   index :store_no
   index :crawled_at
+
+  archive :crawled_at, [
+    :is_hidden,
+    :products_count,
+    :inventory_count,
+    :inventory_price_in_cents,
+    :inventory_volume_in_milliliters]
 
 end
