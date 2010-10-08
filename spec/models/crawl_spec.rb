@@ -1,5 +1,5 @@
 require 'spec_helper'
 
-describe Log do
+describe Crawl do
   it 'should be tested'
 end

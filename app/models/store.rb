@@ -5,6 +5,8 @@ class Store < Ohm::Model
   include Ohm::Archive
 
   attribute :crawled_at,                      Time
+  attribute :is_hidden,                       Boolean
+
   attribute :store_no,                        Integer
   attribute :name,                            String
   attribute :address_line_1,                  String
@@ -35,6 +37,7 @@ class Store < Ohm::Model
 
   index :store_no
   index :crawled_at
+  index :is_hidden
 
   archive :crawled_at, [
     :is_hidden,

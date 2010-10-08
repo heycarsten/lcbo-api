@@ -5,8 +5,11 @@ class Product < Ohm::Model
   include Ohm::Archive
 
   attribute :crawled_at,                          Time
+  attribute :is_hidden,                           Boolean
+
   attribute :product_no,                          Integer
   attribute :name,                                String
+  attribute :is_discontinued,                     Boolean
   attribute :price_in_cents,                      Integer
   attribute :regular_price_in_cents,              Integer
   attribute :limited_time_offer_savings_in_cents, Integer
@@ -30,7 +33,6 @@ class Product < Ohm::Model
   attribute :sugar_content,                       String
   attribute :producer_name,                       String
   attribute :released_on,                         String
-  attribute :is_discontinued,                     Boolean
   attribute :has_limited_time_offer,              Boolean
   attribute :has_bonus_reward_miles,              Boolean
   attribute :is_seasonal,                         Boolean
@@ -43,8 +45,7 @@ class Product < Ohm::Model
   index :crawled_at
 
   archive :crawled_at, [
-    :was_discontinued,
-    :was_removed,
+    :is_discontinued,
     :price_in_cents,
     :regular_price_in_cents,
     :limited_time_offer_savings_in_cents,

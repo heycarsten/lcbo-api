@@ -38,6 +38,10 @@ def Factory(*args)
   Factory.create(*args)
 end
 
+Factory.define(Crawl) do
+  ! - ! - !
+end
+
 Factory.define(Product) do
   product_no                          1
   name                                'Floris Ninkeberry Gardenbeer'
