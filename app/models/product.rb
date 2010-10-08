@@ -5,7 +5,6 @@ class Product < Ohm::Model
   include Ohm::Archive
 
   attribute :crawled_at,                          Time
-  attribute :inventory_crawled_at,                Time
   attribute :product_no,                          Integer
   attribute :name,                                String
   attribute :price_in_cents,                      Integer
@@ -42,9 +41,8 @@ class Product < Ohm::Model
 
   index :product_no
   index :crawled_at
-  index :inventory_crawled_at
 
-  archive :product_no, [
+  archive :crawled_at, [
     :was_discontinued,
     :was_removed,
     :price_in_cents,

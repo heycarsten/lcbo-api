@@ -33,6 +33,7 @@ describe Ohm::Archive do
     before :all do
       @post.update_attributes(:msg => 'hello')
       @post.save
+      @post.commit
     end
 
     it 'should not create a new revision' do
