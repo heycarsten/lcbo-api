@@ -3,7 +3,7 @@ class CrawlEvent < Ohm::Model
   include Ohm::Timestamping
   include Ohm::Typecast
 
-  attribute :level,   Symbol
+  attribute :level,   String
   attribute :message, String
   attribute :payload, Hash
 

@@ -1,4 +1,4 @@
-class PreCrawler
+class SeedJob < Bot::Job
 
   attr_reader :product_nos, :store_nos
 
