@@ -6,13 +6,7 @@ class Crawl < Ohm::Model
   class IncompleteCrawlError < StandardError; end
   class InsufficientJobsError < StandardError; end
 
-  STATES = %w[
-    starting  # Crawl is being initialized
-    running   # Crawl is running, stuff is happening
-    paused    # Crawl was paused due to an exception or user intervention
-    finished  # Crawl is complete
-    cancelled # Crawl was cancelled
-  ]
+  STATES = %w[starting running paused finished cancelled]
 
   attribute :state,                               String
   attribute :total_products,                      Integer
@@ -27,7 +21,11 @@ class Crawl < Ohm::Model
 
   index :state
 
-  def self.all_finished?
+  def self.fetch
+    (crawl = incomplete.first) ? crawl : init
+  end
+
+  def self.any_active?
     incomplete.count > 0
   end
 
@@ -44,7 +42,7 @@ class Crawl < Ohm::Model
   end
 
   def self.init
-    raise IncompleteCrawlError, 'already crawling' unless all_finished?
+    raise IncompleteCrawlError, 'already crawling' if any_active?
     crawl = create(
       :state => 'starting',
       :total_products => 0,
@@ -53,10 +51,6 @@ class Crawl < Ohm::Model
       :total_product_price_in_cents => 0,
       :total_jobs => 0)
     crawl
-  end
-
-  def is_resumable?
-    state == 'paused'
   end
 
   def cancel!
@@ -83,7 +77,7 @@ class Crawl < Ohm::Model
   end
 
   def pushjob(type, no)
-    raise CancelledCrawlError, 'crawl was cancelled' if 'cancelled' == state
+    raise CancelledCrawlError, 'crawl was cancelled' if is_cancelled?
     job = CrawlJob.create(:type => type.to_s, :no => no.to_i)
     if job.valid?
       jobs << job
@@ -134,6 +128,10 @@ class Crawl < Ohm::Model
 
   def is_finished?
     'finished' == state
+  end
+
+  def is_cancelled?
+    'cancelled' == state
   end
 
   def validate
