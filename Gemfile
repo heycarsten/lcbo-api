@@ -1,7 +1,7 @@
 source :rubygems
 
-gem 'rails',         '3.0.0'
-gem 'ohm',           '0.1.0'
+gem 'rails',         '3.0.3'
+gem 'ohm',           '0.1.3'
 gem 'ohm-contrib',   :require => 'ohm/contrib'
 gem 'sunspot',       '1.2.rc4'
 gem 'lcbo'
@@ -10,7 +10,7 @@ gem 'haml'
 gem 'whenever'
 
 group :test, :development do
-  gem 'rspec-rails', '2.0.0.beta.22'
+  gem 'rspec-rails', '2.1.0'
   gem 'fabrication'
 end
 

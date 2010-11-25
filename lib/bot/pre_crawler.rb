@@ -1,42 +1,43 @@
 class SeedJob < Bot::Job
 
-  attr_reader :product_nos, :store_nos
-
   def initialize
-    @product_nos = []
-    @store_nos = []
+    @crawl = Crawl.fetch
   end
 
   def self.perform
     crawler = new
-    crawler.get_product_nos
-    crawler.get_store_nos
+    crawler.perform
     crawler
   end
 
-  def update
-    get_product_nos
-    get_store_nos
+  def perform
+    product_nos
+    store_nos
+    self
+  end
+
+  def store_nos
+    @store_nos ||= (1..900).to_a
+  end
+
+  def product_nos
+    @product_nos ||= (new_product_nos | existing_product_nos)
   end
 
   protected
 
   def existing_product_nos
+    @existing_product_nos ||= Product.all.map(&:product_no)
   end
 
-  def existing_store_nos
-    
-  end
-
-  def get_product_nos
-    LCBO::ProductListsCrawler.run(:page => 1) do |params|
-      @product_nos.concat(params[:product_nos])
+  def new_product_nos
+    @new_product_nos ||= begin
+      product_nos = []
+      LCBO::ProductListsCrawler.run(:page => 1) do |params|
+        product_nos.concat(params[:product_nos])
+      end
+      product_nos
     end
-    @product_nos
-  end
-
-  def get_store_nos
-    @store_nos = (1..850).to_a
   end
 
 end

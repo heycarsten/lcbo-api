@@ -39,7 +39,7 @@ def Factory(*args)
 end
 
 Factory.define(Crawl) do
-  ! - ! - !
+  
 end
 
 Factory.define(Product) do

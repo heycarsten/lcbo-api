@@ -1,4 +1,4 @@
-class CrawlJob < Ohm::Model
+class CrawlItem < Ohm::Model
 
   attribute :type
   attribute :no
