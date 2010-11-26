@@ -37,7 +37,7 @@ class Crawl < Ohm::Model
 
   def self.is(*states)
     validate_states!(*states)
-    find(:state => values.map(&:to_s))
+    find(:state => states.map(&:to_s))
   end
 
   def self.any_active?
@@ -68,23 +68,27 @@ class Crawl < Ohm::Model
     is? :starting, :running, :paused
   end
 
-  def transition(new_state)
+  def has_jobs?
+    jobs.count > 0
+  end
+
+  def transition_to(new_state)
     self.class.validate_states!(new_state)
     case
     when is?(:complete)
-      raise StateError, "Crawl is complete and can not be set to: #{state}"
+      raise StateError, "Crawl is complete and can not be set to: #{new_state}"
     when is?(:cancelled)
-      raise StateError, "Crawl is cancelled and can not be set to: #{state}"
-    when state.to_s == 'running' && is?(:running)
+      raise StateError, "Crawl is cancelled and can not be set to: #{new_state}"
+    when new_state.to_s == 'running' && is?(:running)
       raise StateError, 'Crawl is running and can not be set to: running'
-    when state.to_s == 'running' && jobs.count == 0
+    when new_state.to_s == 'running' && !has_jobs?
       raise StateError, 'Crawl has no jobs and can not be set to: running'
-    when state.to_s == 'paused'  && is?(:starting)
+    when new_state.to_s == 'paused'  && is?(:starting)
       raise StateError, 'Crawl is starting and can not be set to: paused'
-    when state.to_s == 'paused'  && is?(:paused)
+    when new_state.to_s == 'paused'  && is?(:paused)
       raise StateError, 'Crawl is paused and can not be set to: paused'
     else
-      self.state = state.to_s
+      self.state = new_state.to_s
       save
     end
   end
@@ -101,26 +105,6 @@ class Crawl < Ohm::Model
       incr :total_jobs, 1
     end
     job
-  end
-
-  def popjob(&block)
-    verify_unlocked!
-    while (is?(:running) && job = jobs.pop)
-      begin
-        yield(job)
-        incr :total_finished_jobs, 1
-      rescue => error
-        log 'Pausing crawl', :warn
-        transition_to :paused
-        jobs << job
-        log 'An error occurred', :error,
-          :job_type => job.type,
-          :job_no => job.no,
-          :error_class => error.class,
-          :error_message => error.message,
-          :error_backtrace => error.backtrace.join("\n")
-      end
-    end
   end
 
   def log(message, level = :info, payload = {})

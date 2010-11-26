@@ -5,9 +5,9 @@ gem 'ohm',           '0.1.3'
 gem 'ohm-contrib',   :require => 'ohm/contrib'
 gem 'sunspot',       '1.2.rc4'
 gem 'lcbo'
-gem 'resque'
 gem 'haml'
 gem 'whenever'
+gem 'colored'
 
 group :test, :development do
   gem 'rspec-rails', '2.1.0'
