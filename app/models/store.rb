@@ -1,13 +1,14 @@
 class Store < Ohm::Model
 
   include Ohm::Typecast
-  include Ohm::Callbacks
   include Ohm::Archive
+  include Ohm::ToHash
+  include Ohm::CountAll
+  include Ohm::Sunspot
+  include Ohm::Rails
 
   attribute :crawled_at,                      Time
   attribute :is_hidden,                       Boolean
-
-  attribute :store_no,                        Integer
   attribute :name,                            String
   attribute :address_line_1,                  String
   attribute :address_line_2,                  String
@@ -35,15 +36,55 @@ class Store < Ohm::Model
     attribute :"#{day.downcase}_close",       Integer
   end
 
-  index :store_no
-  index :crawled_at
-  index :is_hidden
-
   archive :crawled_at, [
     :is_hidden,
     :products_count,
     :inventory_count,
     :inventory_price_in_cents,
     :inventory_volume_in_milliliters]
+
+  sunspot do
+    integer :store_no
+    text :name, :address_line_1, :address_line_2
+    boolean :is_hidden
+    boolean :has_wheelchair_accessability
+    boolean :has_bilingual_services
+    boolean :has_product_consultant
+    boolean :has_tasting_bar
+    boolean :has_beer_cold_room
+    boolean :has_special_occasion_permits
+    boolean :has_vintages_corner
+    boolean :has_parking
+    boolean :has_transit_access
+    integer :products_count
+    integer :inventory_count
+    integer :inventory_price_in_cents
+    integer :inventory_volume_in_milliliters
+    location :geo
+  end
+
+  def self.place(attrs)
+    if (store = self[attrs[:store_no]])
+      store.update(attrs)
+    else
+      create(attrs)
+    end
+  end
+
+  def geo
+    Struct.new(:lat, :lng).new(latitude, longitude)
+  end
+
+  def store_no=(value)
+    self.id = value
+  end
+
+  def store_no
+    id.to_i
+  end
+
+  def as_json
+    { :store_no => store_no }.merge(to_hash(:id, :is_hidden))
+  end
 
 end

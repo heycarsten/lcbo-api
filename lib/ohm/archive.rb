@@ -5,6 +5,7 @@ module Ohm
       Object.const_set(:"#{host}Revision", Class.new(Ohm::Model))
       model = Object.const_get(:"#{host}Revision")
       model.send(:include, Ohm::Typecast) if host.include?(Ohm::Typecast)
+      model.send(:include, Ohm::ToHash) if host.include?(Ohm::ToHash)
 
       host.send(:instance_variable_set, :@attribute_arguments, [])
       host.send(:instance_variable_set, :@archive_rev_model, model)
@@ -45,6 +46,7 @@ module Ohm
     end
 
     def commit
+      before_commit if respond_to?(:before_commit)
       self.class.archive_index_attr.tap do |key|
         if (rev = revisions.find(key => send(key)).first)
           rev.update_attributes(archived_attributes)
@@ -53,6 +55,7 @@ module Ohm
           revisions << self.class.archive_rev_model.create(archived_attributes)
         end
       end
+      after_commit if respond_to?(:after_commit)
     end
 
   end

@@ -1,13 +1,14 @@
 class Product < Ohm::Model
 
   include Ohm::Typecast
-  include Ohm::Callbacks
   include Ohm::Archive
+  include Ohm::ToHash
+  include Ohm::CountAll
+  include Ohm::Sunspot
+  include Ohm::Rails
 
   attribute :crawled_at,                          Time
   attribute :is_hidden,                           Boolean
-
-  attribute :product_no,                          Integer
   attribute :name,                                String
   attribute :is_discontinued,                     Boolean
   attribute :price_in_cents,                      Integer
@@ -41,9 +42,6 @@ class Product < Ohm::Model
   attribute :serving_suggestion,                  String
   attribute :tasting_note,                        String
 
-  index :product_no
-  index :crawled_at
-
   archive :crawled_at, [
     :is_discontinued,
     :price_in_cents,
@@ -55,5 +53,41 @@ class Product < Ohm::Model
     :inventory_count,
     :inventory_price_in_cents,
     :inventory_volume_in_milliliters]
+
+  sunspot do
+    text :name
+    text :origin
+    text :producer_name
+    string :package_unit_type
+    boolean :is_hidden
+    boolean :is_discontinued
+    boolean :has_limited_time_offer
+    boolean :has_bonus_reward_miles
+    boolean :is_seasonal
+    boolean :is_vqa
+    integer :price_in_cents
+    integer :inventory_count
+    integer :inventory_volume_in_milliliters
+  end
+
+  def self.place(attrs)
+    if (product = self[attrs[:product_no]])
+      product.update(attrs)
+    else
+      create(attrs)
+    end
+  end
+
+  def product_no=(value)
+    self.id = value
+  end
+
+  def product_no
+    id.to_i
+  end
+
+  def as_json
+    { :product_no => product_no }.merge(to_hash(:id, :is_hidden))
+  end
 
 end

@@ -1,4 +1,10 @@
 LCBOAPI::Application.routes.draw do
+  namespace :admin do
+    root :to => 'crawls#index'
+    resources :crawls
+    resources :crawl_events
+  end
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

@@ -3,6 +3,7 @@ class Crawl < Ohm::Model
   include Ohm::Typecast
   include Ohm::Timestamping
   include Ohm::ExtraValidations
+  include Ohm::Rails
 
   class StateError < StandardError; end
 
@@ -18,6 +19,10 @@ class Crawl < Ohm::Model
   attribute :added_product_nos,                   Array
   attribute :removed_product_nos,                 Array
 
+  reference :last_event, CrawlEvent
+
+  collection :events, CrawlEvent
+
   counter :total_jobs
   counter :total_finished_jobs
 
@@ -26,6 +31,8 @@ class Crawl < Ohm::Model
   list :jobs,        CrawlItem
 
   index :state
+  index :updated_at
+  index :created_at
 
   def self.validate_states!(*states)
     states.each do |state|
@@ -72,6 +79,14 @@ class Crawl < Ohm::Model
     jobs.count > 0
   end
 
+  def progress
+    if total_jobs == 0 || total_finished_jobs == 0
+      0.0
+    else
+      total_finished_jobs.to_f / total_jobs.to_f
+    end
+  end
+
   def transition_to(new_state)
     self.class.validate_states!(new_state)
     case
@@ -109,10 +124,15 @@ class Crawl < Ohm::Model
 
   def log(message, level = :info, payload = {})
     verify_unlocked!
-    CrawlEvent.create(
+    ev = CrawlEvent.create(
+      :crawl_id => self.id,
       :message => message,
       :level => level.to_s,
-      :payload => payload.merge(:crawl_id => self.id))
+      :payload => payload)
+    events << ev
+    self.last_event = ev
+    self.updated_at = Time.now.utc
+    save
   end
 
   def validate

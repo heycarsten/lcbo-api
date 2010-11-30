@@ -2,7 +2,7 @@ class Crawler
 
   class UnknownCrawlJobTypeError < StandardError; end
 
-  STORE_NO_MAX = 900
+  STORE_NO_MAX = 850
 
   def self.run(crawl = nil)
     new(crawl).run
@@ -32,21 +32,27 @@ class Crawler
   end
 
   def run
-    if @crawl.is?(:starting) && !@crawl.has_jobs?
-      start!
-    else
-      log :warn, 'Crawl is being resumed'
+    begin
+      if @crawl.is?(:starting) && !@crawl.has_jobs?
+        start!
+      else
+        log :warn, 'Crawl is being resumed'
+      end
+      @crawl.transition_to(:running)
+      work!
+      diff!
+      calc!
+      commit!
+      log :info, 'The crawl is finished.'
+      @crawl.transition_to(:complete)
+    rescue => error
+      log_error(error)
+      @crawl.transition_to(:cancelled)
     end
-    @crawl.transition_to(:running)
-    work!
-    diff!
-    calc!
-    commit!
-    log :info, 'The crawl is finished.'
-    @crawl.transition_to(:complete)
   end
 
   def work!
+    return unless @crawl.is?(:running)
     log :info, 'Processing jobs...'
     while @crawl.is?(:running) && item = @crawl.jobs.pop
       begin
@@ -55,33 +61,34 @@ class Crawler
       rescue => error
         @crawl.jobs << item
         pause
-        log :error, "(#{error.class}) #{error.message}",
-          :item_type => item.type,
-          :item_no => item.no,
-          :error_class => error.class,
-          :error_message => error.message,
-          :error_backtrace => error.backtrace.join("\n")
+        log_error(error)
       end
     end
     log :info, 'Done processing jobs.'
   end
 
   def diff!
+    return unless @crawl.is?(:running)
     log :info, 'Performing diff operations ...'
     log :info, 'Done performing diff operations.'
   end
 
   def calc!
+    return unless @crawl.is?(:running)
     log :info, 'Performing calculations ...'
     log :info, 'Done performing calculations.'
   end
 
   def commit!
+    return unless @crawl.is?(:running)
     log :info, 'Committing history ...'
     Inventory.all.each(&:commit)
     Store.all.each(&:commit)
     Product.all.each(&:commit)
     log :info, 'Done committing history.'
+    log :info, 'Committing search indicies ...'
+    Sunspot.commit
+    log :info, 'Done comitting search indicies.'
   end
 
   def runjob(job)
@@ -107,39 +114,28 @@ class Crawler
         p[:inventory_volume_in_milliliters] = (p[:volume_in_milliliters] * count)
       end
     end
-    if (product = Product.find(:product_no => product_no).first)
-      product.update(product_attrs)
-    else
-      Product.create(product_attrs)
-    end
+    Product.place(product_attrs)
     inventory_attrs[:inventories].each do |inv|
       inv[:crawled_at] = Time.now.utc
       inv[:is_hidden] = false
-      if (inventory = Inventory.find(:product_no => product_no, :store_no => inv[:store_no]).first)
-        inventory.update(inv)
-      else
-        Inventory.create(inv)
-      end
+      inv[:product_no] = product_no
+      Inventory.place(inv)
     end
     @crawl.product_nos << CrawlItem.create(:no => product_no)
-    log :info, "Updated inventory and details for product #{product_no}."
+    log :info, "Placed product and #{inventory_attrs[:inventories].size} inventories: #{product_no}"
   rescue LCBO::CrawlKit::Page::MissingResourceError
     log :warn, "Skipping product #{product_no}, it does not exist."
   end
 
   def run_store_job(store_no)
-    store_attrs = LCBO.store(store_no)
-    store_attrs[:crawled_at] = Time.now.utc
-    store_attrs[:is_hidden] = false
-    if (store = Store.find(:store_no => store_no).first)
-      store.update(store_attrs)
-    else
-      Store.create(store_attrs)
-    end
+    attrs = LCBO.store(store_no)
+    attrs[:crawled_at] = Time.now.utc
+    attrs[:is_hidden] = false
+    Store.place(attrs)
+    log :info, "Placed store: #{store_no}"
     @crawl.store_nos << CrawlItem.create(:no => store_no)
-    log :info, "Updated details for store #{store_no}."
   rescue LCBO::CrawlKit::Page::MissingResourceError
-    log :info, "Skipping store #{store_no}, it does not exist."
+    log :warn, "Skipping store #{store_no}, it does not exist."
   end
 
   protected
@@ -154,12 +150,22 @@ class Crawler
     else
       puts "[#{level}]".bold + " #{msg}"
     end
-    puts "  --- #{data.inspect}" if data.any?
+  end
+
+  def log_error(error, item = nil)
+    h = {}
+    h[:item_type] = item.type if item
+    h[:item_no] = item.no if item
+    h[:error_class] = error.class.to_s
+    h[:error_message] = error.message
+    h[:error_backtrace] = error.backtrace.join("\n")
+    log(:error, "(#{error.class}) #{error.message}", h)
+    puts "---\n#{h[:error_class]}\n\n#{h[:error_message]}\n#{h[:error_backtrace]}\n"
   end
 
   def product_nos
     @product_nos ||= begin
-      LCBO.product_list(1)[:product_nos]
+      LCBO.product_list(1)[:product_nos].take(20)
       # [].tap do |nos|
       #   LCBO::ProductListsCrawler.run { |page| nos.concat(page[:product_nos]) }
       # end

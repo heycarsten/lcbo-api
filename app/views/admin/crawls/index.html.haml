@@ -1,0 +1,22 @@
+%h1 Crawls
+%table.crawls{ :summary => 'Crawls' }
+  %tr
+    %th{ :scope => 'col' } Started
+    %th{ :scope => 'col' } Elapsed Time
+    %th{ :scope => 'col' } Progress
+    %th{ :scope => 'col' } Status
+    %th{ :scope => 'col' } Log
+  - @crawls.each do |crawl|
+    %tr{ :class => crawl.state }
+      %td
+        %a{ :href => admin_crawl_path(crawl) }
+          = nice :datetime, crawl.created_at
+      %td
+        = distance_of_time_in_words(crawl.created_at, crawl.updated_at)
+      %td{ :title => "#{crawl.total_jobs} / #{crawl.total_finished_jobs}" }
+        = '%0.0f%' % (crawl.progress * 100)
+      %td
+        = crawl.state
+      - crawl.last_event.tap do |ev|
+        %td{ :class => ev ? ev.level : nil }
+          = ev.try(:message)

@@ -1,0 +1,19 @@
+%h1 Crawl
+
+%dl.crawl
+  %dt Start Time
+  %dt Elapsed Time
+  %dt Status
+  %dt Total Jobs
+  %dt Total Stores
+  %dt Total Products
+  %dt Total Inventories
+
+%table.crawl-events
+  %tr
+    %th Time
+    %th Message
+  - @events.each do |ev|
+    %tr{ :class => ev.level }
+      %td= nice :datetime, ev.created_at
+      %td= ev.message
