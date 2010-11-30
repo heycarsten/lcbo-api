@@ -3,7 +3,8 @@ module ApplicationHelper
   NICE_FORMATS = {
     :date => '%b %e, %Y',
     :time => '%I:%M %p',
-    :datetime => '%b %e, %Y %I:%M %p' }
+    :datetime => '%b %e, %Y %I:%M %p',
+    :datetimesec => '%b %e, %Y %I:%M:%S %p' }
 
   def nice(format, time)
     strf = NICE_FORMATS.fetch(format) do

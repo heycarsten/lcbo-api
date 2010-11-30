@@ -4,3 +4,9 @@ namespace :redis do
     system "redis-server #{Rails.root + 'config' + config_file}"
   end
 end
+
+namespace :solr do
+  task :start do
+    system "sunspot-solr"
+  end
+end

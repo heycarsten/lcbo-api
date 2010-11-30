@@ -3,6 +3,7 @@ require File.expand_path('../boot', __FILE__)
 # Select frameworks
 require 'action_controller/railtie'
 require 'action_mailer/railtie'
+require 'active_record/railtie'
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
@@ -39,6 +40,6 @@ module LCBOAPI
     config.encoding = 'utf-8'
 
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:password]
+    config.filter_parameters += [:password, :password_confirmation]
   end
 end

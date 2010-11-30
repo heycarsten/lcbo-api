@@ -32,12 +32,20 @@ class Inventory < Ohm::Model
     end
   end
 
-  def self.for_product(product_no)
-    find(:product_no => product_no)
-  end
-
   def self.slug(product_no, store_no)
     "product.#{product_no}:store.#{store_no}"
+  end
+
+  def self.keys(store_no, product_no)
+    db.keys(key[slug(store_no, product_no)])
+  end
+
+  def self.keys_for_store(store_no)
+    keys('*', store_no)
+  end
+
+  def self.keys_for_product(product_no)
+    keys(product_no, '*')
   end
 
   def self.create(attrs)

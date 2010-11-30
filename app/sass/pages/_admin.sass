@@ -10,4 +10,13 @@ body.admin
     font-weight: bold
     border-bottom: 1px solid #ddd
   tr:nth-child(even) td
-    background-color: #eee
+    background: rgba(0, 0, 0, 0.05)
+  tr:nth-child(odd) td
+    background: rgba(0, 0, 0, 0.03)
+  .starting, .running
+    background: #efe
+    font-weight: bold
+  .paused, .warn
+    background: #ffe
+  .cancelled, .error
+    background: #fee

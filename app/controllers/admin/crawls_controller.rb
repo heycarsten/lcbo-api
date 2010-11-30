@@ -1,12 +1,12 @@
 class Admin::CrawlsController < Admin::BaseController
 
   def index
-    @crawls = Crawl.all.sort(:by => :updated_at, :order => 'DESC ALPHA')
+    @crawls = Crawl.all.sort_by(:updated_at, :order => 'ALPHA DESC')
   end
 
   def show
     @crawl = Crawl[params[:id]]
-    @events = @crawl.events.sort_by(:created_at, :order => 'ASC')
+    @events = @crawl.events.sort { |a,b|  a.created_at <=> b.created_at }
   end
 
 end

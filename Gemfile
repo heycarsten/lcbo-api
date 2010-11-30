@@ -1,9 +1,8 @@
 source :rubygems
 
-gem 'rails',         '3.0.3'
-gem 'ohm',           '0.1.3'
-gem 'ohm-contrib',   :require => 'ohm/contrib'
-gem 'sunspot',       '1.2.rc4'
+gem 'rails', '3.0.3'
+gem 'pg'
+gem 'resque'
 gem 'lcbo'
 gem 'haml'
 gem 'whenever'
@@ -16,4 +15,5 @@ end
 
 group :development do
   gem 'awesome_print'
+  gem 'sequel'
 end

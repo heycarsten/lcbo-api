@@ -1,13 +1,22 @@
 %h1 Crawl
 
-%dl.crawl
+%dl.crawl-info
   %dt Start Time
+  %dd= nice :datetimesec, @crawl.created_at
   %dt Elapsed Time
+  %dd= distance_of_time_in_words @crawl.created_at, @crawl.updated_at, true
   %dt Status
-  %dt Total Jobs
+  %dd= @crawl.state
+  %dt Progress
+  %dd
+    == #{@crawl.total_jobs} / #{@crawl.total_finished_jobs} =>
+    = "%0.0f%" % (@crawl.progress * 100)
   %dt Total Stores
+  %dd= @crawl.total_stores
   %dt Total Products
+  %dd= @crawl.total_products
   %dt Total Inventories
+  %dd= @crawl.total_inventories
 
 %table.crawl-events
   %tr
@@ -15,5 +24,7 @@
     %th Message
   - @events.each do |ev|
     %tr{ :class => ev.level }
-      %td= nice :datetime, ev.created_at
+      %td
+        %a{ :href => admin_crawl_event_path(ev) }
+          = nice :datetimesec, ev.created_at
       %td= ev.message

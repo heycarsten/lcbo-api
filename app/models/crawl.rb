@@ -9,26 +9,24 @@ class Crawl < Ohm::Model
 
   STATES = %w[starting running paused complete cancelled]
 
-  attribute :state,                               String
-  attribute :total_products,                      Integer
-  attribute :total_stores,                        Integer
-  attribute :total_product_volume_in_millilitres, Integer
-  attribute :total_product_price_in_cents,        Integer
-  attribute :added_store_nos,                     Array
-  attribute :removed_store_nos,                   Array
-  attribute :added_product_nos,                   Array
-  attribute :removed_product_nos,                 Array
+  attribute :state,               String
+  attribute :added_store_nos,     Array
+  attribute :removed_store_nos,   Array
+  attribute :added_product_nos,   Array
+  attribute :removed_product_nos, Array
 
   reference :last_event, CrawlEvent
 
   collection :events, CrawlEvent
 
+  counter :total_products
+  counter :total_stores
+  counter :total_inventories
+  counter :total_product_inventory_count
+  counter :total_product_inventory_volume_in_milliliters
+  counter :total_product_inventory_price_in_cents
   counter :total_jobs
   counter :total_finished_jobs
-
-  set  :product_nos, CrawlItem
-  set  :store_nos,   CrawlItem
-  list :jobs,        CrawlItem
 
   index :state
   index :updated_at
@@ -53,13 +51,7 @@ class Crawl < Ohm::Model
 
   def self.init
     raise StateError, 'Crawl is already running' if any_active?
-    crawl = create(
-      :state => 'starting',
-      :total_products => 0,
-      :total_stores => 0,
-      :total_product_volume_in_millilitres => 0,
-      :total_product_price_in_cents => 0)
-    crawl
+    create(:state => 'starting')
   end
 
   def is?(*states)
@@ -76,7 +68,7 @@ class Crawl < Ohm::Model
   end
 
   def has_jobs?
-    jobs.count > 0
+    joblen > 0
   end
 
   def progress
@@ -98,28 +90,64 @@ class Crawl < Ohm::Model
       raise StateError, 'Crawl is running and can not be set to: running'
     when new_state.to_s == 'running' && !has_jobs?
       raise StateError, 'Crawl has no jobs and can not be set to: running'
-    when new_state.to_s == 'paused'  && is?(:starting)
+    when new_state.to_s == 'paused' && is?(:starting)
       raise StateError, 'Crawl is starting and can not be set to: paused'
-    when new_state.to_s == 'paused'  && is?(:paused)
+    when new_state.to_s == 'paused' && is?(:paused)
       raise StateError, 'Crawl is paused and can not be set to: paused'
+    when new_state.to_s == 'complete' && is?(:paused)
+      raise StateError, 'Crawl is paused and can not be set to: complete'
+    when new_state.to_s == 'complete' && joblen != 0
+      raise StateError, 'Crawl is not done and can not be set to: complete'
     else
       self.state = new_state.to_s
       save
     end
   end
 
-  def push_jobs(type, values)
-    values.each { |val| pushjob(type, val) }
+  def add_store_no(no)
+    listadd :store_nos, no
   end
 
-  def pushjob(type, no)
+  def remove_store_no(no)
+    listrem :store_nos, no
+  end
+
+  def store_nos
+    listget(:store_nos).map(&:to_i)
+  end
+
+  def add_product_no(no)
+    listadd :product_nos, no
+  end
+
+  def remove_product_no(no)
+    listrem :product_nos, no
+  end
+
+  def product_nos
+    listget(:product_nos).map(&:to_i)
+  end
+
+  def push_jobs(type, ids)
+    ids.each { |id| addjob(type, id) }
+  end
+
+  def addjob(type, id)
     verify_unlocked!
-    job = CrawlItem.create(:type => type.to_s, :no => no.to_i)
-    if job.valid?
-      jobs << job
-      incr :total_jobs, 1
+    listadd :jobs, "#{type}:#{id}"
+    incr :total_jobs, 1
+  end
+
+  def popjob
+    if (job = listpop(:jobs))
+      job.split(':')
+    else
+      nil
     end
-    job
+  end
+
+  def joblen
+    listlen :jobs
   end
 
   def log(message, level = :info, payload = {})
@@ -133,6 +161,28 @@ class Crawl < Ohm::Model
     self.last_event = ev
     self.updated_at = Time.now.utc
     save
+  end
+
+  protected
+
+  def listrem(list, value)
+    key[list].lrem(0, value)
+  end
+
+  def listget(list, start = 0, finish = -1)
+    key[list].lrange(start, finish)
+  end
+
+  def listadd(list, value)
+    key[list].rpush(value)
+  end
+
+  def listpop(list)
+    key[list].rpop
+  end
+
+  def listlen(list)
+    key[list].llen
   end
 
   def validate
