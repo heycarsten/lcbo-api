@@ -1,0 +1,1 @@
+RDB = Redis.connect

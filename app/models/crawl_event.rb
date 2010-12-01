@@ -1,13 +1,5 @@
-class CrawlEvent < Ohm::Model
+class CrawlEvent < ActiveRecord::Model
 
-  include Ohm::Typecast
-  include Ohm::Timestamping
-  include Ohm::Rails
-
-  attribute :level,   String
-  attribute :message, String
-  attribute :payload, Hash
-
-  reference :crawl, Crawl
+  belongs_to :crawl
 
 end

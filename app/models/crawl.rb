@@ -1,36 +1,17 @@
-class Crawl < Ohm::Model
-
-  include Ohm::Typecast
-  include Ohm::Timestamping
-  include Ohm::ExtraValidations
-  include Ohm::Rails
+class Crawl < ActiveRecord::Model
 
   class StateError < StandardError; end
 
   STATES = %w[starting running paused complete cancelled]
 
-  attribute :state,               String
-  attribute :added_store_nos,     Array
-  attribute :removed_store_nos,   Array
-  attribute :added_product_nos,   Array
-  attribute :removed_product_nos, Array
+  serialize :added_store_nos,     Array
+  serialize :removed_store_nos,   Array
+  serialize :added_product_nos,   Array
+  serialize :removed_product_nos, Array
 
-  reference :last_event, CrawlEvent
+  belongs_to :crawl_event
 
-  collection :events, CrawlEvent
-
-  counter :total_products
-  counter :total_stores
-  counter :total_inventories
-  counter :total_product_inventory_count
-  counter :total_product_inventory_volume_in_milliliters
-  counter :total_product_inventory_price_in_cents
-  counter :total_jobs
-  counter :total_finished_jobs
-
-  index :state
-  index :updated_at
-  index :created_at
+  has_many :crawl_events
 
   def self.validate_states!(*states)
     states.each do |state|
@@ -124,10 +105,6 @@ class Crawl < Ohm::Model
     listrem :product_nos, no
   end
 
-  def product_nos
-    listget(:product_nos).map(&:to_i)
-  end
-
   def push_jobs(type, ids)
     ids.each { |id| addjob(type, id) }
   end
@@ -135,7 +112,7 @@ class Crawl < Ohm::Model
   def addjob(type, id)
     verify_unlocked!
     listadd :jobs, "#{type}:#{id}"
-    incr :total_jobs, 1
+    increment :total_jobs
   end
 
   def popjob
@@ -166,23 +143,29 @@ class Crawl < Ohm::Model
   protected
 
   def listrem(list, value)
-    key[list].lrem(0, value)
+    RDB.lrem(key(list), 0, value)
   end
 
   def listget(list, start = 0, finish = -1)
-    key[list].lrange(start, finish)
+    RDB.lrange(key(list), start, finish)
   end
 
   def listadd(list, value)
-    key[list].rpush(value)
+    RDB.rpush(key(list), value)
   end
 
   def listpop(list)
-    key[list].rpop
+    RDB.rpop(key(list))
   end
 
   def listlen(list)
-    key[list].llen
+    RDB.llen(key(list))
+  end
+
+  def key(postfix = nil)
+    a = ["Crawl:#{id}"]
+    a << postfix.to_s if postfix
+    a.join(':')
   end
 
   def validate

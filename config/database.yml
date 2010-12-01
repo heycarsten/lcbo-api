@@ -1,0 +1,17 @@
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: lcboapi_test
+  pool: 5
+
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: lcboapi_development
+  pool: 5
+
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: lcboapi
+  pool: 5

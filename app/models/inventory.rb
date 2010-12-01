@@ -1,28 +1,10 @@
-class Inventory < Ohm::Model
+class Inventory < ActiveRecord::Model
 
-  include Ohm::Typecast
-  include Ohm::Archive
-  include Ohm::ToHash
-  include Ohm::CountAll
-  include Ohm::Sunspot
-  include Ohm::Rails
+  set_primary_keys :product_id, :store_id
 
-  attribute :is_hidden,   Boolean
-  attribute :crawled_at,  Time
-  attribute :product_no,  Integer
-  attribute :store_no,    Integer
-  attribute :quantity,    Integer
-  attribute :updated_on,  String
+  include ActiveRecord::Archive
 
   archive :updated_on, [:quantity]
-
-  sunspot do
-    boolean :is_hidden
-    integer :product_no
-    integer :store_no
-    integer :quantity
-    location :geo
-  end
 
   def self.place(attrs)
     if (inventory = self[attrs[:product_no], attrs[:store_no]])
