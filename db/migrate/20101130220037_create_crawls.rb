@@ -1,4 +1,5 @@
 class CreateCrawls < ActiveRecord::Migration
+
   def self.up
     create_table :crawls do |t|
       t.references :crawl_event
@@ -25,4 +26,5 @@ class CreateCrawls < ActiveRecord::Migration
   def self.down
     drop_table :crawls
   end
+
 end

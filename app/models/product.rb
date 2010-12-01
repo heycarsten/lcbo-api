@@ -1,8 +1,9 @@
-class Product < ActiveRecord::Model
+class Product < ActiveRecord::Base
 
-  include ActiveRecord::Archive
+  belongs_to :crawl
 
-  archive :crawled_at, [
+  archive :crawl_id, [
+    :is_hidden,
     :is_discontinued,
     :price_in_cents,
     :regular_price_in_cents,
@@ -11,15 +12,14 @@ class Product < ActiveRecord::Model
     :bonus_reward_miles,
     :bonus_reward_miles_ends_on,
     :inventory_count,
+    :inventory_volume_in_milliliters,
     :inventory_price_in_cents,
-    :inventory_volume_in_milliliters]
+    :has_limited_time_offer,
+    :has_bonus_reward_miles]
 
   def self.place(attrs)
-    if (product = self[attrs[:product_no]])
-      product.update(attrs)
-    else
-      create(attrs)
-    end
+    id = attrs[:product_no] || attrs[:product_id] || attrs[:id]
+    (product = find(id)) ? product.update_attributes(attrs) : create(attrs)
   end
 
   def product_no=(value)
@@ -27,11 +27,13 @@ class Product < ActiveRecord::Model
   end
 
   def product_no
-    id.to_i
+    id
   end
 
   def as_json
-    { :product_no => product_no }.merge(to_hash(:id, :is_hidden))
+    { :product_no => product_no }.
+      merge(super).
+      exclude(:id, :is_hidden)
   end
 
 end

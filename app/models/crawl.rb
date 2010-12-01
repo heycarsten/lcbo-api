@@ -1,9 +1,11 @@
-class Crawl < ActiveRecord::Model
+class Crawl < ActiveRecord::Base
 
   class StateError < StandardError; end
 
   STATES = %w[starting running paused complete cancelled]
 
+  serialize :store_nos,           Array
+  serialize :product_nos,         Array
   serialize :added_store_nos,     Array
   serialize :removed_store_nos,   Array
   serialize :added_product_nos,   Array
@@ -13,6 +15,13 @@ class Crawl < ActiveRecord::Model
 
   has_many :crawl_events
 
+  validates_inclusion_of :state, :in => STATES
+
+  scope :is, lambda { |*states|
+    validate_states!(*states)
+    where :state => states.map(&:to_s)
+  }
+
   def self.validate_states!(*states)
     states.each do |state|
       unless STATES.include?(state.to_s)
@@ -21,13 +30,8 @@ class Crawl < ActiveRecord::Model
     end
   end
 
-  def self.is(*states)
-    validate_states!(*states)
-    find(:state => states.map(&:to_s))
-  end
-
   def self.any_active?
-    is(:starting, :running, :paused).first ? true : false
+    is(:starting, :running, :paused).exists?
   end
 
   def self.init
@@ -86,23 +90,23 @@ class Crawl < ActiveRecord::Model
   end
 
   def add_store_no(no)
-    listadd :store_nos, no
+    store_nos << no
+    save
   end
 
   def remove_store_no(no)
-    listrem :store_nos, no
-  end
-
-  def store_nos
-    listget(:store_nos).map(&:to_i)
+    store_nos.delete(no)
+    save
   end
 
   def add_product_no(no)
-    listadd :product_nos, no
+    product_nos << no
+    save
   end
 
   def remove_product_no(no)
-    listrem :product_nos, no
+    product_nos.delete(no)
+    save
   end
 
   def push_jobs(type, ids)
@@ -116,11 +120,7 @@ class Crawl < ActiveRecord::Model
   end
 
   def popjob
-    if (job = listpop(:jobs))
-      job.split(':')
-    else
-      nil
-    end
+    (job = listpop(:jobs)) && job.split(':')
   end
 
   def joblen
@@ -129,14 +129,12 @@ class Crawl < ActiveRecord::Model
 
   def log(message, level = :info, payload = {})
     verify_unlocked!
-    ev = CrawlEvent.create(
+    ev = crawl_events.create(
       :crawl_id => self.id,
       :message => message,
       :level => level.to_s,
       :payload => payload)
-    events << ev
-    self.last_event = ev
-    self.updated_at = Time.now.utc
+    self.crawl_event = ev
     save
   end
 
@@ -166,11 +164,6 @@ class Crawl < ActiveRecord::Model
     a = ["Crawl:#{id}"]
     a << postfix.to_s if postfix
     a.join(':')
-  end
-
-  def validate
-    super
-    assert_member :state, STATES
   end
 
   def verify_unlocked!

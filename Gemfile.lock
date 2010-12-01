@@ -30,6 +30,7 @@ GEM
       activemodel (= 3.0.3)
       activesupport (= 3.0.3)
     activesupport (3.0.3)
+    annotate (2.4.0)
     arel (2.0.5)
     awesome_print (0.3.1)
     builder (2.1.2)
@@ -42,7 +43,7 @@ GEM
     fabrication (0.9.2)
     haml (3.0.24)
     i18n (0.5.0)
-    lcbo (0.9.5)
+    lcbo (0.9.6)
       nokogiri
       typhoeus
     mail (2.2.11)
@@ -100,6 +101,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  annotate
   awesome_print
   colored
   composite_primary_keys

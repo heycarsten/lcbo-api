@@ -2,15 +2,15 @@ class CreateStores < ActiveRecord::Migration
 
   def self.up
     create_table :stores do |t|
-      t.datetime :crawled_at
-      t.boolean  :is_hidden,       :default => false
-      t.string   :name,            :limit   => 50
-      t.string   :address_line_1,  :limit   => 40
-      t.string   :address_line_2,  :limit   => 40
-      t.string   :city,            :limit   => 25
-      t.string   :postal_code,     :limit   => 6
-      t.string   :telephone,       :limit   => 14
-      t.string   :fax,             :limit   => 14
+      t.references :crawl
+      t.boolean  :is_hidden,                       :default => false
+      t.string   :name,                            :limit   => 50
+      t.string   :address_line_1,                  :limit   => 40
+      t.string   :address_line_2,                  :limit   => 40
+      t.string   :city,                            :limit   => 25
+      t.string   :postal_code,                     :limit   => 6
+      t.string   :telephone,                       :limit   => 14
+      t.string   :fax,                             :limit   => 14
       t.integer  :products_count,                  :default => 0
       t.integer  :inventory_count,                 :default => 0
       t.integer  :inventory_price_in_cents,        :default => 0

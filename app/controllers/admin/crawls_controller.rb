@@ -1,12 +1,11 @@
-class Admin::CrawlsController < Admin::BaseController
+class Admin::CrawlsController < AdminController
 
   def index
-    @crawls = Crawl.all.sort_by(:updated_at, :order => 'ALPHA DESC')
+    @crawls = Crawl.all(:order => 'id DESC')
   end
 
   def show
-    @crawl = Crawl[params[:id]]
-    @events = @crawl.events.sort { |a,b|  a.created_at <=> b.created_at }
+    @crawl = Crawl.find(params[:id])
   end
 
 end

@@ -1,24 +1,21 @@
-class Store < ActiveRecord::Model
+class Store < ActiveRecord::Base
 
-  include ActiveRecord::Archive
+  belongs_to :crawl
 
-  archive :crawled_at, [
+  archive :crawl_id, [
     :is_hidden,
     :products_count,
     :inventory_count,
     :inventory_price_in_cents,
-    :inventory_volume_in_milliliters]
+    :inventory_volume_in_milliliters].concat(
+      Date::DAYNAMES.map do |day|
+        [:"#{day.downcase}_open", :"#{day.downcase}_close"]
+      end.flatten
+    )
 
   def self.place(attrs)
-    if (store = self[attrs[:store_no]])
-      store.update(attrs)
-    else
-      create(attrs)
-    end
-  end
-
-  def geo
-    Struct.new(:lat, :lng).new(latitude, longitude)
+    id = attrs[:store_id] || attrs[:store_no] || attrs[:id]
+    (store = find(id)) ? store.update_attributes(attrs) : create(attrs)
   end
 
   def store_no=(value)
@@ -26,11 +23,13 @@ class Store < ActiveRecord::Model
   end
 
   def store_no
-    id.to_i
+    id
   end
 
   def as_json
-    { :store_no => store_no }.merge(to_hash(:id, :is_hidden))
+    { :store_no => store_no }.
+      merge(super).
+      exclude(:id, :is_hidden)
   end
 
 end

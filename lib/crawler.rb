@@ -57,7 +57,7 @@ class Crawler
     while @crawl.is?(:running) && pair = @crawl.popjob
       begin
         runjob(*pair)
-        @crawl.incr(:total_finished_jobs, 1)
+        @crawl.increment(:total_finished_jobs)
       rescue => error
         @crawl.addjob(*pair)
         log_error(error)
@@ -76,22 +76,19 @@ class Crawler
   def calc!
     return unless @crawl.is?(:running)
     log :info, 'Calculating total store inventory values ...'
-    Store.all.each do |store|
+    Store.find_each do |store|
       h = {}
       h[:products_count] = 0
       h[:inventory_count] = 0
       h[:inventory_price_in_cents] = 0
       h[:inventory_volume_in_milliliters] = 0
-      Inventory.keys_for_store(store.id).reduce(h) do |hsh, key|
-        qty, product_no = *Ohm.redis.hmget(key, 'quantity', 'product_no')
-        price, volume = *Product.key[product_no].hmget('price_in_cents', 'volume_in_milliliters')
+      Inventory.where(:store_id => store.id).find_each(:include => [:product]) do |inv|
         h[:products_count] += 1
-        h[:inventory_count] += qty.to_i
-        h[:inventory_price_in_cents] += (qty.to_i * price.to_i)
-        h[:inventory_volume_in_milliliters] += (qty.to_i * volume.to_i)
-        h
+        h[:inventory_count] += inv.quantity
+        h[:inventory_price_in_cents] += (inv.quantity * inv.product.price_in_cents)
+        h[:inventory_volume_in_milliliters] += (inv.quantity * inv.product.volume_in_milliliters)
       end
-      store.update(h)
+      store.update_attributes(h)
       log :info, "Performed calculations for store: #{store.id}"
     end
     log :info, 'Done performing calculations.'
@@ -100,13 +97,10 @@ class Crawler
   def commit!
     return unless @crawl.is?(:running)
     log :info, 'Committing history ...'
-    Inventory.all.each(&:commit)
-    Store.all.each(&:commit)
-    Product.all.each(&:commit)
+    Inventory.find_each(&:commit)
+    Store.find_each(&:commit)
+    Product.find_each(&:commit)
     log :info, 'Done committing history.'
-    log :info, 'Committing search indicies ...'
-    Sunspot.commit
-    log :info, 'Done comitting search indicies.'
   end
 
   def runjob(type, id)
@@ -147,11 +141,11 @@ class Crawler
   end
 
   def update_product_inventory_counters(product, inv)
-    @crawl.incr(:total_products, 1)
-    @crawl.incr(:total_inventories, inv[:inventories].size)
-    @crawl.incr(:total_product_inventory_count, inv[:inventory_count])
-    @crawl.incr(:total_product_inventory_price_in_cents, product[:inventory_price_in_cents])
-    @crawl.incr(:total_product_inventory_volume_in_milliliters, product[:inventory_volume_in_milliliters])
+    @crawl.increment(:total_products)
+    @crawl.increment(:total_inventories, inv[:inventories].size)
+    @crawl.increment(:total_product_inventory_count, inv[:inventory_count])
+    @crawl.increment(:total_product_inventory_price_in_cents, product[:inventory_price_in_cents])
+    @crawl.increment(:total_product_inventory_volume_in_milliliters, product[:inventory_volume_in_milliliters])
   end
 
   def run_store_job(store_no)
@@ -160,7 +154,7 @@ class Crawler
     attrs[:is_hidden] = false
     Store.place(attrs)
     log :info, "Placed store: #{store_no}"
-    @crawl.incr(:total_stores, 1)
+    @crawl.increment(:total_stores)
     @crawl.add_store_no(store_no)
   rescue LCBO::CrawlKit::Page::MissingResourceError
     log :warn, "Skipping store #{store_no}, it does not exist."
