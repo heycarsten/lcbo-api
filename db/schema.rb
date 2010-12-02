@@ -113,7 +113,7 @@ ActiveRecord::Schema.define(:version => 20101201063820) do
     t.integer  "inventory_count",                     :limit => 8,   :default => 0
     t.integer  "inventory_volume_in_milliliters",     :limit => 8,   :default => 0
     t.integer  "inventory_price_in_cents",            :limit => 8,   :default => 0
-    t.string   "sugar_content",                       :limit => 3
+    t.string   "sugar_content",                       :limit => 6
     t.string   "producer_name",                       :limit => 80
     t.string   "released_on",                         :limit => 10
     t.boolean  "has_limited_time_offer",                             :default => false

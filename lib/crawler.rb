@@ -81,7 +81,7 @@ class Crawler
       h[:inventory_count] = 0
       h[:inventory_price_in_cents] = 0
       h[:inventory_volume_in_milliliters] = 0
-      Inventory.where(:store_id => store.id).find_each(:include => [:product]) do |inv|
+      Inventory.find_each(:conditions => { :store_id => store.id }, :include => [:product]) do |inv|
         h[:products_count] += 1
         h[:inventory_count] += inv.quantity
         h[:inventory_price_in_cents] += (inv.quantity * inv.product.price_in_cents)
@@ -186,9 +186,10 @@ class Crawler
 
   def product_nos
     @product_nos ||= begin
-      [].tap do |nos|
-        LCBO::ProductListsCrawler.run { |page| nos.concat(page[:product_nos]) }
-      end
+      LCBO.product_list(1)[:product_nos]
+      # [].tap do |nos|
+      #   LCBO::ProductListsCrawler.run { |page| nos.concat(page[:product_nos]) }
+      # end
     end
   end
 
