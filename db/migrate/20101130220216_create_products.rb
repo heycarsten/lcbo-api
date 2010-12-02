@@ -25,9 +25,9 @@ class CreateProducts < ActiveRecord::Migration
       t.integer    :alcohol_content,                     :default => 0
       t.integer    :price_per_liter_of_alcohol_in_cents, :default => 0
       t.integer    :price_per_liter_in_cents,            :default => 0
-      t.integer    :inventory_count,                     :default => 0
-      t.integer    :inventory_volume_in_milliliters,     :default => 0
-      t.integer    :inventory_price_in_cents,            :default => 0
+      t.integer    :inventory_count,                     :default => 0, :limit => 8
+      t.integer    :inventory_volume_in_milliliters,     :default => 0, :limit => 8
+      t.integer    :inventory_price_in_cents,            :default => 0, :limit => 8
       t.string     :sugar_content,                       :limit   => 3
       t.string     :producer_name,                       :limit   => 80
       t.string     :released_on,                         :limit   => 10

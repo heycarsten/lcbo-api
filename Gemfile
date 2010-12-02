@@ -1,11 +1,13 @@
 source :rubygems
 
 gem 'rails', '3.0.3'
+gem 'pg'
+gem 'texticle'
 gem 'composite_primary_keys'
 gem 'spatial_adapter'
-gem 'pg'
 gem 'redis'
-gem 'lcbo'
+gem 'will_paginate'
+gem 'lcbo', :path => '/Users/carsten/Projects/lcbo'
 gem 'haml'
 gem 'whenever'
 gem 'colored'

@@ -12,9 +12,9 @@ class CreateStores < ActiveRecord::Migration
       t.string   :telephone,                       :limit   => 14
       t.string   :fax,                             :limit   => 14
       t.integer  :products_count,                  :default => 0
-      t.integer  :inventory_count,                 :default => 0
-      t.integer  :inventory_price_in_cents,        :default => 0
-      t.integer  :inventory_volume_in_milliliters, :default => 0
+      t.integer  :inventory_count,                 :default => 0, :limit => 8
+      t.integer  :inventory_price_in_cents,        :default => 0, :limit => 8
+      t.integer  :inventory_volume_in_milliliters, :default => 0, :limit => 8
       t.boolean  :has_wheelchair_accessability,    :default => false
       t.boolean  :has_bilingual_services,          :default => false
       t.boolean  :has_product_consultant,          :default => false
@@ -28,10 +28,11 @@ class CreateStores < ActiveRecord::Migration
         t.integer :"#{day.downcase}_open"
         t.integer :"#{day.downcase}_close"
       end
-      t.point :geo, :null => false, :srid => 4326
+      t.point :geo, :srid => 4326, :null => false
       t.timestamps
     end
     add_index :stores, :is_hidden
+    add_index :stores, :crawl_id
     add_index :stores, :geo, :spatial => true
   end
 

@@ -23,7 +23,6 @@ class Crawler
     @crawl.push_jobs(:product, product_nos)
     log :info, 'Pushing store jobs ...'
     @crawl.push_jobs(:store, store_nos)
-    @crawl.save
   end
 
   def pause
@@ -119,8 +118,8 @@ class Crawler
     inventory_attrs = LCBO.inventory(product_no)
     inventory_attrs[:inventory_count].tap do |count|
       product_attrs.tap do |p|
+        p[:crawl_id] = @crawl.id
         p[:is_hidden] = false
-        p[:crawled_at] = Time.now.utc
         p[:inventory_count] = count
         p[:inventory_price_in_cents] = (p[:price_in_cents] * count)
         p[:inventory_volume_in_milliliters] = (p[:volume_in_milliliters] * count)
@@ -128,13 +127,13 @@ class Crawler
     end
     Product.place(product_attrs)
     inventory_attrs[:inventories].each do |inv|
-      inv[:crawled_at] = Time.now.utc
+      inv[:crawl_id] = @crawl.id
       inv[:is_hidden] = false
       inv[:product_no] = product_no
       Inventory.place(inv)
     end
     update_product_inventory_counters(product_attrs, inventory_attrs)
-    @crawl.add_product_no(product_no)
+    @crawl.product_nos << product_no
     log :info, "Placed product and #{inventory_attrs[:inventories].size} inventories: #{product_no}"
   rescue LCBO::CrawlKit::Page::MissingResourceError
     log :warn, "Skipping product #{product_no}, it does not exist."
@@ -150,12 +149,12 @@ class Crawler
 
   def run_store_job(store_no)
     attrs = LCBO.store(store_no)
-    attrs[:crawled_at] = Time.now.utc
     attrs[:is_hidden] = false
+    attrs[:crawl_id] = @crawl.id
     Store.place(attrs)
     log :info, "Placed store: #{store_no}"
     @crawl.increment(:total_stores)
-    @crawl.add_store_no(store_no)
+    @crawl.store_nos << store_no
   rescue LCBO::CrawlKit::Page::MissingResourceError
     log :warn, "Skipping store #{store_no}, it does not exist."
   end

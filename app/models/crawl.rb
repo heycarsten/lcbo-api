@@ -1,19 +1,51 @@
+# == Schema Information
+#
+# Table name: crawls
+#
+#  id                                            :integer         not null, primary key
+#  crawl_event_id                                :integer
+#  state                                         :string(255)
+#  added_store_nos                               :text
+#  removed_store_nos                             :text
+#  added_product_nos                             :text
+#  removed_product_nos                           :text
+#  total_products                                :integer         default(0)
+#  total_stores                                  :integer         default(0)
+#  total_inventories                             :integer         default(0)
+#  total_product_inventory_count                 :integer         default(0)
+#  total_product_inventory_volume_in_milliliters :integer         default(0)
+#  total_product_inventory_price_in_cents        :integer         default(0)
+#  total_jobs                                    :integer         default(0)
+#  total_finished_jobs                           :integer         default(0)
+#  created_at                                    :datetime
+#  updated_at                                    :datetime
+#
+# Indexes
+#
+#  index_crawls_on_created_at  (created_at)
+#  index_crawls_on_state       (state)
+#  index_crawls_on_updated_at  (updated_at)
+#
+
 class Crawl < ActiveRecord::Base
+
+  include ActiveRecord::RedisHelper
 
   class StateError < StandardError; end
 
   STATES = %w[starting running paused complete cancelled]
 
-  serialize :store_nos,           Array
-  serialize :product_nos,         Array
-  serialize :added_store_nos,     Array
-  serialize :removed_store_nos,   Array
-  serialize :added_product_nos,   Array
-  serialize :removed_product_nos, Array
+  list :store_nos,           Integer
+  list :product_nos,         Integer
+  list :added_store_nos,     Integer
+  list :removed_store_nos,   Integer
+  list :added_product_nos,   Integer
+  list :removed_product_nos, Integer
+  list :jobs
 
   belongs_to :crawl_event
 
-  has_many :crawl_events
+  has_many :crawl_events, :dependent => :delete_all
 
   validates_inclusion_of :state, :in => STATES
 
@@ -53,7 +85,7 @@ class Crawl < ActiveRecord::Base
   end
 
   def has_jobs?
-    joblen > 0
+    jobs.length > 0
   end
 
   def progress
@@ -81,32 +113,12 @@ class Crawl < ActiveRecord::Base
       raise StateError, 'Crawl is paused and can not be set to: paused'
     when new_state.to_s == 'complete' && is?(:paused)
       raise StateError, 'Crawl is paused and can not be set to: complete'
-    when new_state.to_s == 'complete' && joblen != 0
+    when new_state.to_s == 'complete' && has_jobs?
       raise StateError, 'Crawl is not done and can not be set to: complete'
     else
       self.state = new_state.to_s
       save
     end
-  end
-
-  def add_store_no(no)
-    store_nos << no
-    save
-  end
-
-  def remove_store_no(no)
-    store_nos.delete(no)
-    save
-  end
-
-  def add_product_no(no)
-    product_nos << no
-    save
-  end
-
-  def remove_product_no(no)
-    product_nos.delete(no)
-    save
   end
 
   def push_jobs(type, ids)
@@ -115,16 +127,12 @@ class Crawl < ActiveRecord::Base
 
   def addjob(type, id)
     verify_unlocked!
-    listadd :jobs, "#{type}:#{id}"
+    jobs << "#{type}:#{id}"
     increment :total_jobs
   end
 
   def popjob
-    (job = listpop(:jobs)) && job.split(':')
-  end
-
-  def joblen
-    listlen :jobs
+    (job = jobs.pop) && job.split(':')
   end
 
   def log(message, level = :info, payload = {})
@@ -140,34 +148,9 @@ class Crawl < ActiveRecord::Base
 
   protected
 
-  def listrem(list, value)
-    RDB.lrem(key(list), 0, value)
-  end
-
-  def listget(list, start = 0, finish = -1)
-    RDB.lrange(key(list), start, finish)
-  end
-
-  def listadd(list, value)
-    RDB.rpush(key(list), value)
-  end
-
-  def listpop(list)
-    RDB.rpop(key(list))
-  end
-
-  def listlen(list)
-    RDB.llen(key(list))
-  end
-
-  def key(postfix = nil)
-    a = ["Crawl:#{id}"]
-    a << postfix.to_s if postfix
-    a.join(':')
-  end
-
   def verify_unlocked!
     raise StateError, "Crawl is #{state}" if is_locked?
   end
 
 end
+

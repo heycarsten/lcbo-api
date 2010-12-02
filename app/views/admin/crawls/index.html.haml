@@ -17,6 +17,6 @@
         = '%0.0f%' % (crawl.progress * 100)
       %td
         = crawl.state
-      - crawl.last_event.tap do |ev|
+      - crawl.crawl_event.tap do |ev|
         %td{ :class => ev ? ev.level : nil }
           = ev.try(:message)

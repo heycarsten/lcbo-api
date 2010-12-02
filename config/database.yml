@@ -2,13 +2,13 @@ test:
   adapter: postgresql
   encoding: unicode
   database: lcboapi_test
-  pool: 5
+  template: template_postgis
 
 development:
   adapter: postgresql
   encoding: unicode
   database: lcboapi_development
-  pool: 5
+  template: template_postgis
 
 production:
   adapter: postgresql

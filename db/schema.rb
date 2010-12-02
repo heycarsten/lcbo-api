@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(:version => 20101201063820) do
   create_table "crawl_events", :force => true do |t|
     t.integer  "crawl_id"
     t.string   "level",      :limit => 25
-    t.string   "message"
+    t.text     "message"
     t.text     "payload"
     t.datetime "created_at"
   end
@@ -25,18 +25,14 @@ ActiveRecord::Schema.define(:version => 20101201063820) do
   create_table "crawls", :force => true do |t|
     t.integer  "crawl_event_id"
     t.string   "state"
-    t.text     "added_store_nos"
-    t.text     "removed_store_nos"
-    t.text     "added_product_nos"
-    t.text     "removed_product_nos"
-    t.integer  "total_products",                                :default => 0
-    t.integer  "total_stores",                                  :default => 0
-    t.integer  "total_inventories",                             :default => 0
-    t.integer  "total_product_inventory_count",                 :default => 0
-    t.integer  "total_product_inventory_volume_in_milliliters", :default => 0
-    t.integer  "total_product_inventory_price_in_cents",        :default => 0
-    t.integer  "total_jobs",                                    :default => 0
-    t.integer  "total_finished_jobs",                           :default => 0
+    t.integer  "total_products",                                             :default => 0
+    t.integer  "total_stores",                                               :default => 0
+    t.integer  "total_inventories",                                          :default => 0
+    t.integer  "total_product_inventory_count",                 :limit => 8, :default => 0
+    t.integer  "total_product_inventory_volume_in_milliliters", :limit => 8, :default => 0
+    t.integer  "total_product_inventory_price_in_cents",        :limit => 8, :default => 0
+    t.integer  "total_jobs",                                                 :default => 0
+    t.integer  "total_finished_jobs",                                        :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -45,7 +41,7 @@ ActiveRecord::Schema.define(:version => 20101201063820) do
   add_index "crawls", ["state"], :name => "index_crawls_on_state"
   add_index "crawls", ["updated_at"], :name => "index_crawls_on_updated_at"
 
-  create_table "inventories", :force => true do |t|
+  create_table "inventories", :id => false, :force => true do |t|
     t.integer  "product_id"
     t.integer  "store_id"
     t.integer  "crawl_id"
@@ -114,9 +110,9 @@ ActiveRecord::Schema.define(:version => 20101201063820) do
     t.integer  "alcohol_content",                                    :default => 0
     t.integer  "price_per_liter_of_alcohol_in_cents",                :default => 0
     t.integer  "price_per_liter_in_cents",                           :default => 0
-    t.integer  "inventory_count",                                    :default => 0
-    t.integer  "inventory_volume_in_milliliters",                    :default => 0
-    t.integer  "inventory_price_in_cents",                           :default => 0
+    t.integer  "inventory_count",                     :limit => 8,   :default => 0
+    t.integer  "inventory_volume_in_milliliters",     :limit => 8,   :default => 0
+    t.integer  "inventory_price_in_cents",            :limit => 8,   :default => 0
     t.string   "sugar_content",                       :limit => 3
     t.string   "producer_name",                       :limit => 80
     t.string   "released_on",                         :limit => 10
@@ -175,9 +171,9 @@ ActiveRecord::Schema.define(:version => 20101201063820) do
     t.string   "telephone",                       :limit => 14
     t.string   "fax",                             :limit => 14
     t.integer  "products_count",                                 :default => 0
-    t.integer  "inventory_count",                                :default => 0
-    t.integer  "inventory_price_in_cents",                       :default => 0
-    t.integer  "inventory_volume_in_milliliters",                :default => 0
+    t.integer  "inventory_count",                 :limit => 8,   :default => 0
+    t.integer  "inventory_price_in_cents",        :limit => 8,   :default => 0
+    t.integer  "inventory_volume_in_milliliters", :limit => 8,   :default => 0
     t.boolean  "has_wheelchair_accessability",                   :default => false
     t.boolean  "has_bilingual_services",                         :default => false
     t.boolean  "has_product_consultant",                         :default => false
@@ -206,6 +202,7 @@ ActiveRecord::Schema.define(:version => 20101201063820) do
     t.point    "geo",                             :limit => nil,                    :null => false, :srid => 4326
   end
 
+  add_index "stores", ["crawl_id"], :name => "index_stores_on_crawl_id"
   add_index "stores", ["geo"], :name => "index_stores_on_geo", :spatial => true
   add_index "stores", ["is_hidden"], :name => "index_stores_on_is_hidden"
 

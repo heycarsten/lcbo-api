@@ -4,7 +4,7 @@ class CreateCrawlEvents < ActiveRecord::Migration
     create_table :crawl_events do |t|
       t.references :crawl
       t.string     :level,      :limit => 25
-      t.string     :message,    :limit => 255
+      t.text       :message
       t.text       :payload
       t.datetime   :created_at
     end

@@ -1,7 +1,7 @@
 class CreateInventories < ActiveRecord::Migration
 
   def self.up
-    create_table :inventories, :primary_key => false do |t|
+    create_table :inventories, :id => false, :primary_key => [:product_id, :store_id] do |t|
       t.references :product, :store, :crawl
       t.boolean    :is_hidden,  :default => false
       t.integer    :quantity,   :default => 0
