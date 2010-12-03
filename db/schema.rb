@@ -56,17 +56,16 @@ ActiveRecord::Schema.define(:version => 20101201063820) do
   add_index "inventories", ["is_hidden"], :name => "index_inventories_on_is_hidden"
   add_index "inventories", ["product_id", "store_id"], :name => "index_inventories_on_product_id_and_store_id", :unique => true
 
-  create_table "inventory_revisions", :force => true do |t|
-    t.integer "crawl_id"
+  create_table "inventory_revisions", :id => false, :force => true do |t|
     t.integer "product_id"
     t.integer "store_id"
     t.integer "quantity",                 :default => 0
     t.string  "updated_on", :limit => 10
   end
 
-  add_index "inventory_revisions", ["crawl_id", "product_id", "store_id"], :name => "inventory_revisions_seq_cps", :unique => true
+  add_index "inventory_revisions", ["updated_on", "product_id", "store_id"], :name => "inventory_revisions_seq_ups", :unique => true
 
-  create_table "product_revisions", :force => true do |t|
+  create_table "product_revisions", :id => false, :force => true do |t|
     t.integer  "crawl_id"
     t.integer  "product_id"
     t.boolean  "is_hidden"
@@ -86,7 +85,7 @@ ActiveRecord::Schema.define(:version => 20101201063820) do
     t.datetime "updated_at"
   end
 
-  add_index "product_revisions", ["product_id", "crawl_id"], :name => "index_product_revisions_on_product_id_and_crawl_id", :unique => true
+  add_index "product_revisions", ["crawl_id", "product_id"], :name => "index_product_revisions_on_crawl_id_and_product_id", :unique => true
 
   create_table "products", :force => true do |t|
     t.integer  "crawl_id"
@@ -134,7 +133,7 @@ ActiveRecord::Schema.define(:version => 20101201063820) do
   add_index "products", ["is_discontinued"], :name => "index_products_on_is_discontinued"
   add_index "products", ["updated_at"], :name => "index_products_on_updated_at"
 
-  create_table "store_revisions", :force => true do |t|
+  create_table "store_revisions", :id => false, :force => true do |t|
     t.integer  "crawl_id"
     t.integer  "store_id"
     t.boolean  "is_hidden"
@@ -160,7 +159,7 @@ ActiveRecord::Schema.define(:version => 20101201063820) do
     t.datetime "updated_at"
   end
 
-  add_index "store_revisions", ["store_id", "crawl_id"], :name => "index_store_revisions_on_store_id_and_crawl_id", :unique => true
+  add_index "store_revisions", ["crawl_id", "store_id"], :name => "index_store_revisions_on_crawl_id_and_store_id", :unique => true
 
   create_table "stores", :force => true do |t|
     t.integer  "crawl_id"

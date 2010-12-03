@@ -1,7 +1,7 @@
 class CreateStoreRevisions < ActiveRecord::Migration
 
   def self.up
-    create_table :store_revisions do |t|
+    create_table :store_revisions, :id => false, :primary_key => [:crawl_id, :store_id] do |t|
       t.references :crawl, :store
       t.boolean :is_hidden
       t.integer :products_count
@@ -14,7 +14,7 @@ class CreateStoreRevisions < ActiveRecord::Migration
       end
       t.timestamps
     end
-    add_index :store_revisions, [:store_id, :crawl_id], :unique => true
+    add_index :store_revisions, [:crawl_id, :store_id], :unique => true
   end
 
   def self.down

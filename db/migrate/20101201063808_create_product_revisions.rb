@@ -1,7 +1,7 @@
 class CreateProductRevisions < ActiveRecord::Migration
 
   def self.up
-    create_table :product_revisions do |t|
+    create_table :product_revisions, :id => false, :primary_key => [:crawl_id, :product_id] do |t|
       t.references :crawl, :product
       t.boolean :is_hidden
       t.boolean :is_discontinued
@@ -18,7 +18,7 @@ class CreateProductRevisions < ActiveRecord::Migration
       t.boolean :has_bonus_reward_miles,              :default => false
       t.timestamps
     end
-    add_index :product_revisions, [:product_id, :crawl_id], :unique => true
+    add_index :product_revisions, [:crawl_id, :product_id], :unique => true
   end
 
   def self.down

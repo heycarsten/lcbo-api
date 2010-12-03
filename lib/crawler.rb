@@ -96,9 +96,9 @@ class Crawler
   def commit!
     return unless @crawl.is?(:running)
     log :info, 'Committing history ...'
+    Store.find_each(&:commit)
+    Product.find_each(&:commit)
     Inventory.all.each(&:commit)
-    Store.all.each(&:commit)
-    Product.all.each(&:commit)
     log :info, 'Done committing history.'
   end
 
@@ -189,10 +189,10 @@ class Crawler
 
   def product_nos
     @product_nos ||= begin
-      LCBO.product_list(1)[:product_nos].take(10)
-      # [].tap do |nos|
-      #   LCBO::ProductListsCrawler.run { |page| nos.concat(page[:product_nos]) }
-      # end
+      # LCBO.product_list(1)[:product_nos].take(10)
+      [].tap do |nos|
+        LCBO::ProductListsCrawler.run { |page| nos.concat(page[:product_nos]) }
+      end
     end
   end
 
