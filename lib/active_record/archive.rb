@@ -29,7 +29,7 @@ module ActiveRecord
     def commit
       before_commit if respond_to?(:before_commit)
       self.class.archive_index_attr.tap do |key|
-        if (rev = revisions.first(key => send(key)).first)
+        if (rev = revisions.where(key => send(key)).first)
           rev.update_attributes(archived_attributes)
         else
           revisions.create(archived_attributes)

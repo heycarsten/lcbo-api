@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'rails', '3.0.3'
+gem 'rails', :git => 'https://github.com/rails/rails.git', :ref => '3-0-stable'
 gem 'pg', '0.9.0'
 gem 'texticle'
 gem 'composite_primary_keys'
@@ -13,7 +13,7 @@ gem 'whenever'
 gem 'colored'
 
 group :test, :development do
-  gem 'rspec-rails', '2.1.0'
+  gem 'rspec-rails'
   gem 'fabrication'
 end
 

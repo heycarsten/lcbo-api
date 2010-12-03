@@ -56,6 +56,7 @@ class Store < ActiveRecord::Base
   protected
 
   def set_geo
+    return true unless @latitude && @longitude
     self.geo = Point.from_x_y(@latitude, @longitude, 4326)
   end
 

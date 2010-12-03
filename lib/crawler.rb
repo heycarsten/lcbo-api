@@ -81,7 +81,7 @@ class Crawler
       h[:inventory_count] = 0
       h[:inventory_price_in_cents] = 0
       h[:inventory_volume_in_milliliters] = 0
-      Inventory.find_each(:conditions => { :store_id => store.id }, :include => [:product]) do |inv|
+      Inventory.where(:store_id => store).all(:include => [:product]).each do |inv|
         h[:products_count] += 1
         h[:inventory_count] += inv.quantity
         h[:inventory_price_in_cents] += (inv.quantity * inv.product.price_in_cents)
@@ -96,9 +96,9 @@ class Crawler
   def commit!
     return unless @crawl.is?(:running)
     log :info, 'Committing history ...'
-    Inventory.find_each(&:commit)
-    Store.find_each(&:commit)
-    Product.find_each(&:commit)
+    Inventory.all.each(&:commit)
+    Store.all.each(&:commit)
+    Product.all.each(&:commit)
     log :info, 'Done committing history.'
   end
 
@@ -165,11 +165,14 @@ class Crawler
     @crawl.log(msg, level, data)
     case level
     when :warn
-      puts "[warning]".bold.yellow + " #{msg}".yellow
+      print "[warning]".bold.yellow
+      print " #{msg}\n".yellow
     when :error
-      puts "[error]".bold.red + " #{msg}".red
+      print "[error]".bold.red
+      print " #{msg}\n".red
     else
-      puts "[#{level}]".bold + " #{msg}"
+      print "[#{level}]".bold
+      print " #{msg}\n"
     end
   end
 
@@ -186,7 +189,7 @@ class Crawler
 
   def product_nos
     @product_nos ||= begin
-      LCBO.product_list(1)[:product_nos]
+      LCBO.product_list(1)[:product_nos].take(10)
       # [].tap do |nos|
       #   LCBO::ProductListsCrawler.run { |page| nos.concat(page[:product_nos]) }
       # end

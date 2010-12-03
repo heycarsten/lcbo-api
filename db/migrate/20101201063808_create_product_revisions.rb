@@ -18,7 +18,7 @@ class CreateProductRevisions < ActiveRecord::Migration
       t.boolean :has_bonus_reward_miles,              :default => false
       t.timestamps
     end
-    add_index :product_revisions, [:product_id, :crawl_id]
+    add_index :product_revisions, [:product_id, :crawl_id], :unique => true
   end
 
   def self.down
