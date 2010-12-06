@@ -2,7 +2,7 @@ class Crawler
 
   class UnknownCrawlJobTypeError < StandardError; end
 
-  STORE_NO_MAX = 900
+  STORE_NO_MAX = 1000
 
   def self.run(crawl = nil)
     new(crawl).run
@@ -70,6 +70,18 @@ class Crawler
     return unless @crawl.is?(:running)
     log :info, 'Performing diff operations ...'
     log :info, 'Done performing diff operations.'
+  end
+
+  def perform_store_calculations!
+    ActiveRecord::Base.connection.execute <<-SQL
+      UPDATE stores
+        SET
+          products_count  = (SELECT COUNT(inventories.product_id) FROM inventories WHERE inventories.store_id = stores.id),
+          inventory_count = (SELECT SUM(inventories.quantity)     FROM inventories WHERE inventories.store_id = stores.id),
+          inventory_price_in_cents = (SELECT SUM(inventories.quantity * products.price_in_cents) FROM products LEFT JOIN inventories ON products.id = inventories.product_id WHERE inventories.store_id = stores.id)
+        WHERE
+          EXISTS (SELECT * FROM inventories WHERE inventories.store_id = stores.id)
+    SQL
   end
 
   def calc!
@@ -189,7 +201,6 @@ class Crawler
 
   def product_nos
     @product_nos ||= begin
-      # LCBO.product_list(1)[:product_nos].take(10)
       [].tap do |nos|
         LCBO::ProductListsCrawler.run { |page| nos.concat(page[:product_nos]) }
       end

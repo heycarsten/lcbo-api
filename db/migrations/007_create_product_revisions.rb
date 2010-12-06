@@ -8,9 +8,9 @@ class CreateProductRevisions < ActiveRecord::Migration
       t.integer :price_in_cents,                      :default => 0
       t.integer :regular_price_in_cents,              :default => 0
       t.integer :limited_time_offer_savings_in_cents, :default => 0
-      t.string  :limited_time_offer_ends_on,          :limit   => 10
+      t.date    :limited_time_offer_ends_on
       t.integer :bonus_reward_miles,                  :default => 0
-      t.string  :bonus_reward_miles_ends_on,          :limit   => 10
+      t.date    :bonus_reward_miles_ends_on
       t.integer :inventory_count,                     :default => 0
       t.integer :inventory_volume_in_milliliters,     :default => 0
       t.integer :inventory_price_in_cents,            :default => 0

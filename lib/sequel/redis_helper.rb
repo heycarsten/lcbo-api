@@ -1,4 +1,4 @@
-module ActiveRecord
+module Sequel
   module RedisHelper
 
     def self.included(host)

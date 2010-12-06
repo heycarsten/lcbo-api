@@ -1,6 +1,6 @@
-class Product < ActiveRecord::Base
+class Product < Sequel::Model
 
-  include ActiveRecord::Archive
+  include Sequel::Archive
 
   belongs_to :crawl
 

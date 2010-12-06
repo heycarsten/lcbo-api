@@ -1,6 +1,6 @@
-class Crawl < ActiveRecord::Base
+class Crawl < Sequel::Model
 
-  include ActiveRecord::RedisHelper
+  include Sequel::RedisHelper
 
   class StateError < StandardError; end
 
@@ -14,11 +14,8 @@ class Crawl < ActiveRecord::Base
   list :removed_product_nos, Integer
   list :jobs
 
-  belongs_to :crawl_event
-
-  has_many :crawl_events, :dependent => :delete_all
-
-  validates_inclusion_of :state, :in => STATES
+  many_to_one :crawl_event
+  one_to_many :crawl_events
 
   scope :is, lambda { |*states|
     validate_states!(*states)
@@ -118,6 +115,11 @@ class Crawl < ActiveRecord::Base
   end
 
   protected
+
+  def validate
+    super
+    errors.add(:state, 'is unknown') unless STATES.include?(state)
+  end
 
   def verify_unlocked!
     raise StateError, "Crawl is #{state}" if is_locked?

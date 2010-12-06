@@ -1,4 +1,4 @@
-class CrawlEvent < ActiveRecord::Base
+class CrawlEvent < Sequel::Model
 
   belongs_to :crawl
 

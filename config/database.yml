@@ -1,17 +1,3 @@
-test:
-  adapter: postgresql
-  encoding: unicode
-  database: lcboapi_test
-  template: template_postgis
-
-development:
-  adapter: postgresql
-  encoding: unicode
-  database: lcboapi_development
-  template: template_postgis
-
-production:
-  adapter: postgresql
-  encoding: unicode
-  database: lcboapi
-  pool: 5
+:test:        "postgres://lcboapi_test?template=template_postgis&encoding=unicode"
+:development: "postgres://lcboapi_development?template=template_postgis&encoding=unicode"
+:production:  "postgres://lcboapi?encoding=unicode"

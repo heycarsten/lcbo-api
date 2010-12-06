@@ -1,4 +1,4 @@
-module ActiveRecord
+module Sequel
   module Archive
 
     extend ActiveSupport::Concern
@@ -10,7 +10,7 @@ module ActiveRecord
       def archive(index_attr, attrs)
         @archive_index_attr = index_attr
         @archive_attributes = attrs.push(index_attr)
-        Object.const_set(:"#{self}Revision", Class.new(ActiveRecord::Base))
+        Object.const_set(:"#{self}Revision", Class.new(Sequel::Model))
         Object.const_get(:"#{self}Revision").tap do |rev|
           if respond_to?(:primary_keys)
             rev.set_primary_keys(*[index_attr].concat(primary_keys))

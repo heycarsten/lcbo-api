@@ -45,9 +45,9 @@ ActiveRecord::Schema.define(:version => 20101201063820) do
     t.integer  "product_id"
     t.integer  "store_id"
     t.integer  "crawl_id"
-    t.boolean  "is_hidden",                :default => false
-    t.integer  "quantity",                 :default => 0
-    t.string   "updated_on", :limit => 10
+    t.boolean  "is_hidden",  :default => false
+    t.integer  "quantity",   :default => 0
+    t.date     "updated_on"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -57,30 +57,30 @@ ActiveRecord::Schema.define(:version => 20101201063820) do
   add_index "inventories", ["product_id", "store_id"], :name => "index_inventories_on_product_id_and_store_id", :unique => true
 
   create_table "inventory_revisions", :id => false, :force => true do |t|
-    t.integer "product_id"
     t.integer "store_id"
-    t.integer "quantity",                 :default => 0
-    t.string  "updated_on", :limit => 10
+    t.integer "product_id"
+    t.date    "updated_on"
+    t.integer "quantity",   :default => 0
   end
 
-  add_index "inventory_revisions", ["updated_on", "product_id", "store_id"], :name => "inventory_revisions_seq_ups", :unique => true
+  add_index "inventory_revisions", ["product_id", "store_id", "updated_on"], :name => "inventory_revisions_seq_psu", :unique => true
 
   create_table "product_revisions", :id => false, :force => true do |t|
     t.integer  "crawl_id"
     t.integer  "product_id"
     t.boolean  "is_hidden"
     t.boolean  "is_discontinued"
-    t.integer  "price_in_cents",                                    :default => 0
-    t.integer  "regular_price_in_cents",                            :default => 0
-    t.integer  "limited_time_offer_savings_in_cents",               :default => 0
-    t.string   "limited_time_offer_ends_on",          :limit => 10
-    t.integer  "bonus_reward_miles",                                :default => 0
-    t.string   "bonus_reward_miles_ends_on",          :limit => 10
-    t.integer  "inventory_count",                                   :default => 0
-    t.integer  "inventory_volume_in_milliliters",                   :default => 0
-    t.integer  "inventory_price_in_cents",                          :default => 0
-    t.boolean  "has_limited_time_offer",                            :default => false
-    t.boolean  "has_bonus_reward_miles",                            :default => false
+    t.integer  "price_in_cents",                      :default => 0
+    t.integer  "regular_price_in_cents",              :default => 0
+    t.integer  "limited_time_offer_savings_in_cents", :default => 0
+    t.date     "limited_time_offer_ends_on"
+    t.integer  "bonus_reward_miles",                  :default => 0
+    t.date     "bonus_reward_miles_ends_on"
+    t.integer  "inventory_count",                     :default => 0
+    t.integer  "inventory_volume_in_milliliters",     :default => 0
+    t.integer  "inventory_price_in_cents",            :default => 0
+    t.boolean  "has_limited_time_offer",              :default => false
+    t.boolean  "has_bonus_reward_miles",              :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -95,9 +95,9 @@ ActiveRecord::Schema.define(:version => 20101201063820) do
     t.integer  "price_in_cents",                                     :default => 0
     t.integer  "regular_price_in_cents",                             :default => 0
     t.integer  "limited_time_offer_savings_in_cents",                :default => 0
-    t.string   "limited_time_offer_ends_on",          :limit => 10
+    t.date     "limited_time_offer_ends_on"
     t.integer  "bonus_reward_miles",                                 :default => 0
-    t.string   "bonus_reward_miles_ends_on",          :limit => 10
+    t.date     "bonus_reward_miles_ends_on"
     t.string   "stock_type",                          :limit => 10
     t.string   "primary_category",                    :limit => 32
     t.string   "secondary_category",                  :limit => 32
@@ -116,11 +116,12 @@ ActiveRecord::Schema.define(:version => 20101201063820) do
     t.integer  "inventory_price_in_cents",            :limit => 8,   :default => 0
     t.string   "sugar_content",                       :limit => 6
     t.string   "producer_name",                       :limit => 80
-    t.string   "released_on",                         :limit => 10
+    t.date     "released_on"
     t.boolean  "has_limited_time_offer",                             :default => false
     t.boolean  "has_bonus_reward_miles",                             :default => false
     t.boolean  "is_seasonal",                                        :default => false
     t.boolean  "is_vqa",                                             :default => false
+    t.boolean  "is_kosher",                                          :default => false
     t.text     "description"
     t.text     "serving_suggestion"
     t.text     "tasting_note"

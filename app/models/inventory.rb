@@ -1,6 +1,6 @@
-class Inventory < ActiveRecord::Base
+class Inventory < Sequel::Model
 
-  include ActiveRecord::Archive
+  include Sequel::Archive
 
   set_primary_keys :product_id, :store_id
 
