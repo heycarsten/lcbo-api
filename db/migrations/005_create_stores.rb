@@ -4,37 +4,44 @@ Sequel.migration do
     create_table :stores do
       primary_key :id
       foreign_key :crawl_id
-      boolean     :is_hidden,                       :default => false, :index => true
-      string      :name,                            :size    => 50
-      string      :address_line_1,                  :size    => 40
-      string      :address_line_2,                  :size    => 40
-      string      :city,                            :size    => 25
-      string      :postal_code,                     :size    => 6
-      string      :telephone,                       :size    => 14
-      string      :fax,                             :size    => 14
-      integer     :products_count,                  :default => 0
-      integer     :inventory_count,                 :default => 0, :size => 8
-      integer     :inventory_price_in_cents,        :default => 0, :size => 8
-      integer     :inventory_volume_in_milliliters, :default => 0, :size => 8
-      boolean     :has_wheelchair_accessability,    :default => false
-      boolean     :has_bilingual_services,          :default => false
-      boolean     :has_product_consultant,          :default => false
-      boolean     :has_tasting_bar,                 :default => false
-      boolean     :has_beer_cold_room,              :default => false
-      boolean     :has_special_occasion_permits,    :default => false
-      boolean     :has_vintages_corner,             :default => false
-      boolean     :has_parking,                     :default => false
-      boolean     :has_transit_access,              :default => false
+
+      column :is_hidden,                       :boolean,   :default => false, :index => true
+      column :name,                            :varchar,   :size => 50
+      column :address_line_1,                  :varchar,   :size => 40
+      column :address_line_2,                  :varchar,   :size => 40
+      column :city,                            :varchar,   :size => 25
+      column :postal_code,                     :char,      :size => 6
+      column :telephone,                       :char,      :size => 14
+      column :fax,                             :char,      :size => 14
+      column :geo,                             :point,     :null => false
+      column :products_count,                  :integer,   :default => 0
+      column :inventory_count,                 :bigint,    :default => 0
+      column :inventory_price_in_cents,        :bigint,    :default => 0
+      column :inventory_volume_in_milliliters, :bigint,    :default => 0
+      column :has_wheelchair_accessability,    :boolean,   :default => false
+      column :has_bilingual_services,          :boolean,   :default => false
+      column :has_product_consultant,          :boolean,   :default => false
+      column :has_tasting_bar,                 :boolean,   :default => false
+      column :has_beer_cold_room,              :boolean,   :default => false
+      column :has_special_occasion_permits,    :boolean,   :default => false
+      column :has_vintages_corner,             :boolean,   :default => false
+      column :has_parking,                     :boolean,   :default => false
+      column :has_transit_access,              :boolean,   :default => false
       Date::DAYNAMES.each do |day|
-        integer :"#{day.downcase}_open"
-        integer :"#{day.downcase}_close"
+        column :"#{day.downcase}_open",        :smallint
+        column :"#{day.downcase}_close",       :smallint
       end
-      datetime :created_at, :null => false
-      datetime :updated_at, :null => false
-      #####################################################################
-      # TODO: Add spatial index
-      # point :geo, :srid => 4326, :null => false, :index => true
-      #####################################################################
+      column :created_at,                      :timestamp, :null => false
+      column :updated_at,                      :timestamp, :null => false
+      column :archive_payload,                 :text
+
+      spatial_index :geo, :srid => 4326
+
+      full_text_index [
+        :name,
+        :address_line_1,
+        :address_line_2,
+        :postal_code]
     end
   end
 

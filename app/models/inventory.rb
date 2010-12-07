@@ -1,17 +1,15 @@
 class Inventory < Sequel::Model
 
-  include Sequel::Archive
+  # include Sequel::Archive
 
-  set_primary_keys :product_id, :store_id
+  many_to_one :crawl
+  many_to_one :product
+  many_to_one :store
 
-  belongs_to :crawl
-  belongs_to :product
-  belongs_to :store
+  alias_method :product_no, :product_id
+  alias_method :store_no, :store_id
 
-  alias_attribute :product_no, :product_id
-  alias_attribute :store_no, :store_id
-
-  archive :updated_on, [:quantity]
+  # archive :updated_on, [:quantity]
 
   def self.place(attrs)
     pid = attrs[:product_id] || attrs[:product_no]

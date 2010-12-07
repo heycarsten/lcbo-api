@@ -1,6 +1,6 @@
 class CrawlEvent < Sequel::Model
 
-  belongs_to :crawl
+  many_to_one :crawl
 
 end
 

@@ -4,17 +4,17 @@ Sequel.migration do
     create_table :crawls do
       primary_key :id
       foreign_key :crawl_event_id
-      string  :state,                                         :size => 20, :null => false, :index => true
-      integer :total_products,                                :default => 0
-      integer :total_stores,                                  :default => 0
-      integer :total_inventories,                             :default => 0
-      integer :total_product_inventory_count,                 :default => 0, :size => 8
-      integer :total_product_inventory_volume_in_milliliters, :default => 0, :size => 8
-      integer :total_product_inventory_price_in_cents,        :default => 0, :size => 8
-      integer :total_jobs,                                    :default => 0
-      integer :total_finished_jobs,                           :default => 0
-      datetime :created_at,                                   :null => false, :index => true
-      datetime :updated_at,                                   :null => false, :index => true
+      column :state,                                         :varchar,   :size => 20, :null => false, :index => true
+      column :total_products,                                :integer,   :default => 0
+      column :total_stores,                                  :integer,   :default => 0
+      column :total_inventories,                             :integer,   :default => 0
+      column :total_product_inventory_count,                 :bigint,    :default => 0
+      column :total_product_inventory_volume_in_milliliters, :bigint,    :default => 0
+      column :total_product_inventory_price_in_cents,        :bigint,    :default => 0
+      column :total_jobs,                                    :integer,   :default => 0
+      column :total_finished_jobs,                           :integer,   :default => 0
+      column :created_at,                                    :timestamp, :null => false, :index => true
+      column :updated_at,                                    :timestamp, :null => false, :index => true
     end
   end
 

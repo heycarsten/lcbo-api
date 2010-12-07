@@ -1,3 +1,10 @@
-:test:        "postgres://lcboapi_test?template=template_postgis&encoding=unicode"
-:development: "postgres://lcboapi_development?template=template_postgis&encoding=unicode"
-:production:  "postgres://lcboapi?encoding=unicode"
+---
+:test:
+  :adapter: postgres
+  :database: lcboapi_test
+  :encoding: unicode
+
+:development:
+  :adapter: postgres
+  :database: lcboapi_development
+  :encoding: unicode

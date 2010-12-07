@@ -4,10 +4,11 @@ Sequel.migration do
     create_table :crawl_events do
       primary_key :id
       foreign_key :crawl_id, :crawls, :on_delete => :cascade
-      string   :level, :size => 25
-      text     :message
-      text     :payload
-      datetime :created_at
+      column :level,      :varchar,   :size => 25
+      column :message,    :text
+      column :payload,    :text
+      column :created_at, :timestamp, :null => false
+      index [:crawl_id, :created_at]
     end
   end
 

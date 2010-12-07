@@ -2,15 +2,16 @@ Sequel.migration do
 
   up do
     create_table :inventories do |t|
-      primary_key [:product_id, :store_id]
-      foreign_key :product_id, :products, :on_delete => :cascade
-      foreign_key :store_id,   :stores,   :on_delete => :cascade
+      column :product_id,      :integer
+      column :store_id,        :integer
       foreign_key :crawl_id
-      boolean     :is_hidden,  :default => false, :index => true
-      integer     :quantity,   :default => 0
-      date        :updated_on
-      datetime    :created_at, :null => false
-      datetime    :updated_at, :null => false
+      column :is_hidden,       :boolean,   :default => false, :index => true
+      column :quantity,        :smallint,  :default => 0
+      column :updated_on,      :date
+      column :created_at,      :timestamp, :null => false
+      column :updated_at,      :timestamp, :null => false
+      column :archive_payload, :text
+      primary_key [:product_id, :store_id]
     end
   end
 
