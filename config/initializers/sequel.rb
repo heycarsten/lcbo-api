@@ -1,4 +1,6 @@
-DB = Sequel.connect(
+require 'sequel/extensions/pagination'
+
+Sequel.connect(
   if (config = YAML.load_file((Rails.root + 'config' + 'database.yml').to_s))
     config[Rails.env.to_sym]
   else

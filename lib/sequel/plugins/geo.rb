@@ -1,23 +1,30 @@
 module Sequel
   module Plugins
     module Geo
-
       def self.apply(model)
       end
 
-      def self.configure(model, opts={}, &block)
+      def self.configure(model, opts = {})
       end
 
       module ClassMethods
-        def distance_sql(origin)
-          lat = deg2rad(origin.lat)
-          lng = deg2rad(origin.lng)
-          multiplier = units_sphere_multiplier(:kms)
-          %|
-            (ACOS(least(1,COS(#{lat})*COS(#{lng})*COS(RADIANS(lat))*COS(RADIANS(lng))+
-            COS(#{lat})*SIN(#{lng})*COS(RADIANS(lat))*SIN(RADIANS(lng))+
-            SIN(#{lat})*SIN(RADIANS(lat))))*#{multiplier})
-          |
+        EARTH_RADIUS_M = 6371000
+
+        def deg2rad(deg)
+          deg.to_f * (Math::PI / 180.0)
+        end
+
+        def distance_sql(latdeg, lngdeg)
+          lat, lng = deg2rad(latdeg), deg2rad(lngdeg)
+          %{
+            (ACOS(
+              least(1,
+                COS(#{lat}) * COS(#{lng}) * COS(latrad) * COS(lngrad) +
+                COS(#{lat}) * SIN(#{lng}) * COS(latrad) * SIN(lngrad) +
+                SIN(#{lat}) * SIN(latrad)
+              )
+            ) * #{EARTH_RADIUS_M})
+          }
         end
       end
 
@@ -25,6 +32,11 @@ module Sequel
       end
 
       module DatasetMethods
+        def distance_from(latdeg, lngdeg)
+          sql = model.distance_sql(latdeg, lngdeg)
+        end
+
+        end
         def f_origin_bbox(origin, within)
           bounds = Geokit::Bounds.from_point_and_radius(origin, within, :units => :kms)
           sw, ne = bounds.sw, bounds.ne

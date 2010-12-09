@@ -18,10 +18,10 @@ class Crawl < Sequel::Model
   many_to_one :crawl_event
   one_to_many :crawl_events
 
-  scope :is, lambda { |*states|
+  def self.is(*states)
     validate_states!(*states)
-    where :state => states.map(&:to_s)
-  }
+    filter(:state => states.map(&:to_s))
+  end
 
   def self.validate_states!(*states)
     states.each do |state|
@@ -32,7 +32,7 @@ class Crawl < Sequel::Model
   end
 
   def self.any_active?
-    is(:starting, :running, :paused).exists?
+    !is(:starting, :running, :paused).empty?
   end
 
   def self.init
@@ -92,12 +92,13 @@ class Crawl < Sequel::Model
 
   def push_jobs(type, ids)
     ids.each { |id| addjob(type, id) }
+    save
   end
 
   def addjob(type, id)
     verify_unlocked!
     jobs << "#{type}:#{id}"
-    increment :total_jobs
+    self.total_jobs += 1
   end
 
   def popjob
@@ -106,12 +107,12 @@ class Crawl < Sequel::Model
 
   def log(message, level = :info, payload = {})
     verify_unlocked!
-    ev = crawl_events.create(
+    self.crawl_event_id = crawl_events_dataset.insert(
       :crawl_id => self.id,
       :message => message,
       :level => level.to_s,
-      :payload => payload)
-    self.crawl_event = ev
+      :payload => payload.to_json,
+      :created_at => Time.now.utc)
     save
   end
 

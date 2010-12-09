@@ -1,22 +1,22 @@
 class Inventory < Sequel::Model
 
   plugin :timestamps, :update_on_create => true
-  plugin :archive, :updated_on => [:quantity]
+  plugin :archive, :updated_on => [:quantity, :is_hidden]
 
   many_to_one :crawl
   many_to_one :product
   many_to_one :store
 
-  alias_method :product_no, :product_id
-  alias_method :store_no, :store_id
-
   def self.place(attrs)
-    pid = attrs[:product_id] || attrs[:product_no]
-    sid = attrs[:store_id] || attrs[:store_no]
-    if (inventory = where(:product_id => pid, :store_id => sid).first)
-      inventory.update_attributes(attrs)
-    else
-      create(attrs)
+    pid, sid = attrs.delete(:product_no), attrs.delete(:store_no)
+    raise ArgumentError, 'attrs must include :product_no' unless pid
+    raise ArgumentError, 'attrs must include :store_no'   unless sid
+    attrs[:updated_at] = Time.now.utc
+    if 0 == dataset.filter(:product_id => pid, :store_id => sid).update(attrs)
+      attrs[:created_at] = attrs[:updated_at]
+      attrs[:product_id] = pid
+      attrs[:store_id] = sid
+      dataset.insert(attrs)
     end
   end
 
@@ -24,7 +24,7 @@ class Inventory < Sequel::Model
     { :product_no => product_id,
       :store_no   => store_id }.
       merge(super).
-      exclude(:is_hidden, :product_id, :store_id)
+      except(:is_hidden, :product_id, :store_id)
   end
 
 end

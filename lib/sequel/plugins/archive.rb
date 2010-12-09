@@ -3,31 +3,19 @@ module Sequel
     module Archive
 
       def self.configure(model, opts = {})
-        pair = opts.first
-        unless pair
-          raise ArgumentError, "No target attribute specified, try:\n\n" \
-          "plugin :archive, :index_attr => [:attr1, :attr2, ...]"
-        end
-        index_attr, attrs = *pair
-        case
-        when !index_attr
-          raise ArgumentError, "No index attribute was specified, try:\n\n" \
-          "plugin :archive, :index_attr => [:attr1, :attr2, ...]"
-        when !attrs.is_a?(Array)
-          raise ArgumentError, "Attributes is not array, try:\n\n" \
-          "plugin :archive, :#{index_attr} => [:attr1, :attr2, ...]"
-        when attrs.size > 0
-          raise ArgumentError, "No archived attributes, try:\n\n" \
-          "plugin :archive, :#{index_attr} => [:attr1, :attr2, ...]"
-        end
-        model.instance_eval do
-          @archive_index_attr = index_attr
-          @archive_attributes = attrs.push(index_attr)
-        end
-        Object.const_set(:"#{model}Revision", Class.new(Sequel::Model))
+        index_attr, attrs = *opts.first
+        model.instance_variable_set(:@archive_index_attr, index_attr)
+        model.instance_variable_set(:@archive_attributes, attrs.push(index_attr))
+        Object.const_set(:"#{model}Revision", Class.new(::Sequel::Model))
         Object.const_get(:"#{model}Revision").tap do |rev|
-          rev.many_to_one(model.table_name)
-          rev.one_to_many(:revisions, :class => rev.to_s)
+          rev.set_dataset(rev.implicit_table_name)
+          modname = model.to_s.underscore.to_sym
+          rev.many_to_one(modname)
+          if (pk = model.primary_key).is_a?(Array)
+            model.one_to_many(:revisions, :class => rev, :key => pk)
+          else
+            model.one_to_many(:revisions, :class => rev)
+          end
         end
       end
 
@@ -37,13 +25,27 @@ module Sequel
       end
 
       module InstanceMethods
-        def archived_attributes
+        def _archive_fk_attributes
+          if self.class.primary_key.is_a?(Array)
+            Hash[self.class.primary_key.map { |att| [att, send(att)] }]
+          else
+            { :"#{self.class.to_s.underscore}_id" => pk }
+          end
+        end
+
+        def _archive_attributes
           Hash[self.class.archive_attributes.map { |att| [att, send(att)] }]
         end
 
         def commit
           before_commit if respond_to?(:before_commit)
-          revisions.create(archived_attributes)
+          begin
+            revisions_dataset.insert(_archive_fk_attributes.merge(_archive_attributes))
+          rescue Sequel::DatabaseError
+            revisions_dataset.
+              filter(self.class.archive_index_attr => send(self.class.archive_index_attr)).
+              update(_archive_attributes)
+          end
           after_commit if respond_to?(:after_commit)
         end
       end

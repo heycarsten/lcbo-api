@@ -1,7 +1,7 @@
 class Store < Sequel::Model
 
   plugin :timestamps, :update_on_create => true
-  plugin :archive :crawl_id => [
+  plugin :archive, :crawl_id => [
     :is_hidden,
     :products_count,
     :inventory_count,
@@ -15,12 +15,9 @@ class Store < Sequel::Model
   many_to_many :products, :join_table => :inventories
 
   def self.place(attrs)
-    id = attrs[:store_id] || attrs[:store_no] || attrs[:id]
-    if (store = where(:id => id).first)
-      store.update_attributes(attrs)
-    else
-      create(attrs)
-    end
+    id = attrs[:store_no]
+    raise ArgumentError, "attrs must contain :store_no" unless id
+    (store = self[id]) ? store.update(attrs) : create(attrs)
   end
 
   def store_no=(value)
@@ -34,13 +31,13 @@ class Store < Sequel::Model
   def as_json
     { :store_no => store_no }.
       merge(super).
-      exclude(:id, :is_hidden, :latrad, :lngrad)
+      except(:id, :is_hidden, :latrad, :lngrad)
   end
 
   def before_save
     super
-    self.latrad = (self.latitude  * (Math::PI / 180))
-    self.lngrad = (self.longitude * (Math::PI / 180))
+    self.latrad = (self.latitude  * (Math::PI / 180.0))
+    self.lngrad = (self.longitude * (Math::PI / 180.0))
   end
 
 end

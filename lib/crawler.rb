@@ -1,8 +1,24 @@
 class Crawler
 
   class UnknownCrawlJobTypeError < StandardError; end
+  class EpicTimeoutError < StandardError; end
 
-  STORE_NO_MAX = 1000
+  class ProductListsCrawler
+    MAX_RETRIES = 10
+
+    def self.run(params = {}, tries = 0, &block)
+      raise ArgumentError, 'block expected' unless block_given?
+      begin
+        payload = LCBO.product_list(params[:page] || 1)
+        yield(payload)
+        run(:page => payload[:next_page], &block) if payload[:next_page]
+      rescue Errno::ETIMEDOUT, Timeout::Error
+        # On timeout, try again.
+        raise EpicTimeoutError if tries > MAX_RETRIES
+        run(params, (tries + 1), &block)
+      end
+    end
+  end
 
   def self.run(crawl = nil)
     new(crawl).run
@@ -56,7 +72,8 @@ class Crawler
     while @crawl.is?(:running) && pair = @crawl.popjob
       begin
         runjob(*pair)
-        @crawl.increment(:total_finished_jobs)
+        @crawl.total_finished_jobs += 1
+        @crawl.save
       rescue => error
         @crawl.addjob(*pair)
         log_error(error)
@@ -73,7 +90,8 @@ class Crawler
   end
 
   def perform_store_calculations!
-    ActiveRecord::Base.connection.execute <<-SQL
+    DB[
+      <<-SQL
       UPDATE stores
         SET
           products_count  = (SELECT COUNT(inventories.product_id) FROM inventories WHERE inventories.store_id = stores.id),
@@ -81,13 +99,14 @@ class Crawler
           inventory_price_in_cents = (SELECT SUM(inventories.quantity * products.price_in_cents) FROM products LEFT JOIN inventories ON products.id = inventories.product_id WHERE inventories.store_id = stores.id)
         WHERE
           EXISTS (SELECT * FROM inventories WHERE inventories.store_id = stores.id)
-    SQL
+      SQL
+    ]
   end
 
   def calc!
     return unless @crawl.is?(:running)
     log :info, 'Calculating total store inventory values ...'
-    Store.find_each do |store|
+    Store.each_page(100) do |store|
       h = {}
       h[:products_count] = 0
       h[:inventory_count] = 0
@@ -108,9 +127,9 @@ class Crawler
   def commit!
     return unless @crawl.is?(:running)
     log :info, 'Committing history ...'
-    Store.find_each(&:commit)
-    Product.find_each(&:commit)
-    Inventory.all.each(&:commit)
+    Store.each_page(100, &:commit)
+    Product.each_page(500, &:commit)
+    Inventory.each_page(1000, &:commit)
     log :info, 'Done committing history.'
   end
 
@@ -126,10 +145,10 @@ class Crawler
   end
 
   def run_product_job(product_no)
-    product_attrs = LCBO.product(product_no)
-    inventory_attrs = LCBO.inventory(product_no)
-    inventory_attrs[:inventory_count].tap do |count|
-      product_attrs.tap do |p|
+    pattrs = LCBO.product(product_no)
+    iattrs = LCBO.inventory(product_no)
+    iattrs[:inventory_count].tap do |count|
+      pattrs.tap do |p|
         p[:crawl_id] = @crawl.id
         p[:is_hidden] = false
         p[:inventory_count] = count
@@ -137,26 +156,27 @@ class Crawler
         p[:inventory_volume_in_milliliters] = (p[:volume_in_milliliters] * count)
       end
     end
-    Product.place(product_attrs)
-    inventory_attrs[:inventories].each do |inv|
+    Product.place(pattrs)
+    iattrs[:inventories].each do |inv|
       inv[:crawl_id] = @crawl.id
       inv[:is_hidden] = false
       inv[:product_no] = product_no
       Inventory.place(inv)
     end
-    update_product_inventory_counters(product_attrs, inventory_attrs)
+    update_product_inventory_counters(pattrs, iattrs)
     @crawl.product_nos << product_no
-    log :info, "Placed product and #{inventory_attrs[:inventories].size} inventories: #{product_no}"
+    log :info, "Placed product and #{iattrs[:inventories].size} inventories: #{product_no}"
   rescue LCBO::CrawlKit::Page::MissingResourceError
     log :warn, "Skipping product #{product_no}, it does not exist."
   end
 
   def update_product_inventory_counters(product, inv)
-    @crawl.increment(:total_products)
-    @crawl.increment(:total_inventories, inv[:inventories].size)
-    @crawl.increment(:total_product_inventory_count, inv[:inventory_count])
-    @crawl.increment(:total_product_inventory_price_in_cents, product[:inventory_price_in_cents])
-    @crawl.increment(:total_product_inventory_volume_in_milliliters, product[:inventory_volume_in_milliliters])
+    @crawl.total_products += 1
+    @crawl.total_inventories += inv[:inventories].size
+    @crawl.total_product_inventory_count += inv[:inventory_count]
+    @crawl.total_product_inventory_price_in_cents += product[:inventory_price_in_cents]
+    @crawl.total_product_inventory_volume_in_milliliters += product[:inventory_volume_in_milliliters]
+    @crawl.save
   end
 
   def run_store_job(store_no)
@@ -165,7 +185,8 @@ class Crawler
     attrs[:crawl_id] = @crawl.id
     Store.place(attrs)
     log :info, "Placed store: #{store_no}"
-    @crawl.increment(:total_stores)
+    @crawl.total_stores += 1
+    @crawl.save
     @crawl.store_nos << store_no
   rescue LCBO::CrawlKit::Page::MissingResourceError
     log :warn, "Skipping store #{store_no}, it does not exist."
@@ -202,13 +223,13 @@ class Crawler
   def product_nos
     @product_nos ||= begin
       [].tap do |nos|
-        LCBO::ProductListsCrawler.run { |page| nos.concat(page[:product_nos]) }
+        ProductListsCrawler.run { |page| nos.concat(page[:product_nos]) }
       end
     end
   end
 
   def store_nos
-    (1..STORE_NO_MAX).to_a
+    @store_nos ||= LCBO.store_list[:store_nos]
   end
 
 end

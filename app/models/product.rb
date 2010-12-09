@@ -22,11 +22,13 @@ class Product < Sequel::Model
   many_to_many :stores, :join_table => :inventories
 
   def self.place(attrs)
-    id = attrs[:product_no] || attrs[:product_id] || attrs[:id]
-    if (product = filter(:id => id).first)
-      product.update_attributes(attrs)
-    else
-      create(attrs)
+    id = attrs.delete(:product_no)
+    raise ArgumentError, "attrs must contain :product_no" unless id
+    attrs[:updated_at] = Time.now.utc
+    if 0 == dataset.filter(:id => id).update(attrs)
+      attrs[:id] = id
+      attrs[:created_at] = attrs[:updated_at]
+      dataset.insert(attrs)
     end
   end
 
@@ -41,7 +43,7 @@ class Product < Sequel::Model
   def as_json
     { :product_no => product_no }.
       merge(super).
-      exclude(:id, :is_hidden)
+      except(:id, :is_hidden)
   end
 
 end
