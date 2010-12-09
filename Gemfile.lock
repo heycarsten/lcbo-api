@@ -1,7 +1,6 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    GeoRuby (1.3.4)
     aaronh-chronic (0.3.9)
     abstract (1.0.0)
     actionmailer (3.0.3)
@@ -37,7 +36,10 @@ GEM
     diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
+    gcoder (0.8.0)
+      hashie
     haml (3.0.24)
+    hashie (0.4.0)
     i18n (0.5.0)
     lcbo (0.9.9)
       nokogiri
@@ -100,9 +102,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  GeoRuby
   awesome_print
   colored
+  gcoder
   haml
   lcbo
   pg (= 0.9.0)

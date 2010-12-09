@@ -5,3 +5,5 @@ DB = Sequel.connect(
     raise "Unable to get connection information from config/database.yml"
   end
 )
+
+Sequel::Model.plugin(:active_model)

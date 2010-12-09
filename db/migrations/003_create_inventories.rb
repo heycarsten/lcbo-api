@@ -10,7 +10,6 @@ Sequel.migration do
       column :updated_on,      :date
       column :created_at,      :timestamp, :null => false
       column :updated_at,      :timestamp, :null => false
-      column :archive_payload, :text
       primary_key [:product_id, :store_id]
     end
   end

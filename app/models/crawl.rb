@@ -1,6 +1,7 @@
 class Crawl < Sequel::Model
 
-  include Sequel::RedisHelper
+  plugin :redis
+  plugin :timestamps, :update_on_create => true
 
   class StateError < StandardError; end
 

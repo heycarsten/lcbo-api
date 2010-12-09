@@ -45,7 +45,6 @@ Sequel.migration do
       column :tasting_note,                        :text
       column :updated_at,                          :timestamp, :null => false, :index => true
       column :created_at,                          :timestamp, :null => false
-      column :archive_payload,                     :text
 
       full_text_index [
         :name,

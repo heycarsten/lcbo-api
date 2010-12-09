@@ -13,7 +13,10 @@ Sequel.migration do
       column :postal_code,                     :char,      :size => 6
       column :telephone,                       :char,      :size => 14
       column :fax,                             :char,      :size => 14
-      column :geo,                             :point,     :null => false
+      column :latitude,                        :real,      :null => false
+      column :longitude,                       :real,      :null => false
+      column :latrad,                          :real,      :null => false
+      column :lngrad,                          :real,      :null => false
       column :products_count,                  :integer,   :default => 0
       column :inventory_count,                 :bigint,    :default => 0
       column :inventory_price_in_cents,        :bigint,    :default => 0
@@ -33,9 +36,6 @@ Sequel.migration do
       end
       column :created_at,                      :timestamp, :null => false
       column :updated_at,                      :timestamp, :null => false
-      column :archive_payload,                 :text
-
-      spatial_index :geo, :srid => 4326
 
       full_text_index [
         :name,

@@ -1,6 +1,7 @@
 class Inventory < Sequel::Model
 
-  # include Sequel::Archive
+  plugin :timestamps, :update_on_create => true
+  plugin :archive, :updated_on => [:quantity]
 
   many_to_one :crawl
   many_to_one :product
@@ -8,8 +9,6 @@ class Inventory < Sequel::Model
 
   alias_method :product_no, :product_id
   alias_method :store_no, :store_id
-
-  # archive :updated_on, [:quantity]
 
   def self.place(attrs)
     pid = attrs[:product_id] || attrs[:product_no]
