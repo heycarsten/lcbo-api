@@ -1,11 +1,9 @@
 class Crawl < Sequel::Model
 
-  plugin :redis
-  plugin :timestamps, :update_on_create => true
-
   class StateError < StandardError; end
 
-  STATES = %w[starting running paused complete cancelled]
+  plugin :redis
+  plugin :timestamps, :update_on_create => true
 
   list :store_nos,           Integer
   list :product_nos,         Integer
@@ -19,38 +17,28 @@ class Crawl < Sequel::Model
   one_to_many :crawl_events
 
   def self.is(*states)
-    validate_states!(*states)
     filter(:state => states.map(&:to_s))
   end
 
-  def self.validate_states!(*states)
-    states.each do |state|
-      unless STATES.include?(state.to_s)
-        raise ArgumentError, "Unknown state: #{state.inspect}"
-      end
-    end
-  end
-
   def self.any_active?
-    !is(:starting, :running, :paused).empty?
+    !is(nil, :running, :paused).empty?
   end
 
   def self.init
-    raise StateError, 'Crawl is already running' if any_active?
-    create(:state => 'starting')
+    raise 'Crawl is already running' if any_active?
+    create
   end
 
   def is?(*states)
-    self.class.validate_states!(*states)
     states.map(&:to_s).include?(self.state)
   end
 
   def is_locked?
-    is? :complete, :cancelled
+    is? :finished, :cancelled
   end
 
   def is_active?
-    is? :starting, :running, :paused
+    is? nil, :running, :paused
   end
 
   def has_jobs?
@@ -62,31 +50,6 @@ class Crawl < Sequel::Model
       0.0
     else
       total_finished_jobs.to_f / total_jobs.to_f
-    end
-  end
-
-  def transition_to(new_state)
-    self.class.validate_states!(new_state)
-    case
-    when is?(:complete)
-      raise StateError, "Crawl is complete and can not be set to: #{new_state}"
-    when is?(:cancelled)
-      raise StateError, "Crawl is cancelled and can not be set to: #{new_state}"
-    when new_state.to_s == 'running' && is?(:running)
-      raise StateError, 'Crawl is running and can not be set to: running'
-    when new_state.to_s == 'running' && !has_jobs?
-      raise StateError, 'Crawl has no jobs and can not be set to: running'
-    when new_state.to_s == 'paused' && is?(:starting)
-      raise StateError, 'Crawl is starting and can not be set to: paused'
-    when new_state.to_s == 'paused' && is?(:paused)
-      raise StateError, 'Crawl is paused and can not be set to: paused'
-    when new_state.to_s == 'complete' && is?(:paused)
-      raise StateError, 'Crawl is paused and can not be set to: complete'
-    when new_state.to_s == 'complete' && has_jobs?
-      raise StateError, 'Crawl is not done and can not be set to: complete'
-    else
-      self.state = new_state.to_s
-      save
     end
   end
 
@@ -107,21 +70,16 @@ class Crawl < Sequel::Model
 
   def log(message, level = :info, payload = {})
     verify_unlocked!
-    self.crawl_event_id = crawl_events_dataset.insert(
-      :crawl_id => self.id,
-      :message => message,
+    ce = add_crawl_event(
       :level => level.to_s,
-      :payload => payload.to_json,
+      :message => message.to_s,
+      :payload => JSON.dump(payload),
       :created_at => Time.now.utc)
+    self.crawl_event_id = ce.id
     save
   end
 
   protected
-
-  def validate
-    super
-    errors.add(:state, 'is unknown') unless STATES.include?(state)
-  end
 
   def verify_unlocked!
     raise StateError, "Crawl is #{state}" if is_locked?

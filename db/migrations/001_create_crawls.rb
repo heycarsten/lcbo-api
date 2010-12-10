@@ -4,7 +4,8 @@ Sequel.migration do
     create_table :crawls do
       primary_key :id
       foreign_key :crawl_event_id
-      column :state,                                         :varchar,   :size => 20, :null => false, :index => true
+      column :state,                                         :varchar,   :size => 20, :index => true
+      column :task,                                          :varchar,   :size => 60
       column :total_products,                                :integer,   :default => 0
       column :total_stores,                                  :integer,   :default => 0
       column :total_inventories,                             :integer,   :default => 0
