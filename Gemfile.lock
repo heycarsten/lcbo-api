@@ -41,7 +41,7 @@ GEM
     haml (3.0.24)
     hashie (0.4.0)
     i18n (0.5.0)
-    lcbo (0.9.9)
+    lcbo (0.10.0)
       nokogiri
       typhoeus
       unicode_utils

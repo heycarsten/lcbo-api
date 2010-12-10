@@ -14,12 +14,12 @@ Sequel.migration do
       column :limited_time_offer_ends_on,          :date
       column :bonus_reward_miles,                  :smallint,  :default => 0
       column :bonus_reward_miles_ends_on,          :date
-      column :stock_type,                          :char,      :size => 10
+      column :stock_type,                          :varchar,   :size => 10
       column :primary_category,                    :varchar,   :size => 32
       column :secondary_category,                  :varchar,   :size => 32
       column :origin,                              :varchar,   :size => 60
       column :package,                             :varchar,   :size => 32
-      column :package_unit_type,                   :char,      :size => 20
+      column :package_unit_type,                   :varchar,   :size => 20
       column :package_unit_volume_in_milliliters,  :smallint,  :default => 0
       column :total_package_units,                 :smallint,  :default => 0
       column :total_package_volume_in_milliliters, :integer,   :default => 0
@@ -30,7 +30,7 @@ Sequel.migration do
       column :inventory_count,                     :bigint,    :default => 0, :index => true
       column :inventory_volume_in_milliliters,     :bigint,    :default => 0
       column :inventory_price_in_cents,            :bigint,    :default => 0
-      column :sugar_content,                       :char,      :size => 6
+      column :sugar_content,                       :varchar,   :size => 6
       column :producer_name,                       :varchar,   :size => 80
       column :released_on,                         :date
       column :has_value_added_promotion,           :boolean,   :default => false

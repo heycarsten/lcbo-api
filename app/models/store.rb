@@ -12,7 +12,7 @@ class Store < Sequel::Model
     }.flatten)
 
   many_to_one :crawl
-  many_to_many :products, :join_table => :inventories
+  one_to_many :inventories
 
   def self.place(attrs)
     id = attrs[:store_no]
@@ -29,9 +29,9 @@ class Store < Sequel::Model
   end
 
   def as_json
-    { :store_no => store_no }.
-      merge(super).
-      except(:id, :is_hidden, :latrad, :lngrad)
+    { :store_no => id }.
+      merge(super['values']).
+      except(:id, :is_hidden, :latrad, :lngrad, :created_at, :updated_at, :crawl_id)
   end
 
   def before_save

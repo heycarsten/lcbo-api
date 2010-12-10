@@ -22,10 +22,9 @@ class Inventory < Sequel::Model
 
   def as_json
     { :product_no => product_id,
-      :store_no   => store_id }.
-      merge(super).
-      except(:is_hidden, :product_id, :store_id)
+      :store_no => store_id }.
+      merge(super['values']).
+      except(:is_hidden, :product_id, :store_id, :crawl_id, :created_at, :updated_at)
   end
 
 end
-

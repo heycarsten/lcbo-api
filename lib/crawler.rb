@@ -1,3 +1,13 @@
+class ProductListsCrawler < Crawler
+  def request(params = {})
+    LCBO.product_list(params[:next_page] || 1)
+  end
+
+  def continue?(response)
+    response[:next_page] ? true : false
+  end
+end
+
 class Crawler
 
   class UnknownCrawlJobTypeError < StandardError; end
@@ -32,13 +42,29 @@ class Crawler
     @crawl = (crawl || Crawl.init)
   end
 
-  def start!
-    log :info, 'Starting crawl'
-    @crawl.transition_to(:starting)
-    log :info, 'Pushing product jobs ...'
-    @crawl.push_jobs(:product, product_nos)
-    log :info, 'Pushing store jobs ...'
-    @crawl.push_jobs(:store, store_nos)
+  def init(crawl = nil)
+    @crawl = (crawl || Crawl.init)
+  end
+
+  event :startup do
+    if @crawl.is?(:starting) && !@crawl.has_jobs?
+      log :info, 'Starting crawl'
+      @crawl.transition_to(:starting)
+      log :info, 'Pushing product jobs ...'
+      @crawl.push_jobs(:product, product_nos)
+      log :info, 'Pushing store jobs ...'
+      @crawl.push_jobs(:store, store_nos)
+    else
+      log :warn, 'Crawl is being resumed'
+    end
+  end
+
+  event :work, :transition_to => :running do
+    
+  end
+
+  def run
+    
   end
 
   def pause
@@ -48,15 +74,10 @@ class Crawler
 
   def run
     begin
-      if @crawl.is?(:starting) && !@crawl.has_jobs?
-        start!
-      else
-        log :warn, 'Crawl is being resumed'
-      end
       @crawl.transition_to(:running)
-      work!
+      crawl!
+      perform_store_calculations!
       diff!
-      calc!
       commit!
       log :info, 'The crawl is finished.'
       @crawl.transition_to(:complete)
@@ -77,7 +98,7 @@ class Crawler
       rescue => error
         @crawl.addjob(*pair)
         log_error(error)
-        pause
+        raise error
       end
     end
     log :info, 'Done processing jobs.'
@@ -90,6 +111,7 @@ class Crawler
   end
 
   def perform_store_calculations!
+    log :info, 'Calculating total store inventory values ...'
     DB[
       <<-SQL
       UPDATE stores
@@ -97,31 +119,11 @@ class Crawler
           products_count  = (SELECT COUNT(inventories.product_id) FROM inventories WHERE inventories.store_id = stores.id),
           inventory_count = (SELECT SUM(inventories.quantity)     FROM inventories WHERE inventories.store_id = stores.id),
           inventory_price_in_cents = (SELECT SUM(inventories.quantity * products.price_in_cents) FROM products LEFT JOIN inventories ON products.id = inventories.product_id WHERE inventories.store_id = stores.id)
+          inventory_volume_in_milliliters = (SELECT SUM(inventories.quantity * products.volume_in_milliliters) FROM products LEFT JOIN inventories ON products.id = inventories.product_id WHERE inventories.store_id = stores.id)
         WHERE
           EXISTS (SELECT * FROM inventories WHERE inventories.store_id = stores.id)
       SQL
     ]
-  end
-
-  def calc!
-    return unless @crawl.is?(:running)
-    log :info, 'Calculating total store inventory values ...'
-    Store.each_page(100) do |store|
-      h = {}
-      h[:products_count] = 0
-      h[:inventory_count] = 0
-      h[:inventory_price_in_cents] = 0
-      h[:inventory_volume_in_milliliters] = 0
-      Inventory.where(:store_id => store).all(:include => [:product]).each do |inv|
-        h[:products_count] += 1
-        h[:inventory_count] += inv.quantity
-        h[:inventory_price_in_cents] += (inv.quantity * inv.product.price_in_cents)
-        h[:inventory_volume_in_milliliters] += (inv.quantity * inv.product.volume_in_milliliters)
-      end
-      store.update_attributes(h)
-      log :info, "Performed calculations for store: #{store.id}"
-    end
-    log :info, 'Done performing calculations.'
   end
 
   def commit!

@@ -19,7 +19,7 @@ class Product < Sequel::Model
     :has_bonus_reward_miles]
 
   many_to_one :crawl
-  many_to_many :stores, :join_table => :inventories
+  one_to_many :inventories
 
   def self.place(attrs)
     id = attrs.delete(:product_no)
@@ -42,8 +42,8 @@ class Product < Sequel::Model
 
   def as_json
     { :product_no => product_no }.
-      merge(super).
-      except(:id, :is_hidden)
+      merge(super['values']).
+      except(:id, :is_hidden, :created_at, :updated_at, :crawl_id)
   end
 
 end
