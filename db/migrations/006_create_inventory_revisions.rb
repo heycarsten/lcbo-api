@@ -4,10 +4,9 @@ Sequel.migration do
     create_table :inventory_revisions do |t|
       column :product_id, :integer
       column :store_id,   :integer
-      column :updated_on, :date
-      column :is_hidden,  :boolean,  :default => false
+      column :updated_on, :date,     :index => true
       column :quantity,   :smallint, :default => 0
-      primary_key [:product_id, :store_id, :updated_on]
+      index [:product_id, :store_id]
     end
   end
 

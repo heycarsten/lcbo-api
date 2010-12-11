@@ -1,8 +1,10 @@
 class Store < Sequel::Model
 
+  unrestrict_primary_key
+
   plugin :timestamps, :update_on_create => true
   plugin :archive, :crawl_id => [
-    :is_hidden,
+    :is_dead,
     :products_count,
     :inventory_count,
     :inventory_price_in_cents,
@@ -31,7 +33,7 @@ class Store < Sequel::Model
   def as_json
     { :store_no => id }.
       merge(super['values']).
-      except(:id, :is_hidden, :latrad, :lngrad, :created_at, :updated_at, :crawl_id)
+      except(:id, :is_dead, :latrad, :lngrad, :created_at, :updated_at, :crawl_id)
   end
 
   def before_save

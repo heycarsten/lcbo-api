@@ -27,7 +27,7 @@ module Boticus
     end
 
     def self.tasks_before(name)
-      tasks.values_at(0..(tasks.index(name)))
+      tasks.map { |t| t[0] }.values_at(0..(tasks.index(name.to_sym)))
     end
 
     def self.task(name, &block)
@@ -62,13 +62,20 @@ module Boticus
     def perform(task = nil)
       transition_to :running
       self.class.tasks.each do |name, descr|
-        next if self.class.tasks_before(task).include?(name)
+        next if before_current_task?(name)
         set :task, name
         log :info, "#{descr} ..."
         send(name)
         log :info, "Done #{descr.downcase}."
       end
       transition_to :finished
+    end
+
+    def before_current_task?(tsk)
+      raise ArgumentError, 'task cannot be nil' unless tsk
+      return false unless current_task
+      tasks = self.class.tasks.map { |t| t[0] }
+      tasks.index(tsk.to_sym) < tasks.index(current_task)
     end
 
     def set(field, value)

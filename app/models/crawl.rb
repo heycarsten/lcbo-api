@@ -16,6 +16,10 @@ class Crawl < Sequel::Model
   many_to_one :crawl_event
   one_to_many :crawl_events
 
+  def self.latest
+    order(:id.desc).first
+  end
+
   def self.is(*states)
     filter(:state => states.map(&:to_s))
   end

@@ -5,7 +5,7 @@ Sequel.migration do
       primary_key :id
       foreign_key :crawl_id
 
-      column :is_hidden,                           :boolean,   :default => false
+      column :is_dead,                             :boolean,   :default => false, :index => true
       column :name,                                :varchar,   :size => 100
       column :is_discontinued,                     :boolean,   :default => false, :index => true
       column :price_in_cents,                      :integer,   :default => 0

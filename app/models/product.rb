@@ -1,8 +1,10 @@
 class Product < Sequel::Model
 
+  unrestrict_primary_key
+
   plugin :timestamps, :update_on_create => true
   plugin :archive, :crawl_id => [
-    :is_hidden,
+    :is_dead,
     :is_discontinued,
     :price_in_cents,
     :regular_price_in_cents,
@@ -43,7 +45,7 @@ class Product < Sequel::Model
   def as_json
     { :product_no => product_no }.
       merge(super['values']).
-      except(:id, :is_hidden, :created_at, :updated_at, :crawl_id)
+      except(:id, :is_dead, :created_at, :updated_at, :crawl_id)
   end
 
 end

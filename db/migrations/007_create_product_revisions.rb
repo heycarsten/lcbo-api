@@ -5,7 +5,7 @@ Sequel.migration do
       column :crawl_id, :integer
       column :product_id, :integer
       primary_key [:product_id, :crawl_id]
-      column :is_hidden,                           :boolean,   :default => false
+      column :is_dead,                             :boolean,   :default => false
       column :is_discontinued,                     :boolean,   :default => false
       column :price_in_cents,                      :integer,   :default => 0
       column :regular_price_in_cents,              :integer,   :default => 0

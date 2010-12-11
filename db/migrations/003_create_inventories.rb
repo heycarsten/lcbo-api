@@ -5,7 +5,7 @@ Sequel.migration do
       column :product_id,      :integer
       column :store_id,        :integer
       foreign_key :crawl_id
-      column :is_hidden,       :boolean,   :default => false, :index => true
+      column :is_dead,         :boolean,   :default => false, :index => true
       column :quantity,        :smallint,  :default => 0
       column :updated_on,      :date
       column :created_at,      :timestamp, :null => false

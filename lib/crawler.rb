@@ -63,19 +63,47 @@ class Crawler < Boticus::Bot
     ]
   end
 
-  desc 'Committing history'
-  task :commit do
+  desc 'Committing stores'
+  task :commit_stores do
     log :info, "Committing history for #{Store.count} stores ..."
-    Store.each_page(100, &:commit)
+    Store.each do |store|
+      log :dot, "Committing store ##{store.id}"
+      store.commit
+    end
+    puts
+  end
+
+  desc 'Committing products'
+  task :commit_products do
     log :info, "Committing history for #{Product.count} products ..."
-    Product.each_page(500, &:commit)
+    count = 0
+    Product.each_page(500) do |page|
+      page.select(:id).each do |row|
+        Product[row[:id]].commit
+        count += 1
+      end
+      log :dot, "Committed a batch of products (Total: #{count})"
+    end
+    puts
+  end
+
+  desc 'Committing inventories'
+  task :commit_inventories do
     log :info, "Committing history for #{Inventory.count} inventories ..."
-    Inventory.each_page(1000, &:commit)
+    count = 0
+    Inventory.each_page(2500) do |page|
+      page.select(:product_id, :store_id).each do |row|
+        Inventory[row[:product_id], row[:store_id]].commit
+        count += 1
+      end
+      log :dot, "Committed a batch of inventories (Total: #{count})"
+    end
+    puts
   end
 
   def place_store(store_no)
     attrs = LCBO.store(store_no)
-    attrs[:is_hidden] = false
+    attrs[:is_dead] = false
     attrs[:crawl_id] = model.id
     Store.place(attrs)
     log :dot, "Placed store: #{store_no}"
@@ -93,7 +121,7 @@ class Crawler < Boticus::Bot
     iattrs[:inventory_count].tap do |count|
       pattrs.tap do |p|
         p[:crawl_id] = model.id
-        p[:is_hidden] = false
+        p[:is_dead] = false
         p[:inventory_count] = count
         p[:inventory_price_in_cents] = (p[:price_in_cents] * count)
         p[:inventory_volume_in_milliliters] = (p[:volume_in_milliliters] * count)
@@ -102,7 +130,7 @@ class Crawler < Boticus::Bot
     Product.place(pattrs)
     iattrs[:inventories].each do |inv|
       inv[:crawl_id] = model.id
-      inv[:is_hidden] = false
+      inv[:is_dead] = false
       inv[:product_no] = product_no
       Inventory.place(inv)
     end
