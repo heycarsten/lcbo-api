@@ -9,12 +9,19 @@ module Sequel
           @cast_type = cast
         end
 
-        def [](start = 0, finish = -1)
+        def slice(start = 0, finish = -1)
           @rdb.lrange(@key, start, finish).map { |value| cast(value) }
         end
+        alias_method :[], :slice
 
         def all
           self[0, -1]
+        end
+
+        def each
+          while (value = pop)
+            yield value
+          end
         end
 
         def clear!
@@ -25,12 +32,17 @@ module Sequel
           @rdb.lrem(@key, 0, value)
         end
 
-        def <<(value)
+        def push(value)
           @rdb.rpush(@key, value)
         end
+        alias_method :push, :<<
 
         def pop
           cast @rdb.rpop(@key)
+        end
+
+        def concat(array)
+          array.values.each { |v| self << v }
         end
 
         def length

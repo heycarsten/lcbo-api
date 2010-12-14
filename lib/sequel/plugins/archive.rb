@@ -2,26 +2,43 @@ module Sequel
   module Plugins
     module Archive
 
-      def self.configure(model, opts = {})
-        index_attr, attrs = *opts.first
+      def self.configure(model, index_attr)
         model.instance_variable_set(:@archive_index_attr, index_attr)
-        model.instance_variable_set(:@archive_attributes, attrs.push(index_attr))
-        Object.const_set(:"#{model}Revision", Class.new(::Sequel::Model))
-        Object.const_get(:"#{model}Revision").tap do |rev|
-          rev.set_dataset(rev.implicit_table_name)
-          modname = model.to_s.underscore.to_sym
-          rev.many_to_one(modname)
-          if (pk = model.primary_key).is_a?(Array)
-            model.one_to_many(:revisions, :class => rev, :key => pk)
-          else
-            model.one_to_many(:revisions, :class => rev)
-          end
-        end
       end
 
       module ClassMethods
         attr_reader :archive_index_attr
-        attr_reader :archive_attributes
+
+        def archive_revisions_table
+          :"#{to_s.underscore}_revisions"
+        end
+
+        def archive_revisions_dataset
+          DB[archive_revisions_table]
+        end
+
+        def archive_revisions_columns
+          @archive_revisions_columns ||= archive_revisions_dataset.columns
+        end
+
+        def archive_columns
+          @archive_columns ||= archive_revisions_columns.map do |col|
+            if primary_key.is_a?(Array)
+              col
+            else
+              col == :"#{to_s.underscore}_id" ? :id : col
+            end
+          end
+        end
+
+        def commit
+          sql = []
+          sql << "INSERT INTO #{archive_revisions_table}"
+          sql << "(#{archive_revisions_columns.join(', ')})"
+          sql << "SELECT #{archive_columns.join(', ')}"
+          sql << "FROM #{implicit_table_name}"
+          DB[sql.join(' ')]
+        end
       end
 
       module InstanceMethods
@@ -33,20 +50,10 @@ module Sequel
           end
         end
 
-        def _archive_attributes
-          Hash[self.class.archive_attributes.map { |att| [att, send(att)] }]
-        end
-
-        def commit
-          before_commit if respond_to?(:before_commit)
-          begin
-            revisions_dataset.insert(_archive_fk_attributes.merge(_archive_attributes))
-          rescue Sequel::DatabaseError
-            revisions_dataset.
-              filter(self.class.archive_index_attr => send(self.class.archive_index_attr)).
-              update(_archive_attributes)
-          end
-          after_commit if respond_to?(:after_commit)
+        def revisions
+          self.class.archive_revisions_dataset.
+            filter(_archive_fk_attributes).
+            distinct(self.class.archive_index_attr)
         end
       end
 

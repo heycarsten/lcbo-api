@@ -75,6 +75,12 @@ class Crawler < Boticus::Bot
 
   desc 'Committing products'
   task :commit_products do
+    DB[
+      <<-SQL
+      INSERT INTO product_revisions
+        SELECT #{}
+      SQL
+    ]
     log :info, "Committing history for #{Product.count} products ..."
     count = 0
     Product.each_page(500) do |page|
@@ -89,16 +95,12 @@ class Crawler < Boticus::Bot
 
   desc 'Committing inventories'
   task :commit_inventories do
-    log :info, "Committing history for #{Inventory.count} inventories ..."
-    count = 0
-    Inventory.each_page(2500) do |page|
-      page.select(:product_id, :store_id).each do |row|
-        Inventory[row[:product_id], row[:store_id]].commit
-        count += 1
-      end
-      log :dot, "Committed a batch of inventories (Total: #{count})"
-    end
-    puts
+    DB[<<-SQL
+      INSERT INTO inventory_revisions
+        SELECT #{DB[:inventory_revisions].columns.join(', ')}
+        FROM inventories
+    SQL
+    ]
   end
 
   def place_store(store_no)

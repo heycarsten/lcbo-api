@@ -1,6 +1,7 @@
 class Inventory < Sequel::Model
 
   plugin :timestamps, :update_on_create => true
+  plugin :archive, :updated_on
 
   many_to_one :crawl
   many_to_one :product
@@ -17,20 +18,6 @@ class Inventory < Sequel::Model
       attrs[:store_id] = sid
       dataset.insert(attrs)
     end
-  end
-
-  def revisions
-    DB[:inventory_revisions].
-      filter(:product_id => product_id, :store_id => store_id).
-      order(:updated_on.desc)
-  end
-
-  def commit
-    DB[:inventory_revisions].insert(
-      :store_id => store_id,
-      :product_id => product_id,
-      :updated_on => updated_on,
-      :quantity => quantity)
   end
 
   def as_json

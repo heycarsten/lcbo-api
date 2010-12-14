@@ -3,15 +3,8 @@ class Store < Sequel::Model
   unrestrict_primary_key
 
   plugin :timestamps, :update_on_create => true
-  plugin :archive, :crawl_id => [
-    :is_dead,
-    :products_count,
-    :inventory_count,
-    :inventory_price_in_cents,
-    :inventory_volume_in_milliliters].
-    concat(Date::DAYNAMES.map { |day|
-      [:"#{day.downcase}_open", :"#{day.downcase}_close"]
-    }.flatten)
+  plugin :geo
+  plugin :archive, :crawl_id
 
   many_to_one :crawl
   one_to_many :inventories
