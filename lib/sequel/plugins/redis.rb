@@ -12,7 +12,7 @@ module Sequel
         def slice(start = 0, finish = -1)
           @rdb.lrange(@key, start, finish).map { |value| cast(value) }
         end
-        alias_method :[], :slice
+        alias :[] :slice
 
         def all
           self[0, -1]
@@ -35,7 +35,7 @@ module Sequel
         def push(value)
           @rdb.rpush(@key, value)
         end
-        alias_method :push, :<<
+        alias :<< :push
 
         def pop
           cast @rdb.rpop(@key)

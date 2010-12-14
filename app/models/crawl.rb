@@ -4,15 +4,17 @@ class Crawl < Sequel::Model
 
   plugin :redis
   plugin :timestamps, :update_on_create => true
+  plugin :serialization, :yaml,
+    :store_nos,
+    :product_nos,
+    :added_product_nos,
+    :added_store_nos,
+    :removed_product_nos,
+    :removed_store_nos
 
-  list :store_nos,           Integer
-  list :product_nos,         Integer
-  list :added_store_nos,     Integer
-  list :removed_store_nos,   Integer
-  list :added_product_nos,   Integer
-  list :removed_product_nos, Integer
-  list :update_jobs
-  list :commit_jobs
+  list :crawled_store_nos,   Integer
+  list :crawled_product_nos, Integer
+  list :jobs
 
   many_to_one :crawl_event
   one_to_many :crawl_events
@@ -32,6 +34,28 @@ class Crawl < Sequel::Model
   def self.init
     raise 'Crawl is already running' if any_active?
     create
+  end
+
+  def previous
+    @previous ||= latest.limit(2).all.reject { |crawl| crawl.id == id }.first
+  end
+
+  def diff!
+    return if store_nos && product_nos
+    self.store_nos   = crawled_store_nos.all
+    self.product_nos = crawled_product_nos.all
+    if previous
+      self.added_product_nos   = (product_nos - previous.product_nos)
+      self.removed_product_nos = (previous.product_nos - product_nos)
+      self.added_store_nos     = (store_nos - previous.store_nos)
+      self.removed_store_nos   = (previous.store_nos - store_nos)
+    else
+      self.added_product_nos   = []
+      self.removed_product_nos = []
+      self.added_store_nos     = []
+      self.removed_store_nos   = []
+    end
+    save
   end
 
   def is?(*states)
@@ -91,4 +115,3 @@ class Crawl < Sequel::Model
   end
 
 end
-

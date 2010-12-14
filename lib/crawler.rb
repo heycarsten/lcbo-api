@@ -49,58 +49,75 @@ class Crawler < Boticus::Bot
 
   desc 'Performing calculations'
   task :calculate do
-    DB[
-      <<-SQL
-      UPDATE stores
-        SET
-          products_count  = (SELECT COUNT(inventories.product_id) FROM inventories WHERE inventories.store_id = stores.id),
-          inventory_count = (SELECT SUM(inventories.quantity)     FROM inventories WHERE inventories.store_id = stores.id),
-          inventory_price_in_cents = (SELECT SUM(inventories.quantity * products.price_in_cents) FROM products LEFT JOIN inventories ON products.id = inventories.product_id WHERE inventories.store_id = stores.id)
-          inventory_volume_in_milliliters = (SELECT SUM(inventories.quantity * products.volume_in_milliliters) FROM products LEFT JOIN inventories ON products.id = inventories.product_id WHERE inventories.store_id = stores.id)
-        WHERE
-          EXISTS (SELECT * FROM inventories WHERE inventories.store_id = stores.id)
-      SQL
-    ]
+    DB << <<-SQL
+      UPDATE stores SET
+        products_count = (
+          SELECT COUNT(inventories.product_id)
+            FROM inventories
+           WHERE inventories.store_id = stores.id
+        ),
+        inventory_count = (
+          SELECT SUM(inventories.quantity)
+            FROM inventories
+           WHERE inventories.store_id = stores.id
+        ),
+        inventory_price_in_cents = (
+          SELECT SUM(inventories.quantity * products.price_in_cents)
+            FROM products
+              LEFT JOIN inventories ON products.id = inventories.product_id
+           WHERE inventories.store_id = stores.id
+        ),
+        inventory_volume_in_milliliters = (
+          SELECT SUM(inventories.quantity * products.volume_in_milliliters)
+            FROM products
+              LEFT JOIN inventories ON products.id = inventories.product_id
+           WHERE inventories.store_id = stores.id
+        )
+    SQL
+  end
+
+  desc 'Performing diff'
+  task :diff do
+    model.diff!
+  end
+
+  desc 'Marking dead products'
+  task :mark_dead_products do
+    DB[:products].
+      filter(:id => model.removed_product_nos).
+      update(:is_dead => true)
+  end
+
+  desc 'Marking dead stores'
+  task :mark_dead_stores do
+    DB[:stores].
+      filter(:id => model.removed_store_nos).
+      update(:is_dead => true)
+  end
+
+  desc 'Marking dead inventories'
+  task :mark_dead_inventories do
+    DB[:inventories].
+      filter(
+        { :product_id => model.removed_product_nos } |
+        { :store_id => model.removed_store_nos}
+      ).
+      update(:is_dead => true)
   end
 
   desc 'Committing stores'
   task :commit_stores do
-    log :info, "Committing history for #{Store.count} stores ..."
-    Store.each do |store|
-      log :dot, "Committing store ##{store.id}"
-      store.commit
-    end
-    puts
+    Store.commit
   end
 
   desc 'Committing products'
   task :commit_products do
-    DB[
-      <<-SQL
-      INSERT INTO product_revisions
-        SELECT #{}
-      SQL
-    ]
-    log :info, "Committing history for #{Product.count} products ..."
-    count = 0
-    Product.each_page(500) do |page|
-      page.select(:id).each do |row|
-        Product[row[:id]].commit
-        count += 1
-      end
-      log :dot, "Committed a batch of products (Total: #{count})"
-    end
-    puts
+    Product.commit
   end
 
   desc 'Committing inventories'
   task :commit_inventories do
-    DB[<<-SQL
-      INSERT INTO inventory_revisions
-        SELECT #{DB[:inventory_revisions].columns.join(', ')}
-        FROM inventories
-    SQL
-    ]
+    Inventory.commit
   end
 
   def place_store(store_no)
@@ -111,17 +128,17 @@ class Crawler < Boticus::Bot
     log :dot, "Placed store: #{store_no}"
     model.total_stores += 1
     model.save
-    model.store_nos << store_no
+    model.crawled_store_nos << store_no
     log :dot, "Placed store ##{store_no}"
   rescue LCBO::CrawlKit::NotFoundError
     log :warn, "Skipping store ##{store_no}, it does not exist."
   end
 
   def place_product_and_inventories(product_no)
-    pattrs = LCBO.product(product_no)
-    iattrs = LCBO.inventory(product_no)
-    iattrs[:inventory_count].tap do |count|
-      pattrs.tap do |p|
+    pa = LCBO.product(product_no)
+    ia = LCBO.inventory(product_no)
+    ia[:inventory_count].tap do |count|
+      pa.tap do |p|
         p[:crawl_id] = model.id
         p[:is_dead] = false
         p[:inventory_count] = count
@@ -129,23 +146,23 @@ class Crawler < Boticus::Bot
         p[:inventory_volume_in_milliliters] = (p[:volume_in_milliliters] * count)
       end
     end
-    Product.place(pattrs)
-    iattrs[:inventories].each do |inv|
+    Product.place(pa)
+    ia[:inventories].each do |inv|
       inv[:crawl_id] = model.id
       inv[:is_dead] = false
       inv[:product_no] = product_no
       Inventory.place(inv)
     end
     model.total_products += 1
-    model.total_inventories += iattrs[:inventories].size
-    model.total_product_inventory_count += iattrs[:inventory_count]
-    model.total_product_inventory_price_in_cents += pattrs[:inventory_price_in_cents]
-    model.total_product_inventory_volume_in_milliliters += pattrs[:inventory_volume_in_milliliters]
+    model.total_inventories += ia[:inventories].size
+    model.total_product_inventory_count += ia[:inventory_count]
+    model.total_product_inventory_price_in_cents += pa[:inventory_price_in_cents]
+    model.total_product_inventory_volume_in_milliliters += pa[:inventory_volume_in_milliliters]
     model.save
-    model.product_nos << product_no
-    log :dot, "Placed product ##{product_no} and #{iattrs[:inventories].size} inventories"
+    model.crawled_product_nos << product_no
+    log :dot, "Placed product ##{product_no} and #{ia[:inventories].size} inventories"
   rescue LCBO::CrawlKit::NotFoundError
-    log :warn, "Skipping product ##{product_no}, it does not exist."
+    log :warn, "Skipping product ##{product_no}, it does not exist"
   end
 
 end

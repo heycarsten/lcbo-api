@@ -14,6 +14,12 @@ Sequel.migration do
       column :total_product_inventory_price_in_cents,        :bigint,    :default => 0
       column :total_jobs,                                    :integer,   :default => 0
       column :total_finished_jobs,                           :integer,   :default => 0
+      column :store_nos,                                     :text
+      column :product_nos,                                   :text
+      column :added_product_nos,                             :text
+      column :added_store_nos,                               :text
+      column :removed_product_nos,                           :text
+      column :removed_store_nos,                             :text
       column :created_at,                                    :timestamp, :null => false, :index => true
       column :updated_at,                                    :timestamp, :null => false, :index => true
     end

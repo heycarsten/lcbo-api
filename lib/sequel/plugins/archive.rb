@@ -32,12 +32,13 @@ module Sequel
         end
 
         def commit
-          sql = []
-          sql << "INSERT INTO #{archive_revisions_table}"
-          sql << "(#{archive_revisions_columns.join(', ')})"
-          sql << "SELECT #{archive_columns.join(', ')}"
-          sql << "FROM #{implicit_table_name}"
-          DB[sql.join(' ')]
+          DB << %{
+            INSERT INTO #{ archive_revisions_table }
+              (#{ archive_revisions_columns.join(', ') })
+            SELECT
+              #{ archive_columns.join(', ') }
+            FROM #{ implicit_table_name }
+          }
         end
       end
 
