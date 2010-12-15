@@ -37,21 +37,13 @@ class Crawl < Sequel::Model
   end
 
   def previous
-    @previous ||= begin
-      self.class.
-        order(:id.desc).
-        limit(2).
-        all.
-        reject { |crawl| crawl.id == id }.
-        first
-    end
+    @previous ||= Crawl.order(:id.desc).filter(~{ :id => id }).first
   end
 
   def diff!
-    unless store_nos && product_nos
-      self.store_nos   = crawled_store_nos.all
-      self.product_nos = crawled_product_nos.all
-    end
+    return if store_nos && product_nos
+    self.store_nos   = crawled_store_nos.all
+    self.product_nos = crawled_product_nos.all
     if previous
       self.added_product_nos   = (product_nos - previous.product_nos)
       self.removed_product_nos = (previous.product_nos - product_nos)
