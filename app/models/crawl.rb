@@ -12,8 +12,8 @@ class Crawl < Sequel::Model
     :removed_product_nos,
     :removed_store_nos
 
-  list :crawled_store_nos,   Integer
-  list :crawled_product_nos, Integer
+  list :crawled_store_nos,   :integer
+  list :crawled_product_nos, :integer
   list :jobs
 
   many_to_one :crawl_event

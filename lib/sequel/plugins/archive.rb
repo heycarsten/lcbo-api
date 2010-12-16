@@ -31,13 +31,14 @@ module Sequel
           end
         end
 
-        def commit
+        def commit(crawl_id)
           DB << %{
             INSERT INTO #{ archive_revisions_table }
               (#{ archive_revisions_columns.join(', ') })
             SELECT
               #{ archive_columns.join(', ') }
-            FROM #{ implicit_table_name }
+              FROM #{implicit_table_name}
+              WHERE crawl_id = #{crawl_id}
           }
         end
       end

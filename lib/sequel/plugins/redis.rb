@@ -3,10 +3,10 @@ module Sequel
     module Redis
 
       class List
-        def initialize(obj, name, cast)
+        def initialize(obj, name, cast_type)
           @rdb = obj.class.rdb
           @key = "#{obj.rdb_keyspace}:#{name}"
-          @cast_type = cast
+          @cast_type = cast_type
         end
 
         def slice(start = 0, finish = -1)
@@ -51,11 +51,11 @@ module Sequel
 
         def cast(value)
           case @cast_type
-          when String
+          when :string
             value.to_s
-          when Integer
+          when :integer
             value.to_i
-          when Float
+          when :float
             value.to_f
           else
             value

@@ -12,8 +12,6 @@ gem 'colored'
 
 group :test, :development do
   gem 'rspec-rails'
-end
-
-group :development do
+  gem 'fabrication'
   gem 'awesome_print'
 end

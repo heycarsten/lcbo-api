@@ -107,17 +107,17 @@ class Crawler < Boticus::Bot
 
   desc 'Committing stores'
   task :commit_stores do
-    Store.commit
+    Store.commit(model.id)
   end
 
   desc 'Committing products'
   task :commit_products do
-    Product.commit
+    Product.commit(model.id)
   end
 
   desc 'Committing inventories'
   task :commit_inventories do
-    Inventory.commit
+    Inventory.commit(model.id)
   end
 
   def place_store(store_no)
@@ -134,6 +134,7 @@ class Crawler < Boticus::Bot
     log :warn, "Skipping store ##{store_no}, it does not exist."
   end
 
+  # TODO: Make this not so beastly!
   def place_product_and_inventories(product_no)
     pa = LCBO.product(product_no)
     ia = LCBO.inventory(product_no)
