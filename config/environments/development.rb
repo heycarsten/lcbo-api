@@ -19,4 +19,10 @@ LCBOAPI::Application.configure do
 
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
+
+  # Using RSpec and Fabrication
+  config.generators do |g|
+    g.test_framework      :rspec, :fixture => true
+    g.fixture_replacement :fabrication, :dir => 'spec/fabricators'
+  end
 end

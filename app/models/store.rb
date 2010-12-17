@@ -15,6 +15,13 @@ class Store < Sequel::Model
     (store = self[id]) ? store.update(attrs) : create(attrs)
   end
 
+  def self.distance_from_with_product(lat, lon, product_id)
+    distance_from(lat, lon).
+      join(:inventories, :store_id => :id).
+      filter('inventories.quantity > 0').
+      filter(:inventories__product_id => product_id)
+  end
+
   def store_no=(value)
     self.id = value
   end

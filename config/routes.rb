@@ -21,10 +21,10 @@ LCBOAPI::Application.routes.draw do
     match '/stores/:store_id/products/search'       => 'products#index'
     match '/products/search'                        => 'products#index'
     match '/stores/near/:lat/:lon/with/:product_id' => 'stores#index'
-    match '/stores/near/geo/with/:product_id'       => 'stores#index', :is_geo => true
+    match '/stores/near/geo/with/:product_id'       => 'stores#index', :is_geo_q => true
     match '/stores/near/:geo/with/:product_id'      => 'stores#index'
     match '/stores/near/:lat/:lon'                  => 'stores#index'
-    match '/stores/near/geo'                        => 'stores#index', :is_geo => true
+    match '/stores/near/geo'                        => 'stores#index', :is_geo_q => true
     match '/stores/near/:geo'                       => 'stores#index'
     match '/stores/search'                          => 'stores#index'
   end
@@ -41,11 +41,12 @@ LCBOAPI::Application.routes.draw do
     match '/stores/:store_no/products/:product_no/history' => 'inventories#revisions'
     match '/stores/:store_no/products'              => 'inventories#products'
     match '/products/:product_no/stores'            => 'inventories#stores'
-    match '/stores'                                 => 'stores#index'
     match '/products'                               => 'products#index'
     match '/products/:id'                           => 'products#show'
     match '/products/:id/history'                   => 'products#revisions'
+    match '/stores'                                 => 'stores#index'
     match '/stores/:id'                             => 'stores#show'
     match '/stores/:id/history'                     => 'stores#revisions'
   end
+
 end
