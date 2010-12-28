@@ -9,6 +9,12 @@ class Store < Sequel::Model
   many_to_one :crawl
   one_to_many :inventories
 
+  def self.as_json(hsh)
+    hsh.
+      merge(:store_no => hsh[:id]).
+      except(:id, :latrad, :lngrad, :created_at, :updated_at, :crawl_id)
+  end
+
   def self.place(attrs)
     id = attrs[:store_no]
     raise ArgumentError, "attrs must contain :store_no" unless id
@@ -31,9 +37,7 @@ class Store < Sequel::Model
   end
 
   def as_json
-    { :store_no => id }.
-      merge(super['values']).
-      except(:id, :is_dead, :latrad, :lngrad, :created_at, :updated_at, :crawl_id)
+    self.class.as_json(super['values'])
   end
 
   def before_save

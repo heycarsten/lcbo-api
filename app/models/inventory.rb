@@ -7,6 +7,12 @@ class Inventory < Sequel::Model
   many_to_one :product
   many_to_one :store
 
+  def self.as_json(hsh)
+    hsh.
+      merge(:product_no => hsh[:product_id], :store_no => hsh[:store_id]).
+      except(:product_id, :store_id, :crawl_id, :created_at, :updated_at)
+  end
+
   def self.place(attrs)
     pid, sid = attrs.delete(:product_no), attrs.delete(:store_no)
     raise ArgumentError, 'attrs must include :product_no' unless pid
@@ -21,16 +27,7 @@ class Inventory < Sequel::Model
   end
 
   def as_json
-    { :product_no => product_id,
-      :store_no => store_id }.
-    merge(super['values']).
-    except(
-      :is_dead,
-      :product_id,
-      :store_id,
-      :crawl_id,
-      :created_at,
-      :updated_at)
+    self.class.as_json(super['values'])
   end
 
 end

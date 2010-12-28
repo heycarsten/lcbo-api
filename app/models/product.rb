@@ -8,6 +8,12 @@ class Product < Sequel::Model
   many_to_one :crawl
   one_to_many :inventories
 
+  def self.as_json(hsh)
+    hsh.
+      merge(:product_no => hsh[:id]).
+      except(:id, :created_at, :updated_at, :crawl_id)
+  end
+
   def self.place(attrs)
     id = attrs.delete(:product_no)
     raise ArgumentError, "attrs must contain :product_no" unless id
@@ -28,9 +34,7 @@ class Product < Sequel::Model
   end
 
   def as_json
-    { :product_no => product_no }.
-      merge(super['values']).
-      except(:id, :is_dead, :created_at, :updated_at, :crawl_id)
+    self.class.as_json(super['values'])
   end
 
 end
