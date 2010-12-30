@@ -18,9 +18,13 @@ class ApplicationController < ActionController::Base
   end
 
   def render_data(data, options = {})
+    h = {}
     h[:json]     = data
     h[:callback] = params[:callback] if params[:callback]
-    if 2 == params[:version]
+    case
+    when params[:raw]
+      response.content_type = 'text/json'
+    when params[:version] == 2
       response.content_type = 'application/vnd.lcboapi.v2+json'
     else
       response.content_type = 'application/json'

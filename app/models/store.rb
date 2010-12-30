@@ -10,6 +10,7 @@ class Store < Sequel::Model
   one_to_many :inventories
 
   def self.as_json(hsh)
+    return hsh.as_json if hsh.is_a?(Store)
     hsh.
       merge(:store_no => hsh[:id]).
       except(:id, :latrad, :lngrad, :created_at, :updated_at, :crawl_id)
@@ -41,10 +42,14 @@ class Store < Sequel::Model
     self.class.as_json(super['values'])
   end
 
-  def before_save
-    super
+  def set_latlonrad
     self.latrad = (self.latitude  * (Math::PI / 180.0))
     self.lngrad = (self.longitude * (Math::PI / 180.0))
+  end
+
+  def before_save
+    super
+    set_latlonrad
   end
 
 end

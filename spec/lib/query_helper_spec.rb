@@ -27,34 +27,30 @@ def mkreq(fullpath)
   Struct.new(:fullpath).new(fullpath)
 end
 
-def mkquery(type, name, value)
+def mkquery(type, params = {})
+  q = params.reduce([]) { |pairs, (k,v)|
+      pairs << "#{k}=#{Rack::Utils.escape(v)}"
+    }.join('&')
+  path = "/#{type}?#{q}"
   case type
-  when :products
-    lambda {
-      QueryHelper::ProductsQuery.new(
-        { name => value },
-        mkreq("/products?#{name}=#{value}")
-      )
-    }
   when :stores
-    lambda {
-      QueryHelper::StoresQuery.new(
-        { name => value },
-        mkreq("/stores?#{name}=#{value}")
-      )
-    }
+    QueryHelper::StoresQuery.new(mkreq(path), params)
+  when :products
+    QueryHelper::ProductsQuery.new(mkreq(path), params)
   else
-    lambda {
-      BaseQuery.new({ name => value }, mkreq("?#{name}=#{value}"))
-    }
+    BaseQuery.new(mkreq(path), params)
   end
+end
+
+def mkqueryl(*args)
+  -> { mkquery(*args) }
 end
 
 describe BaseQuery do
   context '#page' do
     ['0', 0, 'x x'].each do |page|
       it "should not allow value: #{page.inspect}" do
-        mkquery(nil, :page, page).
+        mkqueryl(nil, :page => page).
         should raise_error QueryHelper::BadQueryError
       end
     end
@@ -63,7 +59,7 @@ describe BaseQuery do
   context '#per_page' do
     ['0', '4', '201', '-12'].each do |per_page|
       it "should not allow value: #{per_page.inspect}" do
-        mkquery(nil, :per_page, per_page).
+        mkqueryl(nil, :per_page => per_page).
         should raise_error QueryHelper::BadQueryError
       end
     end
@@ -71,68 +67,65 @@ describe BaseQuery do
 
   context '#sort_by' do
     it 'should only allow whitelisted values' do
-      mkquery(nil, :sort_by, 'height').().sort_by.should == 'height'
-      mkquery(nil, :sort_by, 'Height').().sort_by.should == 'height'
-      mkquery(nil, :sort_by, 'age'   ).
+      mkquery(nil, :sort_by => 'height').sort_by.should == 'height'
+      mkquery(nil, :sort_by => 'Height').sort_by.should == 'height'
+      mkqueryl(nil, :sort_by => 'age').
         should raise_error(QueryHelper::BadQueryError)
     end
   end
 
   context '#order' do
     it 'should allow "asc" and "desc" as values' do
-      mkquery(nil, :order, 'asc' ).().order.should == 'asc'
-      mkquery(nil, :order, 'desc').().order.should == 'desc'
-      mkquery(nil, :order, 'Asc' ).().order.should == 'asc'
-      mkquery(nil, :order, 'Desc').().order.should == 'desc'
+      mkquery(nil, :order => 'asc' ).order.should == 'asc'
+      mkquery(nil, :order => 'desc').order.should == 'desc'
+      mkquery(nil, :order => 'Asc').order.should == 'asc'
+      mkquery(nil, :order => 'Desc').order.should == 'desc'
     end
 
     it 'should not allow other values' do
-      mkquery(nil, :order, 'assc').
+      mkqueryl(nil, :order => 'assc').
       should raise_error QueryHelper::BadQueryError
     end
   end
 
   context '#where' do
     it 'should only allow whitelisted values' do
-      mkquery(nil, :where, 'has_thumbs').().where.
+      mkquery(nil, :where => 'has_thumbs').where.
         should == %w[ has_thumbs ]
-      mkquery(nil, :where, 'is_cool, has_thumbs').().where.
+      mkquery(nil, :where => 'is_cool, has_thumbs').where.
         should == %w[ is_cool has_thumbs ]
-      mkquery(nil, :where, 'is_cool,has_thumbs').().where.
+      mkquery(nil, :where => 'is_cool,has_thumbs').where.
         should == %w[ is_cool has_thumbs ]
-      mkquery(nil, :where, 'has_coolness').
+      mkqueryl(nil, :where => 'has_coolness').
         should raise_error(QueryHelper::BadQueryError)
     end
 
     it 'should not allow same values as #where_not' do
-      -> {
-        BaseQuery.new({
-          :where => 'is_cool,has_thumbs',
-          :where_not => 'is_cool'
-        }, nil)
-      }.should raise_error(QueryHelper::BadQueryError)
+      mkqueryl(nil,
+        :where => 'is_cool,has_thumbs',
+        :where_not => 'is_cool'
+      ).should raise_error(QueryHelper::BadQueryError)
     end
   end
 
   context '#where_not' do
     it 'should only allow whitelisted values' do
-      mkquery(nil, :where, 'has_thumbs').().where.
+      mkquery(nil, :where => 'has_thumbs').where.
         should == %w[ has_thumbs ]
-      mkquery(nil, :where, 'is_cool, has_thumbs').().where.
+      mkquery(nil, :where => 'is_cool, has_thumbs').where.
         should == %w[ is_cool has_thumbs ]
-      mkquery(nil, :where, 'is_cool,has_thumbs').().where.
+      mkquery(nil, :where => 'is_cool,has_thumbs').where.
         should == %w[ is_cool has_thumbs ]
-      mkquery(nil, :where, 'has_coolness').
+      mkqueryl(nil, :where => 'has_coolness').
         should raise_error(QueryHelper::BadQueryError)
     end
   end
 
   context '#filter_hash' do
     it 'should set where fields to true and where_not fields to false' do
-      q = BaseQuery.new({
+      q = mkquery(nil,
         :where => 'is_cool',
-        :where_not => 'has_thumbs'
-      }, nil)
+        :where_not => 'has_thumbs')
       q.filter_hash[:is_cool].should == true
       q.filter_hash[:has_thumbs].should == false
     end
@@ -141,7 +134,8 @@ end
 
 describe QueryHelper::ProductsQuery do
   before :all do
-    @pq = QueryHelper::ProductsQuery
+    clean_database
+
     @product_1  = Fabricate(:product, :name => 'Magic Merlot')
     @product_2  = Fabricate(:product, :name => 'Sassy Shiraz')
     @product_3  = Fabricate(:product, :name => 'Tasty Stout')
@@ -153,12 +147,15 @@ describe QueryHelper::ProductsQuery do
     @product_9  = Fabricate(:product, :name => 'Bucko\'s Sherry')
     @product_10 = Fabricate(:product, :name => 'Catindividual Wine')
   end
-  
-  
+
+  it 'should allow for a full-text query' do
+  end
 end
 
 describe QueryHelper::StoresQuery do
   before :all do
+    clean_database
+
     @store_1  = Fabricate(:store, :name => 'Toronto',  :latitude => 43.65285, :longitude => -79.38143)
     @store_2  = Fabricate(:store, :name => 'London',   :latitude => 42.97941, :longitude => -81.24608)
     @store_3  = Fabricate(:store, :name => 'Barrie',   :latitude => 44.39072, :longitude => -79.68593)
@@ -178,30 +175,105 @@ describe QueryHelper::StoresQuery do
     @inv_4 = Fabricate(:inventory, :store_id => @store_4.id, :product_id => @product.id)
   end
 
+  it 'should create @product' do
+    @product.exists?.should be_true
+  end
+
+  it 'should create @store_1' do
+    @store_1.exists?.should be_true
+  end
+
+  it 'should create @inv_1' do
+    @inv_1.exists?.should be_true
+  end
+
+  it 'should have @product on hand at @store_1' do
+    DB[:inventories].
+      filter(:store_id => @store_1.id, :product_id => @product.id).
+      first.should_not be_nil
+  end
+
   ['-91.9191', '91.1111', 'x+x'].each do |lat|
     it "should not allow #{lat.inspect} as a latitude" do
-      mkquery(:stores, :lat, lat).should raise_error QueryHelper::BadQueryError
+      mkqueryl(:stores, :lat => lat).
+        should raise_error QueryHelper::BadQueryError
     end
   end
 
   ['-191.9191', '191.1111', 'x+x'].each do |lon|
     it "should not allow #{lon.inspect} as a longitude" do
-      mkquery(:stores, :lon, lon).should raise_error QueryHelper::BadQueryError
+      mkqueryl(:stores, :lon => lon).
+        should raise_error QueryHelper::BadQueryError
     end
   end
 
   it 'should require both :lat and :lon be present if only one is present' do
-    mkquery(:stores, :lat, '43.0').should raise_error QueryHelper::BadQueryError
-    mkquery(:stores, :lon, '-78.0').should raise_error QueryHelper::BadQueryError
+    mkqueryl(:stores, :lat => '43.0').
+      should raise_error QueryHelper::BadQueryError
+    mkqueryl(:stores, :lon => '-78.0').
+      should raise_error QueryHelper::BadQueryError
   end
 
   it 'should not allow :lat or :lon in combination with :geo' do
-    -> {
-      QueryHelper::StoresQuery.new({
-        :lat => '43.0',
-        :lon => '-78.0',
-        :geo => 'a place'
-      }, nil)
-    }.should raise_error QueryHelper::BadQueryError
+    mkqueryl(:stores,
+      :lat => '43.0',
+      :lon => '-78.0',
+      :geo => 'a place'
+    ).should raise_error QueryHelper::BadQueryError
+  end
+
+  describe 'A spatial query via :lat and :lon' do
+    before do
+      @lat = 43.65285
+      @lon = -79.38143
+      @q = mkquery(:stores, :lat => @lat.to_s, :lon => @lon.to_s)
+    end
+
+    it 'should setup a spatial query' do
+      @q.latitude.should == @lat
+      @q.longitude.should == @lon
+      @q.dataset.should be_a Sequel::Dataset
+    end
+  end
+
+  describe 'A spatial query via :geo' do
+    before do
+      @point = Struct.new(:lat, :lng).new(43.65285, -79.38143)
+      @q = mkquery(:stores, :geo => 'city hall')
+      @q.instance_variable_set(:@geocode, @point)
+    end
+
+    it 'should allow geospatial lookups using :geo' do
+      @q.latitude.should == @point.lat
+      @q.longitude.should == @point.lng
+    end
+  end
+
+  describe 'A spatial query via :lat and :lon with :product_id' do
+    before do
+      @lat = 43.65285
+      @lon = -79.38143
+      @q = mkquery(:stores,
+        :lat => @lat.to_s,
+        :lon => @lon.to_s,
+        :product_id => @product.id.to_s)
+    end
+
+    it 'should set up a spatial query with product_id' do
+      @q.latitude.should == @lat
+      @q.longitude.should == @lon
+      @q.product_id.should == @product.id
+      @q.is_spatial?.should be_true
+    end
+
+    it 'should construct a dataset' do
+      @q.dataset.should be_a Sequel::Dataset
+      @q.dataset.count.should == 4
+      @q.dataset.first[:distance_in_meters].should == 0
+    end
+
+    it 'should provide paging params' do
+      @q.pager.should be_a Hash
+    end
   end
 end

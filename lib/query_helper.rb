@@ -3,14 +3,15 @@ module QueryHelper
   PER_PAGE = 20
   MIN_PER_PAGE = 5
   MAX_PER_PAGE = 200
-  MAX_PRODUCT_ID = 999_999_999
 
   class BadQueryError < StandardError; end
   class GeocoderError < StandardError; end
   class NotImplementedError < StandardError; end
 
   def self.is_float?(val)
-    val && val =~ /\A\-{0,1}[0-9]+\.[0-9]+\Z/
+    return false unless val
+    return true if val.is_a?(Numeric)
+    val =~ /\A\-{0,1}[0-9]+\.[0-9]+\Z/
   end
 
   def self.query(type, request, params)
@@ -28,11 +29,11 @@ module QueryHelper
   class Query
     attr_accessor :request, :params, :page, :per_page, :q
 
-    def initialize(params, request)
+    def initialize(request, params)
+      self.params    = params
       self.request   = request
       self.page      = params[:page]      if params[:page].present?
       self.per_page  = params[:per_page]  if params[:per_page].present?
-      self.q         = params[:q]         if params[:q].present?
       self.sort_by   = params[:sort_by]   if params[:sort_by].present?
       self.order     = params[:order]     if params[:order].present?
       self.where     = params[:where]     if params[:where].present?
@@ -119,33 +120,40 @@ module QueryHelper
       q.present?
     end
 
-    def page
-      @page ||= dataset.paginate(page, per_page)
+    def page_dataset
+      @page_dataset ||= dataset.paginate(page, per_page)
     end
 
     def path_for_page(page_num)
-      path = request.fullpath.dup
+      q = request.fullpath.dup
       case
-      when path.include?('page=')
-        path.sub(/page=[0-9]+/, "page=#{page_num}")
-      when path.include?('?')
-        path + "&page=#{page_num}"
+      when !page_num
+        nil
+      when q.include?('page=')
+        q.sub(/page=[0-9]+/, "page=#{page_num}")
+      when q.include?('?')
+        q + "&page=#{page_num}"
       else
-        path + "?page=#{page_num}"
+        q + "?page=#{page_num}"
       end
     end
 
     def pager
-      [:current, :next, :previous, :first, :final].reduce(
-        :total_record_count => page.pagination_record_count,
-        :current_page_record_count => page.current_page_record_count,
-        :is_first_page => page.first_page?,
-        :is_final_page => page.last_page?
-      ) do |hsh, key|
-        num = page.send(key)
+      { :current_page => :current_page,
+        :next_page    => :next_page,
+        :prev_page    => :previous_page,
+        :page_count   => :final_page
+      }.reduce(
+        :records_per_page => per_page,
+        :total_record_count => page_dataset.pagination_record_count,
+        :current_page_record_count => page_dataset.current_page_record_count,
+        :is_first_page => page_dataset.first_page?,
+        :is_final_page => page_dataset.last_page?
+      ) do |hsh, (meth, key)|
+        num = page_dataset.send(meth)
         hsh.merge(
-          :"#{key}_page" => num,
-          :"#{k}_page_path" => path_for_page(num)
+          key            => num,
+          :"#{key}_path" => path_for_page(num)
         )
       end
     end
@@ -181,14 +189,15 @@ module QueryHelper
   class StoresQuery < Query
     attr_accessor :product_id, :lat, :lon, :geo
 
-    def initialize(params, request)
+    def initialize(request, params)
       super
       if params[:is_geo_q]
         self.geo = params[:q] if params[:q].present?
       else
         self.geo = params[:geo] if params[:geo].present?
-        self.q   = params[:q]   if params[:q].present?
+        self.q = params[:q] if params[:q].present?
       end
+      self.product_id = params[:product_id] if params[:product_id].present?
       self.lat = params[:lat] if params[:lat].present?
       self.lon = params[:lon] if params[:lon].present?
       validate
@@ -235,10 +244,10 @@ module QueryHelper
     end
 
     def product_id=(value)
-      unless (1..MAX_PRODUCT_ID).include?(value.to_i)
+      unless value.to_i > 0
         raise BadQueryError, "The value supplied for :product_id " \
         "(#{value.inspect}) is not a valid product ID. It must be a number " \
-        "between 1 and #{MAX_PRODUCT_ID}."
+        "greater than zero."
       end
       @product_id = value.to_i
     end
@@ -261,63 +270,87 @@ module QueryHelper
       @lon = value.to_f
     end
 
-    def geocode
-      @geocode ||= GEO[geo].first.geometry.location
+    def latitude
+      has_geo? ? geocode.lat : lat
     end
 
-    def lat
-      geo.present? ? geocode.lat : @lat
+    def longitude
+      has_geo? ? geocode.lng : lon
     end
 
-    def lon
-      geo.present? ? geocode.lng : @lon
+    def is_spatial?
+      has_latlon? || has_geo?
     end
 
     def has_geo?
-      lat.present? && lon.present?
+      geo.present?
+    end
+
+    def has_lat?
+      params[:lat].present?
+    end
+
+    def has_lon?
+      params[:lon].present?
+    end
+
+    def has_latlon?
+      has_lat? && has_lon?
     end
 
     def _filtered_dataset
       case
-      when has_geo?
-        Store.distance_from(lat, lon)
-      when has_geo? && product_id
-        Store.distance_from_with_product(lat, lon, product_id)
+      when is_spatial? && product_id
+        Store.distance_from_with_product(latitude, longitude, product_id)
+      when is_spatial?
+        Store.distance_from(latitude, longitude)
       else
         DB[:stores]
       end.
       filter(filter_hash).
-      order(sort_by.to_sym => order)
+      qualify
+    end
+
+    def _ordered_dataset
+      if is_spatial?
+        _filtered_dataset.order(:distance_in_meters.asc)
+      else
+        _filtered_dataset.order(:"#{sort_by}".send(order))
+      end
     end
 
     def dataset
       if has_fulltext?
-        _filtered_dataset.full_text_search([:tags], q)
+        _ordered_dataset.full_text_search([:tags], q)
       else
-        _filtered_dataset
+        _ordered_dataset
       end
     end
 
     def result
       h = super
       h[:product] = Product[product_id].as_json if product_id
-      h[:result]  = page.map { |row| Store.as_json(row) }
+      h[:result]  = page_dataset.all.map { |row| Store.as_json(row) }
       h
     end
 
     private
 
+    def geocode
+      @geocode ||= GEO[geo].first.geometry.location
+    end
+
     def validate
       super
       case
-      when geo.present? && (lat.present? || lon.present?)
+      when has_geo? && (has_lat? || has_lon?)
         raise BadQueryError, "Provided with both geocodeable query (:geo) " \
         "and latitude (:lat) / longitude (:lon). Please provide either a " \
         "geocodable query (:geo) or a latitude and longitude."
-      when lat.present? && lon.blank?
+      when has_lat? && !has_lon?
         raise BadQueryError, "Supply a longitude (:lon) " \
         "parameter in addition to latitude (:lat) to perform a spatial search."
-      when lon.present? && lat.blank?
+      when has_lon? && !has_lat?
         raise BadQueryError, "Supply a latitude (:lat) " \
         "parameter in addition to longitude (:lon) to perform spatial search."
       end
@@ -325,6 +358,12 @@ module QueryHelper
   end
 
   class ProductsQuery < Query
+    def initialize(request, params)
+      super
+      self.q = params[:q] if params[:q].present?
+      validate
+    end
+
     def self.filterable_fields
       %w[
       is_dead
@@ -375,11 +414,6 @@ module QueryHelper
       %w[ is_dead ]
     end
 
-    def initialize(params, request)
-      super
-      validate
-    end
-
     def dataset
       case
       when has_fulltext?
@@ -388,13 +422,14 @@ module QueryHelper
         DB[:products]
       end.
       filter(filter_hash).
-      order(sort_by.to_sym => order)
+      order(:"#{sort_by}".send(order)).
+      qualify
     end
 
     def result
       h = {}
       h[:pager] = pager
-      h[:result] = page.map { |row| Product.as_json(row) }
+      h[:result] = page_dataset.all.map { |row| Product.as_json(row) }
       h
     end
   end

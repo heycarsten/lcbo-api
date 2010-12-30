@@ -1,13 +1,12 @@
 Fabricator(:crawl_event) do
-  id         Fabricate.sequence(:crawl_event_id, 1)
   level      'info'
   message    'This is a log message'
   payload    :key => 'value'
   created_at Time.at(1293645823)
+  after_create { |m| m.save(:raise_on_failure => true) }
 end
 
 Fabricator(:crawl) do
-  id                                            Fabricate.sequence(:crawl_id, 1)
   state                                         'finished'
   task                                          'final_task'
   total_products                                10
@@ -26,12 +25,12 @@ Fabricator(:crawl) do
   removed_store_nos                             [100, 101, 102]
   created_at                                    Time.at(1293645823)
   updated_at                                    Time.at(1293645823)
+  after_create { |m| m.save(:raise_on_failure => true) }
 end
 
 Fabricator(:product) do
-  id                                  Fabricate.sequence(:product_id, 1)
+  crawl_id                            1
   name                                'Floris Ninkeberry Gardenbeer'
-  tags                                'floris ninkeberry gardenbeer'
   price_in_cents                      250
   regular_price_in_cents              250
   limited_time_offer_savings_in_cents 0
@@ -64,13 +63,13 @@ Fabricator(:product) do
   serving_suggestion                  'Serve chilled'
   created_at                          Time.at(1293645823)
   updated_at                          Time.at(1293645823)
+  after_build { |product| product.tags = product.name.split.map(&:downcase) }
+  after_create { |m| m.save(:raise_on_failure => true) }
 end
 
 Fabricator(:store) do
-  crawl!
-  id                              Fabricate.sequence(:store_id, 1)
-  name                            'Street & Avenue'
-  tags                            'street avenue'
+  crawl_id                        1
+  name                            'Street Avenue'
   address_line_1                  '2356 Kennedy Road'
   address_line_2                  'Agincourt Mall'
   city                            'Toronto-Scarborough'
@@ -108,10 +107,22 @@ Fabricator(:store) do
   inventory_volume_in_milliliters 1000000
   created_at                      Time.at(1293645823)
   updated_at                      Time.at(1293645823)
+
+  after_build do |store|
+    store.tags = store.name.split.map(&:downcase)
+    store.set_latlonrad
+  end
+
+  after_create { |m| m.save(:raise_on_failure => true) }
 end
 
 Fabricator(:inventory) do
+  store_id   1
+  product_id 1
+  crawl_id   1
   quantity   100
+  updated_on Date.new(2010, 10, 10)
   created_at Time.at(1293645823)
   updated_at Time.at(1293645823)
+  after_create { |m| m.save(:raise_on_failure => true) }
 end
