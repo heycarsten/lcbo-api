@@ -2,6 +2,11 @@ class ApplicationController < ActionController::Base
 
   layout 'application'
 
+  # GCoder::NoResultsError
+  # GCoder::OverLimitError
+  # GCoder::GeocoderError
+  # QueryHelper::BadQueryError
+
   protected
 
   def render_query(type, params)

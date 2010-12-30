@@ -39,14 +39,15 @@ GEM
     fabrication (0.9.4)
     gcoder (0.8.0)
       hashie
-    haml (3.0.24)
+    haml (3.0.25)
     hashie (0.4.0)
     i18n (0.5.0)
-    lcbo (0.10.0)
+    lcbo (0.10.1)
       nokogiri
+      stringex
       typhoeus
       unicode_utils
-    mail (2.2.12)
+    mail (2.2.13)
       activesupport (>= 2.3.6)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -79,16 +80,17 @@ GEM
       rspec-core (~> 2.3.0)
       rspec-expectations (~> 2.3.0)
       rspec-mocks (~> 2.3.0)
-    rspec-core (2.3.0)
+    rspec-core (2.3.1)
     rspec-expectations (2.3.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.3.0)
-    rspec-rails (2.3.0)
+    rspec-rails (2.3.1)
       actionpack (~> 3.0)
       activesupport (~> 3.0)
       railties (~> 3.0)
       rspec (~> 2.3.0)
     sequel (3.18.0)
+    stringex (1.2.0)
     thor (0.14.6)
     treetop (1.4.9)
       polyglot (>= 0.3.1)

@@ -7,6 +7,7 @@ Sequel.migration do
 
       column :is_dead,                         :boolean,   :default => false, :index => true
       column :name,                            :varchar,   :size => 50
+      column :tags,                            :varchar,   :size => 380
       column :address_line_1,                  :varchar,   :size => 40
       column :address_line_2,                  :varchar,   :size => 40
       column :city,                            :varchar,   :size => 25
@@ -37,11 +38,7 @@ Sequel.migration do
       column :created_at,                      :timestamp, :null => false
       column :updated_at,                      :timestamp, :null => false
 
-      full_text_index [
-        :name,
-        :address_line_1,
-        :address_line_2,
-        :postal_code]
+      full_text_index [:tags]
     end
   end
 

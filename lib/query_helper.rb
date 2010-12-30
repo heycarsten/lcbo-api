@@ -5,8 +5,13 @@ module QueryHelper
   MAX_PER_PAGE = 200
   MAX_PRODUCT_ID = 999_999_999
 
-  class BadParamError < StandardError; end
+  class BadQueryError < StandardError; end
+  class GeocoderError < StandardError; end
   class NotImplementedError < StandardError; end
+
+  def self.is_float?(val)
+    val && val =~ /\A\-{0,1}[0-9]+\.[0-9]+\Z/
+  end
 
   def self.query(type, request, params)
     case type
@@ -14,6 +19,9 @@ module QueryHelper
       StoresQuery.new(request, params).result
     when :products
       ProductsQuery.new(request, params).result
+    else
+      raise ArgumentError, "type must be :stores or :products, not: " \
+      "#{type.inspect}"
     end
   end
 
@@ -21,11 +29,11 @@ module QueryHelper
     attr_accessor :request, :params, :page, :per_page, :q
 
     def initialize(params, request)
-      @request = request
+      self.request   = request
       self.page      = params[:page]      if params[:page].present?
       self.per_page  = params[:per_page]  if params[:per_page].present?
       self.q         = params[:q]         if params[:q].present?
-      self.sort_by   = params[:sort_by]   if params[:stort_by].present?
+      self.sort_by   = params[:sort_by]   if params[:sort_by].present?
       self.order     = params[:order]     if params[:order].present?
       self.where     = params[:where]     if params[:where].present?
       self.where_not = params[:where_not] if params[:where_not].present?
@@ -36,7 +44,7 @@ module QueryHelper
     end
 
     def where
-      @where || WHERE.reject { |w| where_not.include?(w) }
+      @where || self.class.where.reject { |w| where_not.include?(w) }
     end
 
     def where_not=(value)
@@ -44,7 +52,7 @@ module QueryHelper
     end
 
     def where_not
-      @where_not || WHERE_NOT.reject { |w| where.include?(w) }
+      @where_not || self.class.where_not.reject { |w| where.include?(w) }
     end
 
     def filter_hash
@@ -54,16 +62,16 @@ module QueryHelper
 
     def sort_by=(value)
       field = value.to_s.downcase
-      unless SORTABLE_FIELDS.include?(field)
-        raise BadParamError, "The value supplied for :sort_by " \
+      unless self.class.sortable_fields.include?(field)
+        raise BadQueryError, "The value supplied for :sort_by " \
         "(#{value.inspect}) is not a sortable field. Try one of: " \
-        "#{SORTABLE_FIELDS.inspect}"
+        "#{self.class.sortable_fields.inspect}"
       end
       @sort_by = field
     end
 
     def sort_by
-      @sort_by || SORT_BY
+      @sort_by || self.class.sort_by
     end
 
     def order=(value)
@@ -71,19 +79,19 @@ module QueryHelper
       when 'asc', 'desc'
         @order = value.to_s.downcase
       else
-        raise BadParamError, "The value supplied for :order " \
+        raise BadQueryError, "The value supplied for :order " \
         "(#{value.inspect}) is not a valid order. It must be 'asc' ascending " \
         "or 'desc' descending."
       end
     end
 
     def order
-      @order || ORDER
+      @order || self.class.order
     end
 
     def page=(value)
       unless value.to_i > 0
-        raise BadParamError, "The value suppled for :page " \
+        raise BadQueryError, "The value suppled for :page " \
         "(#{value.inspect}) is not a valid page number. It must be a number " \
         "greater than zero."
       end
@@ -96,7 +104,7 @@ module QueryHelper
 
     def per_page=(value)
       unless (MIN_PER_PAGE..MAX_PER_PAGE).include?(value.to_i)
-        raise BadParamError, "The value supplied for :per_page " \
+        raise BadQueryError, "The value supplied for :per_page " \
         "(#{value.inspect}) is not a valid number of items per page. It must " \
         "be a number between #{MIN_PER_PAGE} and #{MAX_PER_PAGE}."
       end
@@ -119,7 +127,7 @@ module QueryHelper
       path = request.fullpath.dup
       case
       when path.include?('page=')
-        path.gsub(/page=[0-9]+/, "page=#{page_num}")
+        path.sub(/page=[0-9]+/, "page=#{page_num}")
       when path.include?('?')
         path + "&page=#{page_num}"
       else
@@ -152,7 +160,7 @@ module QueryHelper
 
     def validate
       if (where && where_not) && where.any? { |w| where_not.include?(w) }
-        raise BadParamError, "One or more of the fields supplied for :where " \
+        raise BadQueryError, "One or more of the fields supplied for :where " \
         "(#{where.inspect}) matches one or more of the fields supplied for " \
         ":where_not (#{where_not.inspect}). These parameters must contain " \
         "indifferent values."
@@ -161,17 +169,33 @@ module QueryHelper
 
     def split_filter_list(name, value)
       vals = value.to_s.split(',').map { |v| v.strip.downcase }
-      unless vals.all? { |v| FILTERABLE_FIELDS.include?(v) }
-        raise BadParamError, "The value supplied for :#{name} " \
+      unless vals.all? { |v| self.class.filterable_fields.include?(v) }
+        raise BadQueryError, "The value supplied for :#{name} " \
         "(#{value.inspect}) must contain only filterable fields separated " \
-        "by commas: #{name}=#{FILTERABLE_FIELDS.join(',')}"
+        "by commas: #{name}=#{self.class.filterable_fields.join(',')}"
       end
       vals
     end
   end
 
   class StoresQuery < Query
-    FILTERABLE_FIELDS = %w[
+    attr_accessor :product_id, :lat, :lon, :geo
+
+    def initialize(params, request)
+      super
+      if params[:is_geo_q]
+        self.geo = params[:q] if params[:q].present?
+      else
+        self.geo = params[:geo] if params[:geo].present?
+        self.q   = params[:q]   if params[:q].present?
+      end
+      self.lat = params[:lat] if params[:lat].present?
+      self.lon = params[:lon] if params[:lon].present?
+      validate
+    end
+
+    def self.filterable_fields
+      %w[
       is_dead
       has_wheelchair_accessability
       has_bilingual_services
@@ -182,38 +206,37 @@ module QueryHelper
       has_vintages_corner
       has_parking
       has_transit_access ]
+    end
 
-    SORTABLE_FIELDS = %w[
+    def self.sortable_fields
+      %w[
       distance_in_meters
       inventory_volume_in_milliliters
       id
       products_count
       inventory_count
       inventory_price_in_cents ]
+    end
 
-    SORT_BY   = 'inventory_volume_in_milliliters'
-    ORDER     = 'desc'
-    WHERE     = []
-    WHERE_NOT = %w[ is_dead ]
+    def self.sort_by
+      'inventory_volume_in_milliliters'
+    end
 
-    attr_accessor :product_id, :lat, :lon, :geo
+    def self.order
+      'desc'
+    end
 
-    def initialize(params, request)
-      super
-      if params[:is_geo_q]
-        self.geo = params[:q] if params[:q].present?
-      else
-        self.geo = params[:geo] if params[:geo].present?
-        self.q   = params[:q] if params[:q].present?
-      end
-      self.lat = params[:lat] if params[:lat].present?
-      self.lon = params[:lon] if params[:lon].present?
-      validate
+    def self.where
+      []
+    end
+
+    def self.where_not
+      %w[ is_dead ]
     end
 
     def product_id=(value)
       unless (1..MAX_PRODUCT_ID).include?(value.to_i)
-        raise BadParamError, "The value supplied for :product_id " \
+        raise BadQueryError, "The value supplied for :product_id " \
         "(#{value.inspect}) is not a valid product ID. It must be a number " \
         "between 1 and #{MAX_PRODUCT_ID}."
       end
@@ -221,8 +244,8 @@ module QueryHelper
     end
 
     def lat=(value)
-      unless (-90.0..90.0).include?(value.to_f)
-        raise BadParamError, "The value supplied for :lat " \
+      unless QueryHelper.is_float?(value) && (-90.0..90.0).include?(value.to_f)
+        raise BadQueryError, "The value supplied for :lat " \
         "(#{value.inspect}) is not a valid latitude. It must be a number " \
         "between -90.0 and 90.0."
       end
@@ -230,44 +253,49 @@ module QueryHelper
     end
 
     def lon=(value)
-      unless (-180.0..180.0).include?(value.to_f)
-        raise BadParamError, "The value supplied for :lon " \
+      unless QueryHelper.is_float?(value) && (-180.0..180.0).include?(value.to_f)
+        raise BadQueryError, "The value supplied for :lon " \
         "(#{value.inspect}) is not a valid longitude. It must be a number " \
         "between -180.0 and 180.0."
       end
       @lon = value.to_f
     end
 
-    def has_geo?
-      case
-      when geo.present? && (lat.present? || lon.present?)
-        raise BadParamError, "Provided with both geocodeable query (:geo) " \
-        "and latitude (:lat) / longitude (:lon). Please provide either a " \
-        "geocodable query (:geo) or a latitude and longitude."
-      when lat.present? && lon.blank?
-        raise BadParamError, "Supply a longitude (:lon) " \
-        "parameter in addition to latitude (:lat) to perform a spatial search."
-      when lon.present? && lat.blank?
-        raise BadParamError, "Supply a latitude (:lat) " \
-        "parameter in addition to longitude (:lon) to perform spatial search."
-      else
-        lat.present? && lon.present?
-      end
+    def geocode
+      @geocode ||= GEO[geo].first.geometry.location
     end
 
-    def dataset
+    def lat
+      geo.present? ? geocode.lat : @lat
+    end
+
+    def lon
+      geo.present? ? geocode.lng : @lon
+    end
+
+    def has_geo?
+      lat.present? && lon.present?
+    end
+
+    def _filtered_dataset
       case
-      when has_fulltext?
-        db[:stores].search(q)
       when has_geo?
         Store.distance_from(lat, lon)
       when has_geo? && product_id
         Store.distance_from_with_product(lat, lon, product_id)
       else
-        db[:stores]
+        DB[:stores]
       end.
       filter(filter_hash).
       order(sort_by.to_sym => order)
+    end
+
+    def dataset
+      if has_fulltext?
+        _filtered_dataset.full_text_search([:tags], q)
+      else
+        _filtered_dataset
+      end
     end
 
     def result
@@ -276,10 +304,29 @@ module QueryHelper
       h[:result]  = page.map { |row| Store.as_json(row) }
       h
     end
+
+    private
+
+    def validate
+      super
+      case
+      when geo.present? && (lat.present? || lon.present?)
+        raise BadQueryError, "Provided with both geocodeable query (:geo) " \
+        "and latitude (:lat) / longitude (:lon). Please provide either a " \
+        "geocodable query (:geo) or a latitude and longitude."
+      when lat.present? && lon.blank?
+        raise BadQueryError, "Supply a longitude (:lon) " \
+        "parameter in addition to latitude (:lat) to perform a spatial search."
+      when lon.present? && lat.blank?
+        raise BadQueryError, "Supply a latitude (:lat) " \
+        "parameter in addition to longitude (:lon) to perform spatial search."
+      end
+    end
   end
 
   class ProductsQuery < Query
-    FILTERABLE_FIELDS = %w[
+    def self.filterable_fields
+      %w[
       is_dead
       is_discontinued
       has_value_added_promotion
@@ -288,8 +335,10 @@ module QueryHelper
       is_seasonal
       is_vqa
       is_kosher ]
+    end
 
-    SORTABLE_FIELDS = %w[
+    def self.sortable_fields
+      %w[
       id
       price_in_cents
       regular_price_in_cents
@@ -308,13 +357,25 @@ module QueryHelper
       inventory_volume_in_milliliters
       inventory_price_in_cents
       released_on ]
+    end
 
-    SORT_BY   = 'inventory_volume_in_milliliters'
-    ORDER     = 'desc'
-    WHERE     = []
-    WHERE_NOT = %w[ is_dead ]
+    def self.sort_by
+      'inventory_volume_in_milliliters'
+    end
 
-    def initialize(params)
+    def self.order
+      'desc'
+    end
+
+    def self.where
+      []
+    end
+
+    def self.where_not
+      %w[ is_dead ]
+    end
+
+    def initialize(params, request)
       super
       validate
     end
@@ -322,9 +383,9 @@ module QueryHelper
     def dataset
       case
       when has_fulltext?
-        db[:products].search(q)
+        DB[:products].full_text_search([:tags], q)
       else
-        db[:products]
+        DB[:products]
       end.
       filter(filter_hash).
       order(sort_by.to_sym => order)

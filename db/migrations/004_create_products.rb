@@ -7,6 +7,7 @@ Sequel.migration do
 
       column :is_dead,                             :boolean,   :default => false, :index => true
       column :name,                                :varchar,   :size => 100
+      column :tags,                                :varchar,   :size => 380
       column :is_discontinued,                     :boolean,   :default => false, :index => true
       column :price_in_cents,                      :integer,   :default => 0
       column :regular_price_in_cents,              :integer,   :default => 0
@@ -46,13 +47,7 @@ Sequel.migration do
       column :updated_at,                          :timestamp, :null => false, :index => true
       column :created_at,                          :timestamp, :null => false
 
-      full_text_index [
-        :name,
-        :primary_category,
-        :secondary_category,
-        :package_unit_type,
-        :producer_name,
-        :origin]
+      full_text_index [:tags]
     end
   end
 

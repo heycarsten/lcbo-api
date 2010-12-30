@@ -1,5 +1,5 @@
 require 'spec_helper'
 
-describe Product do
+describe Crawler do
 
 end

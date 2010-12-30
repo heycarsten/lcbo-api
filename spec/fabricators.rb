@@ -1,50 +1,37 @@
-class Factory
-  def self.factories
-    @factories ||= {}
-  end
-
-  def self.define(model, &block)
-    factories[model] = begin
-      factory = new
-      factory.instance_eval(&block)
-      factory
-    end
-  end
-
-  def self.build(model, overloads = {})
-    factory = factories[model]
-    raise ArgumentError, "There is no factory for #{model} yet." unless factory
-    model.new(factory.defaults.merge(overloads))
-  end
-
-  def self.create(model, overloads = {})
-    instance = build(model, overloads)
-    instance.save
-    instance
-  end
-
-  attr_reader :defaults
-
-  def initialize
-    @defaults = {}
-  end
-
-  def method_missing(name, value)
-    defaults[name] = value
-  end
+Fabricator(:crawl_event) do
+  id         Fabricate.sequence(:crawl_event_id, 1)
+  level      'info'
+  message    'This is a log message'
+  payload    :key => 'value'
+  created_at Time.at(1293645823)
 end
 
-def Factory(*args)
-  Factory.create(*args)
+Fabricator(:crawl) do
+  id                                            Fabricate.sequence(:crawl_id, 1)
+  state                                         'finished'
+  task                                          'final_task'
+  total_products                                10
+  total_stores                                  10
+  total_inventories                             100
+  total_product_inventory_count                 1000
+  total_product_inventory_volume_in_milliliters 100000
+  total_product_inventory_price_in_cents        100000
+  total_jobs                                    1000
+  total_finished_jobs                           1000
+  store_nos                                     [1, 2, 3]
+  product_nos                                   [1, 2, 3]
+  added_product_nos                             [2000, 2001, 2002]
+  added_store_nos                               [200, 201, 202]
+  removed_product_nos                           [1000, 1001, 1002]
+  removed_store_nos                             [100, 101, 102]
+  created_at                                    Time.at(1293645823)
+  updated_at                                    Time.at(1293645823)
 end
 
-Factory.define(Crawl) do
-  
-end
-
-Factory.define(Product) do
-  product_no                          1
+Fabricator(:product) do
+  id                                  Fabricate.sequence(:product_id, 1)
   name                                'Floris Ninkeberry Gardenbeer'
+  tags                                'floris ninkeberry gardenbeer'
   price_in_cents                      250
   regular_price_in_cents              250
   limited_time_offer_savings_in_cents 0
@@ -75,11 +62,15 @@ Factory.define(Product) do
   description                         'A beer that is a beerish color'
   tasting_note                        'Tastes like beer'
   serving_suggestion                  'Serve chilled'
+  created_at                          Time.at(1293645823)
+  updated_at                          Time.at(1293645823)
 end
 
-Factory.define(Store) do
-  store_no                        1
+Fabricator(:store) do
+  crawl!
+  id                              Fabricate.sequence(:store_id, 1)
   name                            'Street & Avenue'
+  tags                            'street avenue'
   address_line_1                  '2356 Kennedy Road'
   address_line_2                  'Agincourt Mall'
   city                            'Toronto-Scarborough'
@@ -115,10 +106,12 @@ Factory.define(Store) do
   inventory_count                 1000
   inventory_price_in_cents        1000000
   inventory_volume_in_milliliters 1000000
+  created_at                      Time.at(1293645823)
+  updated_at                      Time.at(1293645823)
 end
 
-Factory.define(Inventory) do
-  product_no 1
-  store_no   1
-  quality    100
+Fabricator(:inventory) do
+  quantity   100
+  created_at Time.at(1293645823)
+  updated_at Time.at(1293645823)
 end

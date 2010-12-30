@@ -18,6 +18,7 @@ class Product < Sequel::Model
     id = attrs.delete(:product_no)
     raise ArgumentError, "attrs must contain :product_no" unless id
     attrs[:updated_at] = Time.now.utc
+    attrs[:tags] = attrs[:tags].any? ? attrs[:tags].join(' ') : nil
     if 0 == dataset.filter(:id => id).update(attrs)
       attrs[:id] = id
       attrs[:created_at] = attrs[:updated_at]

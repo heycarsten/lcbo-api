@@ -14,6 +14,12 @@ module LCBOAPI
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
+    # Using RSpec and Fabrication
+    config.generators do |g|
+      g.test_framework :rspec, :fixture => true
+      g.fixture_replacement :fabrication, :dir => 'spec/fabricators'
+    end
+
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += %W[#{config.root}/lib]
 
