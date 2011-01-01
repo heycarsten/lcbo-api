@@ -6,47 +6,38 @@ LCBOAPI::Application.routes.draw do
     resources :crawl_events
   end
 
-  root :to => 'root#index'
+  get '/docs(/:slug)' => 'documents#show', :as => :document
+  get '/reflect' => 'reflection#show', :as => :reflection
 
-  scope :via => :get  do
-    match '/docs'       => 'documents#index', :as => :documents
-    match '/docs/:slug' => 'documents#show',  :as => :document
-    match '/reflect'    => 'reflection#show', :as => :reflection
+  scope :version => 1 do
+    get '/download/:filename' => 'datasets#depricated'
+    get '/download/current' => 'datasets#depricated'
+    get '/stores/:store_id/products/search' => 'products#index'
+    get '/products/search' => 'products#index'
+    get '/stores/near/geo(/with/:product_id)' => 'stores#index', :is_geo_q => true
+    get '/stores/near/:lat/:lon/with/:product_id' => 'stores#index'
+    get '/stores/near/:geo/with/:product_id' => 'stores#index'
+    get '/stores/near/:lat/:lon' => 'stores#index'
+    get '/stores/near/:geo' => 'stores#index'
+    get '/stores/search' => 'stores#index'
   end
 
-  scope :version => 1, :via => :get do
-    match '/download/:filename'                     => 'datasets#depricated'
-    match '/download/current'                       => 'datasets#current', :format => 'zip'
-    match '/stores/:store_id/products/:product_id/inventory' => 'inventories#show'
-    match '/stores/:store_id/products/search'       => 'products#index'
-    match '/products/search'                        => 'products#index'
-    match '/stores/near/:lat/:lon/with/:product_id' => 'stores#index'
-    match '/stores/near/geo/with/:product_id'       => 'stores#index', :is_geo_q => true
-    match '/stores/near/:geo/with/:product_id'      => 'stores#index'
-    match '/stores/near/:lat/:lon'                  => 'stores#index'
-    match '/stores/near/geo'                        => 'stores#index', :is_geo_q => true
-    match '/stores/near/:geo'                       => 'stores#index'
-    match '/stores/search'                          => 'stores#index'
-  end
+  scope :version => 2 do
+    resources :datasets, :only => [:index, :show]
 
-  scope :version => 2, :via => :get do
-    match '/datasets'                               => 'datasets#index'
-    match '/datasets/current'                       => 'datasets#current'
-    match '/datasets/current.zip'                   => 'datasets#current', :format => 'zip'
-    match '/datasets/archive.zip'                   => 'datasets#archive', :format => 'zip'
-    match '/datasets/:id'                           => 'datasets#show'
-    match '/datasets/:id.zip'                       => 'datasets#show'
-    match '/products/:product_id/inventory'         => 'inventories#show'
-    match '/stores/:store_no/products/:product_no'  => 'inventories#show'
-    match '/stores/:store_no/products/:product_no/history' => 'inventories#revisions'
-    match '/stores/:store_no/products'              => 'inventories#products'
-    match '/products/:product_no/stores'            => 'inventories#stores'
-    match '/products'                               => 'products#index'
-    match '/products/:id'                           => 'products#show'
-    match '/products/:id/history'                   => 'products#revisions'
-    match '/stores'                                 => 'stores#index'
-    match '/stores/:id'                             => 'stores#show'
-    match '/stores/:id/history'                     => 'stores#revisions'
+    resources :products, :only => [:index, :show] do
+      resources :inventory, :only => [:index], :controller => 'inventories'
+      resources :history,   :only => [:index], :controller => 'revisions'
+      resources :stores,    :only => [:index]
+    end
+
+    resources :stores, :only => [:index, :show] do
+      resources :history,  :only => [:index], :controller => 'revisions'
+      resources :products, :only => [:index] do
+        resources :inventory, :only => [:index], :controller => 'inventories'
+        resources :history,   :only => [:index], :controller => 'revisions'
+      end
+    end
   end
 
 end

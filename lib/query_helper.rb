@@ -1,8 +1,8 @@
 module QueryHelper
 
-  PER_PAGE = 20
+  PER_PAGE     = 20
   MIN_PER_PAGE = 5
-  MAX_PER_PAGE = 200
+  MAX_PER_PAGE = 100
 
   class BadQueryError < StandardError; end
   class GeocoderError < StandardError; end
@@ -21,7 +21,7 @@ module QueryHelper
     when :products
       ProductsQuery.new(request, params).result
     else
-      raise ArgumentError, "type must be :stores or :products, not: " \
+      raise ArgumentError, 'type must be "stores" or "products", not: ' \
       "#{type.inspect}"
     end
   end
@@ -64,9 +64,9 @@ module QueryHelper
     def sort_by=(value)
       field = value.to_s.downcase
       unless self.class.sortable_fields.include?(field)
-        raise BadQueryError, "The value supplied for :sort_by " \
-        "(#{value.inspect}) is not a sortable field. Try one of: " \
-        "#{self.class.sortable_fields.inspect}"
+        raise BadQueryError, "The value supplied for the sort_by parameter " \
+        "(#{value.inspect}) is not valid. It must be one of: " \
+        "#{self.class.sortable_fields.join(', ')}."
       end
       @sort_by = field
     end
@@ -80,9 +80,8 @@ module QueryHelper
       when 'asc', 'desc'
         @order = value.to_s.downcase
       else
-        raise BadQueryError, "The value supplied for :order " \
-        "(#{value.inspect}) is not a valid order. It must be 'asc' ascending " \
-        "or 'desc' descending."
+        raise BadQueryError, "The value supplied for the order parameter " \
+        "(#{value}) is not valid. It must be one of: asc, desc."
       end
     end
 
@@ -92,9 +91,8 @@ module QueryHelper
 
     def page=(value)
       unless value.to_i > 0
-        raise BadQueryError, "The value suppled for :page " \
-        "(#{value.inspect}) is not a valid page number. It must be a number " \
-        "greater than zero."
+        raise BadQueryError, "The value suppled for the page parameter" \
+        "(#{value}) is not valid. It must be a number greater than zero."
       end
       @page = value.to_i
     end
@@ -105,9 +103,9 @@ module QueryHelper
 
     def per_page=(value)
       unless (MIN_PER_PAGE..MAX_PER_PAGE).include?(value.to_i)
-        raise BadQueryError, "The value supplied for :per_page " \
-        "(#{value.inspect}) is not a valid number of items per page. It must " \
-        "be a number between #{MIN_PER_PAGE} and #{MAX_PER_PAGE}."
+        raise BadQueryError, "The value supplied for the per_page parameter " \
+        "(#{value}) is not valid. It must be a number between " \
+        "#{MIN_PER_PAGE} and #{MAX_PER_PAGE}."
       end
       @per_page = value.to_i
     end
@@ -167,20 +165,23 @@ module QueryHelper
     protected
 
     def validate
-      if (where && where_not) && where.any? { |w| where_not.include?(w) }
-        raise BadQueryError, "One or more of the fields supplied for :where " \
-        "(#{where.inspect}) matches one or more of the fields supplied for " \
-        ":where_not (#{where_not.inspect}). These parameters must contain " \
-        "indifferent values."
+      return unless where && where_not
+      same = where.select { |w| where_not.include?(w) }
+      if same.any?
+        raise BadQueryError, "One or more of the values supplied for the " \
+        "where parameter matches one or more of the values supplied for the " \
+        "where_not parameter: #{same.join(', ')}. These parameters can only " \
+        "contain indifferent values."
       end
     end
 
     def split_filter_list(name, value)
       vals = value.to_s.split(',').map { |v| v.strip.downcase }
       unless vals.all? { |v| self.class.filterable_fields.include?(v) }
-        raise BadQueryError, "The value supplied for :#{name} " \
-        "(#{value.inspect}) must contain only filterable fields separated " \
-        "by commas: #{name}=#{self.class.filterable_fields.join(',')}"
+        raise BadQueryError, "The value supplied for the #{name} parameter " \
+        "(#{value}) is not valid. It must contain one or more of the " \
+        "following values separated by commas (,): " \
+        "#{self.class.filterable_fields.join(', ')}."
       end
       vals
     end
@@ -245,17 +246,17 @@ module QueryHelper
 
     def product_id=(value)
       unless value.to_i > 0
-        raise BadQueryError, "The value supplied for :product_id " \
-        "(#{value.inspect}) is not a valid product ID. It must be a number " \
-        "greater than zero."
+        raise BadQueryError, "The value supplied for the product_id " \
+        "parameter (#{value}) is not valid. It must be a number greater than " \
+        "zero."
       end
       @product_id = value.to_i
     end
 
     def lat=(value)
       unless QueryHelper.is_float?(value) && (-90.0..90.0).include?(value.to_f)
-        raise BadQueryError, "The value supplied for :lat " \
-        "(#{value.inspect}) is not a valid latitude. It must be a number " \
+        raise BadQueryError, "The value supplied for the lat parameter " \
+        "(#{value}) is not valid. It must be a valid latitude; a number " \
         "between -90.0 and 90.0."
       end
       @lat = value.to_f
@@ -263,8 +264,8 @@ module QueryHelper
 
     def lon=(value)
       unless QueryHelper.is_float?(value) && (-180.0..180.0).include?(value.to_f)
-        raise BadQueryError, "The value supplied for :lon " \
-        "(#{value.inspect}) is not a valid longitude. It must be a number " \
+        raise BadQueryError, "The value supplied for the lon parameter " \
+        "(#{value}) is not valid. It must be a valid longitude; a number " \
         "between -180.0 and 180.0."
       end
       @lon = value.to_f
@@ -348,11 +349,11 @@ module QueryHelper
         "and latitude (:lat) / longitude (:lon). Please provide either a " \
         "geocodable query (:geo) or a latitude and longitude."
       when has_lat? && !has_lon?
-        raise BadQueryError, "Supply a longitude (:lon) " \
-        "parameter in addition to latitude (:lat) to perform a spatial search."
+        raise BadQueryError, "The lon parameter must be supplied in addition " \
+        "to the lat parameter to perform a spatial search."
       when has_lon? && !has_lat?
-        raise BadQueryError, "Supply a latitude (:lat) " \
-        "parameter in addition to longitude (:lon) to perform spatial search."
+        raise BadQueryError, "The lat parameter must be supplied in addition " \
+        "to the lon parameter to perform a spatial search."
       end
     end
   end

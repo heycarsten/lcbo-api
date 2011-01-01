@@ -18,10 +18,10 @@ Sequel.migration do
       column :longitude,                       :real,      :null => false
       column :latrad,                          :real,      :null => false
       column :lngrad,                          :real,      :null => false
-      column :products_count,                  :integer,   :default => 0
-      column :inventory_count,                 :bigint,    :default => 0
-      column :inventory_price_in_cents,        :bigint,    :default => 0
-      column :inventory_volume_in_milliliters, :bigint,    :default => 0
+      column :products_count,                  :integer,   :default => 0,     :index => true
+      column :inventory_count,                 :bigint,    :default => 0,     :index => true
+      column :inventory_price_in_cents,        :bigint,    :default => 0,     :index => true
+      column :inventory_volume_in_milliliters, :bigint,    :default => 0,     :index => true
       column :has_wheelchair_accessability,    :boolean,   :default => false
       column :has_bilingual_services,          :boolean,   :default => false
       column :has_product_consultant,          :boolean,   :default => false
@@ -35,8 +35,19 @@ Sequel.migration do
         column :"#{day.downcase}_open",        :smallint
         column :"#{day.downcase}_close",       :smallint
       end
-      column :created_at,                      :timestamp, :null => false
-      column :updated_at,                      :timestamp, :null => false
+      column :created_at,                      :timestamp, :null => false, :index => true
+      column :updated_at,                      :timestamp, :null => false, :index => true
+
+      index [
+        :has_wheelchair_accessability,
+        :has_bilingual_services,
+        :has_product_consultant,
+        :has_tasting_bar,
+        :has_beer_cold_room,
+        :has_special_occasion_permits,
+        :has_vintages_corner,
+        :has_parking,
+        :has_transit_access ]
 
       full_text_index [:tags]
     end
