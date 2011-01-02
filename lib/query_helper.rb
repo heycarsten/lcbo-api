@@ -431,6 +431,11 @@ module QueryHelper
       h = {}
       h[:pager] = pager
       h[:result] = page_dataset.all.map { |row| Product.as_json(row) }
+      h[:suggestion] = if 0 == h[:result].size
+        Fuzz[:products, q]
+      else
+        nil
+      end
       h
     end
   end

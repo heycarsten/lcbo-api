@@ -3,6 +3,8 @@ source :rubygems
 gem 'rails',        '3.0.3'
 gem 'pg',           '0.9.0'
 gem 'yajl-ruby',    :require => 'yajl'
+gem 'amatch'
+gem 'stringex'
 gem 'redis'
 gem 'sequel'
 gem 'gcoder'
