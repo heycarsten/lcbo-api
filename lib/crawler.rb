@@ -47,6 +47,11 @@ class Crawler < Boticus::Bot
     puts
   end
 
+  desc 'Refreshing fuzzy search dictionaries'
+  task :recache_fuzz do
+    Fuzz.recache
+  end
+
   desc 'Performing calculations'
   task :calculate do
     DB << <<-SQL

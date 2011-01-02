@@ -15,14 +15,18 @@ module Fuzz
     @dictionaries ||= {}
   end
 
+  def self.add_dictionary(name, opts = {})
+    dictionaries[name.to_s] = Dictionary.new(name.to_s, opts)
+  end
+
+  def self.recache
+    dictionaries.values.each { |dict| dict.recache }
+  end
+
   def self.[](name, query = nil)
     dict = dictionaries[name.to_s]
     raise ArgumentError, "#{name} is not a known dictionary" unless dict
     query ? dict.suggest(query) : dict
-  end
-
-  def self.add_dictionary(name, opts = {})
-    dictionaries[name.to_s] = Dictionary.new(name.to_s, opts)
   end
 
 
