@@ -4,6 +4,7 @@ module QueryHelper
   MIN_PER_PAGE = 5
   MAX_PER_PAGE = 100
 
+  class NotFoundError < StandardError; end
   class BadQueryError < StandardError; end
   class GeocoderError < StandardError; end
   class NotImplementedError < StandardError; end
@@ -27,7 +28,7 @@ module QueryHelper
   end
 
   class Query
-    attr_accessor :request, :params, :page, :per_page, :q
+    attr_accessor :request, :table, :params, :page, :per_page, :q
 
     def initialize(request, params)
       self.params    = params
@@ -38,6 +39,10 @@ module QueryHelper
       self.order     = params[:order]     if params[:order].present?
       self.where     = params[:where]     if params[:where].present?
       self.where_not = params[:where_not] if params[:where_not].present?
+    end
+
+    def self.table
+      raise NotImplementedError, "#{self}#table needs to be implmented"
     end
 
     def where=(value)
@@ -57,8 +62,8 @@ module QueryHelper
     end
 
     def filter_hash
-      Hash[where.map { |w| [w.to_sym, true ] }].
-        merge(Hash[where_not.map { |w| [w.to_sym, false] }])
+      Hash[where.map { |w| [:"#{self.class.table}__#{w}", true ] }].
+        merge(Hash[where_not.map { |w| [:"#{self.class.table}__#{w}", false] }])
     end
 
     def sort_by=(value)
@@ -204,6 +209,10 @@ module QueryHelper
       validate
     end
 
+    def self.table
+      :stores
+    end
+
     def self.filterable_fields
       %w[
       is_dead
@@ -305,11 +314,12 @@ module QueryHelper
         Store.distance_from_with_product(latitude, longitude, product_id)
       when is_spatial?
         Store.distance_from(latitude, longitude)
+      when product_id
+        DB[:stores].join(:inventories, :product_id => product_id)
       else
         DB[:stores]
       end.
-      filter(filter_hash).
-      qualify
+      filter(filter_hash)
     end
 
     def _ordered_dataset
@@ -328,9 +338,17 @@ module QueryHelper
       end
     end
 
+    def product
+      if (p = Product[product_id])
+        p.as_json
+      else
+        raise NotFoundError, "No product exists with id: ##{product_id}"
+      end
+    end
+
     def result
       h = super
-      h[:product] = Product[product_id].as_json if product_id
+      h[:product] = product if product_id
       h[:result]  = page_dataset.all.map { |row| Store.as_json(row) }
       h
     end
@@ -363,6 +381,10 @@ module QueryHelper
       super
       self.q = params[:q] if params[:q].present?
       validate
+    end
+
+    def self.table
+      :products
     end
 
     def self.filterable_fields
@@ -432,7 +454,7 @@ module QueryHelper
       h[:pager] = pager
       h[:result] = page_dataset.all.map { |row| Product.as_json(row) }
       h[:suggestion] = if 0 == h[:result].size
-        Fuzz[:products, q]
+        has_fulltext? ? Fuzz[:products, q] : nil
       else
         nil
       end

@@ -8,7 +8,4 @@ class StoresController < ApplicationController
     render_resource Store[params[:id]]
   end
 
-  def revisions
-  end
-
 end

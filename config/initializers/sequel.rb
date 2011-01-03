@@ -9,6 +9,7 @@ DB = Sequel.connect(
 )
 
 Sequel::Model.plugin(:active_model)
+Sequel::Model.plugin(:exceptable_find)
 
 Fuzz.add_dictionary(:products,
   :source => lambda { DB[:products].select(:name).all.map { |p| p[:name] } },

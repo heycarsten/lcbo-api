@@ -1,5 +1,7 @@
 LCBOAPI::Application.routes.draw do
 
+  LATLON_RE = /\-[0-9]+\.[0-9]+|[0-9]+\.[0-9]+/
+
   namespace :admin do
     root :to => 'crawls#index'
     resources :crawls
@@ -9,24 +11,23 @@ LCBOAPI::Application.routes.draw do
   get '/docs(/:slug)' => 'documents#show', :as => :document
   get '/reflect' => 'reflection#show', :as => :reflection
 
-  scope :version => 1 do
-    get '/download/:filename' => 'datasets#depricated'
+  scope :version => 1, :constraints => { :lat => LATLON_RE, :lon => LATLON_RE } do
+    get '/download/:year-:month-:day' => 'datasets#depricated'
     get '/download/current' => 'datasets#depricated'
-    get '/stores/:store_id/products/search' => 'products#index'
     get '/products/search' => 'products#index'
-    get '/stores/near/geo(/with/:product_id)' => 'stores#index', :is_geo_q => true
-    get '/stores/near/:lat/:lon/with/:product_id' => 'stores#index'
-    get '/stores/near/:geo/with/:product_id' => 'stores#index'
-    get '/stores/near/:lat/:lon' => 'stores#index'
-    get '/stores/near/:geo' => 'stores#index'
+    get '/products/:product_id/inventory' => 'inventories#index'
     get '/stores/search' => 'stores#index'
+    get '/stores/:store_id/products/search' => 'products#index'
+    get '/stores/near/geo(/with/:product_id)' => 'stores#index', :is_geo_q => true
+    get '/stores/near/:geo(/with/:product_id)' => 'stores#index'
+    get '/stores/near/:lat/:lon(/with/:product_id)' => 'stores#index'
   end
 
   scope :version => 2 do
     resources :datasets, :only => [:index, :show]
 
     resources :products, :only => [:index, :show] do
-      resources :inventory, :only => [:index], :controller => 'inventories'
+      resources :inventories, :only => [:index], :controller => 'inventories'
       resources :history,   :only => [:index], :controller => 'revisions'
       resources :stores,    :only => [:index]
     end
@@ -34,8 +35,8 @@ LCBOAPI::Application.routes.draw do
     resources :stores, :only => [:index, :show] do
       resources :history,  :only => [:index], :controller => 'revisions'
       resources :products, :only => [:index] do
-        resources :inventory, :only => [:index], :controller => 'inventories'
-        resources :history,   :only => [:index], :controller => 'revisions'
+        get 'inventory' => 'inventories#show', :as => :store_inventory
+        resources :history, :only => [:index], :controller => 'revisions'
       end
     end
   end

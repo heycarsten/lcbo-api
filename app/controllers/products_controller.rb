@@ -5,10 +5,13 @@ class ProductsController < ApplicationController
   end
 
   def show
-    render_resource Product[params[:id]]
-  end
+    @product = if (p = Product[params[:id]])
+      p
+    else
+      raise 
+    end
 
-  def revisions
+    render_resource @product
   end
 
 end

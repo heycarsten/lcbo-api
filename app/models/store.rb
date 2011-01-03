@@ -13,7 +13,15 @@ class Store < Sequel::Model
     return hsh.as_json if hsh.is_a?(Store)
     hsh.
       merge(:store_no => hsh[:id]).
-      except(:id, :latrad, :lngrad, :created_at, :updated_at, :crawl_id)
+      except(
+        :latrad,
+        :lngrad,
+        :created_at,
+        :updated_at,
+        :crawl_id,
+        :store_id,
+        :product_id
+      )
   end
 
   def self.place(attrs)

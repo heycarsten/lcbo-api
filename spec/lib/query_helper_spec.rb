@@ -6,6 +6,10 @@ class BaseQuery < QueryHelper::Query
     validate
   end
 
+  def self.table
+    :base
+  end
+
   def self.sortable_fields
     %w[ height weight quantity ]
   end
@@ -126,8 +130,8 @@ describe BaseQuery do
       q = mkquery(nil,
         :where => 'is_cool',
         :where_not => 'has_thumbs')
-      q.filter_hash[:is_cool].should == true
-      q.filter_hash[:has_thumbs].should == false
+      q.filter_hash[:base__is_cool].should == true
+      q.filter_hash[:base__has_thumbs].should == false
     end
   end
 end
@@ -149,6 +153,8 @@ describe QueryHelper::ProductsQuery do
   end
 
   it 'should allow for a full-text query' do
+    q = mkquery(:products, :q => 'fresh')
+    q.dataset.count.should == 1
   end
 end
 

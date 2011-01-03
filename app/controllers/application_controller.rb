@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   rescue_from GCoder::NoResultsError,     :with => :render_exception
   rescue_from GCoder::OverLimitError,     :with => :render_exception
   rescue_from GCoder::GeocoderError,      :with => :render_exception
+  rescue_from QueryHelper::NotFoundError, :with => :render_exception
   rescue_from QueryHelper::BadQueryError, :with => :render_exception
 
   protected
@@ -14,7 +15,12 @@ class ApplicationController < ActionController::Base
     h[:result]  = []
     h[:error]   = error.class.to_s.demodulize.underscore
     h[:message] = error.message
-    response.status = 400
+    response.status = case error
+      when QueryHelper::NotFoundError
+        404
+      else
+        400
+      end
     render_data decorate_data(h)
   end
 
@@ -23,7 +29,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_resource(data, options = {})
-    render_data decorate_data(data.as_json, options)
+    render_data decorate_data({ :result => data.as_json }, options)
   end
 
   def render_data(data, options = {})
