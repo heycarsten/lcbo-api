@@ -28,8 +28,8 @@ LCBOAPI::Application.routes.draw do
 
     resources :products, :only => [:index, :show] do
       resources :inventories, :only => [:index], :controller => 'inventories'
-      resources :history,   :only => [:index], :controller => 'revisions'
-      resources :stores,    :only => [:index]
+      resources :history,     :only => [:index], :controller => 'revisions'
+      resources :stores,      :only => [:index]
     end
 
     resources :stores, :only => [:index, :show] do
@@ -39,6 +39,8 @@ LCBOAPI::Application.routes.draw do
         resources :history, :only => [:index], :controller => 'revisions'
       end
     end
+
+    resources :inventories, :only => [:index]
   end
 
 end

@@ -15,6 +15,14 @@ module Fuzz
     @dictionaries ||= {}
   end
 
+  def self.keyspace=(value)
+    @keyspace = value
+  end
+
+  def self.keyspace
+    @keyspace
+  end
+
   def self.add_dictionary(name, opts = {})
     dictionaries[name.to_s] = Dictionary.new(name.to_s, opts)
   end
@@ -90,7 +98,11 @@ module Fuzz
     end
 
     def key
-      "fuzzdictionary:#{@name}"
+      if (ks = Fuzz.keyspace)
+        "fuzzdictionary:#{ks}:#{@name}"
+      else
+        "fuzzdictionary:#{@name}"
+      end
     end
 
   end

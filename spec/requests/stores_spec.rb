@@ -66,9 +66,9 @@ describe 'Store resources' do
 
   context '/stores/:id (not found)' do
     before do
-      get "/stores/0"
+      get "/stores/1"
     end
-    
+
     it_should_behave_like 'a JSON 404 error'
   end
 
@@ -84,6 +84,14 @@ describe 'Store resources' do
       response.json[:result].size == 2
       response.json[:result][0][:distance_in_meters].should == 0
     end
+  end
+
+  context '/products/:id/stores (product not found)' do
+    before do
+      get "/products/1/stores"
+    end
+
+    it_should_behave_like 'a JSON 404 error'
   end
 
   context '/products/:id/stores' do

@@ -69,26 +69,34 @@ describe BaseQuery do
     end
   end
 
-  context '#sort_by' do
-    it 'should only allow whitelisted values' do
-      mkquery(nil, :sort_by => 'height').sort_by.should == 'height'
-      mkquery(nil, :sort_by => 'Height').sort_by.should == 'height'
-      mkqueryl(nil, :sort_by => 'age').
-        should raise_error(QueryHelper::BadQueryError)
-    end
-  end
-
   context '#order' do
-    it 'should allow "asc" and "desc" as values' do
-      mkquery(nil, :order => 'asc' ).order.should == 'asc'
-      mkquery(nil, :order => 'desc').order.should == 'desc'
-      mkquery(nil, :order => 'Asc').order.should == 'asc'
-      mkquery(nil, :order => 'Desc').order.should == 'desc'
+    it 'allows ordering by whitelisted value' do
+      o = mkquery(nil, :order => 'height.desc').order
+      o[0].expression.should == :base__height
+      o[0].descending.should be_true
     end
 
-    it 'should not allow other values' do
-      mkqueryl(nil, :order => 'assc').
-      should raise_error QueryHelper::BadQueryError
+    it 'is not case sensitive' do
+      o = mkquery(nil, :order => 'Height.Desc').order
+      o[0].expression.should == :base__height
+      o[0].descending.should be_true
+    end
+
+    it 'allows for a list of values' do
+      o = mkquery(nil, :order => 'height.desc,weight.asc').order
+      o[0].expression.should == :base__height
+      o[0].descending.should be_true
+      o[1].expression.should == :base__weight
+      o[1].descending.should be_false
+    end
+
+    it 'rejects incorrect values' do
+      mkqueryl(nil, :order => 'height.asc,weight.desk').
+        should raise_error QueryHelper::BadQueryError
+      mkqueryl(nil, :order => 'SELECT * FROM products;').
+        should raise_error QueryHelper::BadQueryError
+      mkqueryl(nil, :order => 'hite.asc').
+        should raise_error QueryHelper::BadQueryError
     end
   end
 

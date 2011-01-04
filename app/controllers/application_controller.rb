@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
 
   def render_exception(error)
     h = {}
-    h[:result]  = []
+    h[:result]  = nil
     h[:error]   = error.class.to_s.demodulize.underscore
     h[:message] = error.message
     response.status = case error

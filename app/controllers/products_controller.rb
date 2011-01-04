@@ -5,13 +5,7 @@ class ProductsController < ApplicationController
   end
 
   def show
-    @product = if (p = Product[params[:id]])
-      p
-    else
-      raise 
-    end
-
-    render_resource @product
+    render_query :product, params
   end
 
 end

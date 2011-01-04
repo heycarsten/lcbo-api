@@ -1,6 +1,14 @@
 require 'spec_helper'
 
 describe 'Inventory resources routing' do
+  it '/inventories' do
+    { :get => '/inventories' }.should route_to(
+      :controller => 'inventories',
+      :action => 'index',
+      :version => 2
+    )
+  end
+
   it '/products/:products_id/inventories' do
     { :get => '/products/18/inventories' }.should route_to(
       :controller => 'inventories',

@@ -33,9 +33,10 @@ class Store < Sequel::Model
 
   def self.distance_from_with_product(lat, lon, product_id)
     distance_from(lat, lon).
-      join(:inventories, :store_id => :id).
-      filter('inventories.quantity > 0').
-      filter(:inventories__product_id => product_id)
+      join(:inventories,
+        :store_id => :id,
+        :product_id => product_id).
+      filter('inventories.quantity > 0')
   end
 
   def store_no=(value)

@@ -5,7 +5,7 @@ class StoresController < ApplicationController
   end
 
   def show
-    render_resource Store[params[:id]]
+    render_query :store, params
   end
 
 end

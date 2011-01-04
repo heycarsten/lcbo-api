@@ -11,7 +11,7 @@ class Product < Sequel::Model
   def self.as_json(hsh)
     hsh.
       merge(:product_no => hsh[:id]).
-      except(:id, :created_at, :updated_at, :crawl_id, :store_id, :product_id)
+      except(:created_at, :updated_at, :crawl_id, :store_id, :product_id)
   end
 
   def self.place(attrs)
