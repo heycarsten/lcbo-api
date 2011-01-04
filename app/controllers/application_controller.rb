@@ -40,6 +40,8 @@ class ApplicationController < ActionController::Base
   end
 
   def render_data(data, options = {})
+    response.headers['Cache-Control'] = 'must-revalidate, public, max-age=0'
+    response.headers['Etag'] = LCBOAPI.release_id
     h = {}
     h[:json] = data
     h[:callback] = params[:callback] if params[:callback]
