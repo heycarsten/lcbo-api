@@ -21,13 +21,33 @@ module QueryHelper
       raise NotImplementedError, "#{self}#table needs to be implmented"
     end
 
-    def self.order_expr(term)
+    def self.filterable_fields
+      []
+    end
+
+    def self.sortable_fields
+      []
+    end
+
+    def self.order
+      raise NotImplementedError, "#{self}#order needs to be implmented"
+    end
+
+    def self.where
+      []
+    end
+
+    def self.where_not
+      []
+    end
+
+    def order_expr(term)
       field, ord = term.split('.').map { |v| v.to_s.downcase.strip }
-      unless sortable_fields.include?(field)
+      unless self.class.sortable_fields.include?(field)
         raise BadQueryError, "A value supplied for the order parameter " \
         "(#{term}) is not valid. It contains a field (#{field}) that is " \
         "not sortable. It must be one of: " \
-        "#{sortable_fields.join(', ')}."
+        "#{self.class.sortable_fields.join(', ')}."
       end
       unless ['desc', 'asc', nil].include?(ord)
         raise BadQueryError, "A value supplied for the order parameter " \
@@ -40,6 +60,14 @@ module QueryHelper
         :"#{table}__#{field}".asc
       when 'desc', nil
         :"#{table}__#{field}".desc
+      end
+    end
+
+    def table
+      if self.class.table.is_a?(Proc)
+        self.class.table.(self)
+      else
+        self.class.table
       end
     end
 
@@ -69,7 +97,7 @@ module QueryHelper
     end
 
     def order
-      @order || self.class.order_expr(self.class.order)
+      @order || order_expr(self.class.order)
     end
 
     def page=(value)
@@ -159,8 +187,11 @@ module QueryHelper
     end
 
     def split_order_list(value)
-      value.to_s.split(',').map(&:strip).map do |term|
-        self.class.order_expr(term)
+      @split_order_list ||= {}
+      @split_order_list[value] ||= begin
+        value.to_s.split(',').map(&:strip).map do |term|
+          order_expr(term)
+        end
       end
     end
 

@@ -17,7 +17,6 @@ class Store < Sequel::Model
         :latrad,
         :lngrad,
         :created_at,
-        :updated_at,
         :crawl_id,
         :store_id,
         :product_id

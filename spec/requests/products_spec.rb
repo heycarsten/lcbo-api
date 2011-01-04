@@ -9,7 +9,7 @@ describe 'Product resources' do
     @store1   = Fabricate(:store)
     @inv1     = Fabricate(:inventory, :store => @store1, :product => @product1)
 
-    Fuzz[:products].recache
+    Fuzz.recache
   end
 
   context '/products' do

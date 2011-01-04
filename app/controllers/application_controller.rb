@@ -2,11 +2,12 @@ class ApplicationController < ActionController::Base
 
   layout 'application'
 
-  rescue_from GCoder::NoResultsError,     :with => :render_exception
-  rescue_from GCoder::OverLimitError,     :with => :render_exception
-  rescue_from GCoder::GeocoderError,      :with => :render_exception
-  rescue_from QueryHelper::NotFoundError, :with => :render_exception
-  rescue_from QueryHelper::BadQueryError, :with => :render_exception
+  rescue_from \
+    GCoder::NoResultsError,
+    GCoder::OverLimitError,
+    GCoder::GeocoderError,
+    QueryHelper::NotFoundError,
+    QueryHelper::BadQueryError, :with => :render_exception
 
   protected
 
@@ -25,11 +26,17 @@ class ApplicationController < ActionController::Base
   end
 
   def render_query(type, params)
-    render_data(decorate_data(QueryHelper.query(type, request, params)))
+    render_data(
+      decorate_data(
+        QueryHelper.query(type, request, params)
+      )
+    )
   end
 
   def render_resource(data, options = {})
-    render_data decorate_data({ :result => data.as_json }, options)
+    render_data(
+      decorate_data({ :result => data.as_json }, options)
+    )
   end
 
   def render_data(data, options = {})

@@ -1,11 +1,14 @@
 source :rubygems
 
-gem 'rails',        '3.0.3'
+gem 'kgio'
+gem 'rails',       '3.0.3'
 gem 'pg'
-gem 'yajl-ruby',    :require => 'yajl'
+gem 'yajl-ruby',   :require => 'yajl'
 gem 'amatch'
 gem 'stringex'
 gem 'redis'
+gem 'dalli'
+gem 'rack-cache',  :require => 'rack/cache'
 gem 'sequel'
 gem 'gcoder'
 gem 'lcbo'

@@ -10,7 +10,7 @@ class Inventory < Sequel::Model
   def self.as_json(hsh)
     hsh.
       merge(:product_no => hsh[:product_id], :store_no => hsh[:store_id]).
-      except(:product_id, :store_id, :crawl_id, :created_at, :updated_at)
+      except(:product_id, :store_id, :crawl_id, :updated_at)
   end
 
   def self.place(attrs)

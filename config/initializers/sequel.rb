@@ -14,7 +14,6 @@ Sequel::Model.plugin(:exceptable_find)
 Fuzz.keyspace = Rails.env
 Fuzz.add_dictionary(:products,
   :source => lambda { DB[:products].select(:name).all.map { |p| p[:name] } },
-  :stop_words => %w[
-    woods
-  ],
-  :min_word_size => 5)
+  :stop_words => %w[ woods ],
+  :min_word_size => 5
+)

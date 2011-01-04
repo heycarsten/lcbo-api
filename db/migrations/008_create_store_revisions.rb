@@ -10,6 +10,7 @@ Sequel.migration do
       column :inventory_count,                 :bigint,    :default => 0
       column :inventory_price_in_cents,        :bigint,    :default => 0
       column :inventory_volume_in_milliliters, :bigint,    :default => 0
+      column :updated_at,                      :timestamp, :index => true
       Date::DAYNAMES.each do |day|
         column :"#{day.downcase}_open",        :smallint
         column :"#{day.downcase}_close",       :smallint

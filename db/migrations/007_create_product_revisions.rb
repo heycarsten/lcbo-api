@@ -20,6 +20,7 @@ Sequel.migration do
       column :value_added_promotion_description,   :text
       column :has_limited_time_offer,              :boolean,   :default => false
       column :has_bonus_reward_miles,              :boolean,   :default => false
+      column :updated_at,                          :timestamp, :index => true
     end
   end
 

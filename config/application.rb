@@ -14,6 +14,12 @@ module LCBOAPI
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
+    # Middleware
+    config.middleware.use Rack::Cache,
+       :verbose     => true,
+       :metastore   => 'memcached://localhost:11211/lcboapi-meta',
+       :entitystore => 'memcached://localhost:11211/lcboapi-body'
+
     # Using RSpec and Fabrication
     config.generators do |g|
       g.test_framework :rspec, :fixture => true

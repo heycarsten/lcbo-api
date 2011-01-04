@@ -49,10 +49,6 @@ module QueryHelper
       'inventory_volume_in_milliliters.desc'
     end
 
-    def self.where
-      []
-    end
-
     def self.where_not
       %w[ is_dead ]
     end
