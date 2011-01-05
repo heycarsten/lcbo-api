@@ -8,8 +8,3 @@
   :adapter: postgres
   :database: lcboapi_development
   :encoding: unicode
-
-:production:
-  :adapter: postgres
-  :database: lcboapi
-  :encoding: unicode

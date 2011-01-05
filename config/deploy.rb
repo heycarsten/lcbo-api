@@ -23,3 +23,10 @@ namespace :deploy do
     run "touch #{current_path}/tmp/restart.txt"
   end
 end
+
+namespace :db do
+  desc 'Update symlinks on app server.'
+  task :symlink do
+    run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
+  end
+end
