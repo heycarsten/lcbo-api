@@ -10,10 +10,9 @@ set :scm,               :git
 set :git_shallow_clone, true
 set :scm_verbose,       false
 set :use_sudo,          false
+set :whenever_command,  'bundle exec whenever'
 
 server '69.164.217.92', :app, :web, :db, :primary => true
-
-after 'deploy:symlink', 'deploy:update_crontab'
 
 namespace :deploy do
   task :start do; end
@@ -22,10 +21,5 @@ namespace :deploy do
   desc 'Restart the application'
   task :restart do
     run "touch #{current_path}/tmp/restart.txt"
-  end
-
-  desc 'Update the crontab file'
-  task :update_crontab, :roles => :db do
-    run "cd #{release_path} && bundle exec whenever --update-crontab #{application}"
   end
 end
