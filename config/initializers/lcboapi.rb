@@ -1,9 +1,14 @@
 module LCBOAPI
 
   def self.recache
-    rid = _release_id
-    RDB.set('lcboapi:release_id', rid)
+    rid = _cache_stamp
+    RDB.set('lcboapi:cache_stamp', rid)
     rid
+  end
+
+  def self.flush
+    recache
+    $memcache.flush
   end
 
   def self.revfile
@@ -16,7 +21,7 @@ module LCBOAPI
 
   def self.revision
     if has_revfile?
-      File.read(revfile).strip[0,8]
+      File.read(revfile).strip[0,7]
     else
       Time.now.to_i.to_s
     end
@@ -26,13 +31,12 @@ module LCBOAPI
     Crawl.order(:id.desc).first.id
   end
 
-  def self._release_id
-    Digest::SHA1.hexdigest("#{last_crawl_id}#{revision}")[0,8]
+  def self._cache_stamp
+    "#{last_crawl_id}#{revision}"
   end
 
-  def self.release_id
-    recache if Rails.env.development?
-    (rid = RDB.get('lcboapi:release_id')) ? rid : recache
+  def self.cache_stamp
+    (rid = RDB.get('lcboapi:cache_stamp')) ? rid : recache
   end
 
 end

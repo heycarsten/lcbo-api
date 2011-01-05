@@ -125,6 +125,11 @@ class Crawler < Boticus::Bot
     Inventory.commit(model.id)
   end
 
+  desc 'Flushing page caches'
+  task :flush_caches do
+    LCBOAPI.flush
+  end
+
   def place_store(store_no)
     attrs = LCBO.store(store_no)
     attrs[:is_dead] = false

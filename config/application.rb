@@ -16,9 +16,9 @@ module LCBOAPI
 
     # Middleware
     config.middleware.use Rack::Cache,
-       :verbose     => true,
-       :metastore   => 'memcached://127.0.0.1:11211/lcboapi-meta',
-       :entitystore => 'memcached://127.0.0.1:11211/lcboapi-body'
+      :verbose     => true,
+      :metastore   => 'memcached://127.0.0.1:11211/lcboapi-meta',
+      :entitystore => 'memcached://127.0.0.1:11211/lcboapi-body'
 
     # Using RSpec and Fabrication
     config.generators do |g|

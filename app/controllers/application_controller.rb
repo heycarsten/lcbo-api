@@ -9,7 +9,19 @@ class ApplicationController < ActionController::Base
     QueryHelper::NotFoundError,
     QueryHelper::BadQueryError, :with => :render_exception
 
+  before_filter :set_cache_control
+
   protected
+
+  def api_request?
+    params[:version] ? true : false
+  end
+
+  def set_cache_control
+    response.etag                   = LCBOAPI.cache_stamp
+    response.cache_control[:public] = true
+    response.cache_control[:extras] = %W[ s-maxage=#{1.day} ]
+  end
 
   def render_exception(error)
     h = {}
@@ -40,17 +52,10 @@ class ApplicationController < ActionController::Base
   end
 
   def render_data(data, options = {})
-    response.headers['Cache-Control'] = 'must-revalidate, public, max-age=0'
-    response.headers['Etag'] = LCBOAPI.release_id
     h = {}
     h[:json] = data
     h[:callback] = params[:callback] if params[:callback]
-    case
-    when params[:raw]
-      response.content_type = 'text/json'
-    else
-      response.content_type = 'application/json'
-    end
+    response.content_type = 'application/json'
     render(h.merge(options))
   end
 

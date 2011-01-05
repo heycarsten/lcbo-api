@@ -1,31 +1,33 @@
-set :application, "set your application name here"
-set :repository,  "set your repository location here"
+default_run_options[:pty] = true
 
-set :scm, :subversion
-# Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
+set :user,              'lcboapi'
+set :application,       'lcbo-api'
+set :repository,        'git@github.com/heycarsten/lcbo-api.git'
+set :deploy_to,         '/home/lcboapi/lcboapi.com'
+set :deploy_via,        :remote_cache
+set :scm,               :git
+set :git_shallow_clone, true
+set :scm_verbose,       false
+set :use_sudo,          false
 
-role :web, "your web-server here"                          # Your HTTP server, Apache/etc
-role :app, "your app-server here"                          # This may be the same as your `Web` server
-role :db,  "your primary db-server here", :primary => true # This is where Rails migrations will run
-role :db,  "your slave db-server here"
+server '69.164.217.92', :app, :web, :db, :primary => true
 
-# If you are using Passenger mod_rails uncomment this:
-# if you're still using the script/reapear helper you will need
-# these http://github.com/rails/irs_process_scripts
-
-# namespace :deploy do
-#   task :start do ; end
-#   task :stop do ; end
-#   task :restart, :roles => :app, :except => { :no_release => true } do
-#     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
-#   end
-# end
-
-after "deploy:symlink", "deploy:update_crontab"
+after 'deploy:symlink', 'deploy:update_crontab'
 
 namespace :deploy do
-  desc "Update the crontab file"
+  task :start do; end
+  task :stop do; end
+
+  desc 'Restart the application'
+  task :restart do
+    run "touch #{current_path}/tmp/restart.txt"
+  end
+
+  desc 'Update the crontab file'
   task :update_crontab, :roles => :db do
     run "cd #{release_path} && bundle exec whenever --update-crontab #{application}"
   end
 end
+
+        require 'config/boot'
+        require 'hoptoad_notifier/capistrano'

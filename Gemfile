@@ -15,6 +15,7 @@ gem 'lcbo'
 gem 'haml'
 gem 'whenever'
 gem 'colored'
+gem 'hoptoad_notifier'
 
 group :test, :development do
   gem 'rspec-rails'
