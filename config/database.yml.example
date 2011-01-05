@@ -11,5 +11,5 @@
 
 :production:
   :adapter: postgres
-  :database: lcboapi_development
+  :database: lcboapi
   :encoding: unicode
