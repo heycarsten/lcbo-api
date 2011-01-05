@@ -14,6 +14,8 @@ set :whenever_command,  'bundle exec whenever'
 
 server '69.164.217.92', :app, :web, :db, :primary => true
 
+after 'deploy:update_code', 'db:symlink'
+
 namespace :deploy do
   task :start do; end
   task :stop do; end
