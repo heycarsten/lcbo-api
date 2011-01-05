@@ -17,6 +17,7 @@ gem 'whenever'
 gem 'colored'
 gem 'hoptoad_notifier'
 gem 'capistrano'
+gem 'rvm'
 
 group :test, :development do
   gem 'rspec-rails'

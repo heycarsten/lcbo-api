@@ -112,6 +112,7 @@ GEM
       activesupport (~> 3.0)
       railties (~> 3.0)
       rspec (~> 2.4.0)
+    rvm (1.1.12)
     sequel (3.19.0)
     stringex (1.2.0)
     thor (0.14.6)
@@ -145,6 +146,7 @@ DEPENDENCIES
   rails (= 3.0.3)
   redis
   rspec-rails
+  rvm
   sequel
   stringex
   whenever

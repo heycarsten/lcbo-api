@@ -1,5 +1,6 @@
 default_run_options[:pty] = true
 
+set :rvm_type,          :system_wide
 set :user,              'lcboapi'
 set :application,       'lcbo-api'
 set :repository,        'git@github.com/heycarsten/lcbo-api.git'
