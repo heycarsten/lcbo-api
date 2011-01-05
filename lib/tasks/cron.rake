@@ -1,6 +1,4 @@
-namespace :cron do
-  desc 'Begin crawl'
-  task :crawl => :environment do
-    Crawler.run
-  end
+desc 'Run scheduled tasks'
+task :cron => :environment do
+  Crawler.run
 end

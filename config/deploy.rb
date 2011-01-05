@@ -3,7 +3,7 @@ default_run_options[:pty] = true
 set :rvm_type,          :system_wide
 set :user,              'lcboapi'
 set :application,       'lcbo-api'
-set :repository,        'git@github.com/heycarsten/lcbo-api.git'
+set :repository,        'git@github.com:heycarsten/lcbo-api.git'
 set :deploy_to,         '/home/lcboapi/lcboapi.com'
 set :deploy_via,        :remote_cache
 set :scm,               :git
