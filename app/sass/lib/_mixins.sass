@@ -1,5 +1,18 @@
-// Yanked from Shawn Allison's Rails 3 Template
+// Yanked from Shawn Allison's Rails 3 Template (with some modifications)
 // http://github.com/shawn/shawns-rails3-template
+
+=hide
+  height: 1px !important
+  width: 1px !important
+  position: absolute !important
+  overflow: hidden !important
+  top: -100px !important
+
+=constrain-sides($width)
+  margin: 0 auto
+  text-align: left
+  width: $width
+  padding: 1px
 
 =o
   background: rgba(255, 0, 0, 0.15) !important
@@ -31,6 +44,7 @@
   -moz-column-count: $count
   -webkit-column-count: $count
   column-count: $count
+
 =column-gap($gap)
   -moz-column-gap: $gap
   -webkit-column-gap: $gap

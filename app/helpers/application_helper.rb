@@ -13,4 +13,8 @@ module ApplicationHelper
     time.to_time.strftime(strf)
   end
 
+  def title(value = nil)
+    value ? @title = value : haml_tag(:title, @title)
+  end
+
 end

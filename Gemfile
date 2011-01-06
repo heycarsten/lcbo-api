@@ -13,11 +13,11 @@ gem 'sequel'
 gem 'gcoder'
 gem 'lcbo'
 gem 'haml'
-gem 'whenever'
-gem 'colored'
 gem 'hoptoad_notifier'
-gem 'capistrano'
-gem 'rvm'
+gem 'whenever',    :require => false
+gem 'capistrano',  :require => false
+gem 'rvm',         :require => false
+gem 'colored'
 
 group :test, :development do
   gem 'rspec-rails'

@@ -40,7 +40,7 @@ GEM
       net-ssh (>= 2.0.14)
       net-ssh-gateway (>= 1.0.0)
     colored (1.2)
-    dalli (1.0.0)
+    dalli (1.0.1)
     diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
@@ -75,6 +75,7 @@ GEM
     net-ssh-gateway (1.0.1)
       net-ssh (>= 1.99.1)
     nokogiri (1.4.4)
+    oreflect (0.7.2)
     pg (0.10.0)
     polyglot (0.3.1)
     rack (1.2.1)
@@ -141,6 +142,7 @@ DEPENDENCIES
   hoptoad_notifier
   kgio
   lcbo
+  oreflect
   pg
   rack-cache
   rails (= 3.0.3)

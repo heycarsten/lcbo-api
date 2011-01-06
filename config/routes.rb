@@ -1,12 +1,14 @@
 LCBOAPI::Application.routes.draw do
 
-  LATLON_RE = /\-[0-9]+\.[0-9]+|[0-9]+\.[0-9]+/
+  LATLON_RE = /\-{0,1}[0-9]+\.[0-9]+/
 
   namespace :admin do
     root :to => 'crawls#index'
     resources :crawls
     resources :crawl_events
   end
+
+  root :to => 'documents#index'
 
   get '/docs(/:slug)' => 'documents#show', :as => :document
   get '/reflect' => 'reflection#show', :as => :reflection
