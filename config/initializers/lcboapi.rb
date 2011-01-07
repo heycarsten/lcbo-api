@@ -41,5 +41,3 @@ module LCBOAPI
   end
 
 end
-
-LCBOAPI.flush
