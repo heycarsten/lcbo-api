@@ -5,4 +5,4 @@
     - documents.each do |document|
       %li.side-menu-item
         %a{ :href => "/docs/#{document[:slug]}" }
-          = document[:title]
+          = document[:menu] || document[:title]

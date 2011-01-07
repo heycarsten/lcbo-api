@@ -3,7 +3,7 @@
   %meta{ :'http-equiv' => 'X-UA-Compatible', :content => 'IE=edge,chrome=1' }
   %meta{ :name => 'description', :content => 'A REST service for LCBO store, product, and inventory data.' }
   - title
-  %link{ :rel => 'stylesheet', :href => "/css/lcboapi.css?#{LCBOAPI.cache_stamp}" }
-  %script{ :src => 'https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js' }
-  %script{ :src => "/js/lcboapi.js?#{LCBOAPI.cache_stamp}" }
-  %script{ :src => "/js/js-beautify.js?#{LCBOAPI.cache_stamp}" }
+  = stylesheet_link_tag '/css/lcboapi.css'
+  = javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js'
+  = javascript_include_tag '/js/lcboapi.js'
+  = javascript_include_tag '/js/js-beautify.js'

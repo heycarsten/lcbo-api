@@ -6,9 +6,9 @@
     A REST service that provides LCBO store, product, and inventory information.
 
 #index_using_it.page-section
-  %h2 Available Resources
+  %h2 Overview
   %p
-    For more information check out the <a href='/docs'>documentation</a>.
+    For more information read the friendly <a href='/docs'>manual</a>.
   %table{ :summary => 'Available API actions' }
     %tr.hide
       %th.hide{ :scope => 'row', :align => 'left' }
@@ -16,6 +16,7 @@
       %th.hide{ :scope => 'row', :align => 'left' }
         Relative Path
     - @documents.each do |doc|
+      - next unless doc[:route]
       %tr
         %td.action-cell
           %a{ :href => "/docs/#{doc[:slug]}" }

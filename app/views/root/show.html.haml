@@ -7,13 +7,8 @@
       - @sections.each_pair do |section, documents|
         = render 'root/section', :section => section, :documents => documents
   .col-2
-    - case @document[:type]
-    - when :page
-      .document-title
-        %h2= @document['doc_title'] || @document['title']
-      .document-body
-        = discount @document['body']
-    - else
+    - case
+    - when @document[:route]
       .document-title
         %h2= @document[:title]
         %dl
@@ -45,3 +40,8 @@
                 %dd.example-response
                   %pre
                     %code.example-json-response {}
+    - else
+      .document-title
+        %h2= @document[:title]
+      .document-body
+        ~ raw discount(@document[:body])

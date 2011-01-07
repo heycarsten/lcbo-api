@@ -9,6 +9,7 @@ module LCBOAPI
   def self.flush
     recache
     $memcache.flush
+    ENV['RAILS_ASSET_ID'] = cache_stamp
   end
 
   def self.revfile
@@ -40,3 +41,5 @@ module LCBOAPI
   end
 
 end
+
+LCBOAPI.flush

@@ -3,7 +3,8 @@ class RootController < ApplicationController
   before_filter :load_documents
 
   def show
-    @document = @documents.find { |doc| doc[:slug] == params[:slug] }
+    slug = params[:slug] || 'introduction'
+    @document = @documents.find { |doc| doc[:slug] == slug }
     return status(404) unless @document
     render :layout => 'document'
   end
@@ -20,7 +21,7 @@ class RootController < ApplicationController
     yaml      = ERB.new(raw_yaml).result
     @sections = YAML.load(yaml)
     @sections.values.each do |section|
-      section.each { |doc| doc[:slug] = doc[:title].to_url }
+      section.each { |doc| doc[:slug] = (doc[:menu] || doc[:title]).to_url }
     end
     @documents = @sections.values.flatten
   end

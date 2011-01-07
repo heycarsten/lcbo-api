@@ -1,9 +1,84 @@
 ---
+Information:
+- :title: Introduction
+  :body: |
+    LCBO API was created by me, [Carsten Nielsen](http://heycarsten.com),
+    a software developer from Toronto, Canada. I built it from the ground up
+    using some of my favorite tools, you can read more about those in the
+    [FAQ](/docs/faq).
+    
+    The goal of the service is to provide developers with an easy way to
+    create intelligent applications that take advantage of the unique benefits
+    that come with having a single provider of alcoholic beverages in a large
+    geographical area.
+    
+    ### Intended Use
+    
+    The API is intended to provide data to mobile and web applications, an
+    example of such an application is [LCBO Search](http://lcbosearch.com).
+    
+    ### Other Use-Cases
+    
+    If you plan on performing hundreds of queries per second for uses such as
+    data analysis then you should download the latest dataset and perform these
+    operations offline. [Datasets](/docs/dataset) are made available upon every
+    successful crawl and can be downloaded as often as necessary.
+    
+    ### Contact
+    
+    I would love to hear about how you are using the data or API. I would also
+    love to hear from you if you want to do something with the data but are not
+    sure how to get started. You can reach me through
+    [Twitter](http://twitter.com/heycarsten), and by
+    [email](mailto:heycarsten@gmail.com).
+    
+    *Please __do not__ contact me if your message reads like this:*
+    
+    > Carsten, I am [name] from [company]. I wanted to reach out to you about
+    > your LCBO API. We need to talk XXX-XXX-XXXX.
+    
+- :title: Frequently Asked Questions
+  :menu: FAQ
+  :body: |
+    ### Is it free?
+    
+    Absolutely! There is no desire or intention to charge for the use of the
+    API. I only ask that you tell me about what you are making with it.
+    It costs roughly $50/month to run LCBO API,
+    [donations](http://www.pledgie.com/campaigns/8126) are awesome.
+    
+    ### Where does the data come from?
+    
+    The LCBO's website is periodically crawled to get up-to-date information.
+    Search engines like Google use this same technique to index web pages.
+    
+    ### Why did you do this?
+    
+    I feel that publicly available information should be free and accessible in
+    as many ways as possible. I want to see what individuals will do with this
+    information when presented with it in an accessible format.
+    
+    ### How does it work?
+    
+    * [Rails 3](http://rubyonrails.org)
+    * [Sequel](http://sequel.rubyforge.org)
+    * [Redis](http://redis.io)
+    * [PostgreSQL](http://postgresql.org)
+    * [Passenger 3](http://www.modrails.com)
+    * [Nginx](http://wiki.nginx.org/Main)
+    * [Linode](http://linode.com)
+    
+    ### Is it open source?
+    
+    The [parser](http://github.com/heycarsten/lcbo) is on GitHub, my intention
+    is to eventually open source the API service too in the future.
+
 Datasets:
 - :title: Datasets
   :route: /datasets
   :params:
-    :per_page: Number of results per page
+    :per_page: |
+      Defines the number of results per page. Minimum <%= QueryHelper %>
     :page: Page number
     :where: Filter results where these fields are true
     :where_not: Filter results where these fields are false
