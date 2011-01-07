@@ -24,8 +24,8 @@ class Store < Sequel::Model
   end
 
   def self.place(attrs)
-    id = attrs[:store_no]
-    raise ArgumentError, "attrs must contain :store_no" unless id
+    id = attrs[:id]
+    raise ArgumentError, "attrs must contain :id" unless id
     attrs[:tags] = attrs[:tags].any? ? attrs[:tags].join(' ') : nil
     (store = self[id]) ? store.update(attrs) : create(attrs)
   end
@@ -36,14 +36,6 @@ class Store < Sequel::Model
         :store_id => :id,
         :product_id => product_id).
       filter('inventories.quantity > 0')
-  end
-
-  def store_no=(value)
-    self.id = value
-  end
-
-  def store_no
-    id
   end
 
   def as_json

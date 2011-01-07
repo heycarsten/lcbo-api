@@ -1,0 +1,57 @@
+---
+Datasets:
+- :title: Datasets
+  :route: /datasets
+  :params:
+    :per_page: Number of results per page
+    :page: Page number
+    :where: Filter results where these fields are true
+    :where_not: Filter results where these fields are false
+    :order: Order by this field
+  :examples:
+  - :path: /datasets?order=created_at.asc
+    :desc: List all datasets from oldest to newest
+  :body:
+- :title: Dataset
+  :route: /datasets/:dataset_id
+  :examples:
+  - :path: /dataset/1
+    :desc: Show the current dataset
+
+Products:
+- :title: Search Products
+  :route: /products
+  :examples:
+  - :path: /products?q=waupoos
+    :desc: Full text product search
+  - :path: /products?geo=queen+and+spadina
+    :desc: Geospatial search on products
+  - :path: /products?
+- :title: Product Details
+  :route: /products/:product_id
+- :title: Search Products at Store
+  :route: /stores/:store_id/products
+
+Stores:
+- :title: Stores with Product
+  :route: /products/:product_id/stores
+- :title: Search Stores
+  :route: /stores
+- :title: Store Details
+  :route: /stores/:store_id
+
+Inventories:
+- :title: Search Inventories
+  :route: /inventories
+- :title: Inventory Details
+  :route: /stores/:store_id/products/:product_id/inventory
+- :title: Product Inventories
+  :route: /products/:product_id/inventories
+
+History:
+- :title: Product History
+  :route: /products/:product_id/history
+- :title: Store History
+  :route: /stores/:store_id/history
+- :title: Inventory History
+  :route: /stores/:store_id/products/:product_id/history

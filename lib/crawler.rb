@@ -14,7 +14,7 @@ class Crawler < Boticus::Bot
     end
 
     def reduce
-      responses.map { |params| params[:product_nos] }.flatten
+      responses.map { |params| params[:product_ids] }.flatten
     end
   end
 
@@ -31,7 +31,7 @@ class Crawler < Boticus::Bot
     log :info, 'Enumerating product job queue ...'
     model.push_jobs(:product, ProductListsGetter.run)
     log :info, 'Enumerating store job queue ...'
-    model.push_jobs(:store, LCBO.store_list[:store_nos])
+    model.push_jobs(:store, LCBO.store_list[:store_ids])
   end
 
   desc 'Crawling stores, products, and inventories'
@@ -89,14 +89,14 @@ class Crawler < Boticus::Bot
   desc 'Marking dead products'
   task :mark_dead_products do
     DB[:products].
-      filter(:id => model.removed_product_nos).
+      filter(:id => model.removed_product_ids).
       update(:is_dead => true)
   end
 
   desc 'Marking dead stores'
   task :mark_dead_stores do
     DB[:stores].
-      filter(:id => model.removed_store_nos).
+      filter(:id => model.removed_store_ids).
       update(:is_dead => true)
   end
 
@@ -104,8 +104,8 @@ class Crawler < Boticus::Bot
   task :mark_dead_inventories do
     DB[:inventories].
       filter(
-        { :product_id => model.removed_product_nos } |
-        { :store_id => model.removed_store_nos}
+        { :product_id => model.removed_product_ids } |
+        { :store_id => model.removed_store_ids}
       ).
       update(:is_dead => true)
   end
@@ -130,24 +130,24 @@ class Crawler < Boticus::Bot
     LCBOAPI.flush
   end
 
-  def place_store(store_no)
-    attrs = LCBO.store(store_no)
+  def place_store(id)
+    attrs = LCBO.store(id)
     attrs[:is_dead] = false
     attrs[:crawl_id] = model.id
     Store.place(attrs)
-    log :dot, "Placed store: #{store_no}"
+    log :dot, "Placed store: #{id}"
     model.total_stores += 1
     model.save
-    model.crawled_store_nos << store_no
-    log :dot, "Placed store ##{store_no}"
+    model.crawled_store_ids << id
+    log :dot, "Placed store ##{id}"
   rescue LCBO::CrawlKit::NotFoundError
-    log :warn, "Skipping store ##{store_no}, it does not exist."
+    log :warn, "Skipping store ##{id}, it does not exist."
   end
 
   # TODO: Make this not so beastly!
-  def place_product_and_inventories(product_no)
-    pa = LCBO.product(product_no)
-    ia = LCBO.inventory(product_no)
+  def place_product_and_inventories(id)
+    pa = LCBO.product(id)
+    ia = LCBO.inventory(id)
     ia[:inventory_count].tap do |count|
       pa.tap do |p|
         p[:crawl_id] = model.id
@@ -161,7 +161,7 @@ class Crawler < Boticus::Bot
     ia[:inventories].each do |inv|
       inv[:crawl_id] = model.id
       inv[:is_dead] = false
-      inv[:product_no] = product_no
+      inv[:product_id] = id
       Inventory.place(inv)
     end
     model.total_products += 1
@@ -170,10 +170,10 @@ class Crawler < Boticus::Bot
     model.total_product_inventory_price_in_cents += pa[:inventory_price_in_cents]
     model.total_product_inventory_volume_in_milliliters += pa[:inventory_volume_in_milliliters]
     model.save
-    model.crawled_product_nos << product_no
-    log :dot, "Placed product ##{product_no} and #{ia[:inventories].size} inventories"
+    model.crawled_product_ids << id
+    log :dot, "Placed product ##{id} and #{ia[:inventories].size} inventories"
   rescue LCBO::CrawlKit::NotFoundError
-    log :warn, "Skipping product ##{product_no}, it does not exist"
+    log :warn, "Skipping product ##{id}, it does not exist"
   end
 
 end

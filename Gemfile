@@ -11,16 +11,20 @@ gem 'dalli'
 gem 'rack-cache',  :require => 'rack/cache'
 gem 'sequel'
 gem 'gcoder'
-gem 'lcbo'
+gem 'lcbo',        '1.0.0beta1'
+gem 'rdiscount'
 gem 'haml'
-gem 'hoptoad_notifier'
 gem 'whenever',    :require => false
 gem 'capistrano',  :require => false
 gem 'rvm',         :require => false
 gem 'colored'
+gem 'hoptoad_notifier'
+
+group :development do
+  gem 'awesome_print'
+end
 
 group :test, :development do
-  gem 'rspec-rails'
   gem 'fabrication'
-  gem 'awesome_print'
+  gem 'rspec-rails'
 end

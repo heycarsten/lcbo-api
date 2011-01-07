@@ -51,12 +51,12 @@ GEM
     haml (3.0.25)
     hashie (0.4.0)
     highline (1.6.1)
-    hoptoad_notifier (2.3.12)
+    hoptoad_notifier (2.4.0)
       activesupport
       builder
     i18n (0.5.0)
     kgio (2.1.1)
-    lcbo (0.11.0)
+    lcbo (1.0.0beta1)
       nokogiri
       stringex
       typhoeus
@@ -75,7 +75,6 @@ GEM
     net-ssh-gateway (1.0.1)
       net-ssh (>= 1.99.1)
     nokogiri (1.4.4)
-    oreflect (0.7.2)
     pg (0.10.0)
     polyglot (0.3.1)
     rack (1.2.1)
@@ -99,6 +98,7 @@ GEM
       rake (>= 0.8.7)
       thor (~> 0.14.4)
     rake (0.8.7)
+    rdiscount (1.6.5)
     redis (2.1.1)
     rspec (2.4.0)
       rspec-core (~> 2.4.0)
@@ -141,11 +141,11 @@ DEPENDENCIES
   haml
   hoptoad_notifier
   kgio
-  lcbo
-  oreflect
+  lcbo (= 1.0.0beta1)
   pg
   rack-cache
   rails (= 3.0.3)
+  rdiscount
   redis
   rspec-rails
   rvm

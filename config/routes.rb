@@ -8,10 +8,9 @@ LCBOAPI::Application.routes.draw do
     resources :crawl_events
   end
 
-  root :to => 'documents#index'
+  root :to => 'root#index'
 
-  get '/docs(/:slug)' => 'documents#show', :as => :document
-  get '/reflect' => 'reflection#show', :as => :reflection
+  get '/docs(/:slug)' => 'root#show'
 
   scope :version => 1, :constraints => { :lat => LATLON_RE, :lon => LATLON_RE } do
     get '/download/:year-:month-:day' => 'datasets#depricated'

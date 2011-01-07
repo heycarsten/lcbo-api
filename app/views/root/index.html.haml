@@ -1,0 +1,24 @@
+- title 'LCBO API'
+
+#index_introduction.page-section
+  %h2.hide What is it?
+  %p
+    A REST service that provides LCBO store, product, and inventory information.
+
+#index_using_it.page-section
+  %h2 Available Resources
+  %p
+    For more information check out the <a href='/docs'>documentation</a>.
+  %table{ :summary => 'Available API actions' }
+    %tr.hide
+      %th.hide{ :scope => 'row', :align => 'left' }
+        Action
+      %th.hide{ :scope => 'row', :align => 'left' }
+        Relative Path
+    - @documents.each do |doc|
+      %tr
+        %td.action-cell
+          %a{ :href => "/docs/#{doc[:slug]}" }
+            = doc[:title]
+        %td.route-cell
+          = format_route(doc[:route])

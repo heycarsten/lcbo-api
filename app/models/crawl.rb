@@ -5,15 +5,15 @@ class Crawl < Sequel::Model
   plugin :redis
   plugin :timestamps, :update_on_create => true
   plugin :serialization, :yaml,
-    :store_nos,
-    :product_nos,
-    :added_product_nos,
-    :added_store_nos,
-    :removed_product_nos,
-    :removed_store_nos
+    :store_ids,
+    :product_ids,
+    :added_product_ids,
+    :added_store_ids,
+    :removed_product_ids,
+    :removed_store_ids
 
-  list :crawled_store_nos,   :integer
-  list :crawled_product_nos, :integer
+  list :crawled_store_ids,   :integer
+  list :crawled_product_ids, :integer
   list :jobs
 
   many_to_one :crawl_event
@@ -41,19 +41,19 @@ class Crawl < Sequel::Model
   end
 
   def diff!
-    return if store_nos && product_nos
-    self.store_nos   = crawled_store_nos.all
-    self.product_nos = crawled_product_nos.all
+    return if store_ids && product_ids
+    self.store_ids   = crawled_store_ids.all
+    self.product_ids = crawled_product_ids.all
     if previous
-      self.added_product_nos   = (product_nos - previous.product_nos)
-      self.removed_product_nos = (previous.product_nos - product_nos)
-      self.added_store_nos     = (store_nos - previous.store_nos)
-      self.removed_store_nos   = (previous.store_nos - store_nos)
+      self.added_product_ids   = (product_ids - previous.product_ids)
+      self.removed_product_ids = (previous.product_ids - product_ids)
+      self.added_store_ids     = (store_ids - previous.store_ids)
+      self.removed_store_ids   = (previous.store_ids - store_ids)
     else
-      self.added_product_nos   = []
-      self.removed_product_nos = []
-      self.added_store_nos     = []
-      self.removed_store_nos   = []
+      self.added_product_ids   = []
+      self.removed_product_ids = []
+      self.added_store_ids     = []
+      self.removed_store_ids   = []
     end
     save
   end

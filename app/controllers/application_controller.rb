@@ -9,9 +9,15 @@ class ApplicationController < ActionController::Base
     QueryHelper::NotFoundError,
     QueryHelper::BadQueryError, :with => :render_exception
 
-  before_filter :set_cache_control
+  before_filter :set_cache_control, :if => -> { Rails.env.production? }
 
   protected
+
+  def status(code)
+    path = (Rails.root + 'public' + "#{code}.html").to_s
+    render :file => code, :status => code
+    false
+  end
 
   def api_request?
     params[:version] ? true : false

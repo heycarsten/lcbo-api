@@ -17,12 +17,12 @@ Fabricator(:crawl) do
   total_product_inventory_price_in_cents        100000
   total_jobs                                    1000
   total_finished_jobs                           1000
-  store_nos                                     [1, 2, 3]
-  product_nos                                   [1, 2, 3]
-  added_product_nos                             [2000, 2001, 2002]
-  added_store_nos                               [200, 201, 202]
-  removed_product_nos                           [1000, 1001, 1002]
-  removed_store_nos                             [100, 101, 102]
+  store_ids                                     [1, 2, 3]
+  product_ids                                   [1, 2, 3]
+  added_product_ids                             [2000, 2001, 2002]
+  added_store_ids                               [200, 201, 202]
+  removed_product_ids                           [1000, 1001, 1002]
+  removed_store_ids                             [100, 101, 102]
   created_at                                    Time.at(1293645823)
   updated_at                                    Time.at(1293645823)
   after_create { |m| m.save(:raise_on_failure => true) }

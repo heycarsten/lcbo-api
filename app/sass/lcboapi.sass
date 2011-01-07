@@ -1,11 +1,341 @@
 $serif: Georgia, Constantia, 'Times New Roman', Times, Serif
 $sans: 'Helvetica Neue', Corbel, Arial, Freesans, Sans-Serif
-$mono: Monaco, Consolas, 'Lucida Console', 'Bitstream Vera Sans Mono', 'Dejavu Sans Mono', Monospace, 'Courier New'
-$base-type-size: 14px
+$monospace: Monaco, Consolas, 'Lucida Console', 'Bitstream Vera Sans Mono', 'Dejavu Sans Mono', Monospace, 'Courier New'
 
-@import lib/mixins
-@import lib/reset
-@import lib/helpers
-@import layouts/admin
-@import layouts/application
-@import pages/admin
+=hide
+  height: 1px !important
+  width: 1px !important
+  position: absolute !important
+  overflow: hidden !important
+  top: -60px !important
+=constrain-sides($width)
+  margin: 0 auto
+  text-align: left
+  width: $width
+  padding: 1px
+=border-radius($size)
+  -moz-border-radius: $size
+  -webkit-border-radius: $size
+  border-radius: $size
+=border-top-left-radius($size)
+  -moz-border-top-left-radius: $size
+  -webkit-border-radius-top-left: $size
+  border-top-left-radius: $size
+
+// Reset
+a, abbr, acronym, address, blockquote, body, caption, code, del, dfn, div, dl, dt, dd, em, fieldset, form, h1, h2, h3, h4, h5, h6, html, iframe, img, label, legend, ol, ul, li, object, p, pre, q, span, table, tbody, td, tfoot, th, thead, tr
+  margin: 0
+  padding: 0
+  border: 0
+  font-weight: inherit
+  font-style: inherit
+  font-size: 100%
+  font-family: inherit
+  vertical-align: baseline
+h1, h2, h3, h4, h5, h6
+  font-weight: bold
+body
+  line-height: 1.5
+table
+  border-collapse: separate
+  border-spacing: 0
+table, td, th
+  vertical-align: middle
+  text-align: left
+blockquote:before, blockquote:after, q:before, q:after
+  content: ""
+blockquote, q
+  quotes: "" ""
+a img
+  border: none
+a, a:focus, a:hover, a:active
+  color: #000
+  text-decoration: underline
+strong
+  font-weight: bold
+em
+  font-style: italic
+pre
+  margin: 1.5em 0
+  white-space: pre-wrap
+pre, code, tt
+  font: 1em $monospace
+  font-size: 0.9em
+  line-height: 1.5
+img
+  -ms-interpolation-mode: bicubic
+.clear:after
+  display: block
+  visibility: hidden
+  clear: both
+  height: 0
+  content: "."
+
+
+// Base
+html, body
+  background: #252c18
+body
+  font-size: 13px
+  color: #fff
+  font-family: $sans
+a
+  color: #fff
+  &:hover
+    color: #fff
+    text-decoration: none
+  &:active
+    color: #fca9ff
+
+.hide
+  +hide
+
+.grid-768 .constraint
+  +constrain-sides(768px)
+.grid-960 .constraint
+  +constrain-sides(960px)
+
+// Grids
+.grid-960
+  .cols-1-2
+    background: #2b3319
+    margin: 56px 0
+    .col-1
+      float: left
+      width: 300px
+    .col-2
+      min-height: 900px
+      padding-bottom: 1px
+      border-right: 1px solid #2b3319
+      border-left: none
+      margin-left: 300px
+      background: #fff
+
+// Sidebar Menu
+.side-title
+  margin: 26px
+  h1
+    font-size: 1.5em
+    span
+      display: block
+.side-menu
+  list-style: none
+.side-menu-section
+  margin: 18px
+.side-menu-section-caption
+  background: #1e2512
+  color: #fff
+  padding: 4px 8px
+  margin: 4px 0
+  font-weight: bold
+.side-menu-item
+  list-style: none
+  color: #ddeac3
+  a
+    color: #e3e8d9
+    font-size: 14px
+    padding: 4px 8px
+    display: block
+    text-decoration: none
+    &:hover
+      background: #313823
+    &:active
+      color: #fff
+      background: #373f24
+
+// Header
+.grid-header, .grid-body
+  background: #373f24
+.grid-header .constraint
+  position: relative
+.grid-header
+  background: #373f24 url(/images/header-bg.png) repeat-x
+  height: 180px
+  p
+    position: absolute
+    z-index: 1
+    right: 4px
+    top: 17px
+    a
+      display: block
+      width: 157px
+      height: 28px
+      background: transparent url(/images/header-twitter-map.png) no-repeat
+      span
+        +hide
+    a:hover
+      background-position: 0 -28px
+  h1
+    position: absolute
+    z-index: 2
+    top: 48px
+    margin-left: -8px
+    a
+      display: block
+      width: 428px
+      height: 126px
+      background: transparent url(/images/header-logo.png) no-repeat
+      span
+        +hide
+
+// Body
+.grid-body
+  font-size: 1.2em
+
+// Footer
+.grid-footer
+  font-size: 0.95em
+  border-top: 2px solid #3e482a
+.footer-copyright, .footer-disclaimer
+  padding: 20px
+.footer-copyright
+  float: left
+.footer-disclaimer
+  float: right
+  color: #959a8a
+  a
+    color: #959a8a
+
+// Content
+.page-section
+  margin: 42px 0
+  padding: 0 22px
+  h2, p
+    margin: 18px 0
+  h2
+    font-size: 1.5em
+.document-title
+  color: #222
+  background: #dbe1c9
+  padding: 16px 22px
+  padding-top: 18px
+  border-bottom: 2px solid #c2c9ad
+  line-height: 1
+  h2
+    font-size: 1.5em
+  h2, dl, dd
+    margin: 12px 0
+  .route-spec span
+    color: #852f88
+.document-body
+  padding: 1px 22px
+  color: #222
+  a
+    text-decoration: none
+    color: #852f88
+    &:hover
+      text-decoration: underline
+  h1, h2, h3, h4, h5, h6, p, ul, ol, pre, dl, blockquote, address, table, hr
+    margin: 22px 0
+  h1, h2, h3
+    font-size: 1.15em
+  ul, ol, blockquote
+    margin: 22px 1.9em
+  small
+    font-size: 0.85em
+  ul
+    list-style: outside square
+  ol
+    list-style: outside decimal
+  code
+    font-family: $monospace
+  pre
+    margin: 0 -2px
+    overflow: hidden
+    background: #eee
+    line-height: 1.3
+    padding: 0 16px
+    letter-spacing: -1px
+    code
+      font-size: 0.75em
+  img
+    margin-left: -2px
+    max-width: 600px
+  blockquote
+    margin: 2em 1em
+    padding: 0 1em
+    border-left: 4px solid #ddd
+    color: #555
+    font-family: $serif
+    font-style: italic
+  hr
+    height: 2px
+    border: none
+    color: #ddd
+    background: #ddd
+  pre code
+    color: #222
+  .note
+    font-size: 0.85em
+    background: #c7e1ff
+    border: 1px solid #a2c5ed
+    padding: 8px
+    a
+      font-weight: bold
+      color: #222
+.document-example
+  margin: 22px
+  color: #222
+  dd.example-response
+    padding: 0 8px
+    background: #f7eefb
+    border: 1px solid #c79adb
+    border-width: 2px 1px
+    border-top: none
+    font-size: 0.95em
+    line-height: 1.3
+    max-height: 340px
+    overflow-y: auto
+.usage-example-form
+  legend
+    display: block
+    font-weight: bold
+    font-size: 1.15em
+    padding-bottom: 22px
+  .query-widget
+    border: 1px solid #c79adb
+    border-width: 2px 1px
+    font-size: 14px
+    line-height: 42px
+    padding: 0 8px
+    background: #e2c5ef
+  #submit, #query
+    font-family: $sans
+    font-size: 14px
+  #query
+    border: 1px solid #c79adb
+    padding: 2px
+    background: #fff
+    width: 372px
+#index_introduction
+  margin-top: 38px
+  margin-bottom: 56px
+  font-size: 1.85em
+#index_using_it
+  padding: 22px
+  padding-top: 6px
+  padding-bottom: 32px
+  background: #252c18
+  +border-radius(12px)
+  a
+    text-decoration: none
+    color: #fca9ff
+    &:hover
+      text-decoration: underline
+  p
+    padding-right: 100px
+  table
+    width: 100%
+    td
+      padding: 6px 0
+    .action-cell
+      width: 35%
+      font-weight: bold
+      a
+        color: #fff
+    .route-cell
+      width: 65%
+.route-spec span
+  color: #fca9ff
+#index_availability
+  margin-bottom: 58px

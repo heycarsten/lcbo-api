@@ -4,12 +4,18 @@ describe 'Product resources' do
   before :all do
     clean_database
 
-    @product1 = Fabricate(:product)
-    @product2 = Fabricate(:product, :name => 'Fitzgibbons')
-    @store1   = Fabricate(:store)
+    @product1 = Fabricate(:product, :id => '1')
+    @product2 = Fabricate(:product, :id => '2', :name => 'Fitzgibbons')
+    @store1   = Fabricate(:store, :id => '1')
     @inv1     = Fabricate(:inventory, :store => @store1, :product => @product1)
 
     Fuzz.recache
+  end
+
+  it 'contains sane objects' do
+    DB[:products].count.should == 2
+    DB[:stores].count.should == 1
+    DB[:inventories].count.should == 1
   end
 
   context '/products' do
@@ -30,6 +36,7 @@ describe 'Product resources' do
     it 'contains a matched product' do
       response.json[:result].size.should == 1
       response.json[:result][0].should be_a Hash
+      response.json[:result][0][:name].should == 'Fitzgibbons'
       response.json[:result][0][:id].should == @product2.id
     end
 
@@ -65,7 +72,7 @@ describe 'Product resources' do
 
   context '/products/:id (not found)' do
     before do
-      get "/products/1"
+      get "/products/9999999"
     end
 
     it_should_behave_like 'a JSON 404 error'

@@ -28,7 +28,7 @@ module LCBOAPI
   end
 
   def self.last_crawl_id
-    Crawl.order(:id.desc).first.id
+    ((crawl = Crawl.order(:id.desc).first) && crawl.id) || 0
   end
 
   def self._cache_stamp

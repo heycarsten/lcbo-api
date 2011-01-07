@@ -1,22 +1,28 @@
 class RootController < ApplicationController
 
-  before_filter :load_reflection
+  before_filter :load_documents
 
   def show
-    @action = @reflection.action_by_dashed_id(params[:slug])
+    @document = @documents.find { |doc| doc[:slug] == params[:slug] }
+    return status(404) unless @document
+    render :layout => 'document'
   end
 
   def index
-    respond_to do |wants|
-      wants.json { render :json => @reflection.as_hash }
-      wants.html
-    end
   end
 
   protected
 
-  def load_reflection
-    @reflection ||= OReflect.load_file(Rails.root + 'config' + 'reflection.rb')
+  def load_documents
+    return if @documents
+    docs_path = (Rails.root + 'db' + 'documents.yml').to_s
+    raw_yaml  = File.read(docs_path)
+    yaml      = ERB.new(raw_yaml).result
+    @sections = YAML.load(yaml)
+    @sections.values.each do |section|
+      section.each { |doc| doc[:slug] = doc[:title].to_url }
+    end
+    @documents = @sections.values.flatten
   end
 
 end

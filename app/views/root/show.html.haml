@@ -1,0 +1,47 @@
+- title 'LCBO API ' + @document[:title]
+.cols-1-2.clear
+  .col-1
+    .side-title
+      %h1 <span>LCBO API </span>Documentation
+    %ul.side-menu
+      - @sections.each_pair do |section, documents|
+        = render 'root/section', :section => section, :documents => documents
+  .col-2
+    - case @document[:type]
+    - when :page
+      .document-title
+        %h2= @document['doc_title'] || @document['title']
+      .document-body
+        = discount @document['body']
+    - else
+      .document-title
+        %h2= @document[:title]
+        %dl
+          %dt.uri-specification.hide
+            URL Specification
+          %dd.uri-specification
+            = format_route @document[:route]
+      .document-body
+        = discount @document[:body]
+        %p.note
+          %a{ :href => 'http://en.wikipedia.org/wiki/JSON#JSONP' } JSON-P
+          is supported for this resource. Specify a <code>callback</code>
+          parameter in the query string to use it.
+      - @document[:examples].each do |example|
+        .document-example
+          %form.usage-example-form{ :action => '#', :method => 'GET' }
+            %fieldset
+              %legend= example[:desc]
+              %dl
+                %dt
+                  .hide
+                    %label{ :for => 'query' } Query
+                %dd.query-widget
+                  http://beta.lcboapi.com
+                  %input#query{ :name => 'query', :type => 'text', :value => example[:path] }
+                  %input#submit{ :name => 'commit', :type => 'submit', :value => 'Request' }
+                %dt.hide
+                  Response
+                %dd.example-response
+                  %pre
+                    %code.example-json-response {}
