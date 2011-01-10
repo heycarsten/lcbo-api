@@ -17,11 +17,27 @@
           %dd.uri-specification
             = format_route @document[:route]
       .document-body
-        = discount @document[:body]
         %p.note
           %a{ :href => 'http://en.wikipedia.org/wiki/JSON#JSONP' } JSON-P
           is supported for this resource. Specify a <code>callback</code>
           parameter in the query string to use it.
+        = discount @document[:body]
+        - if @document[:params]
+          %h3 Query Parameters
+          %dl.query-params
+            - @document[:params].each_pair do |name, desc|
+              %dt
+                %code= name
+              %dd~ raw discount(desc)
+        - if @document[:pairs]
+          %h3 Field Info
+          %table.fields
+            - @document[:pairs].each do |field, desc|
+              %tr
+                %td.field
+                  %code= field
+                %td.desc
+                  = desc
       - @document[:examples].each do |example|
         .document-example
           %form.usage-example-form{ :action => '#', :method => 'GET' }

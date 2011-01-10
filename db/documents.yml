@@ -68,7 +68,7 @@ Information:
     The [parser](http://github.com/heycarsten/lcbo) is open source, my intention
     is to eventually open source the API service too in the future.
 
-Datasets:
+Dataset Resources:
 - :title: Datasets
   :route: /datasets
   :params:
@@ -86,9 +86,36 @@ Datasets:
   - :path: /datasets/1
     :desc: Get a specific dataset
 
-Products:
+Product Resources:
 - :title: Products
   :route: /products
+  :params:
+    :where, where_not: |
+      `where` filters products where the supplied fields are true. `where_not`
+      filters products where the supplied fields are false. The available fields
+      are:
+      
+      `<%= QueryHelper::ProductsQuery.filterable_fields.join(', ') %>`
+      
+      The following example would find seasonal VQA products that are not discontinued:
+      
+      `/products?where=is_vqa,is_seasonal&where_not=is_discontinued`
+    :order: |
+      Orders the results by a specified field in ascending or descending order.
+      Available fields are:
+      
+      `<%= QueryHelper::ProductsQuery.sortable_fields.join(', ') %>`
+      
+      The following example sorts products by release date:
+      
+      `/products?order=released_on.desc`
+    :page: |
+      The page number to return. See "pager" in the response object for more
+      information.
+    :per_page: |
+      The number of objects to include per page. Minimum is 5, maximum is 100.
+    :q: |
+      URI-encoded full text search query. Examples: "merlot", "molson+beer".
   :examples:
   - :path: /products?q=waupoos
     :desc: Full text product search for "waupoos"
@@ -96,13 +123,61 @@ Products:
     :desc: Geospatial search on products near "queen and spadina"
   - :path: /products
     :desc: Page through all products
-  - :path: /products?where=is_vqa,order=released_on.asc
+  - :path: /products?where=is_vqa&order=released_on.desc
     :desc: Page through all VQA products ordered by release date
-- :title: Product Details
+  :body: |
+    
+
+- :title: Product
   :route: /products/:product_id
   :examples:
   - :path: /products/18
     :desc: Show product #18
+  :pairs:
+    alcohol_content: Alcohol content (Divide by 100 for decimal value)
+    bonus_reward_miles: Number of bonus air miles
+    bonus_reward_miles_ends_on: When bonus air miles are no longer valid
+    description: Product description (not available for all products)
+    has_bonus_reward_miles: True if the product has bonus air miles
+    has_limited_time_offer: True if the product is on sale
+    has_value_added_promotion: True if the product has a value added promotion
+    id: The LCBO product ID / number
+    inventory_count: Total units across all stores
+    inventory_price_in_cents: Total retail price of all units across all stores
+    inventory_volume_in_milliliters: Total volume of all units across all stores
+    is_dead: When products are removed from the catalog they are marked as "dead"
+    is_discontinued: True if the product has been marked as discontinued
+    is_kosher: True if the product is designated as Kosher.
+    is_seasonal: True if the product is designated as seasonal
+    is_vqa: True if the product is designated as VQA
+    limited_time_offer_ends_on: When the sale price is no longer valid
+    limited_time_offer_savings_in_cents: Savings in cents if on sale
+    name: Product name
+    origin: Country of origin / manufacture
+    package: Full package description
+    package_unit_type: Package unit type (bottle, can, etc.)
+    package_unit_volume_in_milliliters: The volume of one unit in the package
+    price_in_cents: Current retail price in cents
+    price_per_liter_in_cents: The beverage price per liter
+    price_per_liter_of_alcohol_in_cents: The alcohol price per liter
+    primary_category: Primary product stock category
+    producer_name: Name of the company that produces the product
+    product_no: The LCBO product ID / number [Deprecated]
+    regular_price_in_cents: Regular retail price in cents
+    released_on: Official release date (usually unspecified)
+    secondary_category: Secondary LCBO product stock category (Not all products have one.)
+    serving_suggestion: LCBO serving suggestion (not available for all products)
+    stock_type: Either "LCBO" or "VINTAGES"
+    sugar_content: The sugar content designation, can be a residual sugar number or designation such as extra-dry (XD), medium sweet (MS), etc.
+    tags: A string of tags that reflect the product
+    tasting_note: Professional tasting note (not available for all products)
+    total_package_units: Number of units in a package
+    total_package_volume_in_milliliters: Total volume of all units in package
+    updated_at: Time that the product information was updated
+    value_added_promotion_description: Contents of the value added promotion offer if available
+    volume_in_milliliters: Total volume of all units in package [Deprecated]
+  :body:
+
 - :title: Products at Store
   :route: /stores/:store_id/products
   :examples:
@@ -111,26 +186,90 @@ Products:
   - :path: /stores/511/products?where=is_vqa
     :desc: All VQA products at store #511
 
-Stores:
+Store Resources:
 - :title: Stores with Product
   :route: /products/:product_id/stores
-- :title: Search Stores
-  :route: /stores
-- :title: Store Details
-  :route: /stores/:store_id
+  :examples:
+  - :path: /products/18/stores
+    :desc: Stores that stock product #18
 
-Inventories:
-- :title: Search Inventories
+- :title: Stores
+  :route: /stores
+  :examples:
+  - :path: /stores
+    :desc: All stores
+
+- :title: Store
+  :route: /stores/:store_id
+  :examples:
+  - :path: /stores/511
+    :desc: Store #511
+  :pairs:
+    address_line_1: Street address
+    address_line_2: Secondary address information (Not all stores)
+    city: City the store is in
+    fax: Fax number (not all stores have one)
+    has_beer_cold_room: True if the store has a walk-in beer fridge
+    has_bilingual_services: True if the store has bilingual services
+    has_parking: True if the store has a parking lot
+    has_product_consultant: True if the store has a product consultant on staff
+    has_special_occasion_permits: True if the store can issue special occasion permits
+    has_tasting_bar: True if the store has a tasting bar
+    has_transit_access: True if the store is accessible by public transit
+    has_vintages_corner: True if the store has a Vintages area
+    has_wheelchair_accessability: True if the store can be entered via wheelchair
+    id: LCBO store number
+    inventory_count: Total inventory units at the store
+    inventory_price_in_cents: Total retail value of all products at the store
+    inventory_volume_in_milliliters: Total volume of all products at the store
+    is_dead: When a store is removed from the store catalog it is marked as "dead"
+    latitude: Reported latitude
+    longitude: Reported longitude
+    name: Official LCBO store name
+    postal_code: Postal code
+    products_count: Total unique products at the store
+    store_no: LCBO store number [Deprecated]
+    "[sunday..monday]_close": Minutes since midnight that the store closes
+    "[sunday..monday]_open": Minutes since midnight that the store opens
+    tags: A string of tags that reflect the store
+    telephone: Telephone number
+    updated_at: Time that the store information was updated
+
+Inventory Resources:
+- :title: Inventories
   :route: /inventories
-- :title: Inventory Details
+  :examples:
+  - :path: /inventories
+    :desc: All inventories
+
+- :title: Inventory
   :route: /stores/:store_id/products/:product_id/inventory
+  :examples:
+  - :path: /stores/511/products/18/inventory
+    :desc: Inventory of product 18 at store 511
+
 - :title: Product Inventories
   :route: /products/:product_id/inventories
+  :examples:
+  - :path: /products/18/inventories
+    :desc: All inventories for product 18
 
-History:
+History Resources:
 - :title: Product History
   :route: /products/:product_id/history
+  :examples:
+  - :path: /products/18/history
+    :desc: History for product 18
+
 - :title: Store History
   :route: /stores/:store_id/history
+  :examples:
+  - :path: /stores/511/history
+    :desc: History for store 511
+
 - :title: Inventory History
   :route: /stores/:store_id/products/:product_id/history
+  :examples:
+  - :path: /stores/511/products/18/history
+    :desc: Inventory history for product 18 at store 511
+
