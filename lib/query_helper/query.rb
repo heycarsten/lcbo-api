@@ -57,9 +57,9 @@ module QueryHelper
       end
       case ord
       when 'asc'
-        :"#{table}__#{field}".asc
+        :"#{table}__#{field}".asc(:nulls => :last)
       when 'desc', nil
-        :"#{table}__#{field}".desc
+        :"#{table}__#{field}".desc(:nulls => :last)
       end
     end
 

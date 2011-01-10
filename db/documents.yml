@@ -76,28 +76,40 @@ Datasets:
     :where_not: Filter results where these fields are false
     :order: Order by this field
   :examples:
-  - :path: /datasets?order=created_at.asc
-    :desc: List all datasets from oldest to newest
+  - :path: /datasets
+    :desc: Page all datasets
   :body:
+
 - :title: Dataset
   :route: /datasets/:dataset_id
   :examples:
-  - :path: /dataset/1
-    :desc: Show the current dataset
+  - :path: /datasets/1
+    :desc: Get a specific dataset
 
 Products:
-- :title: Search Products
+- :title: Products
   :route: /products
   :examples:
   - :path: /products?q=waupoos
-    :desc: Full text product search
+    :desc: Full text product search for "waupoos"
   - :path: /products?geo=queen+and+spadina
-    :desc: Geospatial search on products
-  - :path: /products?
+    :desc: Geospatial search on products near "queen and spadina"
+  - :path: /products
+    :desc: Page through all products
+  - :path: /products?where=is_vqa,order=released_on.asc
+    :desc: Page through all VQA products ordered by release date
 - :title: Product Details
   :route: /products/:product_id
-- :title: Search Products at Store
+  :examples:
+  - :path: /products/18
+    :desc: Show product #18
+- :title: Products at Store
   :route: /stores/:store_id/products
+  :examples:
+  - :path: /stores/511/products
+    :desc: All products available at store #511
+  - :path: /stores/511/products?where=is_vqa
+    :desc: All VQA products at store #511
 
 Stores:
 - :title: Stores with Product
