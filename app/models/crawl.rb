@@ -36,6 +36,8 @@ class Crawl < Sequel::Model
         key,
         hsh[key].is_a?(Array) ? hsh[key] : YAML.load(hsh[key])
       ] }]
+    ).merge(
+      :csv_dump => "http://static.lcboapi.com/datasets/#{hsh[:id]}.zip"
     )
   end
 

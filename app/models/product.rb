@@ -8,10 +8,16 @@ class Product < Sequel::Model
   many_to_one :crawl
   one_to_many :inventories
 
+  def self.public_fields
+    @public_fields ||= begin
+      columns - [:created_at, :crawl_id, :store_id, :product_id]
+    end
+  end
+
   def self.as_json(hsh)
     hsh.
-      merge(:product_no => hsh[:id]).
-      except(:created_at, :crawl_id, :store_id, :product_id)
+      slice(*public_fields).
+      merge(:product_no => hsh[:id])
   end
 
   def self.place(attrs)

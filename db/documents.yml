@@ -12,12 +12,10 @@ Information:
     that come with having a single provider of alcoholic beverages in a large
     geographical area.
     
-    ### Intended Use
+    ### Use-Cases
     
     The API is intended to provide data to mobile and web applications, an
     example of such an application is [LCBO Search](http://lcbosearch.com).
-    
-    ### Other Use-Cases
     
     If you plan on performing hundreds of queries per second for uses such as
     data analysis then you should download the latest dataset and perform these
@@ -30,30 +28,30 @@ Information:
     love to hear from you if you want to do something with the data but are not
     sure how to get started. You can reach me through
     [Twitter](http://twitter.com/heycarsten), and by
-    [email](mailto:heycarsten@gmail.com).
-    
-    I will answer any reasonable questions via email, please don't ask me to
-    phone you.
+    [email](mailto:heycarsten@gmail.com). Please don't ask me to phone you.
+
 - :title: Frequently Asked Questions
   :menu: FAQ
   :body: |
     ### Is it free?
     
     Absolutely! There is no desire or intention to charge for the use of the
-    API. I only ask that you tell me about what you are making with it.
-    It costs roughly $50/month to run LCBO API,
-    [donations](http://www.pledgie.com/campaigns/8126) are awesome.
+    API. I only ask that you tell me about what you are making with it. It costs
+    roughly $50/month to host the project,
+    [donations](http://www.pledgie.com/campaigns/8126) are very helpful.
     
     ### Where does the data come from?
     
-    The LCBO's website is periodically crawled to get up-to-date information.
-    Search engines like Google use this same technique to index web pages.
+    Why, from the LCBO of course! Their website is periodically crawled to get
+    up-to-date information. Search engines like Google use this same technique
+    to index web pages.
     
     ### Why did you do this?
     
     I feel that publicly available information should be free and accessible in
     as many ways as possible. I want to see what individuals will do with this
-    information when presented with it in an accessible format.
+    information when presented with it in an accessible format. And I wanted
+    an LCBO app for my iPhone.
     
     ### How does it work?
     
@@ -67,7 +65,7 @@ Information:
     
     ### Is it open source?
     
-    The [parser](http://github.com/heycarsten/lcbo) is on GitHub, my intention
+    The [parser](http://github.com/heycarsten/lcbo) is open source, my intention
     is to eventually open source the API service too in the future.
 
 Datasets:

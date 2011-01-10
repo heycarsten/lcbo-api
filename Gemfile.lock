@@ -100,6 +100,9 @@ GEM
     rake (0.8.7)
     rdiscount (1.6.5)
     redis (2.1.1)
+    right_aws (2.0.0)
+      right_http_connection (>= 1.2.1)
+    right_http_connection (1.2.4)
     rspec (2.4.0)
       rspec-core (~> 2.4.0)
       rspec-expectations (~> 2.4.0)
@@ -113,6 +116,7 @@ GEM
       activesupport (~> 3.0)
       railties (~> 3.0)
       rspec (~> 2.4.0)
+    rubyzip (0.9.4)
     rvm (1.1.12)
     sequel (3.19.0)
     stringex (1.2.0)
@@ -126,6 +130,8 @@ GEM
       aaronh-chronic (>= 0.3.9)
       activesupport (>= 2.3.4)
     yajl-ruby (0.7.8)
+    zippy (0.1.0)
+      rubyzip (>= 0.9.1)
 
 PLATFORMS
   ruby
@@ -147,9 +153,11 @@ DEPENDENCIES
   rails (= 3.0.3)
   rdiscount
   redis
+  right_aws
   rspec-rails
   rvm
   sequel
   stringex
   whenever
   yajl-ruby
+  zippy

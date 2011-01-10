@@ -18,6 +18,8 @@ gem 'whenever',    :require => false
 gem 'capistrano',  :require => false
 gem 'rvm',         :require => false
 gem 'colored'
+gem 'zippy'
+gem 'right_aws'
 gem 'hoptoad_notifier'
 
 group :development do

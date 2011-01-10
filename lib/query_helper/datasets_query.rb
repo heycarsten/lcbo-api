@@ -16,6 +16,7 @@ module QueryHelper
     def self.sortable_fields
       %w[
         id
+        created_at
         total_products
         total_stores
         total_inventories
@@ -44,8 +45,8 @@ module QueryHelper
 
     def result
       h = {}
-      h[:pager]   = pager
-      h[:result]  = page_dataset.all.map { |row| Crawl.as_json(row) }
+      h[:pager]  = pager
+      h[:result] = page_dataset.all.map { |row| Crawl.as_json(row) }
       h
     end
 

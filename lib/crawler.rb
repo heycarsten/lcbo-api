@@ -125,6 +125,11 @@ class Crawler < Boticus::Bot
     Inventory.commit(model.id)
   end
 
+  desc 'Exporting CSV data'
+  task :export do
+    Exporter.run(model.id)
+  end
+
   desc 'Flushing page caches'
   task :flush_caches do
     LCBOAPI.flush
