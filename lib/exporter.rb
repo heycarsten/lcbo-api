@@ -34,7 +34,7 @@ class Exporter
   end
 
   def upload_archive
-    @s3.store("datasets/#{@key}.zip", open(@zip), ENV['S3_BUCKET'],
+    @s3.store("datasets/#{@key}.zip", open(@zip), LCBOAPI[:s3][:bucket],
       :content_type => 'application/zip',
       :access => :public_read
     )
