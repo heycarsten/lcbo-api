@@ -32,11 +32,8 @@ Information:
     [Twitter](http://twitter.com/heycarsten), and by
     [email](mailto:heycarsten@gmail.com).
     
-    *Please __do not__ contact me if your message reads like this:*
-    
-    > Carsten, I am [name] from [company]. I wanted to reach out to you about
-    > your LCBO API. We need to talk XXX-XXX-XXXX.
-    
+    I will answer any reasonable questions via email, please don't ask me to
+    phone you.
 - :title: Frequently Asked Questions
   :menu: FAQ
   :body: |
@@ -77,9 +74,6 @@ Datasets:
 - :title: Datasets
   :route: /datasets
   :params:
-    :per_page: |
-      Defines the number of results per page. Minimum <%= QueryHelper %>
-    :page: Page number
     :where: Filter results where these fields are true
     :where_not: Filter results where these fields are false
     :order: Order by this field

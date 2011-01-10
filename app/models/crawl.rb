@@ -2,15 +2,17 @@ class Crawl < Sequel::Model
 
   class StateError < StandardError; end
 
-  plugin :redis
-  plugin :timestamps, :update_on_create => true
-  plugin :serialization, :yaml,
+  SERIALIZED_FIELDS = [
     :store_ids,
     :product_ids,
     :added_product_ids,
     :added_store_ids,
     :removed_product_ids,
-    :removed_store_ids
+    :removed_store_ids ]
+
+  plugin :redis
+  plugin :timestamps, :update_on_create => true
+  plugin :serialization, :yaml, *SERIALIZED_FIELDS
 
   list :crawled_store_ids,   :integer
   list :crawled_product_ids, :integer
@@ -18,6 +20,24 @@ class Crawl < Sequel::Model
 
   many_to_one :crawl_event
   one_to_many :crawl_events
+
+  def self.as_json(hsh)
+    hsh.slice(
+      :id,
+      :total_products,
+      :total_stores,
+      :total_inventories,
+      :total_product_inventory_count,
+      :total_product_inventory_volume_in_milliliters,
+      :total_product_inventory_price_in_cents,
+      :created_at
+    ).merge(
+      Hash[SERIALIZED_FIELDS.map { |key| [
+        key,
+        hsh[key].is_a?(Array) ? hsh[key] : YAML.load(hsh[key])
+      ] }]
+    )
+  end
 
   def self.latest
     order(:id.desc).first
@@ -106,6 +126,10 @@ class Crawl < Sequel::Model
       :created_at => Time.now.utc)
     self.crawl_event_id = ce.id
     save
+  end
+
+  def as_json
+    self.class.as_json(super['values'])
   end
 
   protected

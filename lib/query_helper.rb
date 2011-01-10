@@ -22,6 +22,8 @@ module QueryHelper
       Product[*args]
     when :inventory
       Inventory[*args]
+    when :dataset
+      Dataset[*args]
     else
       raise ArgumentError, "unrecognized type: #{type.inspect}"
     end
@@ -39,6 +41,8 @@ module QueryHelper
       InventoriesQuery.new(request, params).result
     when :revisions
       RevisionsQuery.new(request, params).result
+    when :datasets
+      DatasetsQuery.new(request, params).result
     when :store
       { :result => find(:store, params[:id]) }
     when :product
@@ -47,6 +51,8 @@ module QueryHelper
       { :store   => find(:store, params[:store_id]),
         :product => find(:product, params[:product_id]),
         :result  => find(:inventory, params[:product_id], params[:store_id]) }
+    when :dataset
+      { :result => find(:dataset, params[:id]) }
     else
       raise ArgumentError, "unrecognized type: #{type.inspect}"
     end

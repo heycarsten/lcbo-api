@@ -24,7 +24,10 @@ group :development do
   gem 'awesome_print'
 end
 
-group :test, :development do
+group :test do
   gem 'fabrication'
+end
+
+group :test, :development do
   gem 'rspec-rails'
 end
