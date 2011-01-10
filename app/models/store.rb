@@ -9,17 +9,18 @@ class Store < Sequel::Model
   many_to_one :crawl
   one_to_many :inventories
 
+  PRIVATE_FIELDS = [
+    :latrad, :lngrad, :created_at, :crawl_id, :store_id, :product_id
+  ]
+
   def self.public_fields
-    @public_fields ||= begin
-      columns - [:latrad, :lngrad, :created_at, :crawl_id, :store_id,
-        :product_id]
-    end
+    @public_fields ||= (columns - PRIVATE_FIELDS)
   end
 
   def self.as_json(hsh)
     return hsh.as_json if hsh.is_a?(Store)
     hsh.
-      slice(*public_fields).
+      except(*PRIVATE_FIELDS).
       merge(:store_no => hsh[:id])
   end
 

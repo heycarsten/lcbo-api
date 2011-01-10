@@ -7,15 +7,15 @@ class Inventory < Sequel::Model
   many_to_one :product
   many_to_one :store
 
+  PRIVATE_FIELDS = [:crawl_id]
+
   def self.public_fields
-    @public_fields ||= begin
-      columns - [:crawl_id]
-    end
+    @public_fields ||= (columns - [:crawl_id])
   end
 
   def self.as_json(hsh)
     hsh.
-      slice(*public_fields).
+      except(*PRIVATE_FIELDS).
       merge(:product_no => hsh[:product_id], :store_no => hsh[:store_id])
   end
 
