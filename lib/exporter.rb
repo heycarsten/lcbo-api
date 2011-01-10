@@ -3,8 +3,8 @@ class Exporter
   def initialize(key)
     @key = key
     @s3  = AWS::S3::S3Object
-    @dir = Dir.mktmpdir
-    File.chmod(0766, @dir)
+    @dir = File.join(Dir.tmpdir, 'lcboapi-tmp')
+    Dir.mkdir(@dir, 0777)
     @zip = File.join(@dir, Time.now.strftime('lcbo-%Y%m%d.zip'))
   end
 
@@ -16,6 +16,7 @@ class Exporter
     copy_tables
     make_archive
     upload_archive
+    cleanup
   end
 
   def copy_tables
@@ -37,6 +38,10 @@ class Exporter
       :content_type => 'application/zip',
       :access => :public_read
     )
+  end
+
+  def cleanup
+    FileUtils.remove_dir(@dir)
   end
 
   private
