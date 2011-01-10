@@ -24,6 +24,11 @@ namespace :deploy do
   task :restart do
     run "touch #{current_path}/tmp/restart.txt"
   end
+
+  desc 'Symlink app configuration'
+  task :symlink do
+    run "ln -nfs #{shared_path}/config/lcboapi.yml #{release_path}/config/lcboapi.yml"
+  end
 end
 
 namespace :db do

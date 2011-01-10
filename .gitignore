@@ -1,5 +1,6 @@
 .bundle
 config/database.yml
+config/lcboapi.yml
 db/*.rdb
 log/*.log
 tmp/**/*

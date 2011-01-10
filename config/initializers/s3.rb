@@ -1,4 +1,4 @@
 AWS::S3::Base.establish_connection!(
-  :access_key_id     => ENV['S3_ACCESS_KEY'],
-  :secret_access_key => ENV['S3_SECRET_KEY']
+  :access_key_id     => LCBOAPI[:s3][:access_key],
+  :secret_access_key => LCBOAPI[:s3][:secret_key]
 )
