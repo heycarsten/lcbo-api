@@ -4,6 +4,7 @@ class Exporter
     @key = key
     @s3  = AWS::S3::S3Object
     @dir = Dir.mktmpdir
+    File.chmod(0766, @dir)
     @zip = File.join(@dir, Time.now.strftime('lcbo-%Y%m%d.zip'))
   end
 
