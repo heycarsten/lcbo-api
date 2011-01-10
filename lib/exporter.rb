@@ -2,7 +2,10 @@ class Exporter
 
   def initialize(key)
     @key = key
-    @s3  = RightAws::S3Interface.new(ENV['S3_ACCESS_KEY'], ENV['S3_SECRET_KEY'])
+    @s3  = RightAws::S3Interface.new(ENV['S3_ACCESS_KEY'], ENV['S3_SECRET_KEY'],
+      :protocol => 'http',
+      :port => 80,
+    )
     @dir = Dir.mktmpdir
     @zip = File.join(@dir, Time.now.strftime('lcbo-%Y%m%d.zip'))
   end
