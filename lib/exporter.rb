@@ -4,7 +4,7 @@ class Exporter
     @key = key
     @s3  = AWS::S3::S3Object
     @dir = File.join(Dir.tmpdir, 'lcboapi-tmp')
-    Dir.mkdir(@dir, 0777)
+    `mkdir #{@dir} && chmod 0777 #{@dir}`
     @zip = File.join(@dir, Time.now.strftime('lcbo-%Y%m%d.zip'))
   end
 
@@ -41,7 +41,7 @@ class Exporter
   end
 
   def cleanup
-    FileUtils.remove_dir(@dir)
+    `rm -rf #{@dir}`
   end
 
   private
