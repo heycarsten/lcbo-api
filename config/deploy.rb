@@ -15,6 +15,7 @@ set :whenever_command,  'bundle exec whenever'
 server '69.164.217.92', :app, :web, :db, :primary => true
 
 after 'deploy:update_code', 'db:symlink'
+after 'deploy:update_code', 'config:symlink'
 
 namespace :deploy do
   task :start do; end
@@ -24,7 +25,9 @@ namespace :deploy do
   task :restart do
     run "touch #{current_path}/tmp/restart.txt"
   end
+end
 
+namespace :config do
   desc 'Symlink app configuration'
   task :symlink do
     run "ln -nfs #{shared_path}/config/lcboapi.yml #{release_path}/config/lcboapi.yml"
