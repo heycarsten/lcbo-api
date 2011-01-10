@@ -10,24 +10,23 @@ var LCBOAPI = new function() {
 
 LCBOAPI.UsageExampleForm = new function() {
   this.init = function() {
-    if (!$('#query').length) return;
     $('.usage-example-form').submit(formHasBeenSubmitted);
-    getJSON();
+    $('.usage-example-form').each(function(i, form) {
+      refeshForm(form);
+    });
+  };
+
+  function refeshForm(form) {
+    var url = $(form).find('#query').val().trim();
+    $.get(url, function(data) {
+      var beaut = js_beautify(data, { indent_size: 2, indent_char: ' ' });
+      $(form).find('.example-json-response').text(beaut);
+    }, 'text');
   };
 
   function formHasBeenSubmitted(event) {
     event.preventDefault();
-    getJSON();
-  };
-
-  function getJSON() {
-    var url = $('#query').val().trim();
-    $.get(url, replaceText, 'text');
-  };
-
-  function replaceText(data) {
-    var beaut = js_beautify(data, { indent_size: 2, indent_char: ' ' });
-    $('.example-json-response').text(beaut);
+    refeshForm(this);
   };
 };
 
