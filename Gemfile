@@ -19,7 +19,7 @@ gem 'capistrano',  :require => false
 gem 'rvm',         :require => false
 gem 'colored'
 gem 'zippy'
-gem 'right_aws'
+gem 'aws-s3',      :require => 'aws/s3'
 gem 'hoptoad_notifier'
 
 group :development do

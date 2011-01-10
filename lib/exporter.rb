@@ -2,10 +2,7 @@ class Exporter
 
   def initialize(key)
     @key = key
-    @s3  = RightAws::S3Interface.new(ENV['S3_ACCESS_KEY'], ENV['S3_SECRET_KEY'],
-      :protocol => 'http',
-      :port => 80,
-    )
+    @s3  = AWS::S3::S3Object
     @dir = Dir.mktmpdir
     @zip = File.join(@dir, Time.now.strftime('lcbo-%Y%m%d.zip'))
   end
@@ -35,9 +32,9 @@ class Exporter
   end
 
   def upload_archive
-    @s3.put(ENV['S3_BUCKET'], "datasets/#{@key}.zip", open(@zip),
-      'x-amz-acl'    => 'public-read',
-      'Content-Type' => 'application/zip'
+    @s3.store("datasets/#{@key}.zip", open(@zip), ENV['S3_BUCKET'],
+      :content_type => 'application/zip',
+      :access => :public_read
     )
   end
 
