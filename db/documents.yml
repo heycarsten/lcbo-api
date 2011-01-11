@@ -5,7 +5,7 @@ Information:
     LCBO API was created by me, [Carsten Nielsen](http://heycarsten.com),
     a software developer from [Unspace Interactive](http://unspace.ca) in
     Toronto, Canada. I built it from the ground up using my favorite tools, you
-    can about that in the [FAQ](/docs/faq).
+    can read about that in the [FAQ](/docs/faq).
     
     The goal of LCBO API is to provide developers with an easy way to create
     intelligent applications that take advantage of the unique benefits
@@ -22,8 +22,8 @@ Information:
     
     If you plan on performing hundreds of queries per second for uses such as
     data analysis then you should download the latest [dataset](/docs/dataset)
-    and perform these operations offline. Let me know what you do, I'd love to
-    know!
+    and perform these operations offline. The datasets contain CSV data, if
+    you need a different format please ask.
     
     ### Contact
     
