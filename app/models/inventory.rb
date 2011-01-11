@@ -7,7 +7,7 @@ class Inventory < Sequel::Model
   many_to_one :product
   many_to_one :store
 
-  PRIVATE_FIELDS = [:crawl_id]
+  PRIVATE_FIELDS = [:crawl_id, :created_at]
 
   def self.public_fields
     @public_fields ||= (columns - [:crawl_id])

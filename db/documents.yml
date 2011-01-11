@@ -68,6 +68,85 @@ Information:
     The [parser](http://github.com/heycarsten/lcbo) is open source, my intention
     is to eventually open source the API service too in the future.
 
+- :title: API Conventions
+  :body: |
+    ### JSON Responses
+    
+    Every response from the API is wrapped in a "container" that in it's most
+    basic form looks like this:
+    
+        {
+          "status": 200,
+          "message": null,
+          "result": ...
+        }
+    
+    This allows the API to return meta-level information along with the data you
+    are requesting. For example, in the case of a Stores with Product request
+    the product object is returned with list of stores so that your application
+    does not need to perform two requests. 
+    
+    ### Errors
+
+    When an error occurs the response will look like this:
+    
+        {
+          "error": "bad_query_error",
+          "message": "A value supplied for the order parameter (id.desk) is not valid. It contains an invalid sort order (desk) for (id) try using: id.desc or id.asc instead.",
+          "result": null,
+          "status": 400
+        }
+    
+    Error messages are always as descriptive as possible, one of the design
+    goals for LCBO API was to make it as easy as possible to learn by trial and
+    error. There are a few different types of errors:
+    
+     * `no_results_error`: The geocoder returned no geometry for the geo query.
+     * `over_limit_error`: The geocoder has reached its daily limit of requests.
+     * `geocoder_error`: The geocoder can't geocode the query it was provided.
+     * `not_found_error`: A resource was not found (404)
+     * `bad_query_error`: One (or more) of the supplied query parameters is wrong.
+    
+    ### Pagination
+    
+    When the API returns collections of items (stores, products, or inventories)
+    it will paginate the results. You can control the number of items per page
+    through the `per_page` parameter.
+    
+    A typical pager object looks like this:
+    
+        {
+          "records_per_page": 20,
+          "total_record_count": 608,
+          "current_page_record_count": 20,
+          "is_first_page": false,
+          "is_final_page": false,
+          "current_page": 5,
+          "current_page_path": "/stores?page=5",
+          "next_page": 6,
+          "next_page_path": "/stores?page=6",
+          "previous_page": 4,
+          "previous_page_path": "/stores?page=4",
+          "final_page": 31,
+          "final_page_path": "/stores?page=31"
+        }
+    
+    It contains all of the information you need, plus more to navigate through
+    the pages in the result set.
+    
+    ### JSON-P
+    
+    JSON-P stands for "JSON with padding" which is a very confusing way of
+    saying JSON wrapped in a Javascript function call. It is used to circumvent
+    browser security limitations when trying to access resources via Javascript
+    from a different host than the containing page.
+    
+    One of the limitations to JSON-P is that the HTTP status can not be properly
+    set to an error level because the `<script>` element that is dynamically
+    written to the page will fail to load. Because of this all JSON-P requests
+    return a 200 status code, regardless of actual HTTP status. The "status"
+    node in the response container remains the proper value though.
+
 Dataset Resources:
 - :title: Datasets
   :route: /datasets
@@ -85,6 +164,27 @@ Dataset Resources:
   :examples:
   - :path: /datasets/1
     :desc: Get a specific dataset
+  :body: |
+    Datasets represent snapshots of all stores, products, and inventories at a
+    given time. They are created once per day and contain information such as
+    the IDs of stores and products that were added and removed since the
+    previous dataset.
+  :pairs:
+    id: Dataset identifier
+    total_products: Total unique retail products across all stores
+    total_stores: Total stores
+    total_inventories: Total inventory items across all stores
+    total_product_inventory_count: Total product units across all stores
+    total_product_inventory_volume_in_milliliters: Total volume of all product units across all stores
+    total_product_inventory_price_in_cents: Total retail value of all product units across all stores
+    created_at: The time the dataset was created
+    product_ids: List of all active product IDs at the time the dataset was created
+    store_ids: List of all active store IDs at the time the dataset was created
+    added_product_ids: List of product IDs that were added since the previous update
+    added_store_ids: List of store IDs that were added since the previous update
+    removed_product_ids: List of product IDs that were removed since the previous update
+    removed_store_ids: List of store IDs that were removed since the previous update
+    csv_dump: Contains a path to a ZIP archive of CSV files for stores, products, and inventories.
 
 Product Resources:
 - :title: Products
@@ -247,6 +347,20 @@ Inventory Resources:
   :examples:
   - :path: /stores/511/products/18/inventory
     :desc: Inventory of product 18 at store 511
+  :pairs:
+    product_id: Product ID
+    store_id: Store ID
+    is_dead: True if this inventory refers to a dead store and/or product
+    quantity: Reported quantity on hand of the product ID at store ID
+    updated_on: Reported date that quantity was updated
+    updated_at: Time that this inventory item was updated
+    product_no: Product ID [Deprecated]
+    store_no: Store ID [Deprecated]
+  :body: |
+    An inventory reflects the quantity of a product at a store, the
+    reported quantity is an estimate, quantities for seasonal and discontinued
+    products are also often inaccurate due to increased demand. This result
+    includes store and product resources as well.
 
 - :title: Product Inventories
   :route: /products/:product_id/inventories
@@ -260,16 +374,21 @@ History Resources:
   :examples:
   - :path: /products/18/history
     :desc: History for product 18
-
+  :body: |
+    Certain product fields are tracked over time and can be accessed.
+  
 - :title: Store History
   :route: /stores/:store_id/history
   :examples:
   - :path: /stores/511/history
     :desc: History for store 511
+  :body: |
+    Certain store fields are tracked over time and can be accessed.
 
 - :title: Inventory History
   :route: /stores/:store_id/products/:product_id/history
   :examples:
   - :path: /stores/511/products/18/history
     :desc: Inventory history for product 18 at store 511
-
+  :body: |
+    Inventories are tracked over time for every product at every store.
