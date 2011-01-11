@@ -3,24 +3,27 @@ Information:
 - :title: Introduction
   :body: |
     LCBO API was created by me, [Carsten Nielsen](http://heycarsten.com),
-    a software developer from Toronto, Canada. I built it from the ground up
-    using some of my favorite tools, you can read more about those in the
-    [FAQ](/docs/faq).
+    a software developer from [Unspace Interactive](http://unspace.ca) in
+    Toronto, Canada. I built it from the ground up using my favorite tools, you
+    can about that in the [FAQ](/docs/faq).
     
-    The goal of the service is to provide developers with an easy way to
-    create intelligent applications that take advantage of the unique benefits
-    that come with having a single provider of alcoholic beverages in a large
+    The goal of LCBO API is to provide developers with an easy way to create
+    intelligent applications that take advantage of the unique benefits
+    that come from having a single provider of alcoholic beverages in a large
     geographical area.
     
-    ### Use-Cases
+    ### Usage
     
-    The API is intended to provide data to mobile and web applications, an
-    example of such an application is [LCBO Search](http://lcbosearch.com).
+    The API is intended to provide data to mobile and web applications. Here are
+    some examples of real applications that use the API:
+    
+     * [LCBO Search](http://lcbosearch.com) by Carsten Nielsen [Web App]
+     * [Liquor, ON](http://hippofoundry.com/lcbo/) by Taylan Pince [iPhone App]
     
     If you plan on performing hundreds of queries per second for uses such as
-    data analysis then you should download the latest dataset and perform these
-    operations offline. [Datasets](/docs/dataset) are made available upon every
-    successful crawl and can be downloaded as often as necessary.
+    data analysis then you should download the latest [dataset](/docs/dataset)
+    and perform these operations offline. Let me know what you do, I'd love to
+    know!
     
     ### Contact
     
@@ -28,7 +31,7 @@ Information:
     love to hear from you if you want to do something with the data but are not
     sure how to get started. You can reach me through
     [Twitter](http://twitter.com/heycarsten), and by
-    [email](mailto:heycarsten@gmail.com). Please don't ask me to phone you.
+    [email](mailto:heycarsten@gmail.com).
 
 - :title: Frequently Asked Questions
   :menu: FAQ
@@ -55,19 +58,24 @@ Information:
     
     ### How does it work?
     
+    * [Ruby 1.9.2](http://tryruby.org)
+    * [RVM](http://rvm.beginrescueend.com)
     * [Rails 3](http://rubyonrails.org)
     * [Sequel](http://sequel.rubyforge.org)
     * [Redis](http://redis.io)
-    * [PostgreSQL](http://postgresql.org)
-    * [Passenger 3](http://www.modrails.com)
+    * [Postgres](http://postgresql.org)
     * [Nginx](http://wiki.nginx.org/Main)
     * [Linode](http://linode.com)
     
     ### Is it open source?
     
     The [parser](http://github.com/heycarsten/lcbo) is open source, my intention
-    is to eventually open source the API service too in the future.
-
+    is to eventually open source the API service too in the future. Here are
+    the current open source contributions:
+    
+    * [LCBO](http://github.com/heycarsten/lcbo) - HTML Parser
+    * [GCoder](http://github.com/heycarsten/gcoder) - Geocoding
+    
 - :title: API Conventions
   :body: |
     ### JSON Responses
