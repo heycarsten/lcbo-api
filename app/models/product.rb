@@ -8,7 +8,8 @@ class Product < Sequel::Model
   many_to_one :crawl
   one_to_many :inventories
 
-  PRIVATE_FIELDS = [:created_at, :crawl_id, :store_id, :product_id]
+  PRIVATE_FIELDS = [:created_at, :crawl_id, :store_id, :product_id,
+    :total_package_volume_in_milliliters]
 
   def self.public_fields
     @public_fields ||= (columns - PRIVATE_FIELDS)

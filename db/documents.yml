@@ -280,10 +280,9 @@ Product Resources:
     tags: A string of tags that reflect the product
     tasting_note: Professional tasting note (not available for all products)
     total_package_units: Number of units in a package
-    total_package_volume_in_milliliters: Total volume of all units in package
     updated_at: Time that the product information was updated
     value_added_promotion_description: Contents of the value added promotion offer if available
-    volume_in_milliliters: Total volume of all units in package [Deprecated]
+    volume_in_milliliters: Total volume of all units in package
   :body:
 
 - :title: Products at Store
