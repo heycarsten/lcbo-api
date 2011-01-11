@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
     QueryHelper::BadQueryError, :with => :render_exception
 
   before_filter :set_cache_control, :if => -> { Rails.env.production? }
+  after_filter  :set_status_jsonp,  :if => :api_request?
 
   protected
 
@@ -27,6 +28,10 @@ class ApplicationController < ActionController::Base
     response.etag                   = LCBOAPI.cache_stamp
     response.cache_control[:public] = true
     response.cache_control[:extras] = %W[ s-maxage=#{1.day} ]
+  end
+
+  def set_status_jsonp
+    response.status = 200 if params[:callback].present?
   end
 
   def render_exception(error)
