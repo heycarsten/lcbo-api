@@ -10,7 +10,7 @@ class Inventory < Sequel::Model
   PRIVATE_FIELDS = [:crawl_id, :created_at]
 
   def self.public_fields
-    @public_fields ||= (columns - [:crawl_id])
+    @public_fields ||= (columns - PRIVATE_FIELDS)
   end
 
   def self.as_json(hsh)
