@@ -72,6 +72,7 @@ module QueryHelper
     end
 
     def where=(value)
+      return unless self.class.filterable_fields.any?
       @where = split_filter_list(:where, value)
     end
 
@@ -80,6 +81,7 @@ module QueryHelper
     end
 
     def where_not=(value)
+      return unless self.class.filterable_fields.any?
       @where_not = split_filter_list(:where_not, value)
     end
 
@@ -93,6 +95,7 @@ module QueryHelper
     end
 
     def order=(value)
+      return unless self.class.sortable_fields.any?
       @order = split_order_list(value)
     end
 
