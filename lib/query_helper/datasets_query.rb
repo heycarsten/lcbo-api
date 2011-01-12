@@ -43,9 +43,8 @@ module QueryHelper
       DB[:crawls].filter(:state => 'finished').order(*order)
     end
 
-    def result
-      h = {}
-      h[:pager]  = pager
+    def as_json
+      h = super
       h[:result] = page_dataset.all.map { |row| Crawl.as_json(row) }
       h
     end

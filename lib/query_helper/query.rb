@@ -17,6 +17,10 @@ module QueryHelper
       20
     end
 
+    def self.csv_limit
+      500
+    end
+
     def self.table
       raise NotImplementedError, "#{self}#table needs to be implmented"
     end
@@ -136,6 +140,14 @@ module QueryHelper
       @page_dataset ||= dataset.paginate(page, per_page)
     end
 
+    def csv_dataset
+      @csv_dataset ||= dataset.limit(self.class.csv_limit)
+    end
+
+    def db
+      @db ||= DB[table]
+    end
+
     def path_for_page(page_num)
       q = request.fullpath.dup
       case
@@ -170,10 +182,14 @@ module QueryHelper
       end
     end
 
-    def result
+    def as_json
       h = {}
       h[:pager] = pager
       h
+    end
+
+    def as_csv
+      []
     end
 
     protected

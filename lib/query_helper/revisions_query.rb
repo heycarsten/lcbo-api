@@ -70,9 +70,17 @@ module QueryHelper
       end
     end
 
-    def result
-      h = {}
-      h[:pager]   = pager
+    def as_csv
+      FasterCSV.generate(:encoding => 'UTF-8') do |csv|
+        csv << db.columns
+        csv_dataset.all do |row|
+          csv << row.map { |r| db.columns[r] }
+        end
+      end
+    end
+
+    def as_json
+      h = super
       h[:store]   = store   if store_id
       h[:product] = product if product_id
       h[:result]  = page_dataset.all.map { |row| row.except(:crawl_id) }

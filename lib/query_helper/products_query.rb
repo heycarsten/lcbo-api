@@ -68,9 +68,17 @@ module QueryHelper
       order(*order)
     end
 
-    def result
-      h = {}
-      h[:pager] = pager
+    def as_csv
+      FasterCSV.generate(:encoding => 'UTF-8') do |csv|
+        csv << Product.public_fields
+        csv_dataset.all do |row|
+          csv << Product.as_csv(row)
+        end
+      end
+    end
+
+    def as_json
+      h = super
       h[:result] = page_dataset.all.map { |row| Product.as_json(row) }
       h[:suggestion] = if 0 == h[:result].size
         has_fulltext? ? Fuzz[:products, q] : nil

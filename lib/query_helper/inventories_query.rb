@@ -81,9 +81,17 @@ module QueryHelper
       order(*order)
     end
 
-    def result
-      h = {}
-      h[:pager]   = pager
+    def as_csv
+      FasterCSV.generate(:encoding => 'UTF-8') do |csv|
+        csv << Inventory.public_fields
+        csv_dataset.all do |row|
+          csv << Inventory.as_csv(row)
+        end
+      end
+    end
+
+    def as_json
+      h = super
       h[:store]   = store   if store_id
       h[:product] = product if product_id
       h[:result]  = page_dataset.all.map { |row| Inventory.as_json(row) }

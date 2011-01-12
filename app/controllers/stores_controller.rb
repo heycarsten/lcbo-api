@@ -1,11 +1,21 @@
 class StoresController < ApplicationController
 
   def index
-    render_query :stores, params
+    @query = QueryHelper(:stores)
+
+    respond_to do |wants|
+      wants.csv { render :text => @query.as_csv }
+      wants.any { render_json @query.as_json }
+    end
   end
 
   def show
-    render_query :store, params
+    @query = QueryHelper(:store)
+
+    respond_to do |wants|
+      wants.csv { render :text => @query.as_csv }
+      wants.any { render_json @query.as_json }
+    end
   end
 
 end

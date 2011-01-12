@@ -5,6 +5,7 @@ class Store < Sequel::Model
   plugin :timestamps, :update_on_create => true
   plugin :geo
   plugin :archive, :crawl_id
+  plugin :csv
 
   many_to_one :crawl
   one_to_many :inventories

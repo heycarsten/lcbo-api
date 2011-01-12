@@ -24,6 +24,10 @@ class ApplicationController < ActionController::Base
     params[:version] ? true : false
   end
 
+  def jsonp?
+    request.format.json? && params[:callback].present?
+  end
+
   def set_cache_control
     response.etag                   = LCBOAPI.cache_stamp
     response.cache_control[:public] = true
@@ -31,7 +35,11 @@ class ApplicationController < ActionController::Base
   end
 
   def set_status_jsonp
-    response.status = 200 if params[:callback].present?
+    response.status = 200 if jsonp?
+  end
+
+  def QueryHelper(type)
+    QueryHelper.query(type, request, params)
   end
 
   def render_exception(error)
@@ -45,32 +53,18 @@ class ApplicationController < ActionController::Base
       else
         400
       end
-    render_data decorate_data(h)
+    render_json(h)
   end
 
-  def render_query(type, params)
-    render_data(
-      decorate_data(
-        QueryHelper.query(type, request, params)
-      )
-    )
-  end
-
-  def render_resource(data, options = {})
-    render_data(
-      decorate_data({ :result => data.as_json }, options)
-    )
-  end
-
-  def render_data(data, options = {})
+  def render_json(data, options = {})
     h = {}
-    h[:json] = data
-    h[:callback] = params[:callback] if params[:callback]
+    h[:json] = wrap_json(data)
+    h[:callback] = params[:callback] if jsonp?
     response.content_type = 'application/json'
     render(h.merge(options))
   end
 
-  def decorate_data(data, options = {})
+  def wrap_json(data, options = {})
     { :status => response.status, :message => nil }.
       merge(data).
       merge(options)

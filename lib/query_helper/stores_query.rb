@@ -144,11 +144,20 @@ module QueryHelper
       QueryHelper.find(:product, product_id)
     end
 
-    def result
+    def as_json
       h = super
       h[:product] = product if product_id
       h[:result]  = page_dataset.all.map { |row| Store.as_json(row) }
       h
+    end
+
+    def as_csv
+      FasterCSV.generate(:encoding => 'UTF-8') do |csv|
+        csv << Store.public_fields
+        csv_dataset.all do |row|
+          csv << Store.as_csv(row)
+        end
+      end
     end
 
     private

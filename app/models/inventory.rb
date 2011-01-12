@@ -2,6 +2,7 @@ class Inventory < Sequel::Model
 
   plugin :timestamps, :update_on_create => true
   plugin :archive, :updated_on
+  plugin :csv
 
   many_to_one :crawl
   many_to_one :product
