@@ -18,11 +18,11 @@ module QueryHelper
     end
 
     def self.csv_limit
-      500
+      1000
     end
 
     def self.table
-      raise NotImplementedError, "#{self}#table needs to be implmented"
+      raise NotImplementedError, "#{self}#table needs to be implemented."
     end
 
     def self.filterable_fields
@@ -34,7 +34,7 @@ module QueryHelper
     end
 
     def self.order
-      raise NotImplementedError, "#{self}#order needs to be implmented"
+      raise NotImplementedError, "#{self}#order needs to be implemented."
     end
 
     def self.where
