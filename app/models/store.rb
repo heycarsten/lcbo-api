@@ -5,25 +5,19 @@ class Store < Sequel::Model
   plugin :timestamps, :update_on_create => true
   plugin :geo
   plugin :archive, :crawl_id
-  plugin :csv
+  plugin :api,
+    :private => [
+      :latrad,
+      :lngrad,
+      :created_at,
+      :crawl_id,
+      :store_id,
+      :product_id
+    ],
+    :aliases => { :id => :store_no }
 
   many_to_one :crawl
   one_to_many :inventories
-
-  PRIVATE_FIELDS = [
-    :latrad, :lngrad, :created_at, :crawl_id, :store_id, :product_id
-  ]
-
-  def self.public_fields
-    @public_fields ||= (columns - PRIVATE_FIELDS)
-  end
-
-  def self.as_json(hsh)
-    return hsh.as_json if hsh.is_a?(Store)
-    hsh.
-      except(*PRIVATE_FIELDS).
-      merge(:store_no => hsh[:id])
-  end
 
   def self.place(attrs)
     id = attrs[:id]
@@ -38,10 +32,6 @@ class Store < Sequel::Model
         :store_id => :id,
         :product_id => product_id).
       filter('inventories.quantity > 0')
-  end
-
-  def as_json
-    self.class.as_json(super['values'])
   end
 
   def set_latlonrad

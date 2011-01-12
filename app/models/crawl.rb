@@ -13,16 +13,9 @@ class Crawl < Sequel::Model
   plugin :redis
   plugin :timestamps, :update_on_create => true
   plugin :serialization, :yaml, *SERIALIZED_FIELDS
-
-  list :crawled_store_ids,   :integer
-  list :crawled_product_ids, :integer
-  list :jobs
-
-  many_to_one :crawl_event
-  one_to_many :crawl_events
-
-  def self.as_json(hsh)
-    hsh.slice(
+  plugin :api,
+    :not_csv => SERIALIZED_FIELDS,
+    :public  => SERIALIZED_FIELDS + [
       :id,
       :total_products,
       :total_stores,
@@ -31,14 +24,23 @@ class Crawl < Sequel::Model
       :total_product_inventory_volume_in_milliliters,
       :total_product_inventory_price_in_cents,
       :created_at
-    ).merge(
+    ]
+
+  list :crawled_store_ids,   :integer
+  list :crawled_product_ids, :integer
+  list :jobs
+
+  many_to_one :crawl_event
+  one_to_many :crawl_events
+
+  def self.as_json(obj)
+    hsh = super
+    hsh.merge(
       Hash[SERIALIZED_FIELDS.map { |key| [
         key,
         hsh[key].is_a?(Array) ? hsh[key] : YAML.load(hsh[key])
       ] }]
-    ).merge(
-      :csv_dump => "http://static.lcboapi.com/datasets/#{hsh[:id]}.zip"
-    )
+    ).merge(:csv_dump => "http://static.lcboapi.com/datasets/#{hsh[:id]}.zip")
   end
 
   def self.latest
@@ -128,10 +130,6 @@ class Crawl < Sequel::Model
       :created_at => Time.now.utc)
     self.crawl_event_id = ce.id
     save
-  end
-
-  def as_json
-    self.class.as_json(super['values'])
   end
 
   protected

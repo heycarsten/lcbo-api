@@ -9,7 +9,6 @@ DB = Sequel.connect(
 )
 
 Sequel::Model.plugin(:active_model)
-Sequel::Model.plugin(:exceptable_find)
 
 Fuzz.keyspace = Rails.env
 Fuzz.add_dictionary(:products,

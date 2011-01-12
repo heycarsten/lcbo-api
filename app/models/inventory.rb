@@ -3,22 +3,13 @@ class Inventory < Sequel::Model
   plugin :timestamps, :update_on_create => true
   plugin :archive, :updated_on
   plugin :csv
+  plugin :api,
+    :private => [:crawl_id, :created_at],
+    :aliases => { :product_id => :product_no, :store_id => :store_no }
 
   many_to_one :crawl
   many_to_one :product
   many_to_one :store
-
-  PRIVATE_FIELDS = [:crawl_id, :created_at]
-
-  def self.public_fields
-    @public_fields ||= (columns - PRIVATE_FIELDS)
-  end
-
-  def self.as_json(hsh)
-    hsh.
-      except(*PRIVATE_FIELDS).
-      merge(:product_no => hsh[:product_id], :store_no => hsh[:store_id])
-  end
 
   def self.place(attrs)
     pid, sid = attrs.delete(:product_id), attrs.delete(:store_id)
@@ -31,10 +22,6 @@ class Inventory < Sequel::Model
       attrs[:store_id] = sid
       dataset.insert(attrs)
     end
-  end
-
-  def as_json
-    self.class.as_json(super['values'])
   end
 
 end
