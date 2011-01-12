@@ -1,7 +1,7 @@
 class StoresController < ApplicationController
 
   def index
-    @query = QueryHelper(:stores)
+    @query = query(:stores)
 
     respond_to do |wants|
       wants.csv { render :text => @query.as_csv }
@@ -10,7 +10,7 @@ class StoresController < ApplicationController
   end
 
   def show
-    @query = QueryHelper(:store)
+    @query = query(:store)
 
     respond_to do |wants|
       wants.csv { render :text => @query.as_csv }

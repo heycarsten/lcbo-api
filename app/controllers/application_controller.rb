@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
     response.status = 200 if jsonp?
   end
 
-  def QueryHelper(type)
+  def query(type)
     QueryHelper.query(type, request, params)
   end
 
@@ -56,18 +56,12 @@ class ApplicationController < ActionController::Base
     render_json(h)
   end
 
-  def render_json(data, options = {})
-    h = {}
-    h[:json] = wrap_json(data)
-    h[:callback] = params[:callback] if jsonp?
+  def render_json(data)
     response.content_type = 'application/json'
-    render(h.merge(options))
-  end
-
-  def wrap_json(data, options = {})
-    { :status => response.status, :message => nil }.
-      merge(data).
-      merge(options)
+    h = {}
+    h[:json] = { :status => response.status, :message => nil }.merge(data)
+    h[:callback] = params[:callback] if jsonp?
+    render(h)
   end
 
 end

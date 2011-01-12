@@ -1,7 +1,7 @@
 module QueryHelper
   class Query
 
-    attr_accessor :request, :table, :params, :page, :per_page, :q
+    attr_accessor :request, :params, :page, :per_page, :q
 
     def initialize(request, params)
       self.params    = params
@@ -45,13 +45,13 @@ module QueryHelper
       []
     end
 
-    def order_expr(term)
+    def self.order_expr(term)
       field, ord = term.split('.').map { |v| v.to_s.downcase.strip }
-      unless self.class.sortable_fields.include?(field)
+      unless sortable_fields.include?(field)
         raise BadQueryError, "A value supplied for the order parameter " \
         "(#{term}) is not valid. It contains a field (#{field}) that is " \
         "not sortable. It must be one of: " \
-        "#{self.class.sortable_fields.join(', ')}."
+        "#{sortable_fields.join(', ')}."
       end
       unless ['desc', 'asc', nil].include?(ord)
         raise BadQueryError, "A value supplied for the order parameter " \
@@ -64,14 +64,6 @@ module QueryHelper
         :"#{table}__#{field}".asc(:nulls => :last)
       when 'desc', nil
         :"#{table}__#{field}".desc(:nulls => :last)
-      end
-    end
-
-    def table
-      if self.class.table.is_a?(Proc)
-        self.class.table.(self)
-      else
-        self.class.table
       end
     end
 
@@ -104,7 +96,7 @@ module QueryHelper
     end
 
     def order
-      @order || order_expr(self.class.order)
+      @order || self.class.order_expr(self.class.order)
     end
 
     def page=(value)
@@ -145,7 +137,7 @@ module QueryHelper
     end
 
     def db
-      @db ||= DB[table]
+      @db ||= DB[self.class.table]
     end
 
     def path_for_page(page_num)
@@ -209,7 +201,7 @@ module QueryHelper
       @split_order_list ||= {}
       @split_order_list[value] ||= begin
         value.to_s.split(',').map(&:strip).map do |term|
-          order_expr(term)
+          self.class.order_expr(term)
         end
       end
     end

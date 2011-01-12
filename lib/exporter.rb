@@ -50,7 +50,7 @@ class Exporter
     { :stores => Store,
       :products => Product,
       :inventories => Inventory
-    }[table].public_fields.join(', ')
+    }[table].public_columns.join(', ')
   end
 
   def csv_file(table)

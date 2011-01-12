@@ -6,15 +6,9 @@ class Store < Sequel::Model
   plugin :geo
   plugin :archive, :crawl_id
   plugin :api,
+    :aliases => { :id => :store_no },
     :private => [
-      :latrad,
-      :lngrad,
-      :created_at,
-      :crawl_id,
-      :store_id,
-      :product_id
-    ],
-    :aliases => { :id => :store_no }
+      :latrad, :lngrad, :created_at, :crawl_id, :store_id, :product_id]
 
   many_to_one :crawl
   one_to_many :inventories

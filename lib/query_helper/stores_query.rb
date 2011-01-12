@@ -32,7 +32,8 @@ module QueryHelper
       has_special_occasion_permits
       has_vintages_corner
       has_parking
-      has_transit_access ]
+      has_transit_access
+      ]
     end
 
     def self.sortable_fields
@@ -42,7 +43,8 @@ module QueryHelper
       id
       products_count
       inventory_count
-      inventory_price_in_cents ]
+      inventory_price_in_cents
+      ]
     end
 
     def self.order
@@ -115,11 +117,9 @@ module QueryHelper
       when is_spatial?
         Store.distance_from(latitude, longitude)
       when product_id
-        DB[:stores].join(:inventories,
-          :store_id   => :id,
-          :product_id => product_id)
+        db.join(:inventories, :store_id => :id, :product_id => product_id)
       else
-        DB[:stores]
+        db
       end.
       filter(filter_hash)
     end
@@ -147,13 +147,13 @@ module QueryHelper
     def as_json
       h = super
       h[:product] = product if product_id
-      h[:result]  = page_dataset.all.map { |row| Store.as_json(row) }
+      h[:result] = page_dataset.all.map { |row| Store.as_json(row) }
       h
     end
 
     def as_csv
-      FasterCSV.generate(:encoding => 'UTF-8') do |csv|
-        csv << Store.public_fields
+      CSV.generate do |csv|
+        csv << Store.public_columns
         csv_dataset.all do |row|
           csv << Store.as_csv(row)
         end

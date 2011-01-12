@@ -40,7 +40,7 @@ module QueryHelper
     end
 
     def dataset
-      DB[:crawls].filter(:state => 'finished').order(*order)
+      db.filter(:state => 'finished').order(*order)
     end
 
     def as_json

@@ -1,26 +1,17 @@
 module QueryHelper
-  class RevisionsQuery < Query
+  class InventoryRevisionsQuery < Query
 
     attr_reader :product_id, :store_id
 
     def initialize(request, params)
       super
-      self.product_id = params[:product_id] if params[:product_id].present?
-      self.store_id   = params[:store_id]   if params[:store_id].present?
+      self.product_id = params[:product_id]
+      self.store_id   = params[:store_id]
       validate
     end
 
     def self.table
-      lambda { |query|
-        case
-        when query.product_id && query.store_id
-          :inventory_revisions
-        when query.product_id
-          :product_revisions
-        when query.store_id
-          :store_revisions
-        end
-      }
+      :inventory_revisions
     end
 
     def self.per_page
@@ -54,35 +45,25 @@ module QueryHelper
     end
 
     def dataset
-      case
-      when product_id && store_id
-        DB[:inventory_revisions].
-          filter(:product_id => product_id, :store_id => store_id).
-          order(:updated_on.desc)
-      when product_id
-        DB[:product_revisions].
-          filter(:product_id => product_id).
-          order(:updated_at.desc)
-      when store_id
-        DB[:store_revisions].
-          filter(:store_id => store_id).
-          order(:updated_at.desc)
-      end
+      db.
+        filter(:product_id => product_id, :store_id => store_id).
+        order(:updated_on.desc)
     end
 
     def as_csv
-      FasterCSV.generate(:encoding => 'UTF-8') do |csv|
-        csv << db.columns
+      CSV.generate do |csv|
+        cols = db.columns
+        csv << cols
         csv_dataset.all do |row|
-          csv << row.map { |r| db.columns[r] }
+          csv << cols.map { |c| row[c] }
         end
       end
     end
 
     def as_json
       h = super
-      h[:store]   = store   if store_id
-      h[:product] = product if product_id
+      h[:store]   = store
+      h[:product] = product
       h[:result]  = page_dataset.all.map { |row| row.except(:crawl_id) }
       h
     end

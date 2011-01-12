@@ -1,7 +1,7 @@
 class ProductsController < ApplicationController
 
   def index
-    @query = QueryHelper(:products)
+    @query = query(:products)
 
     respond_to do |wants|
       wants.csv { render :text => @query.as_csv }
@@ -10,7 +10,7 @@ class ProductsController < ApplicationController
   end
 
   def show
-    @query = QueryHelper(:product)
+    @query = query(:product)
 
     respond_to do |wants|
       wants.csv { render :text => @query.as_csv }

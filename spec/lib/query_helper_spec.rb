@@ -27,12 +27,6 @@ class BaseQuery < QueryHelper::Query
   end
 end
 
-class LambdaTableQuery < BaseQuery
-  def self.table
-    ->(q) { q.params[:table] }
-  end
-end
-
 def mkreq(fullpath)
   Struct.new(:fullpath).new(fullpath)
 end
@@ -149,13 +143,6 @@ describe BaseQuery do
       q.filter_hash[:base__is_cool].should == true
       q.filter_hash[:base__has_thumbs].should == false
     end
-  end
-end
-
-describe LambdaTableQuery do
-  it 'should determine the table based off the provide proc' do
-    q = mkquery(:lambda, :table => :cool_table)
-    q.table.should == :cool_table
   end
 end
 

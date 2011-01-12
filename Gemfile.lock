@@ -49,7 +49,6 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     fabrication (0.9.4)
-    fastercsv (1.5.4)
     gcoder (0.9.0)
       hashie
       yajl-ruby
@@ -147,7 +146,6 @@ DEPENDENCIES
   colored
   dalli
   fabrication
-  fastercsv
   gcoder
   haml
   hoptoad_notifier

@@ -15,32 +15,25 @@ module QueryHelper
   end
 
   def self.find(type, *args)
-    instance = case type
-    when :store
-      Store[*args]
-    when :product
-      Product[*args]
-    when :inventory
-      Inventory[*args]
-    when :dataset
-      Dataset[*args]
-    else
-      raise ArgumentError, "unrecognized type: #{type.inspect}"
-    end
-    return instance.as_json if instance
-    raise NotFoundError, "No #{type} exists with id: #{args.join(', ')}."
+    { :store     => StoreFinder,
+      :product   => ProductFinder,
+      :inventory => InventoryFinder,
+      :dataset   => DatasetFinder
+    }[type].find(*args)
   end
 
   def self.query(type, request, params)
-    { :stores      => StoresQuery,
-      :store       => StoreQuery,
-      :products    => ProductsQuery,
-      :product     => ProductQuery,
-      :inventories => InventoriesQuery,
-      :inventory   => InventoryQuery,
-      :revisions   => RevisionsQuery,
-      :datasets    => DatasetsQuery,
-      :dataset     => DatasetQuery
+    { :stores              => StoresQuery,
+      :store               => StoreFinder,
+      :products            => ProductsQuery,
+      :product             => ProductFinder,
+      :inventories         => InventoriesQuery,
+      :inventory           => InventoryFinder,
+      :datasets            => DatasetsQuery,
+      :dataset             => DatasetFinder,
+      :store_revisions     => StoreRevisionsQuery,
+      :product_revisions   => ProductRevisionsQuery,
+      :inventory_revisions => InventoryRevisionsQuery
     }[type].new(request, params)
   end
 

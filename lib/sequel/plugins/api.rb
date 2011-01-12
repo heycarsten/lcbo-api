@@ -1,12 +1,14 @@
 module Sequel
   module Plugins
-    module API
+    module Api
 
       def self.configure(model, opts = {})
         not_csv_columns = (opts.delete(:not_csv) || [])
         private_columns = (opts.delete(:private) || [])
         public_columns  = (opts.delete(:public)  || [])
-        column_aliases  = (opts.delete(:aliases) || [])
+        column_aliases  = (opts.delete(:aliases) || {})
+
+        raise ArgumentError, "options contains unknown keys" if opts.any?
 
         model.instance_variable_set(:@not_csv_columns, not_csv_columns)
         model.instance_variable_set(:@private_columns, private_columns)
@@ -15,12 +17,14 @@ module Sequel
       end
 
       module ClassMethods
-        class << self
-          attr_reader :private_columns, :column_aliases, :not_csv_columns
-        end
+        attr_reader :private_columns, :column_aliases, :not_csv_columns
 
         def public_columns
           @public_columns ||= (columns - private_columns)
+        end
+
+        def csv_columns
+          @csv_columns ||= (public_columns - not_csv_columns)
         end
 
         def api_values(obj)
@@ -34,15 +38,15 @@ module Sequel
         end
 
         def as_csv(obj, with_header = false)
-          hsh = api_values(obj).except(*not_csv_columns)
-          row = public_columns.map { |f| hsh[f] }
+          hsh = api_values(obj).slice(*csv_columns)
+          row = csv_columns.map { |c| hsh[c] }
           if with_header
             a = []
-            a << public_columns
+            a << csv_columns
             a << row
             a
           else
-            row
+            [row]
           end
         end
       end

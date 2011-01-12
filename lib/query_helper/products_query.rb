@@ -60,17 +60,17 @@ module QueryHelper
     def dataset
       case
       when has_fulltext?
-        DB[:products].full_text_search([:tags], q)
+        db.full_text_search([:tags], q)
       else
-        DB[:products]
+        db
       end.
       filter(filter_hash).
       order(*order)
     end
 
     def as_csv
-      FasterCSV.generate(:encoding => 'UTF-8') do |csv|
-        csv << Product.public_fields
+      CSV.generate do |csv|
+        csv << Product.public_columns
         csv_dataset.all do |row|
           csv << Product.as_csv(row)
         end

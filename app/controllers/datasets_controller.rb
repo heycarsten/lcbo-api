@@ -1,7 +1,7 @@
 class DatasetsController < ApplicationController
 
   def index
-    @query = QueryHelper(:datasets)
+    @query = query(:datasets)
 
     respond_to do |wants|
       wants.csv { render :text => @query.as_csv }
@@ -10,7 +10,7 @@ class DatasetsController < ApplicationController
   end
 
   def show
-    @query = QueryHelper(:dataset)
+    @query = query(:dataset)
 
     respond_to do |wants|
       wants.csv { render :text => @query.as_csv }

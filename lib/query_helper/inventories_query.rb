@@ -67,23 +67,23 @@ module QueryHelper
     def dataset
       case
       when product_id && store_id
-        DB[:inventories].filter(
+        db.filter(
           :product_id => product_id,
           :store_id => store_id)
       when product_id
-        DB[:inventories].filter(:product_id => product_id)
+        db.filter(:product_id => product_id)
       when store_id
-        DB[:inventories].filter(:store_id => store_id)
+        db.filter(:store_id => store_id)
       else
-        DB[:inventories]
+        db
       end.
       filter(filter_hash).
       order(*order)
     end
 
     def as_csv
-      FasterCSV.generate(:encoding => 'UTF-8') do |csv|
-        csv << Inventory.public_fields
+      CSV.generate do |csv|
+        csv << Inventory.public_columns
         csv_dataset.all do |row|
           csv << Inventory.as_csv(row)
         end
