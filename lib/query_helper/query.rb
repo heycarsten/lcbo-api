@@ -180,8 +180,12 @@ module QueryHelper
       h
     end
 
-    def as_csv
-      []
+    def as_csv(delimiter = ',')
+      raise NotImplementedError, "#{self.class}#as_csv needs to be implemented."
+    end
+
+    def as_tsv
+      as_csv("\t")
     end
 
     protected

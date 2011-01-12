@@ -50,8 +50,8 @@ module QueryHelper
         order(:updated_on.desc)
     end
 
-    def as_csv
-      CSV.generate do |csv|
+    def as_csv(delimiter = ',')
+      CSV.generate(:col_sep => delimiter) do |csv|
         cols = db.columns
         csv << cols
         csv_dataset.all do |row|
@@ -62,8 +62,8 @@ module QueryHelper
 
     def as_json
       h = super
-      h[:store]   = store
-      h[:product] = product
+      h[:store]   = store.as_json
+      h[:product] = product.as_json
       h[:result]  = page_dataset.all.map { |row| row.except(:crawl_id) }
       h
     end

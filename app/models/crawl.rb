@@ -15,16 +15,7 @@ class Crawl < Sequel::Model
   plugin :serialization, :yaml, *SERIALIZED_FIELDS
   plugin :api,
     :not_csv => SERIALIZED_FIELDS,
-    :public  => SERIALIZED_FIELDS + [
-      :id,
-      :total_products,
-      :total_stores,
-      :total_inventories,
-      :total_product_inventory_count,
-      :total_product_inventory_volume_in_milliliters,
-      :total_product_inventory_price_in_cents,
-      :created_at
-    ]
+    :private => [:crawl_event_id, :state, :task]
 
   list :crawled_store_ids,   :integer
   list :crawled_product_ids, :integer

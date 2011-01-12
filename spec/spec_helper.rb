@@ -40,11 +40,24 @@ class ActionDispatch::TestResponse
     %w[ application/json text/json ].include?(content_type)
   end
 
+  def csv?
+    'text/csv' == content_type
+  end
+
+  def csv
+    @csv ||= parse_csv
+  end
+
   def json
     @json ||= parse_json
   end
 
   private
+
+  def parse_csv
+    raise "Not a CSV response: #{content_type}" unless csv?
+    CSV.parse(body)
+  end
 
   def parse_json
     raise "Not a JSON response: #{content_type}" unless json?
@@ -54,7 +67,6 @@ end
 
 RSpec.configure do |config|
   config.mock_with :rspec
-  # config.fixture_path = "#{::Rails.root}/spec/fixtures"
   config.include(DatabaseHelpers)
   config.include(FactoryHelpers)
 end
@@ -92,5 +104,15 @@ shared_examples_for 'a JSON response' do
     response.json.keys.should include :message
     response.json.keys.should include :result
     response.json[:status].should == 200
+  end
+end
+
+shared_examples_for 'a CSV response' do
+  it 'returns a properly formed CSV response' do
+    response.status.should == 200
+    response.should be_csv
+    response.csv.should be_a Array
+    response.csv.first.should be_a Array
+    response.csv.first.size.should > 1
   end
 end

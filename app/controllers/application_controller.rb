@@ -6,10 +6,12 @@ class ApplicationController < ActionController::Base
     GCoder::NoResultsError,
     GCoder::OverLimitError,
     GCoder::GeocoderError,
+    QueryHelper::JsonpError,
     QueryHelper::NotFoundError,
     QueryHelper::BadQueryError, :with => :render_exception
 
   before_filter :set_cache_control, :if => -> { Rails.env.production? }
+  before_filter :set_default_format
   after_filter  :set_status_jsonp,  :if => :api_request?
 
   protected
@@ -24,8 +26,23 @@ class ApplicationController < ActionController::Base
     params[:version] ? true : false
   end
 
+  def json?
+    !request.format.csv? &&
+    !request.format.tsv? &&
+    !request.format.kml?
+  end
+
   def jsonp?
-    request.format.json? && params[:callback].present?
+    json? && params[:callback].present?
+  end
+
+  def jsonp_callback
+    QueryHelper.jsonp_callback(params)
+  end
+
+  def set_default_format
+    return unless json?
+    request.format = (jsonp? ? :js : :json)
   end
 
   def set_cache_control
@@ -57,11 +74,15 @@ class ApplicationController < ActionController::Base
   end
 
   def render_json(data)
-    response.content_type = 'application/json'
-    h = {}
-    h[:json] = { :status => response.status, :message => nil }.merge(data)
-    h[:callback] = params[:callback] if jsonp?
-    render(h)
+    render :text => encode_json(data)
+  end
+
+  def encode_json(data)
+    json = Yajl::Encoder.encode({
+      :status => response.status,
+      :message => nil
+    }.merge(data))
+    jsonp? ? "#{jsonp_callback}(#{json});" : json
   end
 
 end

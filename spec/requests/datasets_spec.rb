@@ -22,6 +22,18 @@ describe 'Datasets resources' do
     end
   end
 
+  context '/datasets.csv' do
+    before do
+      get '/datasets.csv'
+    end
+
+    it_should_behave_like 'a CSV response'
+
+    it 'returns csv' do
+      response.content_type.should == 'text/csv'
+    end
+  end
+
   context '/datasets/:id' do
     before do
       get "/datasets/#{@crawl1.id}"

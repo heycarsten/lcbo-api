@@ -141,19 +141,19 @@ module QueryHelper
     end
 
     def product
-      QueryHelper.find(:product, product_id)
+      @product ||= QueryHelper.find(:product, product_id)
     end
 
     def as_json
       h = super
-      h[:product] = product if product_id
-      h[:result] = page_dataset.all.map { |row| Store.as_json(row) }
+      h[:product] = product.as_json if product_id
+      h[:result]  = page_dataset.all.map { |row| Store.as_json(row) }
       h
     end
 
-    def as_csv
-      CSV.generate do |csv|
-        csv << Store.public_columns
+    def as_csv(delimiter = ',')
+      CSV.generate(:col_sep => delimiter) do |csv|
+        csv << Store.csv_columns
         csv_dataset.all do |row|
           csv << Store.as_csv(row)
         end

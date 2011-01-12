@@ -5,7 +5,8 @@ class DatasetsController < ApplicationController
 
     respond_to do |wants|
       wants.csv { render :text => @query.as_csv }
-      wants.any { render_json @query.as_json }
+      wants.tsv { render :text => @query.as_tsv }
+      wants.any(:js, :json) { render_json @query.as_json }
     end
   end
 
@@ -14,8 +15,9 @@ class DatasetsController < ApplicationController
 
     respond_to do |wants|
       wants.csv { render :text => @query.as_csv }
+      wants.tsv { render :text => @query.as_tsv }
       wants.zip { redirect_to @query.dataset[:csv_dump] }
-      wants.any { render_json @query.as_json }
+      wants.any(:js, :json) { render_json @query.as_json }
     end
   end
 

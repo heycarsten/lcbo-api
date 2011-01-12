@@ -68,9 +68,9 @@ module QueryHelper
       order(*order)
     end
 
-    def as_csv
-      CSV.generate do |csv|
-        csv << Product.public_columns
+    def as_csv(delimiter = ',')
+      CSV.generate(:col_sep => delimiter) do |csv|
+        csv << Product.csv_columns
         csv_dataset.all do |row|
           csv << Product.as_csv(row)
         end

@@ -5,7 +5,8 @@ class InventoriesController < ApplicationController
 
     respond_to do |wants|
       wants.csv { render :text => @query.as_csv }
-      wants.any { render_json @query.as_json }
+      wants.tsv { render :text => @query.as_tsv }
+      wants.any(:js, :json) { render_json @query.as_json }
     end
   end
 
@@ -14,7 +15,8 @@ class InventoriesController < ApplicationController
 
     respond_to do |wants|
       wants.csv { render :text => @query.as_csv }
-      wants.any { render_json @query.as_json }
+      wants.tsv { render :text => @query.as_tsv }
+      wants.any(:js, :json) { render_json @query.as_json }
     end
   end
 

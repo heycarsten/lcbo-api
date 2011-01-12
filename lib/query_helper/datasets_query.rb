@@ -49,5 +49,14 @@ module QueryHelper
       h
     end
 
+    def as_csv(delimiter = ',')
+      CSV.generate(:col_sep => delimiter) do |csv|
+        csv << Crawl.csv_columns
+        csv_dataset.all do |row|
+          csv << Crawl.as_csv(row)
+        end
+      end
+    end
+
   end
 end

@@ -81,9 +81,9 @@ module QueryHelper
       order(*order)
     end
 
-    def as_csv
-      CSV.generate do |csv|
-        csv << Inventory.public_columns
+    def as_csv(delimiter = ',')
+      CSV.generate(:col_sep => delimiter) do |csv|
+        csv << Inventory.csv_columns
         csv_dataset.all do |row|
           csv << Inventory.as_csv(row)
         end
@@ -92,8 +92,8 @@ module QueryHelper
 
     def as_json
       h = super
-      h[:store]   = store   if store_id
-      h[:product] = product if product_id
+      h[:store]   = store.as_json   if store_id
+      h[:product] = product.as_json if product_id
       h[:result]  = page_dataset.all.map { |row| Inventory.as_json(row) }
       h
     end
