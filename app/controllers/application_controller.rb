@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_default_format
-    return unless json?
+    return unless api_request? && json?
     request.format = (jsonp? ? :js : :json)
   end
 
