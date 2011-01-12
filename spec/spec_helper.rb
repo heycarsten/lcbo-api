@@ -36,16 +36,32 @@ module FactoryHelpers
 end
 
 class ActionDispatch::TestResponse
+  def jsonp?
+    'text/javascript' == content_type
+  end
+
   def json?
-    %w[ application/json text/json ].include?(content_type)
+    'application/json' == content_type
   end
 
   def csv?
     'text/csv' == content_type
   end
 
+  def tsv?
+    'text/tsv' == content_type
+  end
+
+  def tsv
+    @tsv ||= parse_tsv
+  end
+
   def csv
     @csv ||= parse_csv
+  end
+
+  def jsonp
+    @jsonp ||= parse_jsonp
   end
 
   def json
@@ -59,9 +75,20 @@ class ActionDispatch::TestResponse
     CSV.parse(body)
   end
 
+  def parse_tsv
+    raise "Not a TSV response: #{content_type}" unless tsv?
+    CSV.parse(body, :col_sep => "\t")
+  end
+
   def parse_json
     raise "Not a JSON response: #{content_type}" unless json?
     Yajl::Parser.parse(body, :symbolize_keys => true)
+  end
+
+  def parse_jsonp
+    raise "Not a JSON-P response: #{content_type}" unless jsonp?
+    json = body.scan(/\A[a-z0-9_]+\((.+)\)\;\Z/mi)[0][0]
+    Yajl::Parser.parse(json, :symbolize_keys => true)
   end
 end
 
@@ -104,6 +131,25 @@ shared_examples_for 'a JSON response' do
     response.json.keys.should include :message
     response.json.keys.should include :result
     response.json[:status].should == 200
+  end
+end
+
+shared_examples_for 'a JSON-P response' do
+  it 'returns a properly formed JSON response' do
+    response.status.should == 200
+    response.should be_jsonp
+    response.jsonp.should be_a Hash
+    response.jsonp[:status].should == 200
+  end
+end
+
+shared_examples_for 'a TSV response' do
+  it 'returns a properly formed TSV response' do
+    response.status.should == 200
+    response.should be_tsv
+    response.tsv.should be_a Array
+    response.tsv.first.should be_a Array
+    response.tsv.first.size.should > 1
   end
 end
 
