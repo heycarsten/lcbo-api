@@ -1,6 +1,5 @@
 source :rubygems
 
-gem 'kgio'
 gem 'rails',       '3.0.3'
 gem 'pg'
 gem 'yajl-ruby',   :require => 'yajl'

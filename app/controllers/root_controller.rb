@@ -15,7 +15,6 @@ class RootController < ApplicationController
   protected
 
   def load_documents
-    return if @documents
     docs_path = (Rails.root + 'db' + 'documents.yml').to_s
     raw_yaml  = File.read(docs_path)
     yaml      = ERB.new(raw_yaml).result

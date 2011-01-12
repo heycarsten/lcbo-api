@@ -59,7 +59,6 @@ GEM
       activesupport
       builder
     i18n (0.5.0)
-    kgio (2.1.1)
     lcbo (1.0.0beta1)
       nokogiri
       stringex
@@ -149,7 +148,6 @@ DEPENDENCIES
   gcoder
   haml
   hoptoad_notifier
-  kgio
   lcbo (= 1.0.0beta1)
   pg
   rack-cache
