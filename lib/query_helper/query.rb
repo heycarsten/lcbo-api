@@ -25,6 +25,10 @@ module QueryHelper
       raise BadQueryError, 'CSV output is not supported for this resource.'
     end
 
+    def self.human_csv_columns
+      csv_columns.map { |c| c.to_s.humanize.titlecase }
+    end
+
     def self.as_csv_row(row)
       raise BadQueryError, 'CSV output is not supported for this resource.'
     end
@@ -190,7 +194,7 @@ module QueryHelper
 
     def as_csv(delimiter = ',')
       CSV.generate(:col_sep => delimiter) do |csv|
-        csv << self.class.csv_columns
+        csv << self.class.human_csv_columns
         csv_dataset.all do |row|
           csv << self.class.as_csv_row(row)
         end

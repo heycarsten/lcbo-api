@@ -28,6 +28,12 @@ module Sequel
           @csv_columns ||= (public_columns - not_csv_columns)
         end
 
+        def human_csv_columns
+          @human_csv_columns ||= begin
+            csv_columns.map { |c| c.to_s.humanize.titlecase }
+          end
+        end
+
         def api_values(obj)
           hsh = (obj.is_a?(Hash) ? obj : obj.values)
           column_aliases.each_pair { |ksrc, kalias| hsh[kalias] = hsh[ksrc] }
@@ -41,7 +47,7 @@ module Sequel
 
         def as_csv(obj, with_header = false)
           rows = []
-          rows << csv_columns if with_header
+          rows << human_csv_columns if with_header
           rows << as_csv_row(obj)
           rows
         end
