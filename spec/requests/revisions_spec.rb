@@ -13,42 +13,18 @@ describe 'Revisions resources' do
     5.times { |i| RevisionFactory(:inventory, @inv, :updated_on => Date.new(2010, 10, i+1)) }
   end
 
-  context '/products/:product_id/history' do
-    before do
-      get "/products/#{@product.id}/history"
-    end
-
-    it_should_behave_like 'a JSON response'
-
-    it 'returns revisions' do
-      response.json[:result].should be_a Array
-      response.json[:result].size.should == 3
-    end
+  describe 'product revisions' do
+    subject { "/products/#{@product.id}/history" }
+    it_behaves_like 'a resource', :size => 3
   end
 
-  context '/stores/:store_id/history' do
-    before do
-      get "/stores/#{@store.id}/history"
-    end
-
-    it_should_behave_like 'a JSON response'
-
-    it 'returns revisions' do
-      response.json[:result].should be_a Array
-      response.json[:result].size.should == 4
-    end
+  describe 'store revisions' do
+    subject { "/stores/#{@store.id}/history" }
+    it_behaves_like 'a resource', :size => 4
   end
 
-  context '/stores/:store_id/products/:product_id/history' do
-    before do
-      get "/stores/#{@inv.store_id}/products/#{@inv.product_id}/history"
-    end
-
-    it_should_behave_like 'a JSON response'
-
-    it 'returns revisions' do
-      response.json[:result].should be_a Array
-      response.json[:result].size.should == 5
-    end
+  describe 'inventory revisions' do
+    subject { "/stores/#{@inv.store_id}/products/#{@inv.product_id}/history" }
+    it_behaves_like 'a resource', :size => 5
   end
 end

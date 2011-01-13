@@ -18,20 +18,18 @@ describe 'Product resources' do
     DB[:inventories].count.should == 1
   end
 
-  context '/products' do
-    before do
-      get '/products'
-    end
-
-    it_should_behave_like 'a JSON response'
+  describe 'all products' do
+    subject { '/products' }
+    it_behaves_like 'a resource', :size => 2
   end
 
-  context '/products?q= (full text hit)' do
-    before do
-      get '/products?q=fitzgibbons'
-    end
+  describe 'full text search with match' do
+    subject { '/products?q=fitzgibbons' }
+    it_behaves_like 'a resource', :size => 1
+  end
 
-    it_should_behave_like 'a JSON response'
+  describe 'full text search with match (JSON)' do
+    before { get '/products?q=fitzgibbons' }
 
     it 'contains a matched product' do
       response.json[:result].size.should == 1
@@ -45,12 +43,10 @@ describe 'Product resources' do
     end
   end
 
-  context '/products?q= (full text miss)' do
+  describe 'full text search without match (JSON)' do
     before do
       get '/products?q=fitzgibins'
     end
-
-    it_should_behave_like 'a JSON response'
 
     it 'does not contain a product resource' do
       response.json[:result].should be_a Array
@@ -62,20 +58,13 @@ describe 'Product resources' do
     end
   end
 
-  context '/products/:id' do
-    before do
-      get "/products/#{@product1.id}"
-    end
-
-    it_should_behave_like 'a JSON response'
+  describe 'get product' do
+    subject { "/products/#{@product1.id}" }
+    it_behaves_like 'a resource'
   end
 
-  context '/products/:id (not found)' do
-    before do
-      get "/products/9999999"
-    end
-
-    it_should_behave_like 'a JSON 404 error'
+  describe 'get product (not found)' do
+    before { get '/products/9999999'}
+    it_behaves_like 'a JSON 404 error'
   end
-
 end

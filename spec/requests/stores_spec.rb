@@ -10,20 +10,13 @@ describe 'Store resources' do
     @inv1     = Fabricate(:inventory, :store => @store1, :product => @product1)
   end
 
-  context '/stores' do
-    before do
-      get '/stores'
-    end
-
-    it_should_behave_like 'a JSON response'
+  describe 'all stores' do
+    subject { '/stores' }
+    it_behaves_like 'a resource', :size => 2
   end
 
-  context '/stores (with full-text search)' do
-    before do
-      get '/stores?q=test'
-    end
-
-    it_should_behave_like 'a JSON response'
+  context 'full text search with match (JSON)' do
+    before { get '/stores?q=test' }
 
     it 'performs a full-text search' do
       response.json[:result].size == 1
@@ -32,11 +25,7 @@ describe 'Store resources' do
   end
 
   context '/stores (with spatial search)' do
-    before do
-      get "/stores?lat=#{@store1.latitude}&lon=#{@store1.longitude}"
-    end
-
-    it_should_behave_like 'a JSON response'
+    before { get "/stores?lat=#{@store1.latitude}&lon=#{@store1.longitude}" }
 
     it 'performs a spatial search' do
       response.json[:result].size == 2
@@ -45,40 +34,35 @@ describe 'Store resources' do
   end
 
   context '/stores (with invalid spatial query)' do
-    before do
-      get "/stores?lat=43.0"
-    end
+    before { get "/stores?lat=43.0" }
 
-    it_should_behave_like 'a JSON 400 error'
+    it_behaves_like 'a JSON 400 error'
 
     it 'contains the error type' do
       response.json[:error].should == 'bad_query_error'
     end
   end
 
-  context '/stores/:id' do
-    before do
-      get "/stores/#{@store1.id}"
-    end
-
-    it_should_behave_like 'a JSON response'
+  describe 'show store' do
+    subject { "/stores/#{@store1.id}" }
+    it_behaves_like 'a resource'
   end
 
-  context '/stores/:id (not found)' do
-    before do
-      get "/stores/1"
-    end
-
-    it_should_behave_like 'a JSON 404 error'
+  describe 'stores with product' do
+    subject { "/products/#{@product1.id}/stores" }
+    it_behaves_like 'a resource', :size => 1
   end
 
-  context '/products/:id/stores (with spatial search)' do
+  context 'show store (not found)' do
+    before { get "/stores/1" }
+    it_behaves_like 'a JSON 404 error'
+  end
+
+  context 'stores with product and spatial search' do
     before do
       get "/products/#{@product1.id}/stores?lat=#{@store1.latitude}" \
           "&lon=#{@store1.longitude}"
     end
-
-    it_should_behave_like 'a JSON response'
 
     it 'performs a spatial search' do
       response.json[:result].size == 2
@@ -86,20 +70,13 @@ describe 'Store resources' do
     end
   end
 
-  context '/products/:id/stores (product not found)' do
-    before do
-      get "/products/1/stores"
-    end
-
-    it_should_behave_like 'a JSON 404 error'
+  context 'stores with product (product not found)' do
+    before { get '/products/1/stores' }
+    it_behaves_like 'a JSON 404 error'
   end
 
   context '/products/:id/stores' do
-    before do
-      get "/products/#{@product1.id}/stores"
-    end
-
-    it_should_behave_like 'a JSON response'
+    before { get "/products/#{@product1.id}/stores" }
 
     it 'is properly formed' do
       response.json[:result].should be_a Array

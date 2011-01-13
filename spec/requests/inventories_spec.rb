@@ -21,27 +21,13 @@ describe 'Inventory resources' do
     @inv9     = Fabricate(:inventory, :product => @product3, :store => @store3)
   end
 
-  context '/inventories' do
-    before do
-      get '/inventories'
-    end
-
-    it_should_behave_like 'a JSON response'
-
-    it 'should contain inventory resources' do
-      response.json[:result].size.should == 9
-    end
+  describe 'all inventories' do
+    subject { '/inventories' }
+    it_behaves_like 'a resource', :size => 9
   end
 
-  context '/products/:product_id/inventories' do
-    before do
-      get "/products/#{@product1.id}/inventories"
-    end
-
-    it_should_behave_like 'a JSON response'
-
-    it 'should contain inventory resources' do
-      response.json[:result].size.should == 3
-    end
+  describe 'all inventories for a product' do
+    subject { "/products/#{@product1.id}/inventories" }
+    it_behaves_like 'a resource', :size => 3
   end
 end
