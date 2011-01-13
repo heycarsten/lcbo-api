@@ -21,6 +21,10 @@ module QueryHelper
       :stores
     end
 
+    def self.max_limit
+      200
+    end
+
     def self.csv_columns
       Store.csv_columns
     end

@@ -17,7 +17,7 @@ module QueryHelper
     end
 
     def self.type
-      to_s.sub('Finder', '').downcase
+      to_s.demodulize.sub('Finder', '').downcase
     end
 
     def as_json

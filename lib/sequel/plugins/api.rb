@@ -30,7 +30,7 @@ module Sequel
 
         def human_csv_columns
           @human_csv_columns ||= begin
-            csv_columns.map { |c| c.to_s.humanize.titlecase }
+            csv_columns.map { |c| c.to_s.gsub('_', ' ').titlecase }
           end
         end
 

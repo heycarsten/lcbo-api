@@ -27,8 +27,22 @@ class BaseQuery < QueryHelper::Query
   end
 end
 
-def mkreq(fullpath)
-  Struct.new(:fullpath).new(fullpath)
+class MockFormat
+  def initialize(format = 'json')
+    @format = format
+  end
+
+  def method_missing(name)
+    @format == name.to_s.sub('?', '')
+  end
+
+  def to_s
+    format.to_s
+  end
+end
+
+def mkreq(fullpath, format = 'json')
+  Struct.new(:fullpath, :format).new(fullpath, MockFormat.new(format))
 end
 
 def mkquery(type, params = {})

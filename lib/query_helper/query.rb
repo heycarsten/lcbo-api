@@ -11,14 +11,19 @@ module QueryHelper
       self.order     = params[:order]     if params[:order].present?
       self.where     = params[:where]     if params[:where].present?
       self.where_not = params[:where_not] if params[:where_not].present?
+      self.limit     = params[:limit]     if params[:limit].present?
     end
 
     def self.per_page
       20
     end
 
-    def self.csv_limit
-      1000
+    def self.limit
+      50
+    end
+
+    def self.max_limit
+      500
     end
 
     def self.csv_columns
@@ -26,7 +31,7 @@ module QueryHelper
     end
 
     def self.human_csv_columns
-      csv_columns.map { |c| c.to_s.humanize.titlecase }
+      csv_columns.map { |c| c.to_s.gsub('_', ' ').titlecase }
     end
 
     def self.as_csv_row(row)
@@ -102,6 +107,19 @@ module QueryHelper
         merge(Hash[where_not.map { |w| [:"#{self.class.table}__#{w}", false] }])
     end
 
+    def limit=(value)
+      unless (1..self.class.max_limit).include?(value.to_i)
+        raise BadQueryError, "The value supplied for the limit parameter " \
+        "(#{value}) is not valid. It must be a number between 1 and " \
+        "#{self.class.max_limit}."
+      end
+      @limit = value.to_i
+    end
+
+    def limit
+      @limit || self.class.limit
+    end
+
     def order=(value)
       return unless self.class.sortable_fields.any?
       @order = split_order_list(value)
@@ -117,6 +135,10 @@ module QueryHelper
         "(#{value}) is not valid. It must be a number greater than zero."
       end
       @page = value.to_i
+    end
+
+    def is_csv?
+      request.format.csv? || request.format.tsv?
     end
 
     def page
@@ -145,7 +167,7 @@ module QueryHelper
     end
 
     def csv_dataset
-      @csv_dataset ||= dataset.limit(self.class.csv_limit)
+      @csv_dataset ||= dataset.limit(limit)
     end
 
     def db
@@ -205,16 +227,38 @@ module QueryHelper
       as_csv("\t")
     end
 
+    def format
+      request.format.to_s.upcase
+    end
+
     protected
 
     def validate
-      return unless where && where_not
-      same = where.select { |w| where_not.include?(w) }
-      if same.any?
-        raise BadQueryError, "One or more of the values supplied for the " \
-        "where parameter matches one or more of the values supplied for the " \
-        "where_not parameter: #{same.join(', ')}. These parameters can only " \
-        "contain indifferent values."
+      case
+      when is_csv? && (params[:per_page].present? || params[:page].present?)
+        a = []
+        a << 'per_page' if params[:per_page].present?
+        a << 'page' if params[:page].present?
+        parts = []
+        parts << a.join(' and ')
+        parts << (a.size == 1 ? 'parameter was' : 'parameters were')
+        parts << (a.size == 1 ? 'it' : 'they')
+        raise BadQueryError, "The #{parts[0]} #{parts[1]} specified, " \
+        "#{parts[2]} can not be used with #{format} responses because " \
+        "#{format} formatted responses are not paged."
+      when !is_csv? && params[:limit].present?
+        raise BadQueryError, "The limit parameter was specified for a " \
+        "#{format} response, it can only be used with CSV and TSV response " \
+        "formats. If you want to change the number of results that are " \
+        "returned per page, use the per_page parameter instead."
+      when where && where_not
+        same = where.select { |w| where_not.include?(w) }
+        if same.any?
+          raise BadQueryError, "One or more of the values supplied for the " \
+          "where parameter matches one or more of the values supplied for the " \
+          "where_not parameter: #{same.join(', ')}. These parameters can only " \
+          "contain indifferent values."
+        end
       end
     end
 

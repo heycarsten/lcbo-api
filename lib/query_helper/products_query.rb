@@ -19,6 +19,10 @@ module QueryHelper
       Product.as_csv_row(row)
     end
 
+    def self.max_limit
+      200
+    end
+
     def self.filterable_fields
       %w[
       is_dead
