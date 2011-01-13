@@ -25,6 +25,14 @@
           is supported for this resource. Specify a <code>callback</code>
           parameter in the query string to use it.
         ~ discount @document[:body]
+        %h3 Formats
+        %table.formats
+          - @document[:formats].each_pair do |type, desc|
+            %tr
+              %td.extension
+                %b .#{type}
+              %td.desc
+                = desc
         - if @document[:params]
           %h3 Parameters
           %dl.query-params
@@ -33,7 +41,7 @@
                 %code= name
               %dd~ discount(desc)
         - if @document[:pairs]
-          %h3 Nodes
+          %h3 Explanation
           %table.fields
             - @document[:pairs].each do |field, desc|
               %tr

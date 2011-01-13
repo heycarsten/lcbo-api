@@ -196,21 +196,27 @@ root:
     
     I feel that publicly available information should be free and accessible in
     as many ways as possible. I want to see what individuals will do with this
-    information when presented with it in an accessible format. And I wanted
-    an LCBO app for my iPhone.
+    information when presented with it in an accessible format... and I wanted
+    an LCBO app for my iPhone. Read the [backstory](/docs/backstory) for more
+    information.
     
     ### Can you add barcode information products, please?
     
     Sorry, I do not currently have access to that information. I understand how
-    useful UPC information would be for products. Follow
+    useful barcode data would be for products. Follow
     [@lcboapi](http://twitter.com/lcboapi) on Twitter for the latest
-    announcements.
+    announcements as this would be a big deal if it was added.
     
     ### Can you add product images, please?
     
     I do not have a reliable source for product images, the best bet is to use
     Google Image Search API with the full product name and hope that the first
     result is relevant, it is often not.
+    
+    ### Can you add XML as a response format?
+    
+    No. JSON is a better alternative, if you can parse XML you can parse JSON
+    even easier.
     
     ### I'm a geek, how does it work?
     
@@ -236,7 +242,11 @@ root:
 Dataset Resources:
 - :title: Datasets
   :route: /datasets
-  :formats: [:all]
+  :formats: &all_formats
+    :json: JSON (the default format if no extension is supplied)
+    :js: Javascript (for use with JSON-P)
+    :csv: Comma Separated Values
+    :tsv: Tab Separated Values
   :params:
     :where: Filter results where these fields are true
     :where_not: Filter results where these fields are false
@@ -248,7 +258,9 @@ Dataset Resources:
 
 - :title: Dataset
   :route: /datasets/:dataset_id
-  :formats: [:all, :zip]
+  :formats:
+    <<: *all_formats
+    :zip: ZIP archive of all data (performs a redirect to the actual file)
   :examples:
   - :path: /datasets/1
     :desc: Get a specific dataset
@@ -277,7 +289,8 @@ Dataset Resources:
 Product Resources:
 - :title: Products
   :route: /products
-  :formats: [:all]
+  :formats:
+    <<: *all_formats
   :params:
     :where, where_not: |
       `where` filters products where the supplied fields are true. `where_not`
@@ -319,7 +332,8 @@ Product Resources:
 
 - :title: Product
   :route: /products/:product_id
-  :formats: [:all]
+  :formats:
+    <<: *all_formats
   :examples:
   - :path: /products/18
     :desc: Show product 18
@@ -369,7 +383,8 @@ Product Resources:
 
 - :title: Products at Store
   :route: /stores/:store_id/products
-  :formats: [:all]
+  :formats:
+    <<: *all_formats
   :examples:
   - :path: /stores/511/products
     :desc: All products available at store 511
@@ -379,21 +394,24 @@ Product Resources:
 Store Resources:
 - :title: Stores with Product
   :route: /products/:product_id/stores
-  :formats: [:all]
+  :formats:
+    <<: *all_formats
   :examples:
   - :path: /products/18/stores
     :desc: Stores that stock product 18
 
 - :title: Stores
   :route: /stores
-  :formats: [:all]
+  :formats:
+    <<: *all_formats
   :examples:
   - :path: /stores
     :desc: All stores
 
 - :title: Store
   :route: /stores/:store_id
-  :formats: [:all]
+  :formats:
+    <<: *all_formats
   :examples:
   - :path: /stores/511
     :desc: Store 511
@@ -431,14 +449,16 @@ Store Resources:
 Inventory Resources:
 - :title: Inventories
   :route: /inventories
-  :formats: [:all]
+  :formats:
+    <<: *all_formats
   :examples:
   - :path: /inventories
     :desc: All inventories
 
 - :title: Inventory
   :route: /stores/:store_id/products/:product_id/inventory
-  :formats: [:all]
+  :formats:
+    <<: *all_formats
   :examples:
   - :path: /stores/511/products/18/inventory
     :desc: Inventory of product 18 at store 511
@@ -459,7 +479,8 @@ Inventory Resources:
 
 - :title: Product Inventories
   :route: /products/:product_id/inventories
-  :formats: [:all]
+  :formats:
+    <<: *all_formats
   :examples:
   - :path: /products/18/inventories
     :desc: All inventories for product 18
@@ -467,7 +488,8 @@ Inventory Resources:
 History Resources:
 - :title: Product History
   :route: /products/:product_id/history
-  :formats: [:all]
+  :formats:
+    <<: *all_formats
   :examples:
   - :path: /products/18/history
     :desc: History for product 18
@@ -476,7 +498,8 @@ History Resources:
   
 - :title: Store History
   :route: /stores/:store_id/history
-  :formats: [:all]
+  :formats:
+    <<: *all_formats
   :examples:
   - :path: /stores/511/history
     :desc: History for store 511
@@ -485,7 +508,8 @@ History Resources:
 
 - :title: Inventory History
   :route: /stores/:store_id/products/:product_id/history
-  :formats: [:all]
+  :formats:
+    <<: *all_formats
   :examples:
   - :path: /stores/511/products/18/history
     :desc: Inventory history for product 18 at store 511
