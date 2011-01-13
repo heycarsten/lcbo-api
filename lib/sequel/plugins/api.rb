@@ -40,11 +40,15 @@ module Sequel
         end
 
         def as_csv(obj, with_header = false)
-          hsh = api_values(obj)
           rows = []
           rows << csv_columns if with_header
-          rows << csv_columns.map { |c| hsh[c] }
+          rows << as_csv_row(obj)
           rows
+        end
+
+        def as_csv_row(obj)
+          hsh = api_values(obj)
+          csv_columns.map { |c| hsh[c] }
         end
       end
 

@@ -85,7 +85,7 @@ module QueryHelper
       CSV.generate(:col_sep => delimiter) do |csv|
         csv << Inventory.csv_columns
         csv_dataset.all do |row|
-          csv << Inventory.as_csv(row)
+          csv << Inventory.as_csv_row(row)
         end
       end
     end

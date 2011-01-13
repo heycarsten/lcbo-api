@@ -53,7 +53,7 @@ module QueryHelper
       CSV.generate(:col_sep => delimiter) do |csv|
         csv << Crawl.csv_columns
         csv_dataset.all do |row|
-          csv << Crawl.as_csv(row)
+          csv << Crawl.as_csv_row(row)
         end
       end
     end
