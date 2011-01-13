@@ -1,21 +1,25 @@
 ---
-Information:
-- :title: Introduction
+root:
+- :title: About
+  :reverse_html_title: true
   :body: |
-    LCBO API was created by me, [Carsten Nielsen](http://heycarsten.com),
-    a software developer from [Unspace Interactive](http://unspace.ca) in
-    Toronto, Canada. I built it from the ground up using my favorite tools, you
-    can read about that in the [FAQ](/docs/faq).
-    
-    The goal of LCBO API is to provide developers with an easy way to create
-    intelligent applications that take advantage of the unique benefits
+    The goal of LCBO API is to provide developers and hobbyists with a way to
+    create intelligent applications that take advantage of the unique benefits
     that come from having a single provider of alcoholic beverages in a large
     geographical area.
     
+    LCBO API was created by me, [Carsten Nielsen](http://heycarsten.com), I'm a
+    software developer from [Unspace Interactive](http://unspace.ca) in
+    Toronto, Canada. I built LCBO API from the ground up using my favourite
+    tools, you can read more about that in the [FAQ](/docs/faq).
+    
     ### Usage
     
-    The API is intended to provide data to mobile and web applications. Here are
-    some examples of real applications that use the API:
+    The API is primarily designed to provide JSON data directly to mobile and
+    web applications, but it is also capable of returning CSV data to be used
+    directly in a spreadsheet application.
+    
+    Here are some examples of real-world applications:
     
      * [LCBO Search](http://lcbosearch.com) by Carsten Nielsen [Web App]
      * [Liquor, ON](http://hippofoundry.com/lcbo/) by Taylan Pince [iPhone App]
@@ -33,96 +37,92 @@ Information:
     [Twitter](http://twitter.com/heycarsten), and by
     [email](mailto:heycarsten@gmail.com).
 
-- :title: Frequently Asked Questions
-  :menu: FAQ
+- :title: Backstory
   :body: |
-    ### Is it free?
+    How LCBO API came to be is sort of a convoluted story. I had purchased a
+    book called The 500 Best-Value Wines in the LCBO by Rod Phillips. I would
+    often take the book with me to my neighbourhood LCBO where I would select
+    a wine from the book, then search the shelves for it. I would repeat this
+    process until I selected a wine that was in stock.
     
-    Absolutely! There is no desire or intention to charge for the use of the
-    API. I only ask that you tell me about what you are making with it. It costs
-    roughly $50/month to host the project,
-    [donations](http://www.pledgie.com/campaigns/8126) are very helpful.
+    I quickly figured that it would be easier to look the product up on the
+    LCBO website and scan to see if it was available at the store. Using
+    lcbo.com on my iPhone was very cumbersome though, and I found it faster to
+    just scan the shelves. This was not good enough -- I needed something
+    better!
     
-    ### Where does the data come from?
+    I decided I would create an iPhone app that allowed me to see if my
+    neighbourhood LCBO carried a certain product. The first step to creating
+    this application was to build an API where it could draw data from.
+    Fast-forward many evenings of spare time to May 1st, 2009 and the first
+    version of lcboapi.com was live. Over the next few months of spare time
+    I added more useful features to the API and added documentation.
     
-    Why, from the LCBO of course! Their website is periodically crawled to get
-    up-to-date information. Search engines like Google use this same technique
-    to index web pages.
-    
-    ### Why did you do this?
-    
-    I feel that publicly available information should be free and accessible in
-    as many ways as possible. I want to see what individuals will do with this
-    information when presented with it in an accessible format. And I wanted
-    an LCBO app for my iPhone.
-    
-    ### How does it work?
-    
-    * [Ruby 1.9.2](http://tryruby.org)
-    * [RVM](http://rvm.beginrescueend.com)
-    * [Rails 3](http://rubyonrails.org)
-    * [Sequel](http://sequel.rubyforge.org)
-    * [Redis](http://redis.io)
-    * [Postgres](http://postgresql.org)
-    * [Nginx](http://wiki.nginx.org/Main)
-    * [Linode](http://linode.com)
-    
-    ### Is it open source?
-    
-    The [parser](http://github.com/heycarsten/lcbo) is open source, my intention
-    is to eventually open source the API service too in the future. Here are
-    the current open source contributions:
-    
-    * [LCBO](http://github.com/heycarsten/lcbo) - HTML Parser
-    * [GCoder](http://github.com/heycarsten/gcoder) - Geocoding
-    
-- :title: API Conventions
+    Developers started to contact me, primarily interested to use the API to
+    create apps for mobile devices. After Taylan Pince released
+    [Liquor, ON](http://hippofoundry.com/lcbo/) (then named: LCBO) I
+    decided to focus my efforts entirely on the API and leave the applications
+    to other developers.
+
+- :title: Conventions
   :body: |
+    ### CSV and TSV Responses
+
+    Many resources can be returned as CSV (comma separated values) or TSV
+    (tab separated values). These results can then be easily imported into
+    spreadsheet software such as Apple Numbers or Microsoft Excel. To return
+    a resource in CSV or TSV format simply append the `.csv` or `.tsv` extension
+    to the resource URI:
+
+    <pre><code>/products<em>.csv</em>?order=price_in_cents.desc
+    </code></pre>
+
     ### JSON Responses
-    
-    Every response from the API is wrapped in a "container" that in it's most
+
+    Every response from the API is wrapped in a "container" that in its most
     basic form looks like this:
-    
+
         {
           "status": 200,
           "message": null,
           "result": ...
         }
-    
-    This allows the API to return meta-level information along with the data you
-    are requesting. For example, in the case of a Stores with Product request
-    the product object is returned with list of stores so that your application
-    does not need to perform two requests. 
-    
+
+    This allows the API to return meta information along with the data you are
+    requesting. For example, in the case of a Stores with Product request the
+    product object is returned with list of stores so that your application does
+    not need to perform two requests.
+
     ### Errors
 
     When an error occurs the response will look like this:
-    
+
         {
           "error": "bad_query_error",
           "message": "A value supplied for the order parameter (id.desk) is not valid. It contains an invalid sort order (desk) for (id) try using: id.desc or id.asc instead.",
           "result": null,
           "status": 400
         }
-    
-    Error messages are always as descriptive as possible, one of the design
-    goals for LCBO API was to make it as easy as possible to learn by trial and
-    error. There are a few different types of errors:
-    
+
+    Error messages are always as descriptive as possible; one of the design
+    goals for LCBO API is to make experiential learning (learning by trial and
+    error) as easy as possible. There are a few different types of errors:
+
      * `no_results_error`: The geocoder returned no geometry for the geo query.
      * `over_limit_error`: The geocoder has reached its daily limit of requests.
      * `geocoder_error`: The geocoder can't geocode the query it was provided.
      * `not_found_error`: A resource was not found (404)
      * `bad_query_error`: One (or more) of the supplied query parameters is wrong.
-    
+     * `jsonp_error`: Supplied callback is not a valid format.
+
     ### Pagination
-    
+
     When the API returns collections of items (stores, products, or inventories)
     it will paginate the results. You can control the number of items per page
     through the `per_page` parameter.
-    
+
     A typical pager object looks like this:
-    
+
         {
           "records_per_page": 20,
           "total_record_count": 608,
@@ -138,26 +138,105 @@ Information:
           "final_page": 31,
           "final_page_path": "/stores?page=31"
         }
-    
-    It contains all of the information you need, plus more to navigate through
+
+    It contains all of the information you need (and more) to navigate through
     the pages in the result set.
-    
+
     ### JSON-P
-    
+
     JSON-P stands for "JSON with padding" which is a very confusing way of
-    saying JSON wrapped in a Javascript function call. It is used to circumvent
-    browser security limitations when trying to access resources via Javascript
-    from a different host than the containing page.
-    
+    saying JSON wrapped in a Javascript function call; I like to think of it as
+    JSON-JS. It is used to circumvent browser security limitations when trying
+    to access resources via Javascript from a different host than the containing
+    page. That means you can use it to load LCBO API resources on a page that is
+    not hosted on lcboapi.com, such as your website!
+
     One of the limitations to JSON-P is that the HTTP status can not be properly
     set to an error level because the `<script>` element that is dynamically
     written to the page will fail to load. Because of this all JSON-P requests
-    return a 200 status code, regardless of actual HTTP status. The "status"
-    node in the response container remains the proper value though.
+    return a 200 HTTP status code, regardless of the actual status. However, the
+    `"status"` node in the response container always indicates the real status.
 
+    To use JSON-P simply provide a `callback` parameter to your query. For
+    example, to search products and return JSON-P you would request:
+
+    <pre><code>/products?q=cider&<em>callback=</em>setJSON
+    </code></pre>
+
+    This will return the normal JSON response but wrap it in a function call:
+
+    <pre><code><em>setJSON(</em>{"status":200, "message":null, "response": ...}<em>);</em>
+    </code></pre>
+
+    You can optionally specify a `.js` file extension for the resource, but the
+    `Content-Type` header will always be set to `text/javascript` when returning
+    JSON-P. For example the following request URI is the same as the one above.
+
+    <pre><code>/products<em>.js</em>?q=cider&callback=setJSON
+    </code></pre>
+
+
+- :title: Frequently Asked Questions
+  :menu: FAQ
+  :body: |
+    ### Is it free?
+    
+    Absolutely! There is no desire or intention to charge for the use of the
+    API. I only ask that you tell me about what you are making with it. It costs
+    roughly $50/month to host the project,
+    [donations](http://www.pledgie.com/campaigns/8126) are greatly appreciated!
+    
+    ### Where does the data come from?
+    
+    Why, from the LCBO of course! Their website is periodically crawled to get
+    up-to-date information. Search engines like Google and Bing use this same
+    technique to index web pages.
+    
+    ### Why did you do this?
+    
+    I feel that publicly available information should be free and accessible in
+    as many ways as possible. I want to see what individuals will do with this
+    information when presented with it in an accessible format. And I wanted
+    an LCBO app for my iPhone.
+    
+    ### Can you add barcode information products, please?
+    
+    Sorry, I do not currently have access to that information. I understand how
+    useful UPC information would be for products. Follow
+    [@lcboapi](http://twitter.com/lcboapi) on Twitter for the latest
+    announcements.
+    
+    ### Can you add product images, please?
+    
+    I do not have a reliable source for product images, the best bet is to use
+    Google Image Search API with the full product name and hope that the first
+    result is relevant, it is often not.
+    
+    ### I'm a geek, how does it work?
+    
+    * [Ruby 1.9.2](http://tryruby.org)
+    * [RVM](http://rvm.beginrescueend.com)
+    * [Rails 3](http://rubyonrails.org)
+    * [Sequel](http://sequel.rubyforge.org)
+    * [Redis](http://redis.io)
+    * [Postgres](http://postgresql.org)
+    * [Nginx](http://wiki.nginx.org/Main)
+    * [Ubuntu 10.04](http://ubuntu.com/server)
+    * [Linode](http://linode.com)
+    
+    ### Is it open source?
+    
+    The [parser](http://github.com/heycarsten/lcbo) is open source, my intention
+    is to eventually open source the API service too in the future. Here are
+    the current open source contributions:
+    
+    * [LCBO](http://github.com/heycarsten/lcbo) - HTML Parser
+    * [GCoder](http://github.com/heycarsten/gcoder) - Geocoding
+    
 Dataset Resources:
 - :title: Datasets
   :route: /datasets
+  :formats: [:all]
   :params:
     :where: Filter results where these fields are true
     :where_not: Filter results where these fields are false
@@ -169,6 +248,7 @@ Dataset Resources:
 
 - :title: Dataset
   :route: /datasets/:dataset_id
+  :formats: [:all, :zip]
   :examples:
   - :path: /datasets/1
     :desc: Get a specific dataset
@@ -197,6 +277,7 @@ Dataset Resources:
 Product Resources:
 - :title: Products
   :route: /products
+  :formats: [:all]
   :params:
     :where, where_not: |
       `where` filters products where the supplied fields are true. `where_not`
@@ -238,9 +319,10 @@ Product Resources:
 
 - :title: Product
   :route: /products/:product_id
+  :formats: [:all]
   :examples:
   - :path: /products/18
-    :desc: Show product #18
+    :desc: Show product 18
   :pairs:
     alcohol_content: Alcohol content (Divide by 100 for decimal value)
     bonus_reward_miles: Number of bonus air miles
@@ -287,30 +369,34 @@ Product Resources:
 
 - :title: Products at Store
   :route: /stores/:store_id/products
+  :formats: [:all]
   :examples:
   - :path: /stores/511/products
-    :desc: All products available at store #511
+    :desc: All products available at store 511
   - :path: /stores/511/products?where=is_vqa
-    :desc: All VQA products at store #511
+    :desc: All VQA products at store 511
 
 Store Resources:
 - :title: Stores with Product
   :route: /products/:product_id/stores
+  :formats: [:all]
   :examples:
   - :path: /products/18/stores
-    :desc: Stores that stock product #18
+    :desc: Stores that stock product 18
 
 - :title: Stores
   :route: /stores
+  :formats: [:all]
   :examples:
   - :path: /stores
     :desc: All stores
 
 - :title: Store
   :route: /stores/:store_id
+  :formats: [:all]
   :examples:
   - :path: /stores/511
-    :desc: Store #511
+    :desc: Store 511
   :pairs:
     address_line_1: Street address
     address_line_2: Secondary address information (Not all stores)
@@ -345,12 +431,14 @@ Store Resources:
 Inventory Resources:
 - :title: Inventories
   :route: /inventories
+  :formats: [:all]
   :examples:
   - :path: /inventories
     :desc: All inventories
 
 - :title: Inventory
   :route: /stores/:store_id/products/:product_id/inventory
+  :formats: [:all]
   :examples:
   - :path: /stores/511/products/18/inventory
     :desc: Inventory of product 18 at store 511
@@ -371,6 +459,7 @@ Inventory Resources:
 
 - :title: Product Inventories
   :route: /products/:product_id/inventories
+  :formats: [:all]
   :examples:
   - :path: /products/18/inventories
     :desc: All inventories for product 18
@@ -378,6 +467,7 @@ Inventory Resources:
 History Resources:
 - :title: Product History
   :route: /products/:product_id/history
+  :formats: [:all]
   :examples:
   - :path: /products/18/history
     :desc: History for product 18
@@ -386,6 +476,7 @@ History Resources:
   
 - :title: Store History
   :route: /stores/:store_id/history
+  :formats: [:all]
   :examples:
   - :path: /stores/511/history
     :desc: History for store 511
@@ -394,6 +485,7 @@ History Resources:
 
 - :title: Inventory History
   :route: /stores/:store_id/products/:product_id/history
+  :formats: [:all]
   :examples:
   - :path: /stores/511/products/18/history
     :desc: Inventory history for product 18 at store 511

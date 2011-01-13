@@ -3,9 +3,9 @@ class RootController < ApplicationController
   before_filter :load_documents
 
   def show
-    slug = params[:slug] || 'introduction'
-    @document = @documents.find { |doc| doc[:slug] == slug }
-    return status(404) unless @document
+    redirect_to '/docs/about' and return unless params[:slug]
+    @document = @documents.find { |doc| doc[:slug] == params[:slug] }
+    return http_status(404) unless @document
     render :layout => 'document'
   end
 

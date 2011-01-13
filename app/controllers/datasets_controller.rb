@@ -16,7 +16,7 @@ class DatasetsController < ApplicationController
     respond_to do |wants|
       wants.csv { render :text => @query.as_csv }
       wants.tsv { render :text => @query.as_tsv }
-      wants.zip { redirect_to @query.dataset[:csv_dump] }
+      wants.zip { redirect_to @query.as_json[:result][:csv_dump] }
       wants.any(:js, :json) { render_json @query.as_json }
     end
   end

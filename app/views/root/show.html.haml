@@ -1,4 +1,7 @@
-- title 'LCBO API ' + @document[:title]
+- if @document[:reverse_html_title]
+  - title @document[:title] + ' LCBO API'
+- else
+  - title 'LCBO API ' + @document[:title]
 .cols-1-2.clear
   .col-1
     .side-title
@@ -16,7 +19,7 @@
             URL Template
           %dd.uri-specification
             <code>http://lcboapi.com</code>#{format_route @document[:route]}
-      .document-body
+      %article.document-body
         %p.note
           %a{ :href => 'http://en.wikipedia.org/wiki/JSON#JSONP' } JSON-P
           is supported for this resource. Specify a <code>callback</code>

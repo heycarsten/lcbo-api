@@ -15,7 +15,7 @@ module ApplicationHelper
 
   def discount(md)
     return unless md
-    raw(RDiscount.new(md).to_html)
+    raw(RDiscount.new(md, :smart).to_html)
   end
 
   def title(value = nil)

@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def status(code)
+  def http_status(code)
     path = (Rails.root + 'public' + "#{code}.html").to_s
     render :file => code, :status => code
     false
@@ -29,7 +29,8 @@ class ApplicationController < ActionController::Base
   def json?
     !request.format.csv? &&
     !request.format.tsv? &&
-    !request.format.kml?
+    !request.format.kml? &&
+    !request.format.zip?
   end
 
   def jsonp?

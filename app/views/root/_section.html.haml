@@ -1,6 +1,7 @@
 %li.side-menu-section
-  .side-menu-section-caption
-    = section
+  - unless 'root' == section
+    .side-menu-section-caption
+      = section
   %ul.side-menu-list
     - documents.each do |document|
       %li.side-menu-item
