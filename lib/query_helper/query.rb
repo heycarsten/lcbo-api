@@ -21,6 +21,14 @@ module QueryHelper
       1000
     end
 
+    def self.csv_columns
+      raise BadQueryError, 'CSV output is not supported for this resource.'
+    end
+
+    def self.as_csv_row(row)
+      raise BadQueryError, 'CSV output is not supported for this resource.'
+    end
+
     def self.table
       raise NotImplementedError, "#{self}#table needs to be implemented."
     end
@@ -181,7 +189,12 @@ module QueryHelper
     end
 
     def as_csv(delimiter = ',')
-      raise NotImplementedError, "#{self.class}#as_csv needs to be implemented."
+      CSV.generate(:col_sep => delimiter) do |csv|
+        csv << self.class.csv_columns
+        csv_dataset.all do |row|
+          csv << self.class.as_csv_row(row)
+        end
+      end
     end
 
     def as_tsv

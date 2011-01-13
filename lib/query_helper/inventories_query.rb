@@ -14,6 +14,14 @@ module QueryHelper
       :inventories
     end
 
+    def self.csv_columns
+      Inventory.csv_columns
+    end
+
+    def self.as_csv_row(row)
+      Inventory.as_csv_row(row)
+    end
+
     def self.per_page
       50
     end
@@ -79,15 +87,6 @@ module QueryHelper
       end.
       filter(filter_hash).
       order(*order)
-    end
-
-    def as_csv(delimiter = ',')
-      CSV.generate(:col_sep => delimiter) do |csv|
-        csv << Inventory.csv_columns
-        csv_dataset.all do |row|
-          csv << Inventory.as_csv_row(row)
-        end
-      end
     end
 
     def as_json

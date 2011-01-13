@@ -13,6 +13,14 @@ module QueryHelper
       :crawls
     end
 
+    def self.csv_columns
+      Crawl.csv_columns
+    end
+
+    def self.as_csv_row(row)
+      Crawl.as_csv_row(row)
+    end
+
     def self.sortable_fields
       %w[
         id
@@ -47,15 +55,6 @@ module QueryHelper
       h = super
       h[:result] = page_dataset.all.map { |row| Crawl.as_json(row) }
       h
-    end
-
-    def as_csv(delimiter = ',')
-      CSV.generate(:col_sep => delimiter) do |csv|
-        csv << Crawl.csv_columns
-        csv_dataset.all do |row|
-          csv << Crawl.as_csv_row(row)
-        end
-      end
     end
 
   end

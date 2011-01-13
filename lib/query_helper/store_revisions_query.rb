@@ -13,6 +13,14 @@ module QueryHelper
       :store_revisions
     end
 
+    def self.csv_columns
+      @csv_columns ||= (DB[table].columns - [:crawl_id])
+    end
+
+    def self.as_csv_row(row)
+      csv_columns.map { |c| row[c] }
+    end
+
     def self.per_page
       50
     end
@@ -32,16 +40,6 @@ module QueryHelper
 
     def dataset
       db.filter(:store_id => store_id).order(:updated_at.desc)
-    end
-
-    def as_csv(delimiter = ',')
-      CSV.generate(:col_sep => delimiter) do |csv|
-        cols = (db.columns - [:crawl_id])
-        csv << cols
-        csv_dataset.all do |row|
-          csv << cols.map { |c| row[c] }
-        end
-      end
     end
 
     def as_json

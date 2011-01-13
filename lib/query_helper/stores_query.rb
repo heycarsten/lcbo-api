@@ -21,6 +21,14 @@ module QueryHelper
       :stores
     end
 
+    def self.csv_columns
+      Store.csv_columns
+    end
+
+    def self.as_csv_row(row)
+      Store.as_csv_row(row)
+    end
+
     def self.filterable_fields
       %w[
       is_dead
@@ -149,15 +157,6 @@ module QueryHelper
       h[:product] = product.as_json if product_id
       h[:result]  = page_dataset.all.map { |row| Store.as_json(row) }
       h
-    end
-
-    def as_csv(delimiter = ',')
-      CSV.generate(:col_sep => delimiter) do |csv|
-        csv << Store.csv_columns
-        csv_dataset.all do |row|
-          csv << Store.as_csv_row(row)
-        end
-      end
     end
 
     private

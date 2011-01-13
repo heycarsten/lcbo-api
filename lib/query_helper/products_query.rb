@@ -11,6 +11,14 @@ module QueryHelper
       :products
     end
 
+    def self.csv_columns
+      Product.csv_columns
+    end
+
+    def self.as_csv_row(row)
+      Product.as_csv_row(row)
+    end
+
     def self.filterable_fields
       %w[
       is_dead
@@ -66,15 +74,6 @@ module QueryHelper
       end.
       filter(filter_hash).
       order(*order)
-    end
-
-    def as_csv(delimiter = ',')
-      CSV.generate(:col_sep => delimiter) do |csv|
-        csv << Product.csv_columns
-        csv_dataset.all do |row|
-          csv << Product.as_csv_row(row)
-        end
-      end
     end
 
     def as_json

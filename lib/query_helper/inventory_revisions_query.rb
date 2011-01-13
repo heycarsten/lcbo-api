@@ -14,6 +14,14 @@ module QueryHelper
       :inventory_revisions
     end
 
+    def self.csv_columns
+      @csv_columns ||= DB[table].columns
+    end
+
+    def self.as_csv_row(row)
+      csv_columns.map { |c| row[c] }
+    end
+
     def self.per_page
       50
     end
@@ -48,16 +56,6 @@ module QueryHelper
       db.
         filter(:product_id => product_id, :store_id => store_id).
         order(:updated_on.desc)
-    end
-
-    def as_csv(delimiter = ',')
-      CSV.generate(:col_sep => delimiter) do |csv|
-        cols = db.columns
-        csv << cols
-        csv_dataset.all do |row|
-          csv << cols.map { |c| row[c] }
-        end
-      end
     end
 
     def as_json
