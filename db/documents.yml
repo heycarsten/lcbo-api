@@ -246,20 +246,20 @@ root:
 
 Dataset Resources:
 - :title: Datasets
+  :query: DatasetsQuery
   :route: /datasets
   :formats: &all_formats
-    :json: JSON (the default format if no extension is supplied)
-    :js: Javascript (for use with JSON-P)
+    :json: JSON (default format if no extension is supplied)
+    :js: Javascript (for use with JSON-P, requires <code>callback</code> parameter)
     :csv: Comma Separated Values
     :tsv: Tab Separated Values
   :params:
-    :where: Filter results where these fields are true.
-    :where_not: Filter results where these fields are false.
-    :order: Order by the specified fields.
+    - :defaults
   :examples:
   - :path: /datasets
     :desc: Page all datasets
-  :body:
+  :body: |
+    Returns [datasets](/docs/dataset).
 
 - :title: Dataset
   :route: /datasets/:dataset_id
@@ -294,46 +294,23 @@ Dataset Resources:
 Product Resources:
 - :title: Products
   :route: /products
+  :query: ProductsQuery
   :formats:
     <<: *all_formats
   :params:
-    :where, where_not: |
-      `where` filters products where the supplied fields are true. `where_not`
-      filters products where the supplied fields are false. The available fields
-      are:
-
-      `<%= QueryHelper::ProductsQuery.filterable_fields.join(', ') %>`
-
-      The following example would find seasonal VQA products that are not discontinued:
-
-      `/products?where=is_vqa,is_seasonal&where_not=is_discontinued`
-    :order: |
-      Orders the results by a specified field in ascending or descending order.
-      Available fields are:
-
-      `<%= QueryHelper::ProductsQuery.sortable_fields.join(', ') %>`
-
-      The following example sorts products by release date:
-
-      `/products?order=released_on.desc`
-    :page: |
-      The page number to return. See "pager" in the response object for more
-      information.
-    :per_page: |
-      The number of objects to include per page. Minimum is 5, maximum is 100.
-    :q: |
-      URI-encoded full text search query. Examples: "merlot", "molson+beer".
+    - :defaults
+    - :q
   :examples:
-  - :path: /products?q=waupoos
-    :desc: Full text product search for "waupoos"
-  - :path: /products?geo=queen+and+spadina
-    :desc: Geospatial search on products near "queen and spadina"
   - :path: /products
-    :desc: Page through all products
+    :desc: All products
+  - :path: /products?q=waupoos
+    :desc: Full-text search
+  - :path: /products?geo=queen+and+spadina
+    :desc: Geospatial search
   - :path: /products?where=is_vqa&order=released_on.desc
-    :desc: Page through all VQA products ordered by release date
+    :desc: All VQA products ordered by release date
   :body: |
-
+    Returns [products](/docs/product).
 
 - :title: Product
   :route: /products/:product_id
@@ -385,33 +362,56 @@ Product Resources:
     value_added_promotion_description: Contents of the value added promotion offer if available
     volume_in_milliliters: Total volume of all units in package
   :body:
+    # TODO: Document this!
 
 - :title: Products at Store
   :route: /stores/:store_id/products
+  :query: ProductsQuery
   :formats:
     <<: *all_formats
+  :params:
+    - :defaults
+    - :q
   :examples:
   - :path: /stores/511/products
     :desc: All products available at store 511
   - :path: /stores/511/products?where=is_vqa
     :desc: All VQA products at store 511
+  :body: |
+    Returns all [products](/docs/product) that are available at the specified
+    store along with the currenty reported inventory quantity for each.
 
 Store Resources:
 - :title: Stores with Product
   :route: /products/:product_id/stores
+  :query: StoresQuery
   :formats:
     <<: *all_formats
+  :params:
+  - :defaults
+  - :geo
+  - :q
   :examples:
   - :path: /products/18/stores
     :desc: Stores that stock product 18
+  :body: |
+    Returns all of the [stores](/docs/store) that carry the specified product
+    along with the quantity that each store currently has in stock.
 
 - :title: Stores
   :route: /stores
+  :query: StoresQuery
   :formats:
     <<: *all_formats
+  :params:
+  - :defaults
+  - :geo
+  - :q
   :examples:
   - :path: /stores
     :desc: All stores
+  :body: |
+    Returns [stores](/docs/store).
 
 - :title: Store
   :route: /stores/:store_id
@@ -438,7 +438,7 @@ Store Resources:
     inventory_count: Total inventory units at the store
     inventory_price_in_cents: Total retail value of all products at the store
     inventory_volume_in_milliliters: Total volume of all products at the store
-    is_dead: When a store is removed from the store catalog it is marked as "dead"
+    is_dead: When a store is removed it is marked as "dead"
     latitude: Reported latitude
     longitude: Reported longitude
     name: Official LCBO store name
@@ -450,15 +450,22 @@ Store Resources:
     tags: A string of tags that reflect the store
     telephone: Telephone number
     updated_at: Time that the store information was updated
+  :body:
+    # TODO: Documentation!
 
 Inventory Resources:
 - :title: Inventories
   :route: /inventories
+  :query: InventoriesQuery
+  :params:
+  - :defaults
   :formats:
     <<: *all_formats
   :examples:
   - :path: /inventories
     :desc: All inventories
+  :body: |
+    Returns [inventory](/docs/inventory) items.
 
 - :title: Inventory
   :route: /stores/:store_id/products/:product_id/inventory
@@ -484,39 +491,53 @@ Inventory Resources:
 
 - :title: Product Inventories
   :route: /products/:product_id/inventories
+  :query: InventoriesQuery
+  :params:
+  - :defaults
   :formats:
     <<: *all_formats
   :examples:
   - :path: /products/18/inventories
     :desc: All inventories for product 18
+  :body: |
+    Returns [inventories](/docs/inventory) for the specified product.
 
 History Resources:
 - :title: Product History
   :route: /products/:product_id/history
+  :query: ProductRevisionsQuery
+  :params:
+  - :defaults
   :formats:
     <<: *all_formats
   :examples:
   - :path: /products/18/history
     :desc: History for product 18
   :body: |
-    Certain product fields are tracked over time and can be accessed.
+    Returns a list of certain product fields that are tracked over time.
 
 - :title: Store History
   :route: /stores/:store_id/history
+  :query: StoreRevisionsQuery
+  :params:
+  - :defaults
   :formats:
     <<: *all_formats
   :examples:
   - :path: /stores/511/history
     :desc: History for store 511
   :body: |
-    Certain store fields are tracked over time and can be accessed.
+    Returns a list of certain store fields that are tracked over time.
 
 - :title: Inventory History
   :route: /stores/:store_id/products/:product_id/history
+  :query: InventoryRevisionsQuery
+  :params:
+  - :defaults
   :formats:
     <<: *all_formats
   :examples:
   - :path: /stores/511/products/18/history
     :desc: Inventory history for product 18 at store 511
   :body: |
-    Inventories are tracked over time for every product at every store.
+    Returns a inventory history for the specified store and product.

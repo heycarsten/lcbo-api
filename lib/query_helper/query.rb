@@ -18,6 +18,10 @@ module QueryHelper
       20
     end
 
+    def self.max_per_page
+      100
+    end
+
     def self.limit
       50
     end
@@ -146,7 +150,7 @@ module QueryHelper
     end
 
     def per_page=(value)
-      unless (MIN_PER_PAGE..MAX_PER_PAGE).include?(value.to_i)
+      unless (MIN_PER_PAGE..self.class.max_per_page).include?(value.to_i)
         raise BadQueryError, "The value supplied for the per_page parameter " \
         "(#{value}) is not valid. It must be a number between " \
         "#{MIN_PER_PAGE} and #{MAX_PER_PAGE}."

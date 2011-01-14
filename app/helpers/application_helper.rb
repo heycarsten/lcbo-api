@@ -13,9 +13,13 @@ module ApplicationHelper
     time.to_time.strftime(strf)
   end
 
-  def discount(md)
+  def discount(md, *opts)
     return unless md
-    raw(RDiscount.new(md, :smart).to_html)
+    if opts.empty?
+      raw(RDiscount.new(md, :smart).to_html)
+    else
+      raw(RDiscount.new(md, *opts).to_html)
+    end
   end
 
   def title(value = nil)

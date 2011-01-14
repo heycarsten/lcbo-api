@@ -20,10 +20,6 @@
           %dd.uri-specification
             <code>http://lcboapi.com</code>#{format_route @document[:route]}
       %article.document-body
-        %p.note
-          %a{ :href => 'http://en.wikipedia.org/wiki/JSON#JSONP' } JSON-P
-          is supported for this resource. Specify a <code>callback</code>
-          parameter in the query string to use it.
         ~ discount @document[:body]
         %h3 Formats
         %table.formats
@@ -32,16 +28,11 @@
               %td.extension
                 %b .#{type}
               %td.desc
-                = desc
+                = raw desc
         - if @document[:params]
-          %h3 Parameters
-          %dl.query-params
-            - @document[:params].each_pair do |name, desc|
-              %dt
-                %code= name
-              %dd~ discount(desc)
+          = render 'root/params'
         - if @document[:pairs]
-          %h3 Explanation
+          %h3 Fields
           %table.fields
             - @document[:pairs].each do |field, desc|
               %tr
