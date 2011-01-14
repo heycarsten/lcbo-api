@@ -10,9 +10,9 @@ class ApplicationController < ActionController::Base
     QueryHelper::NotFoundError,
     QueryHelper::BadQueryError, :with => :render_exception
 
-  before_filter :set_cache_control, :if => -> { Rails.env.production? }
-  before_filter :set_default_format
-  after_filter  :set_status_jsonp,  :if => :api_request?
+  before_filter :set_cache_control,  :if => -> { Rails.env.production? }
+  before_filter :set_api_format,     :if => :api_request?
+  after_filter  :set_jsonp_status,   :if => :api_request?
 
   protected
 
@@ -22,37 +22,55 @@ class ApplicationController < ActionController::Base
     false
   end
 
-  def api_request?
-    params[:version] ? true : false
-  end
-
-  def json?
-    !request.format.csv? &&
-    !request.format.tsv? &&
-    !request.format.kml? &&
-    !request.format.zip?
-  end
-
-  def jsonp?
-    json? && params[:callback].present?
-  end
-
-  def jsonp_callback
-    QueryHelper.jsonp_callback(params)
-  end
-
-  def set_default_format
-    return unless api_request? && json?
-    request.format = (jsonp? ? :js : :json)
-  end
-
   def set_cache_control
     response.etag                   = LCBOAPI.cache_stamp
     response.cache_control[:public] = true
     response.cache_control[:extras] = %W[ s-maxage=#{1.day} ]
   end
 
-  def set_status_jsonp
+  def api_request?
+    params[:version] ? true : false
+  end
+
+  def default_format?
+    !request.format.csv? &&
+    !request.format.tsv? &&
+    !request.format.kml? &&
+    !request.format.zip? &&
+    !request.format.js? &&
+    !request.format.json?
+  end
+
+  def set_api_format
+    case
+    when request.format.js? && params[:callback].blank?
+      render_error :jsonp_error,
+        "JSON-P (.js) can not be requested without specifying a callback " \
+        "parameter. Try something like: #{request.path}?callback={your " \
+        "callback function}"
+      false
+    when request.format.json? && params[:callback].present?
+      render_error :jsonp_error,
+        "JSON format can not be requested with a callback parameter, if you " \
+        "want JSON-P then either drop the .json extension or use the .js " \
+        "extension instead of .json: #{request.fullpath.sub('.json', '.js')}"
+      false
+    when default_format? && params[:callback].present?
+      request.format = :js
+    when default_format?
+      request.format = :json
+    end
+  end
+
+  def jsonp?
+    request.format.js? && params[:callback].present?
+  end
+
+  def jsonp_callback
+    QueryHelper.jsonp_callback(params)
+  end
+
+  def set_jsonp_status
     response.status = 200 if jsonp?
   end
 
@@ -60,18 +78,22 @@ class ApplicationController < ActionController::Base
     QueryHelper.query(type, request, params)
   end
 
-  def render_exception(error)
+  def render_error(error, message, status = 400)
     h = {}
     h[:result]  = nil
-    h[:error]   = error.class.to_s.demodulize.underscore
-    h[:message] = error.message
-    response.status = case error
-      when QueryHelper::NotFoundError
-        404
-      else
-        400
-      end
+    h[:error]   = error.to_s
+    h[:message] = message
+    response.content_type = 'application/json'
+    response.status = status
     render_json(h)
+  end
+
+  def render_exception(error)
+    render_error(
+      error.class.to_s.demodulize.underscore,
+      error.message,
+      (error.is_a?(QueryHelper::NotFoundError) ? 404 : 400)
+    )
   end
 
   def render_json(data)

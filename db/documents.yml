@@ -7,33 +7,33 @@ root:
     create intelligent applications that take advantage of the unique benefits
     that come from having a single provider of alcoholic beverages in a large
     geographical area.
-    
+
     ### Backstory
-    
+
     LCBO API was created by me, [Carsten Nielsen](http://heycarsten.com), I'm a
     software developer from [Unspace Interactive](http://unspace.ca) in
     Toronto, Canada. I built LCBO API from the ground up using my favourite
     tools, you can read more about that in the [FAQ](/docs/faq).
-    
+
     How LCBO API came to be is sort of a convoluted story. I had purchased a
     book called The 500 Best-Value Wines in the LCBO by Rod Phillips. I would
     often take the book with me to my neighbourhood LCBO where I would select
     a wine from the book, then search the shelves for it. I would repeat this
     process until I selected a wine that was in stock.
-    
+
     I quickly figured that it would be easier to look the product up on the
     LCBO website and scan to see if it was available at the store. Using
     lcbo.com on my iPhone was very cumbersome though, and I found it faster to
     just scan the shelves. This was not good enough -- I needed something
     better!
-    
+
     I decided I would create an iPhone app that allowed me to see if my
     neighbourhood LCBO carried a certain product. The first step to creating
     this application was to build an API where it could draw data from.
     Fast-forward many evenings of spare time to May 1st, 2009 and the first
     version of lcboapi.com was live. Over the next few months of spare time
     I added more useful features to the API and added documentation.
-    
+
     Developers started to contact me, primarily interested to use the API to
     create apps for mobile devices. After Taylan Pince released
     [Liquor, ON](http://hippofoundry.com/lcbo/) (then named: LCBO) I
@@ -41,23 +41,23 @@ root:
     to other developers.
 
     ### Usage
-    
+
     The API is primarily designed to provide JSON data directly to mobile and
     web applications, but it is also capable of returning CSV data to be used
     directly in a spreadsheet application.
-    
+
     Here are some examples of real-world applications:
-    
+
      * [LCBO Search](http://lcbosearch.com) by Carsten Nielsen [Web App]
      * [Liquor, ON](http://hippofoundry.com/lcbo/) by Taylan Pince [iPhone App]
-    
+
     If you plan on performing hundreds of queries per second for uses such as
     data analysis then you should download the latest [dataset](/docs/dataset)
     and perform these operations offline. The datasets contain CSV data, if
     you need a different format please ask.
-    
+
     ### Contact
-    
+
     I would love to hear about how you are using the data or API. I would also
     love to hear from you if you want to do something with the data but are not
     sure how to get started. You can reach me through
@@ -180,51 +180,51 @@ root:
   :menu: FAQ
   :body: |
     ### Is it free?
-    
+
     Absolutely! There is no desire or intention to charge for the use of the
     API. I only ask that you tell me about what you are making with it. It costs
     roughly $50/month to host the project,
     [donations](http://www.pledgie.com/campaigns/8126) are greatly appreciated!
-    
+
     ### Where does the data come from?
-    
+
     Why, from the LCBO of course! Their website is periodically crawled to get
     up-to-date information. Search engines like Google and Bing use this same
     technique to index web pages.
-    
+
     ### Why did you do this?
-    
+
     I feel that publicly available information should be free and accessible in
     as many ways as possible. I want to see what individuals will do with this
     information when presented with it in an accessible format... and I wanted
     an LCBO app for my iPhone. Read the [about section](/docs/about) for more
     information.
-    
+
     ### Can you add barcode information products, please?
-    
+
     I do not currently have access to barcode information for all products that
     the LCBO stocks. I understand how useful barcode data would be for products
     and if this ever changes it will certainly be announced on
     [@lcboapi](http://twitter.com/lcboapi)'s Twitter account.
-    
+
     ### Can you add product images, please?
-    
+
     I do not have a reliable source for product images, the best bet is to use
     Google Image Search API with the full product name and hope that the first
     result is relevant, it is often not.
-    
+
     ### Can you add YAML as a response format?
-    
+
     Maybe, but since JSON is a subset of YAML adding it as a response format
     sort of feels like building a house around an perfectly functional, already
     existing house. If enough people want it, I'll add it.
-    
+
     ### Can you add XML as a response format?
-    
+
     No. I don't believe in [XML](http://www.json.org/xml.html).
-    
+
     ### I'm a geek, how does it work?
-    
+
     * [Ruby 1.9.2](http://tryruby.org)
     * [RVM](http://rvm.beginrescueend.com)
     * [Rails 3](http://rubyonrails.org)
@@ -234,16 +234,16 @@ root:
     * [Nginx](http://wiki.nginx.org/Main)
     * [Ubuntu 10.04](http://ubuntu.com/server)
     * [Linode](http://linode.com)
-    
+
     ### Is it open source?
-    
+
     The [parser](http://github.com/heycarsten/lcbo) is open source, my intention
     is to eventually open source the API service too in the future. Here are
     the current open source contributions:
-    
+
     * [LCBO](http://github.com/heycarsten/lcbo) - HTML Parser
     * [GCoder](http://github.com/heycarsten/gcoder) - Geocoding
-    
+
 Dataset Resources:
 - :title: Datasets
   :route: /datasets
@@ -253,9 +253,9 @@ Dataset Resources:
     :csv: Comma Separated Values
     :tsv: Tab Separated Values
   :params:
-    :where: Filter results where these fields are true
-    :where_not: Filter results where these fields are false
-    :order: Order by this field
+    :where: Filter results where these fields are true.
+    :where_not: Filter results where these fields are false.
+    :order: Order by the specified fields.
   :examples:
   - :path: /datasets
     :desc: Page all datasets
@@ -301,20 +301,20 @@ Product Resources:
       `where` filters products where the supplied fields are true. `where_not`
       filters products where the supplied fields are false. The available fields
       are:
-      
+
       `<%= QueryHelper::ProductsQuery.filterable_fields.join(', ') %>`
-      
+
       The following example would find seasonal VQA products that are not discontinued:
-      
+
       `/products?where=is_vqa,is_seasonal&where_not=is_discontinued`
     :order: |
       Orders the results by a specified field in ascending or descending order.
       Available fields are:
-      
+
       `<%= QueryHelper::ProductsQuery.sortable_fields.join(', ') %>`
-      
+
       The following example sorts products by release date:
-      
+
       `/products?order=released_on.desc`
     :page: |
       The page number to return. See "pager" in the response object for more
@@ -333,7 +333,7 @@ Product Resources:
   - :path: /products?where=is_vqa&order=released_on.desc
     :desc: Page through all VQA products ordered by release date
   :body: |
-    
+
 
 - :title: Product
   :route: /products/:product_id
@@ -500,7 +500,7 @@ History Resources:
     :desc: History for product 18
   :body: |
     Certain product fields are tracked over time and can be accessed.
-  
+
 - :title: Store History
   :route: /stores/:store_id/history
   :formats:
