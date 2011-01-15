@@ -3,10 +3,10 @@ root:
 - :title: About
   :reverse_html_title: true
   :body: |
-    The goal of LCBO API is to provide developers and hobbyists with a way to
-    create intelligent applications that take advantage of the unique benefits
-    that come from having a single provider of alcoholic beverages in a large
-    geographical area.
+    The goal of LCBO API is to provide developers, hobbyists, and anyone who is
+    interested with a way to create applications that take advantage of the
+    unique benefits that come from having a single provider of alcoholic
+    beverages in a large geographical area.
 
     ### Backstory
 
@@ -362,7 +362,7 @@ Product Resources:
     value_added_promotion_description: Contents of the value added promotion offer if available
     volume_in_milliliters: Total volume of all units in package
   :body:
-    # TODO: Document this!
+    Represents an LCBO product.
 
 - :title: Products at Store
   :route: /stores/:store_id/products
@@ -450,8 +450,29 @@ Store Resources:
     tags: A string of tags that reflect the store
     telephone: Telephone number
     updated_at: Time that the store information was updated
-  :body:
-    # TODO: Documentation!
+  :body: |
+    Minutes since midnight can be easily converted into 24 hour time. To get
+    the clock hour, divide the minutes since midnight by 60. To get the minute
+    value, mod the number by 60. Here is some example Javascript that
+    demonstrates how to perform the calculation:
+
+        function msmTo24time(msm) {
+          var hour = msm / 60;
+          var mins = msm % 60;
+          return [hour, mins];
+        }
+
+    You will probably want to convert the minutes since midnight to 12 hour time
+    since that's what most folks from Ontario will be familiar with, you can do
+    that with a few extra steps:
+
+        function msmTo12time(msm) {
+          var time = msmTo24time(msm),
+              h24  = time[0],
+              h12  = (0 == h24 ? 12 : (h24 > 12 ? (h24 - 10) - 2 : h24)),
+              ampm = (h24 >= 12 ? 'PM' : 'AM');
+          return [h12, time[1], ampm];
+        }
 
 Inventory Resources:
 - :title: Inventories
