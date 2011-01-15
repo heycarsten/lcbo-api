@@ -136,21 +136,21 @@ class Crawler < Boticus::Bot
   end
 
   def place_store(id)
+    log :dot, "Placing store: #{id}"
     attrs = LCBO.store(id)
     attrs[:is_dead] = false
     attrs[:crawl_id] = model.id
     Store.place(attrs)
-    log :dot, "Placed store: #{id}"
     model.total_stores += 1
     model.save
     model.crawled_store_ids << id
-    log :dot, "Placed store ##{id}"
   rescue LCBO::CrawlKit::NotFoundError
     log :warn, "Skipping store ##{id}, it does not exist."
   end
 
   # TODO: Make this not so beastly!
   def place_product_and_inventories(id)
+    log :dot, "Placing product ##{id} and inventories"
     pa = LCBO.product(id)
     ia = LCBO.inventory(id)
     ia[:inventory_count].tap do |count|
@@ -176,7 +176,6 @@ class Crawler < Boticus::Bot
     model.total_product_inventory_volume_in_milliliters += pa[:inventory_volume_in_milliliters]
     model.save
     model.crawled_product_ids << id
-    log :dot, "Placed product ##{id} and #{ia[:inventories].size} inventories"
   rescue LCBO::CrawlKit::NotFoundError
     log :warn, "Skipping product ##{id}, it does not exist"
   end
