@@ -10,11 +10,15 @@ class ApplicationController < ActionController::Base
     QueryHelper::NotFoundError,
     QueryHelper::BadQueryError, :with => :render_exception
 
-  before_filter :set_cache_control,  :if => -> { Rails.env.production? }
-  before_filter :set_api_format,     :if => :api_request?
-  after_filter  :set_jsonp_status,   :if => :api_request?
+  before_filter :set_cache_control, :if => :cacheable?
+  before_filter :set_api_format,    :if => :api_request?
+  after_filter  :set_jsonp_status,  :if => :api_request?
 
   protected
+
+  def cacheable?
+    Rails.env.production?
+  end
 
   def http_status(code)
     path = (Rails.root + 'public' + "#{code}.html").to_s
