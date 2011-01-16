@@ -6,13 +6,11 @@ class ApplicationController < ActionController::Base
     GCoder::NoResultsError,
     GCoder::OverLimitError,
     GCoder::GeocoderError,
-    QueryHelper::JsonpError,
     QueryHelper::NotFoundError,
     QueryHelper::BadQueryError, :with => :render_exception
 
   before_filter :set_cache_control, :if => :cacheable?
   before_filter :set_api_format,    :if => :api_request?
-  after_filter  :set_jsonp_status,  :if => :api_request?
 
   protected
 
@@ -70,26 +68,22 @@ class ApplicationController < ActionController::Base
     request.format.js? && params[:callback].present?
   end
 
-  def jsonp_callback
-    QueryHelper.jsonp_callback(params)
-  end
-
-  def set_jsonp_status
-    response.status = 200 if jsonp?
-  end
-
   def query(type)
     QueryHelper.query(type, request, params)
   end
 
-  def render_error(error, message, status = 400)
+  def error_as_json(error, message, status = 400)
+    response.content_type = 'application/json'
+    response.status = status
     h = {}
     h[:result]  = nil
     h[:error]   = error.to_s
     h[:message] = message
-    response.content_type = 'application/json'
-    response.status = status
-    render_json(h)
+    h
+  end
+
+  def render_error(*args)
+    render_json(error_as_json(*args))
   end
 
   def render_exception(error)
@@ -100,16 +94,36 @@ class ApplicationController < ActionController::Base
     )
   end
 
-  def render_json(data)
-    render :text => encode_json(data)
+  def render_jsonp(data, callback)
+    render :text => begin
+      if callback && callback.match(/\A[a-z0-9_]+\Z/i)
+        response.status = 200
+        encode_json(data, callback)
+      else
+        encode_json(
+          error_as_json(:jsonp_error,
+            "JSON-P callback (#{callback}) is not valid, it can only contain " \
+            "letters, numbers, and underscores."
+          )
+        )
+      end
+    end
   end
 
-  def encode_json(data)
+  def render_json(data)
+    if jsonp?
+      render_jsonp(data, params[:callback])
+    else
+      render :text => encode_json(data)
+    end
+  end
+
+  def encode_json(data, callback = nil)
     json = Yajl::Encoder.encode({
       :status => response.status,
       :message => nil
     }.merge(data))
-    jsonp? ? "#{jsonp_callback}(#{json});" : json
+    callback ? "#{callback}(#{json});" : json
   end
 
 end

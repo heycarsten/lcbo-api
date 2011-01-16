@@ -66,21 +66,12 @@ root:
 
 - :title: Conventions
   :body: |
-    ### CSV and TSV Responses
+    ### Responses
 
-    Many resources can be returned as CSV (comma separated values) or TSV
-    (tab separated values). These results can then be easily imported into
-    spreadsheet software such as Apple Numbers or Microsoft Excel. To return
-    a resource in CSV or TSV format simply append the `.csv` or `.tsv` extension
-    to the resource URI:
-
-    <pre><code>/products<em>.csv</em>?order=price_in_cents.desc
-    </code></pre>
-
-    ### JSON Responses
-
-    Every response from the API is wrapped in a "container" that in its most
-    basic form looks like this:
+    The default response format for the API is JSON. This means that you don't
+    need to specify JSON in an `Accept` header or as an extension (.json) if that is
+    the format you intend to request. Every response from the API is wrapped in
+    a "container" that in its most basic form looks like this:
 
         {
           "status": 200,
@@ -89,58 +80,10 @@ root:
         }
 
     This allows the API to return meta information along with the data you are
-    requesting. For example, in the case of a Stores with Product request the
-    product object is returned with list of stores so that your application does
-    not need to perform two requests.
-
-    ### Errors
-
-    When an error occurs the response will look like this:
-
-        {
-          "error": "bad_query_error",
-          "message": "A value supplied for the order parameter (id.desk) is not valid. It contains an invalid sort order (desk) for (id) try using: id.desc or id.asc instead.",
-          "result": null,
-          "status": 400
-        }
-
-    Error messages are always as descriptive as possible; one of the design
-    goals for LCBO API is to make experiential learning (learning by trial and
-    error) as easy as possible. There are a few different types of errors:
-
-     * `no_results_error`: The geocoder returned no geometry for the geo query.
-     * `over_limit_error`: The geocoder has reached its daily limit of requests.
-     * `geocoder_error`: The geocoder can't geocode the query it was provided.
-     * `not_found_error`: A resource was not found (404)
-     * `bad_query_error`: One (or more) of the supplied query parameters is wrong.
-     * `jsonp_error`: Supplied callback is not a valid format.
-
-    ### Pagination
-
-    When the API returns collections of items (stores, products, or inventories)
-    it will paginate the results. You can control the number of items per page
-    through the `per_page` parameter.
-
-    A typical pager object looks like this:
-
-        {
-          "records_per_page": 20,
-          "total_record_count": 608,
-          "current_page_record_count": 20,
-          "is_first_page": false,
-          "is_final_page": false,
-          "current_page": 5,
-          "current_page_path": "/stores?page=5",
-          "next_page": 6,
-          "next_page_path": "/stores?page=6",
-          "previous_page": 4,
-          "previous_page_path": "/stores?page=4",
-          "final_page": 31,
-          "final_page_path": "/stores?page=31"
-        }
-
-    It contains all of the information you need (and more) to navigate through
-    the pages in the result set.
+    requesting. For example, in the case of a
+    [Stores with Product](/docs/stores-with-product) request the product object
+    is returned with list of stores so that your application does not need to
+    perform an additional request to obtain store information.
 
     ### JSON-P
 
@@ -175,6 +118,67 @@ root:
     <pre><code>/products<em>.js</em>?q=cider&callback=setJSON
     </code></pre>
 
+    ### Pagination
+
+    When the API returns collections of items (stores, products, or inventories)
+    it will paginate the results. You can control the number of items per page
+    through the `per_page` parameter.
+
+    A typical pager object looks like this:
+
+        {
+          "records_per_page": 20,
+          "total_record_count": 608,
+          "current_page_record_count": 20,
+          "is_first_page": false,
+          "is_final_page": false,
+          "current_page": 5,
+          "current_page_path": "/stores?page=5",
+          "next_page": 6,
+          "next_page_path": "/stores?page=6",
+          "previous_page": 4,
+          "previous_page_path": "/stores?page=4",
+          "final_page": 31,
+          "final_page_path": "/stores?page=31"
+        }
+
+    It contains all of the information you need (and more) to navigate through
+    the pages in the result set.
+
+    ### CSV and TSV Responses
+
+    Many resources can be returned as CSV (comma separated values) or TSV
+    (tab separated values). These results can then be easily imported into
+    spreadsheet software such as Apple Numbers or Microsoft Excel. To return
+    a resource in CSV or TSV format simply append the `.csv` or `.tsv`
+    extension to the resource URI:
+
+    <pre><code>/products<em>.csv</em>?order=price_in_cents.desc
+    </code></pre>
+
+    ### Errors
+
+    When an error occurs the response will look something like this:
+
+        {
+          "error": "bad_query_error",
+          "message": "A value supplied for the order parameter (id.desk) is not valid. It contains an invalid sort order (desk) for (id) try using: id.desc or id.asc instead.",
+          "result": null,
+          "status": 400
+        }
+
+    Error messages are always as descriptive as possible; one of the design
+    goals for LCBO API is to make experiential learning (learning by trial and
+    error) as easy as possible. There are a few different types of errors:
+
+     * `no_results_error`: The geocoder returned no geometry for the geo query.
+     * `over_limit_error`: The geocoder has reached its daily limit of requests.
+     * `geocoder_error`: The geocoder can't geocode the query it was provided.
+     * `not_found_error`: A resource was not found (404)
+     * `bad_query_error`: One (or more) of the supplied query parameters is
+       wrong.
+     * `jsonp_error`: Supplied callback is not a valid format, or JSON-P is not
+       being used correctly.
 
 - :title: Frequently Asked Questions
   :menu: FAQ
@@ -213,15 +217,10 @@ root:
     Google Image Search API with the full product name and hope that the first
     result is relevant, it is often not.
 
-    ### Can you add YAML as a response format?
-
-    Maybe, but since JSON is a subset of YAML adding it as a response format
-    sort of feels like building a house around an perfectly functional, already
-    existing house. If enough people want it, I'll add it.
-
     ### Can you add XML as a response format?
 
-    [No](http://www.json.org/xml.html).
+    [No](http://www.json.org/xml.html), and if I needed to represent hierachical
+    data I'd use s-expressions.
 
     ### I'm a geek, how does it work?
 

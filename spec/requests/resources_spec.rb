@@ -54,4 +54,14 @@ describe 'API resource' do
     end
   end
 
+  describe 'with invalid callback' do
+    before { get '/datasets.js?callback=window.boom' }
+
+    it_behaves_like 'a JSON 400 error'
+
+    it 'returns JSON' do
+      response.should be_json
+    end
+  end
+
 end
