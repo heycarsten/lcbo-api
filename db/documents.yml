@@ -219,8 +219,8 @@ root:
 
     ### Can you add XML as a response format?
 
-    [No](http://www.json.org/xml.html), and if I needed to represent hierachical
-    data I'd use s-expressions.
+    No, because [JSON](http://www.json.org/xml.html) is a much better format for
+    the output of this API.
 
     ### I'm a geek, how does it work?
 
