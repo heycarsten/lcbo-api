@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :set_cache_control, :if => :cacheable?
   before_filter :set_api_format,    :if => :api_request?
+  after_filter  :set_jsonp_status,  :if => :api_request?
 
   protected
 
@@ -62,6 +63,17 @@ class ApplicationController < ActionController::Base
     when default_format?
       request.format = :json
     end
+
+    if jsonp? && !params[:callback].match(/\A[a-z0-9_]+\Z/i)
+      request.format = :json
+      render_error :jsonp_error,
+        "JSON-P callback (#{params[:callback]}) is not valid, it can only " \
+        "contain letters, numbers, and underscores."
+    end
+  end
+
+  def set_jsonp_status
+    response.status = 200 if jsonp?
   end
 
   def jsonp?
@@ -72,18 +84,13 @@ class ApplicationController < ActionController::Base
     QueryHelper.query(type, request, params)
   end
 
-  def error_as_json(error, message, status = 400)
-    response.content_type = 'application/json'
-    response.status = status
-    h = {}
-    h[:result]  = nil
-    h[:error]   = error.to_s
-    h[:message] = message
-    h
-  end
+  def render_error(error, message, status = 400)
+    unless jsonp?
+      response.content_type = 'application/json'
+      response.status = status
+    end
 
-  def render_error(*args)
-    render_json(error_as_json(*args))
+    render_json(:result => nil, :error => error.to_s, :message => message)
   end
 
   def render_exception(error)
@@ -94,25 +101,9 @@ class ApplicationController < ActionController::Base
     )
   end
 
-  def render_jsonp(data, callback)
-    render :text => begin
-      if callback && callback.match(/\A[a-z0-9_]+\Z/i)
-        response.status = 200
-        encode_json(data, callback)
-      else
-        encode_json(
-          error_as_json(:jsonp_error,
-            "JSON-P callback (#{callback}) is not valid, it can only contain " \
-            "letters, numbers, and underscores."
-          )
-        )
-      end
-    end
-  end
-
   def render_json(data)
     if jsonp?
-      render_jsonp(data, params[:callback])
+      render :text => encode_json(data, params[:callback])
     else
       render :text => encode_json(data)
     end

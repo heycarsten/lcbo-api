@@ -64,4 +64,20 @@ describe 'API resource' do
     end
   end
 
+  describe 'with valid callback and query error' do
+    before { get '/datasets.js?callback=test&order=id.boom' }
+
+    it 'returns JSON-P' do
+      response.should be_jsonp
+    end
+
+    it 'has an HTTP status of 200' do
+      response.status.should == 200
+    end
+
+    it 'indicates the actual status in the response object' do
+      response.jsonp[:status].should == 200
+    end
+  end
+
 end
