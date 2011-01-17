@@ -11,3 +11,7 @@
   :user_agent: <LCBO Crawler User-Agent>
 
 :secret_token: <Secret Token>
+
+:admin:
+  :username: superuser
+  :password: superpassword
