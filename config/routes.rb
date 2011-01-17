@@ -13,8 +13,8 @@ LCBOAPI::Application.routes.draw do
   get '/docs(/:slug)' => 'root#show'
 
   scope :version => 1, :constraints => { :lat => LATLON_RE, :lon => LATLON_RE } do
-    get '/download/:year-:month-:day' => 'datasets#depricated'
-    get '/download/current' => 'datasets#depricated'
+    get '/download/:year-:month-:day' => 'datasets#deprecated', :name => :dataset_by_date
+    get '/download/current' => 'datasets#deprecated', :name => :current_dataset
     get '/products/search' => 'products#index'
     get '/products/:product_id/inventory' => 'inventories#index'
     get '/stores/search' => 'stores#index'

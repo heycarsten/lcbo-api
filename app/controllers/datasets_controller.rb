@@ -1,5 +1,20 @@
 class DatasetsController < ApplicationController
 
+  def deprecated
+    msg = case params[:name]
+    when :dataset_by_date
+      "The dataset by date [ZIP] resource has been deprecated and is no " \
+      "longer available. Datasets are now available at /datasets and are no " \
+      "longer SQLite dumps."
+    when :current_dataset
+      "The current dataset [ZIP] resource has been deprecated and is no " \
+      "longer available. Datasets are now available at /datasets and are no " \
+      "longer SQLite dumps. You can still download individual datasets at " \
+      "/datasets/:id.zip but the format is now CSV and not SQLite."
+    end
+    render_error :deprecation_notice, msg, 410
+  end
+
   def index
     @query = query(:datasets)
 
