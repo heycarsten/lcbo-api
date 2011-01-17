@@ -1,4 +1,5 @@
 require 'sequel/extensions/pagination'
+require 'sequel/extensions/texticle'
 
 DB = Sequel.connect(
   if (config = YAML.load_file((Rails.root + 'config' + 'database.yml').to_s))

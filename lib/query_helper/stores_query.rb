@@ -146,7 +146,7 @@ module QueryHelper
 
     def dataset
       if has_fulltext?
-        _ordered_dataset.full_text_search([:tags], q)
+        _ordered_dataset.search(:tags, q)
       else
         _ordered_dataset
       end

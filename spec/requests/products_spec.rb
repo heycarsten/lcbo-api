@@ -43,6 +43,21 @@ describe 'Product resources' do
     end
   end
 
+  describe 'full text search with spaces' do
+    before do
+      get '/products?q=fitz+gibbons'
+    end
+
+    it 'does not contain a product resource' do
+      response.json[:result].should be_a Array
+      response.json[:result].size.should be_zero
+    end
+
+    it 'contains a suggestion' do
+      response.json[:suggestion].should == 'fitzgibbons'
+    end
+  end
+
   describe 'full text search without match (JSON)' do
     before do
       get '/products?q=fitzgibins'

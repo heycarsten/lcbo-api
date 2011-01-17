@@ -72,7 +72,7 @@ module QueryHelper
     def dataset
       case
       when has_fulltext?
-        db.full_text_search([:tags], q)
+        db.search(:tags, q)
       else
         db
       end.
