@@ -124,8 +124,9 @@ describe 'Legacy routing' do
 
   it 'routes /download/current.zip' do
     { :get => '/download/current.zip' }.should route_to(
+      :name => :current_dataset,
       :controller => 'datasets',
-      :action => 'depricated',
+      :action => 'deprecated',
       :format => 'zip',
       :version => 1
     )
@@ -133,8 +134,9 @@ describe 'Legacy routing' do
 
   it 'routes /download/:year-:month-:day.zip' do
     { :get => '/download/2010-10-10.zip' }.should route_to(
+      :name => :dataset_by_date,
       :controller => 'datasets',
-      :action => 'depricated',
+      :action => 'deprecated',
       :year => '2010',
       :month => '10',
       :day => '10',
