@@ -10,7 +10,7 @@ gem 'dalli'
 gem 'rack-cache',  :require => 'rack/cache'
 gem 'sequel'
 gem 'gcoder'
-gem 'lcbo',        '1.0.0beta1'
+gem 'lcbo'
 gem 'rdiscount'
 gem 'haml'
 gem 'whenever',    :require => false
