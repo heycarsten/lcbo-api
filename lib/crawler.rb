@@ -27,7 +27,13 @@ class Crawler < Boticus::Bot
     model.log(msg, level, payload)
   end
 
+  def failure(error)
+    HoptoadNotifier.notify(error)
+    raise error
+  end
+
   def prepare
+    raise 'oops!!!!'
     log :info, 'Enumerating product job queue ...'
     model.push_jobs(:product, ProductListsGetter.run)
     log :info, 'Enumerating store job queue ...'
