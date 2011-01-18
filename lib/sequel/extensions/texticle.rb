@@ -1,21 +1,11 @@
+# Inspired by / ripped from tenderlove's Texticle
 module Sequel
   class Dataset
 
     def search(colnames, query, opts = {})
       return self unless query.to_s != ''
 
-      lang = (opts[:lang] || 'english')
-
-      term = query.
-        gsub(/[^\w\*\"]+/, ' ').
-        scan(/"([^"]+)"|(\S+)/).
-        flatten.
-        compact.
-        map { |lex|
-          lex.gsub!(' ', '\\ ')
-          lex =~ /(.+)\*\s*$/ ? "#{$1}:*" : lex
-        }.
-        join(' & ')
+      lang = (opts[:lang] || 'simple')
 
       cols = Array(colnames).
         map { |c|
@@ -23,10 +13,7 @@ module Sequel
         }.
         sql_string_join(' ')
 
-      filter(%{
-        to_tsvector(#{literal lang}, #{literal cols}) @@
-        to_tsquery(#{literal lang}, ?)
-      }, term)
+      filter("to_tsvector(#{literal lang}, #{literal cols}) @@ plainto_tsquery(#{literal lang}, ?)", query)
     end
 
   end
