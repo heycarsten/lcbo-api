@@ -59,6 +59,7 @@ GEM
       activesupport
       builder
     i18n (0.5.0)
+    kgio (2.1.1)
     lcbo (1.0.0)
       nokogiri
       stringex
@@ -126,6 +127,9 @@ GEM
     typhoeus (0.2.0)
     tzinfo (0.3.24)
     unicode_utils (1.0.0)
+    unicorn (3.3.1)
+      kgio (~> 2.1)
+      rack
     whenever (0.6.2)
       aaronh-chronic (>= 0.3.9)
       activesupport (>= 2.3.4)
@@ -148,6 +152,7 @@ DEPENDENCIES
   gcoder
   haml
   hoptoad_notifier
+  kgio
   lcbo
   pg
   rack-cache
@@ -158,6 +163,7 @@ DEPENDENCIES
   rvm
   sequel
   stringex
+  unicorn
   whenever
   yajl-ruby
   zippy

@@ -1,5 +1,6 @@
 source :rubygems
 
+gem 'kgio'
 gem 'rails',       '3.0.3'
 gem 'pg'
 gem 'yajl-ruby',   :require => 'yajl'
@@ -14,6 +15,7 @@ gem 'lcbo'
 gem 'rdiscount'
 gem 'haml'
 gem 'hoptoad_notifier'
+gem 'unicorn'
 gem 'whenever',    :require => false
 gem 'capistrano',  :require => false
 gem 'rvm',         :require => false
