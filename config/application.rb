@@ -10,7 +10,7 @@ Bundler.require(:default, Rails.env) if defined?(Bundler)
 
 module LCBOAPI
   def self.[](value)
-    @config ||= YAML.load_file(Rails.root + 'config' + 'lcboapi.yml')
+    @config ||= YAML.load_file((Rails.root + 'config' + 'lcboapi.yml').to_s)
     @config[value]
   end
 

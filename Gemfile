@@ -13,13 +13,13 @@ gem 'gcoder'
 gem 'lcbo'
 gem 'rdiscount'
 gem 'haml'
+gem 'hoptoad_notifier'
 gem 'whenever',    :require => false
 gem 'capistrano',  :require => false
 gem 'rvm',         :require => false
-gem 'colored'
-gem 'zippy'
-gem 'aws-s3',      :require => 'aws/s3'
-gem 'hoptoad_notifier'
+gem 'colored',     :require => false
+gem 'zippy',       :require => false
+gem 'aws-s3',      :require => false
 
 group :development do
   gem 'awesome_print'

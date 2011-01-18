@@ -45,11 +45,6 @@ module Fuzz
       @source_proc   = (opts[:source]        || -> { [] })
       @min_word_size = (opts[:min_word_size] || 4)
       @stop_words    = (opts[:stop_words]    || [])
-      if self.has_cache?
-        @words = self.cached_words
-      else
-        self.recache
-      end
     end
 
     def has_cache?
@@ -82,9 +77,18 @@ module Fuzz
         uniq
     end
 
+    def words
+      if self.has_cache?
+        @words = self.cached_words
+      else
+        self.recache
+      end
+      @words
+    end
+
     def suggest(term)
       Hash[
-        @words.map { |word| [
+        words.map { |word| [
           Amatch::Levenshtein.new(word).match(term.to_ascii.downcase),
           word
         ]}
