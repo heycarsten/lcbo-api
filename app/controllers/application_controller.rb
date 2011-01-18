@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
 
   def http_status(code)
     path = (Rails.root + 'public' + "#{code}.html").to_s
-    render :file => code, :status => code
+    render :file => path, :status => code
     false
   end
 
