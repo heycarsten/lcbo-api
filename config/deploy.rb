@@ -13,6 +13,7 @@ set :deploy_to,         '/home/lcboapi/unicorn.lcboapi.com'
 set :deploy_via,        :remote_cache
 set :copy_exclude,      ['.git']
 set :scm,               :git
+set :branch,            'unicorn'
 set :git_shallow_clone, true
 set :scm_verbose,       false
 set :whenever_command,  'bundle exec whenever'
