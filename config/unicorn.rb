@@ -1,10 +1,8 @@
-STDOUT.puts "HOLY FUCK WHAT THE FUCK !!!"
-
 listen 3000
-timeout 25
-
 worker_processes 4
 preload_app true
+
+timeout 25
 
 working_directory '/home/lcboapi/unicorn.lcboapi.com/current'
 shared_path = '/home/lcboapi/unicorn.lcboapi.com/shared'
