@@ -1,6 +1,6 @@
 require 'bundler/capistrano'
 require 'rvm/capistrano'
-require 'whenever/capistrano'
+#require 'whenever/capistrano'
 require 'hoptoad_notifier/capistrano'
 
 default_run_options[:pty] = true
@@ -23,6 +23,7 @@ set :git_shallow_clone, true
 set :scm_verbose,       false
 set :whenever_command,  'bundle exec whenever'
 set :keep_releases,     10
+set :bundle_flags,      '--deployment --binstubs --quiet'
 
 server domain, :db, :app, :web, :primary => true
 
@@ -33,14 +34,14 @@ after :deploy, 'deploy:cleanup'
 namespace :deploy do
   desc 'Run the migrate rake task.'
   task :migrate, :roles => :db do
-    run "cd #{latest_release} && bundle exec rake db:migrate"
+    run "cd #{latest_release} && bin/rake db:migrate"
   end
 
   desc 'Start app with Unicorn'
   task :start, :except => { :no_release => true }, :roles => :app do
     run %{
       cd #{current_path} &&
-      bundle exec unicorn -E #{environment} -D -o 127.0.0.1 -c #{current_path}/config/unicorn.rb #{current_path}/config.ru
+      bin/unicorn -E #{environment} -D -o 127.0.0.1 -c #{current_path}/config/unicorn.rb #{current_path}/config.ru
     }
   end
 
