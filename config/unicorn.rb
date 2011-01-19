@@ -5,8 +5,8 @@ user 'lcboapi'
 
 timeout 25
 
-working_directory '/home/lcboapi/unicorn.lcboapi.com/current'
-shared_dir = '/home/lcboapi/unicorn.lcboapi.com/shared'
+working_directory '/home/lcboapi/lcboapi.com/current'
+shared_dir      = '/home/lcboapi/lcboapi.com/shared'
 
 pid         shared_dir + '/pids/unicorn.pid'
 stderr_path shared_dir + '/log/unicorn.stderr.log'
