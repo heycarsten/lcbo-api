@@ -32,7 +32,3 @@ before_fork do |server, worker|
     end
   end
 end
-
-after_fork do |server, worker|
-  $memcache.reset
-end
