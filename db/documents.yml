@@ -231,6 +231,7 @@ root:
     * [Redis](http://redis.io)
     * [Postgres](http://postgresql.org)
     * [Nginx](http://wiki.nginx.org/Main)
+    * [Unicorn](http://unicorn.bogomips.org)
     * [Ubuntu 10.04](http://ubuntu.com/server)
     * [Linode](http://linode.com)
 
