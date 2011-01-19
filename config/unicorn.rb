@@ -1,3 +1,5 @@
+STDOUT.puts "HOLY FUCK WHAT THE FUCK !!!"
+
 listen 3000
 timeout 25
 
