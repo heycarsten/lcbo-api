@@ -80,4 +80,10 @@ describe 'API resource' do
     end
   end
 
+  describe 'getting a singular resource (not found)' do
+    before { get '/datasets/dataset+one' }
+
+    it_behaves_like 'a JSON 404 error'
+  end
+
 end

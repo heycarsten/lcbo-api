@@ -9,7 +9,7 @@ module QueryHelper
     end
 
     def self.find(*args)
-      if (instance = get(*args))
+      if (instance = get(*args.map(&:to_i)))
         instance
       else
         raise NotFoundError, "No #{type} exists with id: #{args.join(', ')}."
