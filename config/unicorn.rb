@@ -1,11 +1,11 @@
+listen 3000
+timeout 25
+
 worker_processes 4
 preload_app true
 
 working_directory '/home/lcboapi/unicorn.lcboapi.com/current'
 shared_path = '/home/lcboapi/unicorn.lcboapi.com/shared'
-
-listen 3000
-timeout 25
 
 pid         shared_path + '/pids/unicorn.pid'
 stderr_path shared_path + '/log/unicorn.stderr.log'
