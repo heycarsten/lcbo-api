@@ -7,7 +7,7 @@ shared_path = '/home/lcboapi/unicorn.lcboapi.com/shared'
 listen 3000
 timeout 25
 
-pid         shared_path + '/tmp/pids/unicorn.pid'
+pid         shared_path + '/pids/unicorn.pid'
 stderr_path shared_path + '/log/unicorn.stderr.log'
 stdout_path shared_path + '/log/unicorn.stdout.log'
 
@@ -22,7 +22,7 @@ before_fork do |server, worker|
   # note: see http://unicorn.bogomips.org/SIGNALS.html for an
   # even safer seamless restart setup (but requires enough RAM
   # to run two unicorn masters and two sets of workers)
-  old_pid = (shared_path + '/tmp/pids/unicorn.pid.oldbin')
+  old_pid = (shared_path + '/pids/unicorn.pid.oldbin')
   if File.exists?(old_pid) && server.pid != old_pid
     begin
       Process.kill('QUIT', File.read(old_pid).to_i)
