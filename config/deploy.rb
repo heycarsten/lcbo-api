@@ -47,12 +47,12 @@ namespace :deploy do
   desc 'Stop app'
   task :stop, :except => { :no_release => true }, :roles => :app do
     on_rollback { start }
-    run "kill -QUIT `cat #{shared_path}/pids/unicorn.pid` && exit 0"
+    sudo "kill -QUIT `cat #{shared_path}/pids/unicorn.pid` && exit 0"
   end
 
   desc 'Gracefully restart app with Unicorn'
   task :restart, :except => { :no_release => true } do
-    run "kill -USR2 `cat #{shared_path}/pids/unicorn.pid` && exit 0"
+    sudo "kill -USR2 `cat #{shared_path}/pids/unicorn.pid` && exit 0"
   end
 end
 
