@@ -3,7 +3,7 @@ module Sequel
   class Dataset
 
     def search(colnames, rawquery, opts = {})
-      query = rawquery.to_s.gsub(/[^\w]+/, ' ').gsub(/\s+/, ' ').strip
+      query = rawquery.to_s.gsub(/[^\w'\-]+/, ' ').gsub(/\s+/, ' ').strip
       return self if '' == query.to_s
       lang = (opts[:lang] || 'simple')
       cols = Array(colnames).

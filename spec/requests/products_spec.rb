@@ -6,6 +6,7 @@ describe 'Product resources' do
 
     @product1 = Fabricate(:product, :id => '1')
     @product2 = Fabricate(:product, :id => '2', :name => 'Fitzgibbons')
+    @product3 = Fabricate(:product, :id => '3', :name => 'B\'ock hop bob-omb')
     @store1   = Fabricate(:store, :id => '1')
     @inv1     = Fabricate(:inventory, :store => @store1, :product => @product1)
 
@@ -13,14 +14,14 @@ describe 'Product resources' do
   end
 
   it 'contains sane objects' do
-    DB[:products].count.should == 2
+    DB[:products].count.should == 3
     DB[:stores].count.should == 1
     DB[:inventories].count.should == 1
   end
 
   describe 'all products' do
     subject { '/products' }
-    it_behaves_like 'a resource', :size => 2
+    it_behaves_like 'a resource', :size => 3
   end
 
   describe 'full text search with match' do
@@ -55,6 +56,28 @@ describe 'Product resources' do
 
     it 'contains a suggestion' do
       response.json[:suggestion].should == 'fitzgibbons'
+    end
+  end
+
+  describe 'full text search with slab quotes' do
+    before do
+      get '/products?q=B%27ock'
+    end
+
+    it 'does contain a product' do
+      response.json[:result].size.should == 1
+      response.json[:result].first[:id].should == 3
+    end
+  end
+
+  describe 'full text search with dashes' do
+    before do
+      get '/products?q=bob-omb'
+    end
+
+    it 'does contain a product' do
+      response.json[:result].size.should == 1
+      response.json[:result].first[:id].should == 3
     end
   end
 
