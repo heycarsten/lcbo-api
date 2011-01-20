@@ -58,6 +58,16 @@ describe 'Product resources' do
     end
   end
 
+  describe 'full text search with crazy characters' do
+    before do
+      get '/products?q=Holy%21+Swee333t+Explo%24io%21%21%23%24%23%24n'
+    end
+
+    it 'returns json' do
+      response.json[:result].should be_a Array
+    end
+  end
+
   describe 'full text search without match (JSON)' do
     before do
       get '/products?q=fitzgibins'
