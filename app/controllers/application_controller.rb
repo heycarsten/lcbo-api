@@ -90,7 +90,23 @@ class ApplicationController < ActionController::Base
       response.status = status
     end
 
-    render_json(:result => nil, :error => error.to_s, :message => message)
+    h = {}
+    h[:result]  = nil
+    h[:error]   = error.to_s
+    h[:message] = message
+
+    case error
+    when 'no_results_error', 'over_limit_error', 'geocoder_error'
+      if params[:store_id].present?
+        h[:store] = QueryHelper.find(:store, params[:store_id]).as_json
+      end
+
+      if params[:product_id].present?
+        h[:product] = QueryHelper.find(:product, params[:product_id]).as_json
+      end
+    end
+
+    render_json(h)
   end
 
   def render_exception(error)

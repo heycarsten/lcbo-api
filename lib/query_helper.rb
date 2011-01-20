@@ -4,10 +4,9 @@ module QueryHelper
   MAX_PER_PAGE = 100
 
   class NotFoundError < StandardError; end
-  class BadQueryError < StandardError; end
-  class GeocoderError < StandardError; end
   class NotImplementedError < StandardError; end
   class JsonpError < StandardError; end
+  class BadQueryError < StandardError; end
 
   def self.is_float?(val)
     return false unless val
