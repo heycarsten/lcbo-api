@@ -24,6 +24,26 @@ describe 'Store resources' do
     end
   end
 
+  context 'ordering by distance_in_meters when not a geospatial search' do
+    before { get '/stores?order=distance_in_meters' }
+
+    it_behaves_like 'a JSON 400 error'
+
+    it 'indicates that sorting by distance without geometry is impossible' do
+      response.json[:message].should include 'to order by distance_in_meters'
+    end
+  end
+
+  context 'ordering by distance_in_meters with a geospatial search' do
+    before { get "/stores?lat=#{@store1.latitude}&lon=#{@store1.longitude}&order=distance_in_meters.desc" }
+
+    it 'performs a spatial search' do
+      response.json[:message].should be_nil
+      response.json[:result].size == 2
+      response.json[:result][0][:distance_in_meters].should == 0
+    end
+  end
+
   context '/stores (with spatial search)' do
     before { get "/stores?lat=#{@store1.latitude}&lon=#{@store1.longitude}" }
 

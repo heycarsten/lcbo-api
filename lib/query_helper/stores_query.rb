@@ -172,6 +172,9 @@ module QueryHelper
     def validate
       super
       case
+      when !is_spatial? && (params[:order].present? && params[:order].include?('distance_in_meters'))
+        raise BadQueryError, "You must specify the lat and lon parameters or " \
+        "geo parameter to order by distance_in_meters."
       when has_geo? && (has_lat? || has_lon?)
         raise BadQueryError, "Provided with both geocodeable query (:geo) " \
         "and latitude (:lat) / longitude (:lon). Please provide either a " \
