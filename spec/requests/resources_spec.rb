@@ -80,6 +80,18 @@ describe 'API resource' do
     end
   end
 
+  describe 'requesting a resource as an unsupported format' do
+    before { get '/datasets.wsdl' }
+
+    it_behaves_like 'a JSON 404 error'
+  end
+
+  describe 'requesting a singular resource as an unsupported format' do
+    before { get '/datasets/1.wsdl' }
+
+    it_behaves_like 'a JSON 404 error'
+  end
+
   describe 'getting a singular resource (not found)' do
     before { get '/datasets/dataset+one' }
 

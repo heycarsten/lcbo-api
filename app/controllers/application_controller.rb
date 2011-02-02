@@ -46,6 +46,10 @@ class ApplicationController < ActionController::Base
 
   def set_api_format
     case
+    when request.format.nil?
+      render_error :not_found_error,
+        "The format you requested is not supported.", 404
+      false
     when request.format.js? && params[:callback].blank?
       render_error :jsonp_error,
         "JSON-P (.js) can not be requested without specifying a callback " \
@@ -77,7 +81,7 @@ class ApplicationController < ActionController::Base
   end
 
   def jsonp?
-    request.format.js? && params[:callback].present?
+    request.format && request.format.js? && params[:callback].present?
   end
 
   def query(type)
