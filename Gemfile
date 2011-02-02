@@ -1,6 +1,5 @@
 source :rubygems
 
-gem 'kgio'
 gem 'rails',       '3.0.3'
 gem 'pg'
 gem 'yajl-ruby',   :require => 'yajl'
@@ -16,14 +15,14 @@ gem 'rdiscount'
 gem 'haml'
 gem 'hoptoad_notifier'
 gem 'unicorn'
-gem 'whenever',    :require => false
-gem 'capistrano',  :require => false
-gem 'rvm',         :require => false
-gem 'colored',     :require => false
-gem 'zippy',       :require => false
-gem 'aws-s3',      :require => false
+gem 'whenever', :require => false
+gem 'colored',  :require => false
+gem 'zippy',    :require => false
+gem 'aws-s3',   :require => false
 
 group :development do
+  gem 'capistrano'
+  gem 'rvm'
   gem 'awesome_print'
 end
 

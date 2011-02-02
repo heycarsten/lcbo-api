@@ -152,7 +152,6 @@ DEPENDENCIES
   gcoder
   haml
   hoptoad_notifier
-  kgio
   lcbo
   pg
   rack-cache
