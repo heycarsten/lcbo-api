@@ -52,7 +52,13 @@ class Crawl < Sequel::Model
   end
 
   def previous
-    @previous ||= Crawl.order(:id.desc).filter(~{ :id => id }).first
+    @previous ||= begin
+      Crawl.
+        order(:id.desc).
+        filter(~{ :id => id }).
+        filter(:state => 'finished').
+        first
+    end
   end
 
   def product_ids
