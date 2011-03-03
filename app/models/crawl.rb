@@ -55,6 +55,14 @@ class Crawl < Sequel::Model
     @previous ||= Crawl.order(:id.desc).filter(~{ :id => id }).first
   end
 
+  def product_ids
+    super || []
+  end
+
+  def store_ids
+    super || []
+  end
+
   def diff!
     return if store_ids && product_ids
     self.store_ids   = crawled_store_ids.all
