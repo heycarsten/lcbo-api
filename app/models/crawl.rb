@@ -15,7 +15,12 @@ class Crawl < Sequel::Model
   plugin :serialization, :yaml, *SERIALIZED_FIELDS
   plugin :api,
     :not_csv => SERIALIZED_FIELDS,
-    :private => [:crawl_event_id, :state, :task]
+    :private => [
+      :crawl_event_id,
+      :state,
+      :task,
+      :total_jobs,
+      :total_finished_jobs ]
 
   list :crawled_store_ids,   :integer
   list :crawled_product_ids, :integer
@@ -70,7 +75,6 @@ class Crawl < Sequel::Model
   end
 
   def diff!
-    return if store_ids && product_ids
     self.store_ids   = crawled_store_ids.all
     self.product_ids = crawled_product_ids.all
     if previous
