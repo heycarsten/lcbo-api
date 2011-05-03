@@ -7,7 +7,6 @@ default_run_options[:pty] = true
 
 set :use_sudo,          false
 set :environment,       'production'
-set :rvm_type,          :system_wide
 set :domain,            'lcboapi.com'
 set :user,              'lcboapi'
 set :runner,            user
@@ -52,7 +51,7 @@ namespace :deploy do
 
   desc 'Gracefully restart app with Unicorn'
   task :restart, :except => { :no_release => true } do
-    sudo "kill -USR2 `cat #{shared_path}/pids/unicorn.pid` && exit 0"
+    sudo "kill -HUP `cat #{shared_path}/pids/unicorn.pid` && exit 0"
   end
 end
 
