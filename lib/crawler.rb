@@ -110,9 +110,16 @@ class Crawler < Boticus::Bot
     DB[:inventories].
       filter(
         { :product_id => model.removed_product_ids } |
-        { :store_id => model.removed_store_ids}
+        { :store_id => model.removed_store_ids }
       ).
       update(:is_dead => true)
+  end
+
+  desc 'Marking orphaned inventories'
+  task :update_orphaned_inventories do
+    DB[:inventories].
+      filter(~{ :crawl_id => model.id }).
+      update(:quantity => 0, :is_dead => true)
   end
 
   desc 'Committing stores'
