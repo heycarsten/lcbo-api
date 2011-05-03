@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'rails',       '3.0.4'
+gem 'rails',       '3.0.7'
 gem 'pg'
 gem 'yajl-ruby',   :require => 'yajl'
 gem 'amatch'
@@ -13,6 +13,7 @@ gem 'gcoder'
 gem 'lcbo'
 gem 'rdiscount'
 gem 'haml'
+gem 'sass'
 gem 'hoptoad_notifier'
 gem 'unicorn'
 gem 'whenever', :require => false
