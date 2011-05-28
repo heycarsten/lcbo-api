@@ -28,7 +28,7 @@ class Crawler < Boticus::Bot
   end
 
   def failure(error)
-    HoptoadNotifier.notify(error)
+    Exceptional.handle(error)
     raise error
   end
 
