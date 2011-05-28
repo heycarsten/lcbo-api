@@ -4,9 +4,6 @@
   :secret_key: <S3 Secret Key>
   :bucket: <S3 Bucket>
 
-:hoptoad:
-  :api_key: <Hoptoad API Key>
-
 :lcbo:
   :user_agent: <LCBO Crawler User-Agent>
 

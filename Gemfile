@@ -1,6 +1,7 @@
 source :rubygems
 
 gem 'rails',       '3.0.7'
+gem 'rake',        '~> 0.8.7', :require => false
 gem 'pg'
 gem 'yajl-ruby',   :require => 'yajl'
 gem 'amatch'
@@ -14,12 +15,15 @@ gem 'lcbo'
 gem 'rdiscount'
 gem 'haml'
 gem 'sass'
-gem 'hoptoad_notifier'
-gem 'unicorn'
+gem 'exceptional'
 gem 'whenever', :require => false
 gem 'colored',  :require => false
 gem 'zippy',    :require => false
 gem 'aws-s3',   :require => false
+
+group :production do
+  gem 'unicorn'
+end
 
 group :development do
   gem 'capistrano'

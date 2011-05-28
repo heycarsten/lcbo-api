@@ -30,36 +30,35 @@ GEM
       activesupport (= 3.0.7)
     activesupport (3.0.7)
     amatch (0.2.5)
-    arel (2.0.9)
-    awesome_print (0.3.2)
+    arel (2.0.10)
+    awesome_print (0.4.0)
     aws-s3 (0.6.2)
       builder
       mime-types
       xml-simple
     builder (2.1.2)
-    capistrano (2.5.21)
+    capistrano (2.6.0)
       highline
       net-scp (>= 1.0.0)
       net-sftp (>= 2.0.0)
       net-ssh (>= 2.0.14)
-      net-ssh-gateway (>= 1.0.0)
+      net-ssh-gateway (>= 1.1.0)
     colored (1.2)
-    dalli (1.0.3)
+    dalli (1.0.4)
     diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
+    exceptional (2.0.32)
+      rack
     fabrication (0.9.5)
     gcoder (0.11.0)
       hashie
       yajl-ruby
     haml (3.1.1)
     hashie (1.0.0)
-    highline (1.6.1)
-    hoptoad_notifier (2.4.9)
-      activesupport
-      builder
+    highline (1.6.2)
     i18n (0.5.0)
-    kgio (2.3.3)
+    kgio (2.4.1)
     lcbo (1.0.2)
       nokogiri (~> 1.4.4)
       stringex (~> 1.2.0)
@@ -81,8 +80,8 @@ GEM
     nokogiri (1.4.4)
     pg (0.11.0)
     polyglot (0.3.1)
-    rack (1.2.2)
-    rack-cache (1.0.1)
+    rack (1.2.3)
+    rack-cache (1.0.2)
       rack (>= 0.4)
     rack-mount (0.6.14)
       rack (>= 1.0.0)
@@ -104,21 +103,21 @@ GEM
     rake (0.8.7)
     rdiscount (1.6.8)
     redis (2.2.0)
-    rspec (2.5.0)
-      rspec-core (~> 2.5.0)
-      rspec-expectations (~> 2.5.0)
-      rspec-mocks (~> 2.5.0)
-    rspec-core (2.5.1)
-    rspec-expectations (2.5.0)
+    rspec (2.6.0)
+      rspec-core (~> 2.6.0)
+      rspec-expectations (~> 2.6.0)
+      rspec-mocks (~> 2.6.0)
+    rspec-core (2.6.3)
+    rspec-expectations (2.6.0)
       diff-lcs (~> 1.1.2)
-    rspec-mocks (2.5.0)
-    rspec-rails (2.5.0)
+    rspec-mocks (2.6.0)
+    rspec-rails (2.6.1)
       actionpack (~> 3.0)
       activesupport (~> 3.0)
       railties (~> 3.0)
-      rspec (~> 2.5.0)
+      rspec (~> 2.6.0)
     rubyzip (0.9.4)
-    rvm (1.6.5)
+    rvm (1.6.16)
     sass (3.1.1)
     sequel (3.23.0)
     stringex (1.2.1)
@@ -133,7 +132,7 @@ GEM
     unicorn (3.6.2)
       kgio (~> 2.3)
       rack
-    whenever (0.6.7)
+    whenever (0.6.8)
       aaronh-chronic (>= 0.3.9)
       activesupport (>= 2.3.4)
     xml-simple (1.0.15)
@@ -151,14 +150,15 @@ DEPENDENCIES
   capistrano
   colored
   dalli
+  exceptional
   fabrication
   gcoder
   haml
-  hoptoad_notifier
   lcbo
   pg
   rack-cache
   rails (= 3.0.7)
+  rake (~> 0.8.7)
   rdiscount
   redis
   rspec-rails
