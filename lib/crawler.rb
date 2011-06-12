@@ -152,6 +152,7 @@ class Crawler < Boticus::Bot
     attrs = LCBO.store(id)
     attrs[:is_dead] = false
     attrs[:crawl_id] = model.id
+    attrs[:postal_code] = attrs[:postal_code].gsub(' ', '')
     Store.place(attrs)
     model.total_stores += 1
     model.save
