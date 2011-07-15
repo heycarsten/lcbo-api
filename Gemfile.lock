@@ -1,8 +1,8 @@
 GIT
-  remote: https://github.com/bfrydl/stringex.git
-  revision: 202c89244c4c7af88fad20ad5897403933186b83
+  remote: https://github.com/heycarsten/stringex.git
+  revision: e1ae52a60c898d204877c1f2ee938578e8e84f3e
   specs:
-    stringex (1.2.1)
+    stringex (1.2.2)
 
 GEM
   remote: http://rubygems.org/

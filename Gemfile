@@ -5,7 +5,7 @@ gem 'rake',        '~> 0.8.7', :require => false
 gem 'pg'
 gem 'yajl-ruby',   :require => 'yajl'
 gem 'amatch'
-gem 'stringex',    :git => 'https://github.com/bfrydl/stringex.git'
+gem 'stringex',    :git => 'https://github.com/heycarsten/stringex.git'
 gem 'redis'
 gem 'dalli'
 gem 'rack-cache',  :require => 'rack/cache'
