@@ -1,15 +1,16 @@
 source :rubygems
 
-gem 'rails',       '3.0.7'
+gem 'rails',       '3.0.9'
 gem 'rake',        '~> 0.8.7', :require => false
 gem 'pg'
 gem 'yajl-ruby',   :require => 'yajl'
 gem 'amatch'
-gem 'stringex'
+gem 'stringex',    :git => 'https://github.com/bfrydl/stringex.git'
 gem 'redis'
 gem 'dalli'
 gem 'rack-cache',  :require => 'rack/cache'
 gem 'sequel'
+gem 'sequel_pg',   :require => 'sequel'
 gem 'gcoder'
 gem 'lcbo'
 gem 'rdiscount'

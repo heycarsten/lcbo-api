@@ -299,7 +299,7 @@ describe QueryHelper::StoresQuery do
     it 'should construct a dataset' do
       @q.dataset.should be_a Sequel::Dataset
       @q.dataset.count.should == 4
-      @q.dataset.first[:distance_in_meters].should == 0
+      @q.dataset.first[:distance_in_meters].should < 10
     end
 
     it 'should provide paging params' do

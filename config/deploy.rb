@@ -50,7 +50,7 @@ namespace :deploy do
 
   desc 'Gracefully restart app with Unicorn'
   task :restart, :except => { :no_release => true } do
-    sudo "kill -HUP `cat #{shared_path}/pids/unicorn.pid` && exit 0"
+    sudo "kill -USR2 `cat #{shared_path}/pids/unicorn.pid` && exit 0"
   end
 end
 
