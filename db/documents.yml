@@ -179,12 +179,6 @@ root:
     and if this ever changes it will certainly be announced on
     [@lcboapi](http://twitter.com/lcboapi)'s Twitter account.
 
-    ### Can you add product images, please?
-
-    I do not have a reliable source for product images, the best bet is to use
-    Google Image Search API with the full product name and hope that the first
-    result is relevant, it is often not.
-
     ### Can you add XML as a response format?
 
     No, because [JSON](http://www.json.org/xml.html) is a much better format for
@@ -193,15 +187,12 @@ root:
     ### I'm a geek, how does it work?
 
     * [Ruby 1.9.2](http://tryruby.org)
-    * [RVM](http://rvm.beginrescueend.com)
     * [Rails 3](http://rubyonrails.org)
     * [Sequel](http://sequel.rubyforge.org)
     * [Redis](http://redis.io)
     * [Postgres](http://postgresql.org)
     * [Nginx](http://wiki.nginx.org/Main)
     * [Unicorn](http://unicorn.bogomips.org)
-    * [Ubuntu 10.04](http://ubuntu.com/server)
-    * [Linode](http://linode.com)
 
     ### Is it open source?
 
