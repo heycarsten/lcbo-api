@@ -8,38 +8,6 @@ root:
     unique benefits that come from having a single provider of alcoholic
     beverages in a large geographical area.
 
-    ### Backstory
-
-    LCBO API was created by me, [Carsten Nielsen](http://heycarsten.com), I'm a
-    software developer from [Unspace Interactive](http://unspace.ca) in
-    Toronto, Canada. I built LCBO API from the ground up using my favourite
-    tools, you can read more about that in the [FAQ](/docs/faq).
-
-    How LCBO API came to be is sort of a convoluted story. I had purchased a
-    book called The 500 Best-Value Wines in the LCBO by Rod Phillips. I would
-    often take the book with me to my neighbourhood LCBO where I would select
-    a wine from the book, then search the shelves for it. I would repeat this
-    process until I selected a wine that was in stock.
-
-    I quickly figured that it would be easier to look the product up on the
-    LCBO website and scan to see if it was available at the store. Using
-    lcbo.com on my iPhone was very cumbersome though, and I found it faster to
-    just scan the shelves. This was not good enough -- I needed something
-    better!
-
-    I decided I would create an iPhone app that allowed me to see if my
-    neighbourhood LCBO carried a certain product. The first step to creating
-    this application was to build an API where it could draw data from.
-    Fast-forward many evenings of spare time to May 1st, 2009 and the first
-    version of lcboapi.com was live. Over the next few months of spare time
-    I added more useful features to the API and added documentation.
-
-    Developers started to contact me, primarily interested to use the API to
-    create apps for mobile devices. After Taylan Pince released
-    [Liquor, ON](http://hippofoundry.com/lcbo/) (then named: LCBO) I
-    decided to focus my efforts entirely on the API and leave the applications
-    to other developers.
-
     ### Usage
 
     The API is primarily designed to provide JSON data directly to mobile and
@@ -69,9 +37,9 @@ root:
     ### Responses
 
     The default response format for the API is JSON. This means that you don't
-    need to specify JSON in an `Accept` header or as an extension (.json) if that is
-    the format you intend to request. Every response from the API is wrapped in
-    a "container" that in its most basic form looks like this:
+    need to specify JSON in an `Accept` header or as an extension (.json) if
+    that is the format you intend to request. Every response from the API is
+    wrapped in a "container" that in its most basic form looks like this:
 
         {
           "status": 200,
@@ -353,6 +321,8 @@ Product Resources:
     released_on: Official release date (usually unspecified)
     secondary_category: Secondary LCBO product stock category (Not all products have one.)
     serving_suggestion: LCBO serving suggestion (not available for all products)
+    image_url: A URL to an image of the product (not available for all products)
+    image_thumb_url: A URL to a smaller image of the product (not available for all products)
     stock_type: Either "LCBO" or "VINTAGES"
     sugar_content: The sugar content designation, can be a residual sugar number or designation such as extra-dry (XD), medium sweet (MS), etc.
     tags: A string of tags that reflect the product
