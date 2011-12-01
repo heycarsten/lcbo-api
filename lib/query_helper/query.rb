@@ -183,8 +183,10 @@ module QueryHelper
       case
       when !page_num
         nil
-      when q.include?('page=')
-        q.sub(/page=[0-9]+/, "page=#{page_num}")
+      when q.match(/\&page=[0-9]+/i)
+        q.sub(/\&page=[0-9]+/i, "&page=#{page_num}")
+      when q.match(/\?page=[0-9]+/i)
+        q.sub(/\?page=[0-9]+/i, "?page=#{page_num}")
       when q.include?('?')
         q + "&page=#{page_num}"
       else
