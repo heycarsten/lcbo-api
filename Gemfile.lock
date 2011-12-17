@@ -1,9 +1,3 @@
-GIT
-  remote: https://github.com/heycarsten/stringex.git
-  revision: e1ae52a60c898d204877c1f2ee938578e8e84f3e
-  specs:
-    stringex (1.2.2)
-
 GEM
   remote: http://rubygems.org/
   specs:
@@ -67,17 +61,17 @@ GEM
     highline (1.6.2)
     i18n (0.5.0)
     kgio (2.6.0)
-    lcbo (1.1.1)
-      nokogiri (~> 1.4.4)
-      stringex (~> 1.2.0)
-      typhoeus (~> 0.2.4)
-      unicode_utils (~> 1.0.0)
+    lcbo (1.2.0)
+      nokogiri (~> 1.5.0)
+      stringex (~> 1.3.0)
+      typhoeus (~> 0.3.3)
+      unicode_utils (~> 1.2.2)
     mail (2.2.19)
       activesupport (>= 2.3.6)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    mime-types (1.16)
+    mime-types (1.17.2)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
     net-sftp (2.0.5)
@@ -85,7 +79,7 @@ GEM
     net-ssh (2.1.4)
     net-ssh-gateway (1.1.0)
       net-ssh (>= 1.99.1)
-    nokogiri (1.4.7)
+    nokogiri (1.5.0)
     pg (0.11.0)
     polyglot (0.3.1)
     rack (1.2.3)
@@ -136,14 +130,14 @@ GEM
       pg (>= 0.8.0)
       sequel (>= 3.24.0)
     spruz (0.2.11)
+    stringex (1.3.0)
     thor (0.14.6)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
-    typhoeus (0.2.4)
-      mime-types
+    typhoeus (0.3.3)
       mime-types
     tzinfo (0.3.29)
-    unicode_utils (1.0.0)
+    unicode_utils (1.2.2)
     unicorn (4.0.1)
       kgio (~> 2.4)
       rack
@@ -182,7 +176,7 @@ DEPENDENCIES
   sass
   sequel
   sequel_pg
-  stringex!
+  stringex (~> 1.3.0)
   unicorn
   whenever
   yajl-ruby
