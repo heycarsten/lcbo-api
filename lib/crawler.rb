@@ -189,7 +189,7 @@ class Crawler < Boticus::Bot
     model.total_product_inventory_volume_in_milliliters += pa[:inventory_volume_in_milliliters]
     model.save
     model.crawled_product_ids << id
-  rescue LCBO::CrawlKit::NotFoundError
+  rescue LCBO::CrawlKit::NotFoundError, LCBO::CrawlKit::RedirectedError
     log :warn, "Skipping product ##{id}, it does not exist"
   end
 
