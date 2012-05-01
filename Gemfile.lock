@@ -164,7 +164,7 @@ DEPENDENCIES
   fabrication
   gcoder
   haml
-  lcbo
+  lcbo (= 1.2.2)
   pg
   rack-cache
   rails (= 3.0.9)

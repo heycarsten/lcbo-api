@@ -12,15 +12,15 @@ gem 'rack-cache',  :require => 'rack/cache'
 gem 'sequel'
 gem 'sequel_pg',   :require => 'sequel'
 gem 'gcoder'
-gem 'lcbo'
+gem 'lcbo',        '1.2.2'
 gem 'rdiscount'
 gem 'haml'
 gem 'sass'
 gem 'exceptional'
-gem 'whenever', :require => false
-gem 'colored',  :require => false
-gem 'zippy',    :require => false
-gem 'aws-s3',   :require => false
+gem 'whenever',    :require => false
+gem 'colored',     :require => false
+gem 'zippy',       :require => false
+gem 'aws-s3',      :require => false
 
 group :production do
   gem 'unicorn'
