@@ -155,8 +155,7 @@ root:
 
     Absolutely! There is no desire or intention to charge for the use of the
     API. I only ask that you tell me about what you are making with it. It costs
-    roughly $50/month to host the project,
-    [donations](http://www.pledgie.com/campaigns/8126) are greatly appreciated!
+    roughly $50/month to host the project, donations are greatly appreciated!
 
     ### Where does the data come from?
 
@@ -279,7 +278,7 @@ Product Resources:
   - :path: /products/18
     :desc: Show product 18
   :pairs:
-    alcohol_content: Alcohol content (Divide by 100 for decimal value)
+    alcohol_content: Alcohol content (Divide by 100 for decimal value) [Deprecated]
     bonus_reward_miles: Number of bonus air miles
     bonus_reward_miles_ends_on: When bonus air miles are no longer valid
     description: Product description (not available for all products)
@@ -304,7 +303,7 @@ Product Resources:
     package_unit_volume_in_milliliters: The volume of one unit in the package
     price_in_cents: Current retail price in cents
     price_per_liter_in_cents: The beverage price per liter
-    price_per_liter_of_alcohol_in_cents: The alcohol price per liter
+    price_per_liter_of_alcohol_in_cents: The alcohol price per liter [Deprecated]
     primary_category: Primary product stock category
     producer_name: Name of the company that produces the product
     product_no: The LCBO product ID / number [Deprecated]
