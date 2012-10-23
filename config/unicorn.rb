@@ -16,5 +16,6 @@ before_fork do |server, worker|
 end
 
 after_fork do |server, worker|
+  RDB.reconnect
   ActiveRecord::Base.establish_connection if defined?(ActiveRecord::Base)
 end
