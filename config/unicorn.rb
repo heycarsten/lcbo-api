@@ -12,11 +12,11 @@ timeout           10
 preload_app       true
 
 before_fork do |server, worker|
-  RDB.disconnect
+  RDB.client.disconnect
   ActiveRecord::Base.connection.disconnect! if defined?(ActiveRecord::Base)
 end
 
 after_fork do |server, worker|
-  RDB.connect
+  RDB.client.connect
   ActiveRecord::Base.establish_connection if defined?(ActiveRecord::Base)
 end
