@@ -10,8 +10,8 @@ set :deploy_via,           :remote_cache
 set :copy_exclude,         %w[ .git ]
 set :keep_releases,        5
 set :user,                 'lcboapi'
-set :whenever_environment, defer { stage }
-set :rails_env,            defer { stage }
+set :whenever_environment, defer { environment }
+set :rails_env,            defer { environment }
 set :bundle_flags,         '--deployment --quiet --binstubs'
 set :branch,               ENV['BRANCH'] || 'master'
 set :domain,               'lcboapi.com'
