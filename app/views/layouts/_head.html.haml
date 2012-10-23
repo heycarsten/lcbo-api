@@ -1,9 +1,7 @@
 %head
-  %meta{ :charset => 'utf-8' }
-  %meta{ :'http-equiv' => 'X-UA-Compatible', :content => 'IE=edge,chrome=1' }
-  %meta{ :name => 'description', :content => 'A REST service for LCBO store, product, and inventory data.' }
+  %meta{ charset: 'UTF-8' }
+  %meta{ :'http-equiv' => 'X-UA-Compatible', content: 'IE=edge,chrome=1' }
+  %meta{ name: 'description', content: 'A REST service for LCBO store, product, and inventory data.' }
   - title
-  = stylesheet_link_tag '/css/lcboapi.css'
-  = javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js'
-  = javascript_include_tag '/js/lcboapi.js'
-  = javascript_include_tag '/js/js-beautify.js'
+  = stylesheet_link_tag :lcboapi
+  = javascript_include_tag :lcboapi

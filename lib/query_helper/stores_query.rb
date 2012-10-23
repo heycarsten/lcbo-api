@@ -129,7 +129,7 @@ module QueryHelper
       when is_spatial?
         Store.distance_from(latitude, longitude)
       when product_id
-        db.join(:inventories, :store_id => :id, :product_id => product_id)
+        db.join(:inventories, store_id: :id, product_id: product_id)
       else
         db
       end.

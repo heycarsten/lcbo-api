@@ -1,5 +1,6 @@
 require 'yaml'
 require 'sequel'
+include Rake::DSL
 
 module Sequel
   module Rails

@@ -1,9 +1,9 @@
 listen 3000
-worker_processes 4
+worker_processes 6
 
 user 'lcboapi'
 
-timeout 25
+timeout 15
 
 working_directory '/home/lcboapi/lcboapi.com/current'
 shared_dir      = '/home/lcboapi/lcboapi.com/shared'

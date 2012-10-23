@@ -1,12 +1,13 @@
-# This file is copied to ~/spec when you run 'ruby script/generate rspec'
-# from the project root directory.
-ENV['RAILS_ENV'] ||= 'test'
-require File.expand_path("../../config/environment", __FILE__)
+ENV['RAILS_ENV'] = 'test'
+require File.expand_path('../../config/environment', __FILE__)
+require 'database_cleaner'
 require 'rspec/rails'
+require 'fabrication'
+# require 'rspec/autorun'
 
-# Requires supporting files with custom matchers and macros, etc,
-# in ./support/ and its subdirectories.
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
+# Requires supporting ruby files with custom matchers and macros, etc,
+# in spec/support/ and its subdirectories.
+Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
 module DatabaseHelpers
   def clean_database
@@ -19,9 +20,9 @@ end
 module FactoryHelpers
   def RevisionFactory(type, model_instance, opts = {})
     db = {
-      :store => DB[:store_revisions],
-      :product => DB[:product_revisions],
-      :inventory => DB[:inventory_revisions]
+      store:     DB[:store_revisions],
+      product:   DB[:product_revisions],
+      inventory: DB[:inventory_revisions]
     }[type]
     cols = db.columns
     data = model_instance.as_json.slice(*cols)
@@ -94,8 +95,25 @@ end
 
 RSpec.configure do |config|
   config.mock_with :rspec
+  config.infer_base_class_for_anonymous_controllers = true
+
+  # config.include(Devise::TestHelpers, type: :controller)
   config.include(DatabaseHelpers)
   config.include(FactoryHelpers)
+
+  # config.before(:suite) do
+  #   DatabaseCleaner.logger   = Rails.logger
+  #   DatabaseCleaner.strategy = :transaction
+  #   DatabaseCleaner.clean_with :truncation
+  # end
+
+  # config.before(:each) do
+  #   DatabaseCleaner.start
+  # end
+
+  # config.after(:each) do
+  #   DatabaseCleaner.clean
+  # end
 end
 
 shared_examples_for 'a resource' do |options|

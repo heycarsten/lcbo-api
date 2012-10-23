@@ -15,25 +15,25 @@ module QueryHelper
   end
 
   def self.find(type, *args)
-    { :store     => StoreFinder,
-      :product   => ProductFinder,
-      :inventory => InventoryFinder,
-      :dataset   => DatasetFinder
+    { store:     StoreFinder,
+      product:   ProductFinder,
+      inventory: InventoryFinder,
+      dataset:   DatasetFinder
     }[type].find(*args)
   end
 
   def self.query(type, request, params)
-    { :stores              => StoresQuery,
-      :store               => StoreFinder,
-      :products            => ProductsQuery,
-      :product             => ProductFinder,
-      :inventories         => InventoriesQuery,
-      :inventory           => InventoryFinder,
-      :datasets            => DatasetsQuery,
-      :dataset             => DatasetFinder,
-      :store_revisions     => StoreRevisionsQuery,
-      :product_revisions   => ProductRevisionsQuery,
-      :inventory_revisions => InventoryRevisionsQuery
+    { stores:              StoresQuery,
+      store:               StoreFinder,
+      products:            ProductsQuery,
+      product:             ProductFinder,
+      inventories:         InventoriesQuery,
+      inventory:           InventoryFinder,
+      datasets:            DatasetsQuery,
+      dataset:             DatasetFinder,
+      store_revisions:     StoreRevisionsQuery,
+      product_revisions:   ProductRevisionsQuery,
+      inventory_revisions: InventoryRevisionsQuery
     }[type].new(request, params)
   end
 

@@ -39,7 +39,7 @@ module QueryHelper
     end
 
     def dataset
-      db.filter(:store_id => store_id).order(:updated_at.desc)
+      db.filter(store_id: store_id).order(:updated_at.desc)
     end
 
     def as_json

@@ -39,13 +39,13 @@ module QueryHelper
     end
 
     def dataset
-      db.filter(:product_id => product_id).order(:updated_at.desc)
+      db.filter(product_id: product_id).order(:updated_at.desc)
     end
 
     def as_json
       h = super
       h[:product] = product.as_json
-      h[:result] = page_dataset.all.map { |row| row.except(:crawl_id) }
+      h[:result]  = page_dataset.all.map { |row| row.except(:crawl_id) }
       h
     end
 

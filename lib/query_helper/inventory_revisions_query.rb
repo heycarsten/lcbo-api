@@ -54,7 +54,7 @@ module QueryHelper
 
     def dataset
       db.
-        filter(:product_id => product_id, :store_id => store_id).
+        filter(product_id: product_id, store_id: store_id).
         order(:updated_on.desc)
     end
 

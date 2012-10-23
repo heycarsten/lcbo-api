@@ -3,7 +3,7 @@ Fabricator(:crawl_event) do
   message    'This is a log message'
   payload    :key => 'value'
   created_at Time.at(1293645823)
-  after_create { |m| m.save(:raise_on_failure => true) }
+  after_create { |m| m.save(raise_on_failure: true) }
 end
 
 Fabricator(:crawl) do
@@ -25,7 +25,7 @@ Fabricator(:crawl) do
   removed_store_ids                             [100, 101, 102]
   created_at                                    Time.at(1293645823)
   updated_at                                    Time.at(1293645823)
-  after_create { |m| m.save(:raise_on_failure => true) }
+  after_create { |m| m.save(raise_on_failure: true) }
 end
 
 Fabricator(:product) do
@@ -64,7 +64,7 @@ Fabricator(:product) do
   created_at                          Time.at(1293645823)
   updated_at                          Time.at(1293645823)
   after_build { |product| product.tags = product.name.split.map(&:downcase) }
-  after_create { |m| m.save(:raise_on_failure => true) }
+  after_create { |m| m.save(raise_on_failure: true) }
 end
 
 Fabricator(:store) do
@@ -113,7 +113,7 @@ Fabricator(:store) do
     store.set_latlonrad
   end
 
-  after_create { |m| m.save(:raise_on_failure => true) }
+  after_create { |m| m.save(raise_on_failure: true) }
 end
 
 Fabricator(:inventory) do
@@ -124,5 +124,5 @@ Fabricator(:inventory) do
   updated_on Date.new(2010, 10, 10)
   created_at Time.at(1293645823)
   updated_at Time.at(1293645823)
-  after_create { |m| m.save(:raise_on_failure => true) }
+  after_create { |m| m.save(raise_on_failure: true) }
 end

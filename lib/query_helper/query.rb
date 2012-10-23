@@ -195,16 +195,16 @@ module QueryHelper
     end
 
     def pager
-      { :current_page => :current_page,
-        :next_page    => :next_page,
-        :prev_page    => :previous_page,
-        :page_count   => :final_page
+      { current_page: :current_page,
+        next_page:    :next_page,
+        prev_page:    :previous_page,
+        page_count:   :final_page
       }.reduce(
-        :records_per_page => per_page,
-        :total_record_count => page_dataset.pagination_record_count,
-        :current_page_record_count => page_dataset.current_page_record_count,
-        :is_first_page => page_dataset.first_page?,
-        :is_final_page => page_dataset.last_page?
+        records_per_page:          per_page,
+        total_record_count:        page_dataset.pagination_record_count,
+        current_page_record_count: page_dataset.current_page_record_count,
+        is_first_page:             page_dataset.first_page?,
+        is_final_page:             page_dataset.last_page?
       ) do |hsh, (meth, key)|
         num = page_dataset.send(meth)
         hsh.merge(
@@ -221,7 +221,7 @@ module QueryHelper
     end
 
     def as_csv(delimiter = ',')
-      CSV.generate(:col_sep => delimiter) do |csv|
+      CSV.generate(col_sep: delimiter) do |csv|
         csv << self.class.human_csv_columns
         csv_dataset.all do |row|
           csv << self.class.as_csv_row(row)

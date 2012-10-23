@@ -2,8 +2,8 @@ class Exporter
 
   def initialize(key)
     AWS::S3::Base.establish_connection!(
-      :access_key_id     => LCBOAPI[:s3][:access_key],
-      :secret_access_key => LCBOAPI[:s3][:secret_key])
+      access_key_id:     LCBOAPI[:s3][:access_key],
+      secret_access_key: LCBOAPI[:s3][:secret_key])
     @key = key
     @s3  = AWS::S3::S3Object
     @dir = File.join(Dir.tmpdir, 'lcboapi-tmp')
@@ -38,8 +38,8 @@ class Exporter
 
   def upload_archive
     @s3.store("datasets/#{@key}.zip", open(@zip), LCBOAPI[:s3][:bucket],
-      :content_type => 'application/zip',
-      :access => :public_read
+      content_type: 'application/zip',
+      access: :public_read
     )
   end
 
@@ -50,9 +50,9 @@ class Exporter
   private
 
   def cols(table)
-    { :stores => Store,
-      :products => Product,
-      :inventories => Inventory
+    { stores:      Store,
+      products:    Product,
+      inventories: Inventory
     }[table].public_columns.join(', ')
   end
 

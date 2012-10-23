@@ -76,12 +76,12 @@ module QueryHelper
       case
       when product_id && store_id
         db.filter(
-          :product_id => product_id,
-          :store_id => store_id)
+          product_id: product_id,
+          store_id:   store_id)
       when product_id
-        db.filter(:product_id => product_id)
+        db.filter(product_id: product_id)
       when store_id
-        db.filter(:store_id => store_id)
+        db.filter(store_id: store_id)
       else
         db
       end.

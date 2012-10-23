@@ -21,12 +21,12 @@ module QueryHelper
     end
 
     def as_json
-      { :result => self.class.find(*as_args).as_json }
+      { result: self.class.find(*as_args).as_json }
     end
 
     def as_csv(delimiter = ',')
       rows = self.class.find(*as_args).as_csv(true)
-      CSV.generate(:col_sep => delimiter) do |csv|
+      CSV.generate(col_sep: delimiter) do |csv|
         rows.each { |row| csv << row }
       end
     end

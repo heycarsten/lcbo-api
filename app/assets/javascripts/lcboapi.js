@@ -1,3 +1,6 @@
+//= require jquery
+//= require ./vendor/beautify
+
 var LCBOAPI = new function() {
   this.load = function() {
     $.each(LCBOAPI, function() {
