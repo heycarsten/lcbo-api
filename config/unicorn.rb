@@ -1,34 +1,20 @@
-listen 3000
-worker_processes 6
+wd       = '/home/lcboapi/lcboapi.com'
+app_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
-user 'lcboapi'
+listen      "#{wd}/shared/sockets/unicorn.sock"
+pid         "#{wd}/shared/pids/unicorn.pid"
+stderr_path "#{wd}/shared/log/unicorn.stderr.log"
+stdout_path "#{wd}/shared/log/unicorn.stdout.log"
 
-timeout 15
-
-working_directory '/home/lcboapi/lcboapi.com/current'
-shared_dir      = '/home/lcboapi/lcboapi.com/shared'
-
-pid         shared_dir + '/pids/unicorn.pid'
-stderr_path shared_dir + '/log/unicorn.stderr.log'
-stdout_path shared_dir + '/log/unicorn.stdout.log'
+working_directory app_root
+worker_processes  6
+timeout           10
+preload_app       true
 
 before_fork do |server, worker|
-  # seamless deploy recipe courtesy of
-  # http://codelevy.com/2010/02/09/getting-started-with-unicorn
-  # i.e. you can run
-  # $ PID=log/unicorn.pid; test -s "$PID" && kill -USR2 `cat $PID`
-  # from the app root to load the new code and have the workers
-  # kill the old master process before forking
-  #
-  # note: see http://unicorn.bogomips.org/SIGNALS.html for an
-  # even safer seamless restart setup (but requires enough RAM
-  # to run two unicorn masters and two sets of workers)
-  old_pid = (shared_dir + '/pids/unicorn.pid.oldbin')
-  if File.exists?(old_pid) && server.pid != old_pid
-    begin
-      Process.kill('QUIT', File.read(old_pid).to_i)
-    rescue Errno::ENOENT, Errno::ESRCH
-      # someone else did our job for us
-    end
-  end
+  ActiveRecord::Base.connection.disconnect! if defined?(ActiveRecord::Base)
+end
+
+after_fork do |server, worker|
+  ActiveRecord::Base.establish_connection if defined?(ActiveRecord::Base)
 end
