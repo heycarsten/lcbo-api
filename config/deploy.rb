@@ -1,7 +1,7 @@
 default_run_options[:pty]   = true
 ssh_options[:forward_agent] = true
 
-set :rvm_ruby_string,      '1.9.3-p194'
+set :rvm_ruby_string,      '1.9.3-p286'
 set :rvm_type,             :user
 set :repository,           'git@github.com:heycarsten/lcbo-api.git'
 set :scm,                  :git
