@@ -17,6 +17,7 @@ set :branch,               ENV['BRANCH'] || 'master'
 set :domain,               'lcboapi.com'
 set :environment,          'production'
 set :application,          'lcboapi'
+set :whenever_command,     defer { "#{release_path}/bin/whenever" }
 set :deploy_to,            '/home/lcboapi/lcboapi.com'
 
 server 'lcboapi.com', :web, :app, :db, primary: true
