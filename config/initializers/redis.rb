@@ -1,1 +1,1 @@
-RDB = Redis.new(:thread_save => true)
+RDB = Redis.new(thread_safe: true)
