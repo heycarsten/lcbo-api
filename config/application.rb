@@ -52,6 +52,7 @@ module LCBOAPI
     config.assets.precompile += %w[
       lcboapi.css
       lcboapi.js
+      lcboapi-admin.css
     ]
 
     # Version of your assets, change this if you want to expire all your assets
