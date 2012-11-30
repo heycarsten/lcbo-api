@@ -185,8 +185,8 @@ root:
 
     ### I'm a geek, how does it work?
 
-    * [Ruby 1.9.2](http://tryruby.org)
-    * [Rails 3](http://rubyonrails.org)
+    * [Ruby](http://tryruby.org)
+    * [Rails](http://rubyonrails.org)
     * [Sequel](http://sequel.rubyforge.org)
     * [Redis](http://redis.io)
     * [Postgres](http://postgresql.org)
@@ -202,7 +202,7 @@ root:
     * [LCBO](http://github.com/heycarsten/lcbo) - HTML Parser
     * [GCoder](http://github.com/heycarsten/gcoder) - Geocoding
 
-Dataset Resources:
+Dataset Endpoints:
 - :title: Datasets
   :query: DatasetsQuery
   :route: /datasets
@@ -249,7 +249,7 @@ Dataset Resources:
     removed_store_ids: List of store IDs that were removed since the previous update
     csv_dump: Contains a path to a ZIP archive of CSV files for stores, products, and inventories.
 
-Product Resources:
+Product Endpoints:
 - :title: Products
   :route: /products
   :query: ProductsQuery
@@ -278,11 +278,13 @@ Product Resources:
   - :path: /products/18
     :desc: Show product 18
   :pairs:
-    alcohol_content: Alcohol content (Divide by 100 for decimal value) [Deprecated]
+    alcohol_content: Alcohol content (Divide by 100 for decimal value)
     bonus_reward_miles: Number of bonus air miles
     bonus_reward_miles_ends_on: When bonus air miles are no longer valid
+    clearance_sale_savings_in_cents: Savings in cents if on clearance
     description: Product description (not available for all products)
     has_bonus_reward_miles: True if the product has bonus air miles
+    has_clearance_sale: True if the product is currently on clearance
     has_limited_time_offer: True if the product is on sale
     has_value_added_promotion: True if the product has a value added promotion
     id: The LCBO product ID / number
@@ -303,23 +305,27 @@ Product Resources:
     package_unit_volume_in_milliliters: The volume of one unit in the package
     price_in_cents: Current retail price in cents
     price_per_liter_in_cents: The beverage price per liter
-    price_per_liter_of_alcohol_in_cents: The alcohol price per liter [Deprecated]
-    primary_category: Primary product stock category
+    price_per_liter_of_alcohol_in_cents: The alcohol price per liter
+    primary_category: Primary product category
     producer_name: Name of the company that produces the product
     product_no: The LCBO product ID / number [Deprecated]
     regular_price_in_cents: Regular retail price in cents
     released_on: Official release date (usually unspecified)
-    secondary_category: Secondary LCBO product stock category (Not all products have one.)
-    serving_suggestion: LCBO serving suggestion (not available for all products)
-    image_url: A URL to an image of the product (not available for all products)
-    image_thumb_url: A URL to a smaller image of the product (not available for all products)
+    secondary_category: Secondary LCBO product category (Not available for all products)
+    serving_suggestion: LCBO serving suggestion (Not available for all products)
+    style: The LCBO's determined style designation (Not available for most products)
+    tertiary_category: Tertiary LCBO product category (Not available for all products)
+    image_url: A URL to an image of the product (Not available for all products)
+    image_thumb_url: A URL to a smaller image of the product (Not available for all products)
     stock_type: Either "LCBO" or "VINTAGES"
-    sugar_content: The sugar content designation, can be a residual sugar number or designation such as extra-dry (XD), medium sweet (MS), etc.
+    sugar_content: The product's sweetness descriptor, is usually a designation such as extra-dry (XD), medium sweet (MS), etc. (Not available for all products)
+    sugar_in_grams_per_liter: The amount of sugar that is contained in the product in grams per liter. (Not available for all products)
     tags: A string of tags that reflect the product
-    tasting_note: Professional tasting note (not available for all products)
+    tasting_note: Professional tasting note (Not available for all products)
     total_package_units: Number of units in a package
     updated_at: Time that the product information was updated
     value_added_promotion_description: Contents of the value added promotion offer if available
+    varietal: Grape varietal (or blend) designated by the LCBO (Not available for all products)
     volume_in_milliliters: Total volume of all units in package
   :body:
     Represents an LCBO product.
@@ -341,7 +347,7 @@ Product Resources:
     Returns all [products](/docs/product) that are available at the specified
     store along with the currenty reported inventory quantity for each.
 
-Store Resources:
+Store Endpoints:
 - :title: Stores with Product
   :route: /products/:product_id/stores
   :query: StoresQuery
@@ -434,7 +440,7 @@ Store Resources:
           return [h12, time[1], ampm];
         }
 
-Inventory Resources:
+Inventory Endpoints:
 - :title: Inventories
   :route: /inventories
   :query: InventoriesQuery
