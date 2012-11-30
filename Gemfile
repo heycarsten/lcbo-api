@@ -11,7 +11,7 @@ gem 'redis'
 gem 'dalli'
 gem 'rack-cache',  require: 'rack/cache'
 gem 'gcoder'
-gem 'lcbo',        '1.2.3'
+gem 'lcbo',        '1.3.0'
 gem 'rdiscount'
 gem 'haml-rails'
 gem 'exceptional'
@@ -31,7 +31,6 @@ end
 group :development do
   gem 'hooves',            require: 'hooves/default'
   gem 'awesome_print'
-  gem 'annotate',          require: false, git: 'git://github.com/ctran/annotate_models.git'
   gem 'capistrano',        require: false
   gem 'capistrano-ext',    require: false
   gem 'capistrano_colors', require: false
