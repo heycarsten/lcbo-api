@@ -4,7 +4,6 @@ class Store < Sequel::Model
 
   plugin :timestamps, :update_on_create => true
   plugin :geo
-  plugin :archive, :crawl_id
   plugin :api,
     :aliases => { :id => :store_no },
     :private => [

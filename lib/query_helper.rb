@@ -31,9 +31,6 @@ module QueryHelper
       inventory:           InventoryFinder,
       datasets:            DatasetsQuery,
       dataset:             DatasetFinder,
-      store_revisions:     StoreRevisionsQuery,
-      product_revisions:   ProductRevisionsQuery,
-      inventory_revisions: InventoryRevisionsQuery
     }[type].new(request, params)
   end
 

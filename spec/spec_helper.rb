@@ -17,25 +17,6 @@ module DatabaseHelpers
   end
 end
 
-module FactoryHelpers
-  def RevisionFactory(type, model_instance, opts = {})
-    db = {
-      store:     DB[:store_revisions],
-      product:   DB[:product_revisions],
-      inventory: DB[:inventory_revisions]
-    }[type]
-    cols = db.columns
-    data = model_instance.as_json.slice(*cols)
-    if [:store, :product].include?(type)
-      data[:"#{type}_id"] = model_instance.id
-      data[:crawl_id]     = opts.delete(:crawl_id) || Fabricate(:crawl).id
-    else
-      data[:updated_on] = opts.delete(:updated_on) || Date.new(2010, 10, 10)
-    end
-    db.insert(data.merge(opts))
-  end
-end
-
 class ActionDispatch::TestResponse
   def jsonp?
     'text/javascript' == content_type
@@ -99,7 +80,6 @@ RSpec.configure do |config|
 
   # config.include(Devise::TestHelpers, type: :controller)
   config.include(DatabaseHelpers)
-  config.include(FactoryHelpers)
 
   # config.before(:suite) do
   #   DatabaseCleaner.logger   = Rails.logger

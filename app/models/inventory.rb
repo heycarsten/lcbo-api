@@ -1,7 +1,6 @@
 class Inventory < Sequel::Model
 
   plugin :timestamps, :update_on_create => true
-  plugin :archive, :updated_on
   plugin :api,
     :private => [:crawl_id, :created_at],
     :aliases => { :product_id => :product_no, :store_id => :store_no }

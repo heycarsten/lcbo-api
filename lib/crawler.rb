@@ -122,21 +122,6 @@ class Crawler < Boticus::Bot
       update(:quantity => 0, :is_dead => true)
   end
 
-  desc 'Committing stores'
-  task :commit_stores do
-    Store.commit(model.id)
-  end
-
-  desc 'Committing products'
-  task :commit_products do
-    Product.commit(model.id)
-  end
-
-  desc 'Committing inventories'
-  task :commit_inventories do
-    Inventory.commit(model.id)
-  end
-
   desc 'Exporting CSV data'
   task :export do
     Exporter.run(model.id)
