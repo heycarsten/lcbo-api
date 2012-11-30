@@ -13,8 +13,8 @@ LCBOAPI::Application.routes.draw do
   get '/docs(/:slug)' => 'root#show'
 
   scope version: 1, constraints: { lat: LATLON_RE, lon: LATLON_RE } do
-    get '/download/:year-:month-:day'               => 'datasets#deprecated', name: :dataset_by_date
-    get '/download/current'                         => 'datasets#deprecated', name: :current_dataset
+    get '/download/:year-:month-:day'               => 'root#deprecated', name: :dataset_by_date
+    get '/download/current'                         => 'root#deprecated', name: :current_dataset
     get '/products/search'                          => 'products#index'
     get '/products/:product_id/inventory'           => 'inventories#index'
     get '/stores/search'                            => 'stores#index'
@@ -42,6 +42,10 @@ LCBOAPI::Application.routes.draw do
     end
 
     resources :inventories, only: [:index]
+
+    get '/stores/:id/history'                            => 'root#deprecated', name: :store_history
+    get '/products/:id/history'                          => 'root#deprecated', name: :product_history
+    get '/stores/:store_id/products/:product_id/history' => 'root#deprecated', name: :inventory_history
   end
 
 end
