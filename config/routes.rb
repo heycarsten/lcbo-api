@@ -18,7 +18,7 @@ LCBOAPI::Application.routes.draw do
     get '/products/search'                          => 'products#index'
     get '/products/:product_id/inventory'           => 'inventories#index'
     get '/stores/search'                            => 'stores#index'
-    get '/stores/near/geo(/with/:product_id)'       => 'stores#index',        is_geo_q: true
+    get '/stores/near/geo(/with/:product_id)'       => 'stores#index',    is_geo_q: true
     get '/stores/near/:geo(/with/:product_id)'      => 'stores#index'
     get '/stores/near/:lat/:lon(/with/:product_id)' => 'stores#index'
     get '/stores/:store_id/products/search'         => 'products#index'
