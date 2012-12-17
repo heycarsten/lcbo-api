@@ -15,6 +15,7 @@ class Store < Sequel::Model
   def self.place(attrs)
     id = attrs[:id]
     raise ArgumentError, "attrs must contain :id" unless id
+    attrs[:is_dead] = false
     attrs[:tags] = attrs[:tags].any? ? attrs[:tags].join(' ') : nil
     (store = self[id]) ? store.update(attrs) : create(attrs)
   end
