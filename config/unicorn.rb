@@ -7,7 +7,7 @@ stderr_path "#{wd}/shared/log/unicorn.stderr.log"
 stdout_path "#{wd}/shared/log/unicorn.stdout.log"
 
 working_directory app_root
-worker_processes  6
+worker_processes  4
 timeout           10
 preload_app       true
 
