@@ -6,6 +6,8 @@ module ApplicationHelper
     :datetime => '%b %e, %Y %I:%M %p',
     :datetimesec => '%b %e, %Y %I:%M:%S %p' }
 
+  MARKDOWN = Redcarpet::Renderer::SmartyHTML.new
+
   def nice(format, time)
     strf = NICE_FORMATS.fetch(format) do
       raise ArgumentError, "unknown format: #{format.inspect}"
@@ -13,17 +15,18 @@ module ApplicationHelper
     time.to_time.strftime(strf)
   end
 
-  def discount(md, *opts)
-    return unless md
-    if opts.empty?
-      raw(RDiscount.new(md, :smart).to_html)
-    else
-      raw(RDiscount.new(md, *opts).to_html)
-    end
+  def format_route(route)
+    spec = route.gsub(/:[a-z\_]+/) { |part| "<span>#{part}</span>" }
+    content_tag :code, raw(spec), class: 'route-spec'
+  end
+
+  def markdown(doc)
+    return unless doc
+    raw(MARKDOWN.render(doc))
   end
 
   def title(value = nil)
-    value ? @title = value : haml_tag(:title, @title)
+    value ? @title = value : raw(content_tag(:title, @title))
   end
 
   def google_analytics_fragment

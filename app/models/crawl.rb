@@ -11,11 +11,11 @@ class Crawl < Sequel::Model
     :removed_store_ids ]
 
   plugin :redis
-  plugin :timestamps, :update_on_create => true
+  plugin :timestamps, update_on_create: true
   plugin :serialization, :yaml, *SERIALIZED_FIELDS
   plugin :api,
-    :not_csv => SERIALIZED_FIELDS,
-    :private => [
+    not_csv: SERIALIZED_FIELDS,
+    private: [
       :crawl_event_id,
       :state,
       :task,
@@ -36,7 +36,7 @@ class Crawl < Sequel::Model
         key,
         hsh[key].is_a?(Array) ? hsh[key] : YAML.load(hsh[key] || "[]\n")
       ] }]
-    ).merge(:csv_dump => "http://static.lcboapi.com/datasets/#{hsh[:id]}.zip")
+    ).merge(csv_dump: "http://static.lcboapi.com/datasets/#{hsh[:id]}.zip")
   end
 
   def self.latest
@@ -44,7 +44,7 @@ class Crawl < Sequel::Model
   end
 
   def self.is(*states)
-    filter(:state => states.map(&:to_s))
+    filter(state: states.map(&:to_s))
   end
 
   def self.any_active?
@@ -60,8 +60,8 @@ class Crawl < Sequel::Model
     @previous ||= begin
       Crawl.
         order(:id.desc).
-        filter(~{ :id => id }).
-        filter(:state => 'finished').
+        filter(~{ id: id }).
+        filter(state: 'finished').
         first
     end
   end
@@ -133,10 +133,10 @@ class Crawl < Sequel::Model
   def log(message, level = :info, payload = {})
     verify_unlocked!
     ce = add_crawl_event(
-      :level => level.to_s,
-      :message => message.to_s,
-      :payload => JSON.dump(payload),
-      :created_at => Time.now.utc)
+      level:      level.to_s,
+      message:    message.to_s,
+      payload:    JSON.dump(payload),
+      created_at: Time.now.utc)
     self.crawl_event_id = ce.id
     save
   end

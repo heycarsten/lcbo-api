@@ -29,7 +29,7 @@ class RootController < ApplicationController
     redirect_to '/docs/about' and return unless params[:slug]
     @document = @documents.find { |doc| doc[:slug] == params[:slug] }
     return http_status(404) unless @document
-    render :layout => 'document'
+    render layout: 'document'
   end
 
   def index

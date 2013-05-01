@@ -5,8 +5,8 @@ class Store < Sequel::Model
   plugin :timestamps, :update_on_create => true
   plugin :geo
   plugin :api,
-    :aliases => { :id => :store_no },
-    :private => [
+    aliases: { id: :store_no },
+    private: [
       :latrad, :lngrad, :created_at, :crawl_id, :store_id, :product_id]
 
   many_to_one :crawl
@@ -23,8 +23,8 @@ class Store < Sequel::Model
   def self.distance_from_with_product(lat, lon, product_id)
     distance_from(lat, lon).
       join(:inventories,
-        :store_id => :id,
-        :product_id => product_id).
+        store_id: :id,
+        product_id: product_id).
       filter('inventories.quantity > 0')
   end
 

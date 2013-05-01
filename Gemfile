@@ -1,36 +1,31 @@
 source :rubygems
+ruby '2.0.0'
 
-gem 'rails',       '3.2.12'
+gem 'rails',       '3.2.13'
+gem 'oj'
 gem 'pg'
 gem 'sequel'
 gem 'sequel_pg',   require: 'sequel'
-gem 'yajl-ruby',   require: 'yajl'
 gem 'amatch'
 gem 'stringex'
 gem 'redis'
-gem 'dalli'
-gem 'rack-cache',  require: 'rack/cache'
 gem 'gcoder'
 gem 'lcbo',        '1.4.0'
-gem 'rdiscount'
-gem 'haml-rails'
+gem 'redcarpet'
 gem 'exceptional'
-gem 'whenever',    require: false
-gem 'colored',     require: false
-gem 'zippy',       require: false
 gem 'aws-s3',      require: false
-gem 'unicorn',     require: false
+gem 'puma'
 
 group :assets do
   gem 'jquery-rails'
   gem 'sass-rails'
-  gem 'therubyracer'
+  gem 'therubyracer', require: 'v8'
   gem 'uglifier'
 end
 
 group :development do
-  gem 'hooves',            require: 'hooves/default'
   gem 'awesome_print'
+  gem 'pry-rails'
   gem 'capistrano',        require: false
   gem 'capistrano-ext',    require: false
   gem 'capistrano_colors', require: false

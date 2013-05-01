@@ -1,0 +1,105 @@
+<% if @document[:reverse_html_title] %>
+  <% title @document[:title] + ' LCBO API' %>
+<% else %>
+  <% title 'LCBO API ' + @document[:title] %>
+<% end %>
+
+<div class="cols-1-2 clear">
+  <div class="col-1">
+    <div class="side-title">
+      <h1>
+        <span>LCBO API </span>Documentation
+      </h1>
+    </div>
+    <ul class="side-menu">
+      <% @sections.each_pair do |section, documents| %>
+        <%= render 'root/section', section: section, documents: documents %>
+      <% end %>
+    </ul>
+  </div>
+  <div class="col-2">
+    <% if @document[:route] %>
+      <div class="document-title">
+        <h2><%= @document[:title] %></h2>
+        <dl>
+          <dt class="uri-specification hide">
+            URL Template
+          </dt>
+          <dd class="uri-specification">
+            <code>http://lcboapi.com</code><%= format_route @document[:route] %>
+          </dd>
+        </dl>
+      </div>
+      <article class="document-body">
+<%= markdown @document[:body] %>
+        <h3>Formats</h3>
+        <table class="formats">
+          <% @document[:formats].each_pair do |type, desc| %>
+            <tr>
+              <td class="extension">
+                <b>.<%= type %></b>
+              </td>
+              <td class="desc">
+                <%= raw desc %>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+        <% if @document[:params] %>
+          <%= render 'root/params' %>
+        <% end %>
+        <% if @document[:pairs] %>
+          <h3>Fields</h3>
+          <table class="fields">
+            <% @document[:pairs].each do |field, desc| %>
+              <tr>
+                <td class="field">
+                  <code><%= field %></code>
+                </td>
+                <td class="desc">
+                  <code><%= desc %></code>
+                </td>
+              </tr>
+            <% end %>
+          </table>
+        <% end %>
+      </article>
+      <% @document[:examples].each do |example| %>
+        <div class="document-example">
+          <form class="usage-example-form" action="#" method="GET">
+            <fieldset>
+              <legend><%= example[:desc] %></legend>
+              <dl>
+                <dt>
+                  <div class="hide">
+                    <label for="query">Query</label>
+                  </div>
+                </dt>
+                <dd class="query-widget">
+                  http://lcboapi.com
+                  <input id="query" name="query" type="text" value="<%= example[:path] %>">
+                  <input id="submit" name="commit" type="submit" value="Request">
+                </dd>
+                <dt class="hide">
+                  Response
+                </dt>
+                <dd class="example-response">
+                  <pre>
+                    <code class="example-json-response">{}</code>
+                  </pre>
+                </dd>
+              </dl>
+            </fieldset>
+          </form>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="document-title">
+        <h2><%= @document[:title] %></h2>
+      </div>
+      <div class="document-body">
+        <%= markdown @document[:body] %>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -1,9 +1,0 @@
-%li.side-menu-section
-  - unless 'root' == section
-    .side-menu-section-caption
-      = section
-  %ul.side-menu-list
-    - documents.each do |document|
-      %li.side-menu-item
-        %a{ :href => "/docs/#{document[:slug]}" }
-          = document[:menu] || document[:title]

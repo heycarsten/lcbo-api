@@ -7,11 +7,11 @@ class ApplicationController < ActionController::Base
     GCoder::OverLimitError,
     GCoder::GeocoderError,
     QueryHelper::NotFoundError,
-    QueryHelper::BadQueryError, :with => :render_exception
+    QueryHelper::BadQueryError, with: :render_exception
 
-  before_filter :set_cache_control, :if => :cacheable?
-  before_filter :set_api_format,    :if => :api_request?
-  after_filter  :set_jsonp_status,  :if => :api_request?
+  before_filter :set_cache_control, if: :cacheable?
+  before_filter :set_api_format,    if: :api_request?
+  after_filter  :set_jsonp_status,  if: :api_request?
 
   protected
 
@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
 
   def http_status(code)
     path = (Rails.root + 'public' + "#{code}.html").to_s
-    render :file => path, :status => code
+    render file: path, status: code
     false
   end
 
@@ -123,16 +123,16 @@ class ApplicationController < ActionController::Base
 
   def render_json(data)
     if jsonp?
-      render :text => encode_json(data, params[:callback])
+      render text: encode_json(data, params[:callback])
     else
-      render :text => encode_json(data)
+      render text: encode_json(data)
     end
   end
 
   def encode_json(data, callback = nil)
     json = Yajl::Encoder.encode({
-      :status => response.status,
-      :message => nil
+      status: response.status,
+      message: nil
     }.merge(data))
     callback ? "#{callback}(#{json});" : json
   end

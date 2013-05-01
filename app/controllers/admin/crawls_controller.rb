@@ -6,7 +6,7 @@ class Admin::CrawlsController < AdminController
 
   def show
     @crawl = Crawl[params[:id]]
-    @events = CrawlEvent.filter(:crawl_id => @crawl.id).limit(100).order(:id.desc).all
+    @events = CrawlEvent.filter(crawl_id: @crawl.id).limit(100).order(:id.desc).all
   end
 
 end

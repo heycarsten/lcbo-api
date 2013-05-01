@@ -1,0 +1,110 @@
+<% query = "QueryHelper::#{@document[:query]}".constantize %>
+
+<h3>Parameters</h3>
+<dl class="query-params">
+  <% if @document[:params].include?(:defaults) %>
+    <% if query.filterable_fields.any? %>
+      <dt>
+        <code>where</code>, <code>where_not</code>
+      </dt>
+      <dd>
+        <p>
+          <code>where</code> filters products where the supplied fields are true.
+          <code>where_not</code> filters products where the supplied fields are
+          false. The two parameters can be used together. Multiple fields can be
+          specified by joining them with a comma: <code>where=field1,field2</code>.
+          The fields below may be specified:
+        </p>
+        <p>
+          <code><%= query.filterable_fields.join(', ') %></code>
+        </p>
+      </dd>
+    <% end %>
+    <% if query.sortable_fields.any? %>
+      <dt>
+        <code>order</code>
+      </dt>
+      <dd>
+        <p>
+          Orders the results by the specified fields in ascending
+          (<code>asc</code>) or descending (<code>desc</code>) order. Multiple
+          fields can be specified by joining them with a comma:
+          <code>order=field1.desc,field2.asc</code>. The fields below
+          may be specified:
+        </p>
+        <p>
+          <code><%= query.sortable_fields.join(', ') %></code>
+        </p>
+      </dd>
+    <% end %>
+    <dt>
+      <code>limit</code>
+    </dt>
+    <dd>
+      <p>
+        Only used for CSV and TSV responses, specifies the number of rows to
+        return. The default value is <b><%= query.limit %></b>, and the maximum
+        value is <b><%= query.max_limit %></b>.
+      </p>
+    </dd>
+    <dt>
+      <code>page</code>
+    </dt>
+    <dd>
+      <p>
+        The page number to return. Consult the API
+        <a href="/docs/conventions">conventions</a> documentation for more
+        information about pagination.
+      </p>
+    </dd>
+    <dt>
+      <code>per_page</code>
+    </dt>
+    <dd>
+      <p>
+        The number of objects to include per page. The default value is
+        <b><%= query.per_page %></b>, and the maximum value is
+        <b><%= query.max_per_page %></b>.
+      </p>
+    </dd>
+  <% end %>
+  <% if @document[:params].include?(:q) %>
+    <dt>
+      <code>q</code>
+    </dt>
+    <dd>
+      <p>
+        Full text search query, should be URI encoded.
+      </p>
+    </dd>
+  <% end %>
+  <% if @document[:params].include?(:geo) %>
+    <dt>
+      <code>geo</code>
+    </dt>
+    <dd>
+      <p>
+        <em>NOTE: Can not be used when <code>lat</code> and <code>lon</code>
+        parameters are specified.</em> A URI encoded query (address,
+        intersection, landmark, postal code) that is to be translated into a
+        coordinate. Subject to rate-limiting; because of this it is recommended
+        that your application performs geocoding itself and uses the
+        <code>lat</code> and <code>lon</code> parameters for spatial searching
+        instead.
+      </p>
+    </dd>
+    <dt>
+      <code>lat</code>
+      and
+      <code>lon</code>
+    </dt>
+    <dd>
+      <p>
+        <em>NOTE: Can not be used when <code>geo</code> parameter is specified.</em>
+        Specifies a latitude (<code>lat</code>) and longitude (<code>lon</code>)
+        coordinate and performs a spatial search on stores indicating estimated
+        distance from the coordinate in meters for each store.
+      </p>
+    </dd>
+  <% end %>
+</dl>
