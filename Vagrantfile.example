@@ -1,33 +1,35 @@
-Vagrant::Config.run do |config|
-  config.vm.box = 'lcboapi'
+Vagrant.configure('2') do |config|
+  # All Vagrant configuration is done here. The most common configuration
+  # options are documented and commented below. For a complete reference,
+  # please see the online documentation at vagrantup.com.
+
+  # Every Vagrant virtual environment requires a box to build off of.
+  config.vm.box = 'precise64_vmware'
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
-  config.vm.box_url = '/Volumes/Data/VMs/lucid32-redis-postgres-nginx.box'
+  config.vm.box_url = 'http://files.vagrantup.com/precise64_vmware.box'
 
-  # Boot with a GUI so you can see the screen. (Default is headless)
-  # config.vm.boot_mode = :gui
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  config.vm.network :private_network, ip: '192.168.150.107'
 
-  # Assign this VM to a host-only network IP, allowing you to access it
-  # via the IP. Host-only networks can talk to the host machine as well as
-  # any other machines on the same network, but cannot be accessed (through this
-  # network interface) by any external networks.
-  config.vm.network :hostonly, '192.168.150.107'
-
-  # Forward the host's SSH agent.
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network :public_network
   config.ssh.forward_agent = true
 
-  # Assign this VM to a bridged network, allowing you to connect directly to a
-  # network using the host's network device. This makes the VM appear as another
-  # physical device on your network.
-  # config.vm.network :bridged
-
-  # Forward a port from the guest to the host, which allows for outside
-  # computers to access the VM, whereas host only networking does not.
-  # config.vm.forward_port 80, 8080
-
   # Share an additional folder to the guest VM. The first argument is
-  # an identifier, the second is the path on the guest to mount the
-  # folder, and the third is the path on the host to the actual folder.
-  config.vm.share_folder 'lcboapi-data', '/vagrant', '.', nfs: true
+  # the path on the host to the actual folder. The second argument is
+  # the path on the guest to mount the folder. And the optional third
+  # argument is a set of non-required options.
+  config.vm.synced_folder '.', '/vagrant', id: 'lcboapi-root', nfs: true
+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  config.vm.provider :vmware_fusion do |vmw|
+    vmw.vmx['memsize'] = '1024'
+  end
 end
