@@ -1,4 +1,4 @@
-source :rubygems
+source 'https://rubygems.org'
 ruby '2.0.0'
 
 gem 'rails',       '3.2.13'
@@ -10,7 +10,7 @@ gem 'amatch'
 gem 'stringex'
 gem 'redis'
 gem 'gcoder'
-gem 'lcbo',        '1.4.0'
+gem 'lcbo',        '1.5.0'
 gem 'redcarpet'
 gem 'exceptional'
 gem 'aws-s3',      require: false
@@ -28,7 +28,6 @@ group :development do
   gem 'pry-rails'
   gem 'capistrano',        require: false
   gem 'capistrano-ext',    require: false
-  gem 'capistrano_colors', require: false
   gem 'rvm-capistrano',    require: false
 end
 
