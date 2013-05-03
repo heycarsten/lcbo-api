@@ -26,9 +26,9 @@ end
 group :development do
   gem 'awesome_print'
   gem 'pry-rails'
-  gem 'capistrano',        require: false
-  gem 'capistrano-ext',    require: false
-  gem 'rvm-capistrano',    require: false
+  gem 'capistrano',     require: false
+  gem 'capistrano-ext', require: false
+  gem 'rvm-capistrano', require: false
 end
 
 group :test, :development do

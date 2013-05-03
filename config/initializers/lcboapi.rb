@@ -8,7 +8,6 @@ module LCBOAPI
 
   def self.flush
     recache
-    $memcache.flush_all
     ENV['RAILS_ASSET_ID'] = cache_stamp
   end
 

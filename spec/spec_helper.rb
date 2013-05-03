@@ -64,13 +64,13 @@ class ActionDispatch::TestResponse
 
   def parse_json
     raise "Not a JSON response: #{content_type}" unless json?
-    Yajl::Parser.parse(body, :symbolize_keys => true)
+    Oj.load(body, symbol_keys: true)
   end
 
   def parse_jsonp
     raise "Not a JSON-P response: #{content_type}" unless jsonp?
     json = body.scan(/\A[a-z0-9_]+\((.+)\)\;\Z/mi)[0][0]
-    Yajl::Parser.parse(json, :symbolize_keys => true)
+    Oj.load(json, symbol_keys: true)
   end
 end
 

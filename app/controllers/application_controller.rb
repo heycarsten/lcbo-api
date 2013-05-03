@@ -130,10 +130,10 @@ class ApplicationController < ActionController::Base
   end
 
   def encode_json(data, callback = nil)
-    json = Yajl::Encoder.encode({
+    json = Oj.dump({
       status: response.status,
       message: nil
-    }.merge(data))
+    }.merge(data), mode: :compat)
     callback ? "#{callback}(#{json});" : json
   end
 

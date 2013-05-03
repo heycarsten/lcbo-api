@@ -26,9 +26,6 @@ module LCBOAPI
       g.stylesheets false
     end
 
-    # Cache dat thang
-    config.cache_store = :dalli_store
-
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += %W[#{config.root}/lib]
 
@@ -57,13 +54,6 @@ module LCBOAPI
       lcboapi.js
       lcboapi-admin.css
     ]
-
-    # Configure rack-cache to be great
-    config.action_dispatch.rack_cache = {
-      metastore:    Dalli::Client.new,
-      entitystore:  Dalli::Client.new,
-      allow_reload: false
-    }
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

@@ -122,16 +122,16 @@ module Boticus
     def log(level, msg, payload = {})
       case level
       when :warn
-        print "[warning]".bold.yellow
-        print " #{msg}\n".yellow
+        print "\e[33m\e[1m[warning]\e[0m\e[0m"
+        print "\e[33m #{msg}\n\e[0m"
       when :error
-        print "[error]".bold.red
-        print " #{msg}\n".red
+        print "\e[31m\e[1m[error]\e[0m\e[0m"
+        print "\e[31m #{msg}\n\e[0m"
       when :dot
         print '.'
         STDOUT.flush
       else
-        print "[#{level}]".bold
+        print "\e[1m[#{level}]\e[0m"
         print " #{msg}\n"
       end
     end

@@ -1,5 +1,7 @@
 class Exporter
 
+  TABLES = %w[ stores products inventories ]
+
   def initialize(key)
     AWS::S3::Base.establish_connection!(
       access_key_id:     LCBOAPI[:s3][:access_key],
@@ -29,11 +31,8 @@ class Exporter
   end
 
   def make_archive
-    Zippy.create(@zip) do |zip|
-      %w[ stores products inventories ].each do |table|
-        zip["#{table}.csv"] = File.open(csv_file(table))
-      end
-    end
+    files = TABLES.map { |t| csv_file(t) }.join(' ')
+    `zip -j #{@zip} #{files}`
   end
 
   def upload_archive
