@@ -1,4 +1,4 @@
-bind 'unix:///sites/lcboapi.com/shared/sockets/lcboapi.sock'
+bind 'unix:///sites/lcboapi.com/shared/sockets/puma.sock'
 environment 'production'
 
 threads 8,32
