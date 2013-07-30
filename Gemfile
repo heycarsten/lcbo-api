@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 ruby '2.0.0'
 
-gem 'rails',       '3.2.13'
+gem 'rails',       '3.2.14'
 gem 'oj'
 gem 'pg'
 gem 'sequel'
@@ -24,6 +24,7 @@ group :assets do
 end
 
 group :development do
+  gem 'quiet_assets'
   gem 'awesome_print'
   gem 'pry-rails'
   gem 'capistrano',     require: false

@@ -25,13 +25,15 @@ module Sequel
             AS bigint)
           }
         end
+
+        Plugins.def_dataset_methods(self, :distance_from)
       end
 
       module DatasetMethods
         def distance_from(latdeg, lngdeg)
           sql = model.distance_sql(latdeg, lngdeg)
-          select_append(sql.lit => :distance_in_meters).
-            order(:distance_in_meters.asc)
+          select_append(Sequel.lit(sql).as(:distance_in_meters)).
+            order(Sequel.asc(:distance_in_meters))
         end
       end
 

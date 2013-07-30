@@ -82,9 +82,9 @@ module QueryHelper
       end
       case ord
       when 'asc'
-        :"#{table}__#{field}".asc(nulls: :last)
+        Sequel.asc(:"#{table}__#{field}", nulls: :last)
       when 'desc', nil
-        :"#{table}__#{field}".desc(nulls: :last)
+        Sequel.desc(:"#{table}__#{field}", nulls: :last)
       end
     end
 

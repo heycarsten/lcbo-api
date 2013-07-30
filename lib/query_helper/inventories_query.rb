@@ -75,17 +75,17 @@ module QueryHelper
     def dataset
       case
       when product_id && store_id
-        db.filter(
+        db.where(
           product_id: product_id,
           store_id:   store_id)
       when product_id
-        db.filter(product_id: product_id)
+        db.where(product_id: product_id)
       when store_id
-        db.filter(store_id: store_id)
+        db.where(store_id: store_id)
       else
         db
       end.
-      filter(filter_hash).
+      where(filter_hash).
       order(*order)
     end
 

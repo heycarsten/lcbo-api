@@ -48,7 +48,7 @@ module QueryHelper
     end
 
     def dataset
-      db.filter(state: 'finished').order(*order)
+      db.where(state: 'finished').order(*order)
     end
 
     def as_json

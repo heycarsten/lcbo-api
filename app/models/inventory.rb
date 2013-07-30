@@ -15,7 +15,7 @@ class Inventory < Sequel::Model
     raise ArgumentError, 'attrs must include :store_id'   unless sid
     attrs[:updated_at] = Time.now.utc
     attrs[:is_dead] = false
-    if 0 == dataset.filter(product_id: pid, store_id: sid).update(attrs)
+    if 0 == dataset.where(product_id: pid, store_id: sid).update(attrs)
       attrs[:created_at] = attrs[:updated_at]
       attrs[:product_id] = pid
       attrs[:store_id]   = sid

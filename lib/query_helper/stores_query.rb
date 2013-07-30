@@ -138,7 +138,7 @@ module QueryHelper
 
     def _ordered_dataset
       if is_spatial?
-        _filtered_dataset.order(:distance_in_meters.asc)
+        _filtered_dataset.order(Sequel.asc(:distance_in_meters))
       else
         _filtered_dataset.order(*order)
       end

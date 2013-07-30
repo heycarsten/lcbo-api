@@ -63,7 +63,7 @@ Fabricator(:product) do
   serving_suggestion                  'Serve chilled'
   created_at                          Time.at(1293645823)
   updated_at                          Time.at(1293645823)
-  after_build { |product| product.tags = product.name.split.map(&:downcase) }
+  after_build { |product| product.tags = product.name.split.map(&:downcase).to_s }
   after_create { |m| m.save(raise_on_failure: true) }
 end
 
@@ -109,7 +109,7 @@ Fabricator(:store) do
   updated_at                      Time.at(1293645823)
 
   after_build do |store|
-    store.tags = store.name.split.map(&:downcase)
+    store.tags = store.name.split.map(&:downcase).to_s
     store.set_latlonrad
   end
 

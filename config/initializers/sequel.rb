@@ -1,4 +1,3 @@
-require 'sequel/extensions/pagination'
 require 'sequel/extensions/texticle'
 
 DB = Sequel.connect(
@@ -8,6 +7,8 @@ DB = Sequel.connect(
     raise "Unable to get connection information from config/database.yml"
   end
 )
+
+DB.extension(:pagination)
 
 Sequel::Model.plugin(:active_model)
 

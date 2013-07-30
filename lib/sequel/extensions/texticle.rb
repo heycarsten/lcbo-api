@@ -6,11 +6,7 @@ module Sequel
       query = rawquery.to_s.gsub(/[^\w'\-]+/, ' ').gsub(/\s+/, ' ').strip
       return self if '' == query.to_s
       lang = (opts[:lang] || 'simple')
-      cols = Array(colnames).
-        map { |c|
-          SQL::Function.new(:COALESCE, c, '')
-        }.
-        sql_string_join(' ')
+      cols = Sequel.join(Array(colnames).map { |c| SQL::Function.new(:COALESCE, c, '') }, ' ')
       filter(%{
         to_tsvector(#{literal lang}, #{literal cols})
         @@

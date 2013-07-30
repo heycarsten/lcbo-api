@@ -20,12 +20,12 @@ class Store < Sequel::Model
     (store = self[id]) ? store.update(attrs) : create(attrs)
   end
 
-  def self.distance_from_with_product(lat, lon, product_id)
+  def_dataset_method :distance_from_with_product do |lat, lon, product_id|
     distance_from(lat, lon).
       join(:inventories,
         store_id: :id,
         product_id: product_id).
-      filter('inventories.quantity > 0')
+      where('inventories.quantity > 0')
   end
 
   def set_latlonrad

@@ -20,7 +20,7 @@ class Product < Sequel::Model
     attrs[:updated_at] = Time.now.utc
     attrs[:tags]       = attrs[:tags].any? ? attrs[:tags].join(' ') : nil
     attrs[:is_dead]    = false
-    if 0 == dataset.filter(id: attrs[:id]).update(attrs)
+    if 0 == dataset.where(id: attrs[:id]).update(attrs)
       attrs[:created_at] = attrs[:updated_at]
       dataset.insert(attrs)
     end

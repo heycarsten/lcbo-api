@@ -40,11 +40,11 @@ class Crawl < Sequel::Model
   end
 
   def self.latest
-    order(:id.desc).first
+    order(Sequel.desc(:id)).first
   end
 
   def self.is(*states)
-    filter(state: states.map(&:to_s))
+    where(state: states.map(&:to_s))
   end
 
   def self.any_active?
@@ -59,9 +59,9 @@ class Crawl < Sequel::Model
   def previous
     @previous ||= begin
       Crawl.
-        order(:id.desc).
-        filter(~{ id: id }).
-        filter(state: 'finished').
+        order(Sequel.desc(:id)).
+        where(~{ id: id }).
+        where(state: 'finished').
         first
     end
   end
