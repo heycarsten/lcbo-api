@@ -1,5 +1,5 @@
 bind 'unix:///var/run/lcboapi.sock'
-pidfile '/sites/lcboapi.com/shared/tmp/puma'
+pidfile '/sites/lcboapi.com/shared/tmp/puma/pid'
 state_path '/sites/lcboapi.com/shared/tmp/puma/state'
 environment 'production'
 
