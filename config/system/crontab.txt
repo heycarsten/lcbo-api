@@ -1,0 +1,1 @@
+5 5 * * * /bin/bash -l -c 'cd /sites/lcboapi.com/current && RAILS_ENV=production bundle exec rake cron >> /sites/lcboapi.com/shared/log/cron.log 2>&1'
