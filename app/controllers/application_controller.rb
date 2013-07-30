@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
   def set_cache_control
     response.etag                   = LCBOAPI.cache_stamp
     response.cache_control[:public] = true
-    response.cache_control[:extras] = %W[ s-maxage=#{1.day} ]
+    response.cache_control[:extras] = %W[ s-maxage=#{30.minutes} ]
   end
 
   def api_request?
