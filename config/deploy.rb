@@ -13,7 +13,7 @@ set :user,            'deploy'
 set :rails_env,       'production'
 set :bundle_flags,    '--deployment --quiet --binstubs'
 
-set :branch,      (ENV['branch'] || 'deployed')
+set :branch,      (ENV['BRANCH'] || 'deployed')
 set :domain,      'lcboapi.com'
 set :environment, 'production'
 set :application, 'lcboapi'

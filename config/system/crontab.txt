@@ -1,1 +1,2 @@
-5 5 * * * /bin/bash -l -c 'cd /sites/lcboapi.com/current && RAILS_ENV=production bundle exec rake cron >> /sites/lcboapi.com/shared/log/cron.log 2>&1'
+# Run the Crawler at 7:15AM UTC every day
+15 7 * * * /bin/bash -l -c 'cd /sites/lcboapi.com/current && RAILS_ENV=production bundle exec rake cron >> /sites/lcboapi.com/shared/log/cron.log 2>&1'

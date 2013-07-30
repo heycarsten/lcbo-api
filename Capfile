@@ -1,4 +1,3 @@
-require 'capistrano_colors'
 require 'rvm/capistrano'
 require 'bundler/capistrano'
 
