@@ -1,6 +1,4 @@
-bind 'unix:///var/run/lcboapi.sock'
-pidfile '/sites/lcboapi.com/shared/tmp/puma/pid'
-state_path '/sites/lcboapi.com/shared/tmp/puma/state'
+bind 'unix:///sites/lcboapi.com/shared/sockets/lcboapi.sock'
 environment 'production'
 
 threads 8,32

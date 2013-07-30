@@ -42,7 +42,7 @@ namespace :config do
   desc 'Update symlinks on app server.'
   task :symlink do
     # note: capistrano automatically symlinks shared/log to current/log
-    run "ln -nfs #{shared_path}/tmp #{release_path}/tmp"
+    run "ln -nfs #{shared_path}/tmp #{release_path}/"
     run "ln -nfs #{shared_path}/config/*.yml #{release_path}/config/"
   end
 end
