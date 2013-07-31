@@ -21,7 +21,7 @@ set :deploy_to,   '/sites/lcboapi.com'
 
 server '66.228.45.234', :web, :app, :db, primary: true
 
-after 'deploy:update_code', 'config:symlink'
+before 'deploy:assets:precompile', 'config:symlink'
 
 namespace :deploy do
   task :start do
