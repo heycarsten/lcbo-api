@@ -13,7 +13,7 @@ set :user,            'deploy'
 set :rails_env,       'production'
 set :bundle_flags,    '--deployment --quiet --binstubs'
 
-set :branch,      (ENV['BRANCH'] || 'deployed')
+set :branch,      (ENV['branch'] || 'deployed')
 set :domain,      'lcboapi.com'
 set :environment, 'production'
 set :application, 'lcboapi'
@@ -42,7 +42,7 @@ namespace :config do
   desc 'Update symlinks on app server.'
   task :symlink do
     # note: capistrano automatically symlinks shared/log to current/log
-    run "rm -r #{release_path}/tmp"
+    run "rm -rf #{release_path}/tmp"
     run "ln -nfs #{shared_path}/tmp #{release_path}/"
     run "ln -nfs #{shared_path}/config/*.yml #{release_path}/config/"
   end
