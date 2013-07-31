@@ -9,7 +9,7 @@ class Exporter
     @key = key
     @s3  = AWS::S3::S3Object
     @dir = File.join(Dir.tmpdir, 'lcboapi-tmp')
-    `mkdir #{@dir} && chmod 0777 #{@dir}`
+    `mkdir -p #{@dir} && chmod 0777 #{@dir}`
     @zip = File.join(@dir, Time.now.strftime('lcbo-%Y%m%d.zip'))
   end
 
