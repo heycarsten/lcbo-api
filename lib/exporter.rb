@@ -9,8 +9,7 @@ class Exporter
     @key = key
     @s3  = AWS::S3::S3Object
     @dir = File.join(Dir.tmpdir, 'lcboapi-tmp')
-    `mkdir -p #{@dir}`
-    `chmod 0777 #{@dir}`
+    `mkdir -p #{@dir} && chmod 0777 #{@dir}`
     @zip = File.join(@dir, Time.now.strftime('lcbo-%Y%m%d.zip'))
   end
 
@@ -61,11 +60,8 @@ class Exporter
   end
 
   def copy(table)
-    file = File.open(csv_file(table), 'w')
-    DB.copy_table("COPY #{table} (#{cols(table)}) TO STDOUT DELIMITER ',' CSV HEADER") do |line|
-      file.puts(line)
-    end
-    file.close
+    sql = "COPY #{table} (#{cols(table)}) TO STDOUT DELIMITER ',' CSV HEADER"
+    `psql -d #{DB.opts[:database]} -o #{csv_file(table)} -c "#{sql}"`
   end
 
 end
