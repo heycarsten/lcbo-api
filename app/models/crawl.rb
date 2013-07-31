@@ -60,7 +60,7 @@ class Crawl < Sequel::Model
     @previous ||= begin
       Crawl.
         order(Sequel.desc(:id)).
-        where(~{ id: id }).
+        exclude(id: id).
         where(state: 'finished').
         first
     end

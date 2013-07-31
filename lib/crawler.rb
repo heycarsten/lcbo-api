@@ -94,32 +94,33 @@ class Crawler < Boticus::Bot
   desc 'Marking dead products'
   task :mark_dead_products do
     DB[:products].
-      filter(:id => model.removed_product_ids).
-      update(:is_dead => true)
+      where(id: model.removed_product_ids).
+      update(is_dead: true)
   end
 
   desc 'Marking dead stores'
   task :mark_dead_stores do
     DB[:stores].
-      filter(:id => model.removed_store_ids).
-      update(:is_dead => true)
+      where(id: model.removed_store_ids).
+      update(is_dead: true)
   end
 
   desc 'Marking dead inventories'
   task :mark_dead_inventories do
     DB[:inventories].
-      filter(
-        { :product_id => model.removed_product_ids } |
-        { :store_id => model.removed_store_ids }
-      ).
-      update(:is_dead => true)
+      where(
+        Sequel.or(
+          [:product_id, model.removed_product_ids],
+          [:store_id, model.removed_store_ids]
+        )
+      ).update(is_dead: true)
   end
 
   desc 'Marking orphaned inventories'
   task :update_orphaned_inventories do
     DB[:inventories].
-      filter(~{ :crawl_id => model.id }).
-      update(:quantity => 0, :is_dead => true)
+      exclude(crawl_id: model.id).
+      update(quantity: 0, is_dead: true)
   end
 
   desc 'Exporting CSV data'
