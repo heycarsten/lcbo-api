@@ -109,10 +109,10 @@ class Crawler < Boticus::Bot
   task :mark_dead_inventories do
     DB[:inventories].
       where(
-        Sequel.or(
+        Sequel.or([
           [:product_id, model.removed_product_ids],
           [:store_id, model.removed_store_ids]
-        )
+        ])
       ).update(is_dead: true)
   end
 
