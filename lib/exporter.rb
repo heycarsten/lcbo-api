@@ -60,7 +60,11 @@ class Exporter
   end
 
   def copy(table)
-    DB << "COPY #{table} (#{cols(table)}) TO '#{csv_file(table)}' DELIMITER ',' CSV HEADER"
+    File.open(csv_file(table), 'w') do |file|
+      DB.copy_table("COPY #{table} (#{cols(table)}) TO STDOUT DELIMITER ',' CSV HEADER") do |line|
+        file.puts(line)
+      end
+    end
   end
 
 end
