@@ -17,7 +17,7 @@
       <td>
         <%= distance_of_time_in_words(crawl.created_at, crawl.updated_at) %>
       </td>
-      <td title="<%= crawl.total_jobs} %> / <%= crawl.total_finished_jobs %>">
+      <td title="<%= crawl.total_jobs %> / <%= crawl.total_finished_jobs %>">
         <%= '%0.0f%' % (crawl.progress * 100) %>
       </td>
       <td>
