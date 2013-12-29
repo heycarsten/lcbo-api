@@ -1,4 +1,4 @@
-//= require jquery
+//= require ./vendor/jquery
 //= require ./vendor/beautify
 
 var LCBOAPI = new function() {
