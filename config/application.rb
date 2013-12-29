@@ -45,10 +45,7 @@ module LCBOAPI
     config.assets.enabled = true
 
     # Define asset manifests
-    config.assets.precompile -= %w[
-      application.css
-      application.js
-    ]
+    config.assets.precompile -= [/(?:\/|\\|\A)application\.(css|js)$/]
     config.assets.precompile += %w[
       lcboapi.css
       lcboapi.js
