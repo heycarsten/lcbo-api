@@ -55,7 +55,7 @@ describe 'API resource' do
   end
 
   describe 'with invalid callback' do
-    before { get '/datasets.js?callback=window.boom' }
+    before { get '/datasets.js?callback=boom-' }
 
     it_behaves_like 'a JSON 400 error'
 

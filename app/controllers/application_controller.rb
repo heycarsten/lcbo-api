@@ -2,6 +2,8 @@ class ApplicationController < ActionController::Base
 
   layout 'application'
 
+  CALLBACK_NAME_RE = /\A[a-z0-9_]+(\.{0,1}[a-z0-9_]+)*\z/i
+
   rescue_from \
     GCoder::NoResultsError,
     GCoder::OverLimitError,
@@ -68,11 +70,11 @@ class ApplicationController < ActionController::Base
       request.format = :json
     end
 
-    if jsonp? && !params[:callback].match(/\A[a-z0-9_]+\Z/i)
+    if jsonp? && !params[:callback].match(CALLBACK_NAME_RE)
       request.format = :json
       render_error :jsonp_error,
         "JSON-P callback (#{params[:callback]}) is not valid, it can only " \
-        "contain letters, numbers, and underscores."
+        "contain letters, numbers, underscores, and dots."
     end
   end
 
