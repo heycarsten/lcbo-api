@@ -21,4 +21,8 @@ class DatasetsController < ApplicationController
     end
   end
 
+  def latest
+    @q
+  end
+
 end

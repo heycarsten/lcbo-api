@@ -223,7 +223,7 @@ Dataset Endpoints:
   :route: /datasets/:dataset_id
   :formats:
     <<: *all_formats
-    :zip: ZIP archive of all data (performs a redirect to the actual file)
+    :zip: ZIP archive of all data (redirects to actual file)
   :examples:
   - :path: /datasets/1
     :desc: Get a specific dataset
@@ -248,6 +248,16 @@ Dataset Endpoints:
     removed_product_ids: List of product IDs that were removed since the previous update
     removed_store_ids: List of store IDs that were removed since the previous update
     csv_dump: Contains a path to a ZIP archive of CSV files for stores, products, and inventories.
+- :title: Latest Dataset
+  :route: /datasets/latest
+  :formats:
+    <<: *all_formats
+    :zip: ZIP archive of all data (redirects to actual file)
+  :examples:
+  - :path: /datasets/latest
+    :desc: Get the latest dataset
+  :body:
+    Retuns the latest [dataset](/docs/dataset)
 
 Product Endpoints:
 - :title: Products
