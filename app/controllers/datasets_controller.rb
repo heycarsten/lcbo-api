@@ -21,4 +21,8 @@ class DatasetsController < ApplicationController
     end
   end
 
+  def cacheable?
+    params[:action] == 'show' && (params[:id] == 'latest') ? false : true
+  end
+
 end
