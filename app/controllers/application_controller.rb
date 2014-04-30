@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::Base
-
   layout 'application'
 
   CALLBACK_NAME_RE = /\A[a-z0-9_]+(\.{0,1}[a-z0-9_]+)*\z/i
@@ -138,5 +137,4 @@ class ApplicationController < ActionController::Base
     }.merge(data), mode: :compat)
     callback ? "#{callback}(#{json});" : json
   end
-
 end

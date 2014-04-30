@@ -1,5 +1,4 @@
 class InventoriesController < ApplicationController
-
   def index
     @query = query(:inventories)
 
@@ -19,5 +18,4 @@ class InventoriesController < ApplicationController
       format.any(:js, :json) { render_json @query.as_json }
     end
   end
-
 end

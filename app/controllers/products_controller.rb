@@ -1,5 +1,4 @@
 class ProductsController < ApplicationController
-
   def index
     @query = query(:products)
 
@@ -19,5 +18,4 @@ class ProductsController < ApplicationController
       format.any(:js, :json) { render_json @query.as_json }
     end
   end
-
 end

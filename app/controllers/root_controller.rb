@@ -1,5 +1,4 @@
 class RootController < ApplicationController
-
   def deprecated
     msg = case params[:name]
     when :dataset_by_date
@@ -48,5 +47,4 @@ class RootController < ApplicationController
     end
     @documents = @sections.values.flatten
   end
-
 end

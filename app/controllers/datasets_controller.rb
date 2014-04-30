@@ -1,5 +1,4 @@
 class DatasetsController < ApplicationController
-
   def index
     @query = query(:datasets)
 
@@ -24,5 +23,4 @@ class DatasetsController < ApplicationController
   def cacheable?
     params[:action] == 'show' && (params[:id] == 'latest') ? false : true
   end
-
 end

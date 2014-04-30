@@ -1,5 +1,4 @@
 module ApplicationHelper
-
   MARKDOWN     = Redcarpet::Markdown.new(Redcarpet::Render::SmartyHTML)
   NICE_FORMATS = {
     date:        '%b %e, %Y',
@@ -43,5 +42,4 @@ _gaq.push(['_trackPageview']);
 </script>
 SCRIPT
   end
-
 end
