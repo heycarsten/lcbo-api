@@ -1,5 +1,6 @@
-class Crawler < Boticus::Bot
+require 'boticus'
 
+class Crawler < Boticus::Bot
   class UnknownJobTypeError < StandardError; end
 
   class ProductListsGetter
@@ -178,5 +179,4 @@ class Crawler < Boticus::Bot
   rescue LCBO::CrawlKit::NotFoundError, LCBO::CrawlKit::RedirectedError
     log :warn, "Skipping product ##{id}, it does not exist"
   end
-
 end

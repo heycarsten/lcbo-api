@@ -1,1 +1,1 @@
-ENV['LCBO_USER_AGENT'] = LCBOAPI[:lcbo][:user_agent]
+ENV['LCBO_USER_AGENT'] = Rails.application.secrets.lcbo_user_agent

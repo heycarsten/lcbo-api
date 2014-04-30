@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
-ruby '2.0.0'
 
-gem 'rails',       '3.2.17'
+gem 'rails',       '4.1.0'
 gem 'oj'
 gem 'pg'
 gem 'sequel'
@@ -13,31 +12,28 @@ gem 'gcoder'
 gem 'lcbo',        '1.5.0'
 gem 'redcarpet'
 gem 'exceptional'
-gem 'aws-s3',      require: false
+gem 'aws-s3',      require: false, github: 'fnando/aws-s3', ref: 'fef95c2d'
 gem 'puma'
-
-group :assets do
-  gem 'jquery-rails'
-  gem 'sass-rails'
-  gem 'therubyracer', require: 'v8'
-  gem 'uglifier'
-end
+gem 'sass-rails',   '~> 4.0.3'
+gem 'therubyracer', platforms: :ruby
+gem 'uglifier'
 
 group :development do
+  gem 'sshkit',             '1.3.0'
+  gem 'net-scp',            '1.1.2'
+  gem 'capistrano',         '~> 3.1.0', require: false
+  gem 'capistrano-rails',   require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano-rvm',     require: false
+  gem 'propro',             require: false
   gem 'quiet_assets'
   gem 'awesome_print'
   gem 'pry-rails'
-  gem 'capistrano',     require: false
-  gem 'capistrano-ext', require: false
-  gem 'rvm-capistrano', require: false
 end
 
 group :test, :development do
   gem 'rspec-rails'
-  gem 'capybara',    require: false
-  gem 'fabrication', require: false
-end
-
-group :test do
-  gem 'database_cleaner'
+  gem 'capybara',         require: false
+  gem 'fabrication',      require: false
+  gem 'database_cleaner', github: 'bmabey/database_cleaner'
 end

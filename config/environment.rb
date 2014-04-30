@@ -1,8 +1,5 @@
-# Load the rails application
+# Load the Rails application.
 require File.expand_path('../application', __FILE__)
 
-# Initialize the rails application
-LCBOAPI::Application.initialize!
-
-# Flush caches
-LCBOAPI.flush
+# Initialize the Rails application.
+Rails.application.initialize!

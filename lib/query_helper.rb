@@ -1,5 +1,15 @@
-module QueryHelper
+require 'query_helper/finder'
+require 'query_helper/query'
+require 'query_helper/dataset_finder'
+require 'query_helper/datasets_query'
+require 'query_helper/inventories_query'
+require 'query_helper/inventory_finder'
+require 'query_helper/product_finder'
+require 'query_helper/products_query'
+require 'query_helper/store_finder'
+require 'query_helper/stores_query'
 
+module QueryHelper
   MIN_PER_PAGE = 5
   MAX_PER_PAGE = 100
 
@@ -33,5 +43,4 @@ module QueryHelper
       dataset:             DatasetFinder,
     }[type].new(request, params)
   end
-
 end

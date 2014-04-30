@@ -1,4 +1,4 @@
-require 'sequel/extensions/texticle'
+require 'sequel_ext'
 
 DB = Sequel.connect(
   if (config = YAML.load_file((Rails.root + 'config' + 'database.yml').to_s))
@@ -11,16 +11,3 @@ DB = Sequel.connect(
 DB.extension(:pagination)
 
 Sequel::Model.plugin(:active_model)
-
-Fuzz.keyspace = Rails.env
-Fuzz.add_dictionary(:products,
-  source: -> {
-    DB[:products].
-      select(:name).
-      filter(is_dead: false).
-      all.
-      map { |p| p[:name] }
-  },
-  stop_words:    %w[ woods ],
-  min_word_size: 5
-)

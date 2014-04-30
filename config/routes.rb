@@ -1,5 +1,4 @@
-LCBOAPI::Application.routes.draw do
-
+Rails.application.routes.draw do
   LATLON_RE = /\-{0,1}[0-9]+\.[0-9]+/
 
   namespace :admin do
@@ -44,5 +43,4 @@ LCBOAPI::Application.routes.draw do
     get '/products/:id/history'                          => 'root#deprecated', name: :product_history
     get '/stores/:store_id/products/:product_id/history' => 'root#deprecated', name: :inventory_history
   end
-
 end

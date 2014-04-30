@@ -1,9 +1,9 @@
 ENV['RAILS_ENV'] = 'test'
 require File.expand_path('../../config/environment', __FILE__)
-require 'database_cleaner'
 require 'rspec/rails'
+require 'database_cleaner'
 require 'fabrication'
-# require 'rspec/autorun'
+require 'rspec/autorun'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -78,22 +78,7 @@ RSpec.configure do |config|
   config.mock_with :rspec
   config.infer_base_class_for_anonymous_controllers = true
 
-  # config.include(Devise::TestHelpers, type: :controller)
   config.include(DatabaseHelpers)
-
-  # config.before(:suite) do
-  #   DatabaseCleaner.logger   = Rails.logger
-  #   DatabaseCleaner.strategy = :transaction
-  #   DatabaseCleaner.clean_with :truncation
-  # end
-
-  # config.before(:each) do
-  #   DatabaseCleaner.start
-  # end
-
-  # config.after(:each) do
-  #   DatabaseCleaner.clean
-  # end
 end
 
 shared_examples_for 'a resource' do |options|

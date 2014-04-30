@@ -2,7 +2,6 @@ require 'amatch'
 require 'stringex'
 
 module Fuzz
-
   def self.redis=(rdb)
     @redis = rdb
   end
@@ -37,9 +36,7 @@ module Fuzz
     query ? dict.suggest(query) : dict
   end
 
-
   class Dictionary
-
     def initialize(name, opts = {})
       @name          = name.to_s
       @source_proc   = (opts[:source]        || -> { [] })
@@ -108,7 +105,5 @@ module Fuzz
         "fuzzdictionary:#{@name}"
       end
     end
-
   end
-
 end

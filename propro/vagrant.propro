@@ -1,0 +1,32 @@
+source :vagrant
+
+set :system_shmall_percent, 0.65
+set :system_shmmax_percent, 0.35
+provision 'vagrant/system'
+
+set :pg_version, 9.3
+provision 'vagrant/pg'
+
+set :redis_version, '2.8.9'
+provision 'vagrant/redis'
+
+set :vagrant_rvm_ruby_version, '2.1.1'
+provision 'vagrant/rvm'
+
+set :node_version, '0.10.26'
+provision 'vagrant/node'
+
+set :nginx_version, '1.6.0'
+set :nginx_worker_connections, 100
+provision 'vagrant/nginx'
+
+set :extra_packages, %w[
+  man
+  zip
+  git-core
+  libxslt-dev
+  libxml2-dev
+  imagemagick
+  libmagickwand-dev
+]
+provision 'extras'

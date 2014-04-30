@@ -1,11 +1,10 @@
 class Exporter
-
   TABLES = %w[ stores products inventories ]
 
   def initialize(key)
     AWS::S3::Base.establish_connection!(
-      access_key_id:     LCBOAPI[:s3][:access_key],
-      secret_access_key: LCBOAPI[:s3][:secret_key])
+      access_key_id:     Rails.application.secrets.s3_access_key,
+      secret_access_key: Rails.application.secrets.s3_secret_key)
     @key = key
     @s3  = AWS::S3::S3Object
     @dir = File.join(Dir.tmpdir, 'lcboapi-tmp')
@@ -36,7 +35,7 @@ class Exporter
   end
 
   def upload_archive
-    @s3.store("datasets/#{@key}.zip", open(@zip), LCBOAPI[:s3][:bucket],
+    @s3.store("datasets/#{@key}.zip", open(@zip), Rails.application.secrets.s3_bucket,
       content_type: 'application/zip',
       access: :public_read
     )
@@ -63,5 +62,4 @@ class Exporter
     sql = "COPY #{table} (#{cols(table)}) TO STDOUT DELIMITER ',' CSV HEADER"
     `psql -d #{DB.opts[:database]} -o #{csv_file(table)} -c "#{sql}"`
   end
-
 end

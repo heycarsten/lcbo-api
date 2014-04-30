@@ -1,5 +1,4 @@
 class AdminController < ApplicationController
-
   before_filter :authenticate
 
   layout 'admin'
@@ -12,9 +11,8 @@ class AdminController < ApplicationController
 
   def authenticate
     authenticate_or_request_with_http_basic do |username, password|
-      LCBOAPI[:admin][:username] == username &&
-      LCBOAPI[:admin][:password] == password
+      Rails.application.secrets.admin_username == username &&
+      Rails.application.secrets.admin_password == password
     end
   end
-
 end
