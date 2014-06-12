@@ -16,6 +16,12 @@ module LCBOAPI
     require 'boticus'
     require 'crawler'
 
+    config.generators do |g|
+      g.assets false
+      g.helper false
+      g.view_specs false
+    end
+
     # Don't include default application.(css|js) manifest matcher
     config.assets.precompile -= [/(?:\/|\\|\A)application\.(css|js)$/]
     config.assets.precompile += %w[

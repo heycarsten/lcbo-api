@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails',       '4.1.0'
+gem 'rails',       '4.1.1'
 gem 'oj'
 gem 'pg'
 gem 'sequel'
@@ -19,9 +19,7 @@ gem 'therubyracer', platforms: :ruby
 gem 'uglifier'
 
 group :development do
-  gem 'sshkit',             '1.3.0'
-  gem 'net-scp',            '1.1.2'
-  gem 'capistrano',         '~> 3.1.0', require: false
+  gem 'capistrano',         '~> 3.2.1', require: false
   gem 'capistrano-rails',   require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rvm',     require: false
@@ -32,8 +30,8 @@ group :development do
 end
 
 group :test, :development do
+  gem 'rspec',            '~> 2.99'
   gem 'rspec-rails'
-  gem 'capybara',         require: false
   gem 'fabrication',      require: false
   gem 'database_cleaner', github: 'bmabey/database_cleaner'
 end

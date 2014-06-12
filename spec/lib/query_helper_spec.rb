@@ -89,21 +89,21 @@ describe BaseQuery do
     it 'allows ordering by whitelisted value' do
       o = mkquery(nil, :order => 'height.desc').order
       o[0].expression.should == :base__height
-      o[0].descending.should be_true
+      o[0].descending.should == true
     end
 
     it 'is not case sensitive' do
       o = mkquery(nil, :order => 'Height.Desc').order
       o[0].expression.should == :base__height
-      o[0].descending.should be_true
+      o[0].descending.should == true
     end
 
     it 'allows for a list of values' do
       o = mkquery(nil, :order => 'height.desc,weight.asc').order
       o[0].expression.should == :base__height
-      o[0].descending.should be_true
+      o[0].descending.should == true
       o[1].expression.should == :base__weight
-      o[1].descending.should be_false
+      o[1].descending.should == false
     end
 
     it 'rejects incorrect values' do
@@ -206,21 +206,21 @@ describe QueryHelper::StoresQuery do
   end
 
   it 'should create @product' do
-    @product.exists?.should be_true
+    @product.exists?.should == true
   end
 
   it 'should create @store_1' do
-    @store_1.exists?.should be_true
+    @store_1.exists?.should == true
   end
 
   it 'should create @inv_1' do
-    @inv_1.exists?.should be_true
+    @inv_1.exists?.should == true
   end
 
   it 'should have @product on hand at @store_1' do
     DB[:inventories].
       filter(:store_id => @store_1.id, :product_id => @product.id).
-      first.should_not be_nil
+      first.should_not == nil
   end
 
   ['-91.9191', '91.1111', 'x+x'].each do |lat|
@@ -293,7 +293,7 @@ describe QueryHelper::StoresQuery do
       @q.latitude.should == @lat
       @q.longitude.should == @lon
       @q.product_id.should == @product.id
-      @q.is_spatial?.should be_true
+      @q.is_spatial?.should == true
     end
 
     it 'should construct a dataset' do

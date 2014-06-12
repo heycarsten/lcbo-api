@@ -2,6 +2,6 @@ require 'spec_helper'
 
 describe Store do
   it 'should be tested' do
-    true.should be_true
+    true.should == true
   end
 end

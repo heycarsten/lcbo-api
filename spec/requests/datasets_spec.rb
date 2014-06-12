@@ -1,22 +1,29 @@
 require 'spec_helper'
 
-describe 'Datasets resources' do
+describe 'Datasets API' do
   before :all do
     clean_database
 
-    @crawl1 = Fabricate(:crawl)
-    @crawl2 = Fabricate(:crawl)
-    @crawl3 = Fabricate(:crawl)
+    @crawls = [
+      Fabricate(:crawl),
+      Fabricate(:crawl),
+      Fabricate(:crawl)
+    ]
   end
 
-  describe '/datasets' do
-    subject { '/datasets' }
-    it_behaves_like 'a resource', :size => 3
+  it 'responds with many datasets' do
+    get '/datasets'
+
+    expect(response).to be_success
+    expect(response).to be_json
+    expect(response.payload[:result].size).to eq 3
   end
 
-  describe '/datasets/:id' do
-    subject { "/datasets/#{@crawl1.id}" }
-    it_behaves_like 'a resource'
-  end
+  it 'responds with one dataset' do
+    get "/datasets/#{@crawls[0].id}"
 
+    expect(response).to be_success
+    expect(response).to be_json
+    expect(response.payload[:result][:id]).to eq @crawls[0].id
+  end
 end

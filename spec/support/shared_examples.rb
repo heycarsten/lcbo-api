@@ -1,86 +1,3 @@
-ENV['RAILS_ENV'] = 'test'
-require File.expand_path('../../config/environment', __FILE__)
-require 'rspec/rails'
-require 'database_cleaner'
-require 'fabrication'
-require 'rspec/autorun'
-
-# Requires supporting ruby files with custom matchers and macros, etc,
-# in spec/support/ and its subdirectories.
-Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
-
-module DatabaseHelpers
-  def clean_database
-    DB.tables.
-      reject { |table| table == :schema_info }.
-      each   { |table| DB[table].delete }
-  end
-end
-
-class ActionDispatch::TestResponse
-  def jsonp?
-    'text/javascript' == content_type
-  end
-
-  def json?
-    'application/json' == content_type
-  end
-
-  def csv?
-    'text/csv' == content_type
-  end
-
-  def tsv?
-    'text/tsv' == content_type
-  end
-
-  def tsv
-    @tsv ||= parse_tsv
-  end
-
-  def csv
-    @csv ||= parse_csv
-  end
-
-  def jsonp
-    @jsonp ||= parse_jsonp
-  end
-
-  def json
-    @json ||= parse_json
-  end
-
-  private
-
-  def parse_csv
-    raise "Not a CSV response: #{content_type}" unless csv?
-    CSV.parse(body)
-  end
-
-  def parse_tsv
-    raise "Not a TSV response: #{content_type}" unless tsv?
-    CSV.parse(body, :col_sep => "\t")
-  end
-
-  def parse_json
-    raise "Not a JSON response: #{content_type}" unless json?
-    Oj.load(body, symbol_keys: true)
-  end
-
-  def parse_jsonp
-    raise "Not a JSON-P response: #{content_type}" unless jsonp?
-    json = body.scan(/\A[a-z0-9_]+\((.+)\)\;\Z/mi)[0][0]
-    Oj.load(json, symbol_keys: true)
-  end
-end
-
-RSpec.configure do |config|
-  config.mock_with :rspec
-  config.infer_base_class_for_anonymous_controllers = true
-
-  config.include(DatabaseHelpers)
-end
-
 shared_examples_for 'a resource' do |options|
   options ||= {}
 
@@ -182,7 +99,7 @@ shared_examples_for 'a resource' do |options|
   end
 
   describe 'as JSON-P (with js extension)' do
-    before { get formatted_uri(:js, :callback => 'test') }
+    before { get formatted_uri(:js, callback: 'test') }
 
     it 'is JSON-P' do
       response.should be_jsonp
@@ -201,7 +118,7 @@ shared_examples_for 'a resource' do |options|
   end
 
   describe 'as JSON-P (implicit from presence of callback param)' do
-    before { get formatted_uri(nil, :callback => 'test') }
+    before { get formatted_uri(nil, callback: 'test') }
 
     it 'is JSON-P' do
       response.should be_jsonp

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe 'API resource' do
-
   describe 'with JS format and no callback' do
     before { get '/datasets.js' }
 
@@ -97,5 +96,4 @@ describe 'API resource' do
 
     it_behaves_like 'a JSON 404 error'
   end
-
 end

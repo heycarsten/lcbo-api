@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe 'Product resources' do
+describe 'Products API' do
   before :all do
     clean_database
 
-    @product1 = Fabricate(:product, :id => '1')
-    @product2 = Fabricate(:product, :id => '2', :name => 'Fitzgibbons')
-    @product3 = Fabricate(:product, :id => '3', :name => 'B\'ock hop bob-omb')
-    @store1   = Fabricate(:store, :id => '1')
-    @inv1     = Fabricate(:inventory, :store => @store1, :product => @product1)
+    @product1 = Fabricate(:product, id: '1')
+    @product2 = Fabricate(:product, id: '2', name: 'Fitzgibbons')
+    @product3 = Fabricate(:product, id: '3', name: 'B\'ock hop bob-omb')
+    @store1   = Fabricate(:store, id: '1')
+    @inv1     = Fabricate(:inventory, store: @store1, product: @product1)
 
     Fuzz.recache
   end
