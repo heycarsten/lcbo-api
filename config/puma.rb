@@ -1,17 +1,7 @@
-env = :production
-
-conf = {
-  production: {
-    domain: 'lcboapi.com',
-    workers: 4,
-    threads: [8, 32]
-  }
-}[env]
-
-environment env.to_s
-bind        "unix:///sites/#{conf[:domain]}/shared/sockets/puma.sock"
-threads     *conf[:threads]
-workers     conf[:workers]
+environment 'production'
+bind 'unix:///sites/lcboapi.com/shared/sockets/puma.sock'
+threads 8, 32
+workers 4
 
 preload_app!
 
