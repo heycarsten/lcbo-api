@@ -1,14 +1,10 @@
+env = :production
+
 conf = {
   production: {
     domain: 'lcboapi.com',
     workers: 4,
     threads: [8, 32]
-  },
-
-  staging: {
-    domain: 'staging.lcboapi.com',
-    workers: 1,
-    threads: [1, 10]
   }
 }[env]
 
@@ -21,5 +17,5 @@ preload_app!
 
 on_worker_boot do
   DB.disconnect
-  RDB.client.connect
+  RDB.client.reconnect
 end

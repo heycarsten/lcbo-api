@@ -1,6 +1,7 @@
 .bundle
 config/database.yml
 config/lcboapi.yml
+config/secrets.yml
 db/*.rdb
 log/*.log
 tmp/**/*
