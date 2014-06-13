@@ -23,21 +23,21 @@ namespace :deploy do
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
-      sudo "service puma restart app=#{current_path}"
+      sudo "restart puma app=#{current_path}"
     end
   end
 
   desc 'Stop application'
   task :stop do
     on roles(:app), in: :sequence, wait: 1 do
-      sudo "service puma stop app=#{current_path}"
+      sudo "stop puma app=#{current_path}"
     end
   end
 
   desc 'Start application'
   task :start do
     on roles(:app), in: :sequence, wait: 1 do
-      sudo "service puma start app=#{current_path}"
+      sudo "start puma app=#{current_path}"
     end
   end
 
