@@ -17,6 +17,7 @@ gem 'puma'
 gem 'sass-rails',   '~> 4.0.3'
 gem 'therubyracer', platforms: :ruby
 gem 'uglifier'
+gem 'skylight'
 
 group :development do
   gem 'capistrano',         '~> 3.2.1', require: false

@@ -165,6 +165,8 @@ GEM
     sequel_pg (1.6.9)
       pg (>= 0.8.0)
       sequel (>= 3.39.0)
+    skylight (0.3.14)
+      activesupport (>= 3.0.0)
     slop (3.5.0)
     sprockets (2.11.0)
       hike (~> 1.2)
@@ -230,6 +232,7 @@ DEPENDENCIES
   sass-rails (~> 4.0.3)
   sequel
   sequel_pg
+  skylight
   stringex
   therubyracer
   uglifier
