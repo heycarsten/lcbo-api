@@ -30,7 +30,7 @@ group :development do
 end
 
 group :test, :development do
-  gem 'rspec',            '~> 2.99'
+  gem 'rspec',            '~> 2.99', require: false
   gem 'rspec-rails'
   gem 'fabrication',      require: false
   gem 'database_cleaner', github: 'bmabey/database_cleaner'
