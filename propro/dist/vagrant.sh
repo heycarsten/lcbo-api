@@ -160,14 +160,16 @@ function add-repository {
 function add-sudoers-entries {
   for event in start status stop reload restart; do
     if [ $3 ]; then
-      tee -a /etc/sudoers.d/$2.entries <<EOT
+      tee -a /etc/sudoers.d/$2-entries <<EOT
 $1 ALL=NOPASSWD: /sbin/$event $2 $3
 EOT
     else
-      tee -a /etc/sudoers.d/$2.entries <<EOT
+      tee -a /etc/sudoers.d/$2-entries <<EOT
 $1 ALL=NOPASSWD: /sbin/$event $2
 EOT
     fi
+
+    chmod 0440 /etc/sudoers.d/$2-entries
   done
 }
 
@@ -364,8 +366,11 @@ PG_EXTENSIONS="btree_gin btree_gist fuzzystrmatch hstore intarray ltree pg_trgm 
 PG_CONFIG_FILE="/etc/postgresql/$PG_VERSION/main/postgresql.conf"
 PG_HBA_FILE="/etc/postgresql/$PG_VERSION/main/pg_hba.conf"
 PG_TUNE_VERSION="0.9.3"
-PG_TUNE_URL="http://pgfoundry.org/frs/download.php/2449/pgtune-$PG_TUNE_VERSION.tar.gz"
 PG_USER="postgres"
+
+function get-pg-tune-url {
+  echo "http://pgfoundry.org/frs/download.php/2449/pgtune-$PG_TUNE_VERSION.tar.gz"
+}
 
 function pg-install-packages {
   install-packages postgresql-$PG_VERSION libpq-dev postgresql-contrib-$PG_VERSION
@@ -376,7 +381,7 @@ function pg-tune {
   cd "$tmpdir"
 
   announce "Tune PostgreSQL $PG_VERSION"
-  download $PG_TUNE_URL
+  download $(get-pg-tune-url)
   extract pgtune-$PG_TUNE_VERSION.tar.gz
 
   ./pgtune-$PG_TUNE_VERSION/pgtune -i $PG_CONFIG_FILE -o $PG_CONFIG_FILE.pgtune
@@ -434,7 +439,7 @@ function rvm-install-for-user {
 
 # Propro package: lib/nginx.sh
 #!/usr/bin/env bash
-NGINX_VERSION="1.4.7" # @specify
+NGINX_VERSION="1.6.0" # @specify
 NGINX_USER="nginx"
 NGINX_CONFIGURE_OPTS="--with-http_ssl_module --with-http_gzip_static_module" # @specify
 NGINX_CONF_FILE="/etc/nginx.conf"
@@ -452,6 +457,10 @@ NGINX_WORKER_CONNECTIONS="2000" # @specify
 NGINX_SITES_DIR="$NGINX_ETC_DIR/sites"
 NGINX_CONF_DIR="$NGINX_ETC_DIR/conf"
 
+function get-nginx-url {
+  echo "http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz"
+}
+
 function nginx-install {
   local tmpdir=$(get-tmp-dir)
   cd "$tmpdir"
@@ -459,7 +468,7 @@ function nginx-install {
   install-packages $NGINX_DEPENDENCIES
 
   announce "Download $NGINX_VERSION"
-  download http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz
+  download $(get-nginx-url)
 
   announce "Extract"
   extract nginx-$NGINX_VERSION.tar.gz
@@ -704,19 +713,22 @@ function node-install {
 
 # Propro package: lib/redis.sh
 #!/usr/bin/env bash
-REDIS_VERSION="2.8.7" # @specify
+REDIS_VERSION="2.8.9" # @specify
 REDIS_USER="redis"
 REDIS_CONF_FILE="/etc/redis.conf"
 REDIS_DATA_DIR="/var/lib/redis"
 REDIS_FORCE_64BIT="no" # @specify Force 64bit build even if available memory is lte 4GiB
 
+function get-redis-url {
+  echo "http://download.redis.io/releases/redis-$REDIS_VERSION.tar.gz"
+}
+
 function redis-install {
   local tmpdir=$(get-tmp-dir)
-  local redis_url="http://download.redis.io/releases/redis-$REDIS_VERSION.tar.gz"
   cd "$tmpdir"
 
   announce "Download $REDIS_VERSION"
-  download $redis_url
+  download $(get-redis-url)
 
   announce "Extract"
   extract redis-$REDIS_VERSION.tar.gz
@@ -774,12 +786,20 @@ FFMPEG_VERSION="git" # @specify (or a version to download: "2.1.4")
 FFMPEG_YASM_VERSION="1.2.0"
 FFMPEG_XVID_VERSION="1.3.2"
 
+function get-ffmpeg-url {
+  echo "http://ffmpeg.org/releases/ffmpeg-$FFMPEG_VERSION.tar.gz"
+}
+
+function get-ffmpeg-yasm-url {
+  echo "http://www.tortall.net/projects/yasm/releases/yasm-$FFMPEG_YASM_VERSION.tar.gz"
+}
+
+function get-ffmpeg-xvid-url {
+  echo "http://downloads.xvid.org/downloads/xvidcore-$FFMPEG_XVID_VERSION.tar.gz"
+}
+
 function ffmpeg-install {
   local tmpdir=$(get-tmp-dir)
-  local FFMPEG_URL="http://ffmpeg.org/releases/ffmpeg-$FFMPEG_VERSION.tar.gz"
-  local FFMPEG_YASM_URL="http://www.tortall.net/projects/yasm/releases/yasm-$FFMPEG_YASM_VERSION.tar.gz"
-  local FFMPEG_XVID_URL="http://downloads.xvid.org/downloads/xvidcore-$FFMPEG_XVID_VERSION.tar.gz"
-
   cd "$tmpdir"
 
   announce "Install Dependencies"
@@ -790,7 +810,7 @@ function ffmpeg-install {
 
   announce-item "Yasm"
   announce-item "> Download"
-  download $FFMPEG_YASM_URL
+  download $(get-ffmpeg-yasm-url)
 
   announce-item "> Extract"
   extract yasm-$FFMPEG_YASM_VERSION.tar.gz
@@ -825,7 +845,7 @@ function ffmpeg-install {
 
   announce-item "Xvid"
   announce-item "> Download"
-  download $FFMPEG_XVID_URL
+  download $(get-ffmpeg-xvid-url)
 
   announce-item "> Extract"
   extract xvidcore-$FFMPEG_XVID_VERSION.tar.gz
@@ -846,7 +866,7 @@ function ffmpeg-install {
     git clone --depth 1 git://source.ffmpeg.org/ffmpeg.git
     cd ffmpeg
   else
-    download $FFMPEG_URL
+    download $(get-ffmpeg-url)
 
     announce "Extract"
     extract ffmpeg-$FFMPEG_VERSION.tar.gz
@@ -1007,12 +1027,12 @@ function provision-vagrant-ffmpeg {
 SYSTEM_SHMALL_PERCENT="0.65"
 SYSTEM_SHMMAX_PERCENT="0.35"
 PG_VERSION="9.3"
-REDIS_VERSION="2.8.9"
-VAGRANT_RVM_RUBY_VERSION="2.1.1"
-NODE_VERSION="0.10.26"
+REDIS_VERSION="2.8.11"
+VAGRANT_RVM_RUBY_VERSION="2.1.2"
+NODE_VERSION="0.10.29"
 NGINX_VERSION="1.6.0"
 NGINX_WORKER_CONNECTIONS="100"
-EXTRA_PACKAGES="man git-core libxslt-dev libxml2-dev imagemagick libmagickwand-dev"
+EXTRA_PACKAGES="man zip git-core libxslt-dev libxml2-dev libmagickwand-dev imagemagick"
 
 function main {
   provision-vagrant-system
