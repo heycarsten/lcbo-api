@@ -1,26 +1,24 @@
 require 'spec_helper'
 
 describe 'Store resources' do
-  before :all do
-    clean_database
-
+  before do
     @store1   = Fabricate(:store)
-    @store2   = Fabricate(:store, :name => 'Test Store')
+    @store2   = Fabricate(:store, name: 'Test Store')
     @product1 = Fabricate(:product)
-    @inv1     = Fabricate(:inventory, :store => @store1, :product => @product1)
+    @inv1     = Fabricate(:inventory, store: @store1, product: @product1)
   end
 
   describe 'all stores' do
     subject { '/stores' }
-    it_behaves_like 'a resource', :size => 2
+    it_behaves_like 'a resource', size: 2
   end
 
   context 'full text search with match (JSON)' do
     before { get '/stores?q=test' }
 
     it 'performs a full-text search' do
-      response.json[:result].size == 1
-      response.json[:result][0][:id].should == @store2.id
+      expect(response.json[:result].size).to eq 1
+      expect(response.json[:result][0][:id]).to eq @store2.id
     end
   end
 
@@ -30,7 +28,7 @@ describe 'Store resources' do
     it_behaves_like 'a JSON 400 error'
 
     it 'indicates that sorting by distance without geometry is impossible' do
-      response.json[:message].should include 'to order by distance_in_meters'
+      expect(response.json[:message]).to include('to order by distance_in_meters')
     end
   end
 
@@ -38,9 +36,9 @@ describe 'Store resources' do
     before { get "/stores?lat=#{@store1.latitude}&lon=#{@store1.longitude}&order=distance_in_meters.desc" }
 
     it 'performs a spatial search' do
-      response.json[:message].should be_nil
-      response.json[:result].size == 2
-      response.json[:result][0][:distance_in_meters].should == 0
+      expect(response.json[:message]).to eq nil
+      expect(response.json[:result].size).to eq 2
+      expect(response.json[:result][0][:distance_in_meters]).to eq 0
     end
   end
 
@@ -48,8 +46,8 @@ describe 'Store resources' do
     before { get "/stores?lat=#{@store1.latitude}&lon=#{@store1.longitude}" }
 
     it 'performs a spatial search' do
-      response.json[:result].size == 2
-      response.json[:result][0][:distance_in_meters].should == 0
+      expect(response.json[:result].size).to eq 2
+      expect(response.json[:result][0][:distance_in_meters]).to eq 0
     end
   end
 
@@ -59,7 +57,7 @@ describe 'Store resources' do
     it_behaves_like 'a JSON 400 error'
 
     it 'contains the error type' do
-      response.json[:error].should == 'bad_query_error'
+      expect(response.json[:error]).to eq 'bad_query_error'
     end
   end
 
@@ -70,7 +68,7 @@ describe 'Store resources' do
 
   describe 'stores with product' do
     subject { "/products/#{@product1.id}/stores" }
-    it_behaves_like 'a resource', :size => 1
+    it_behaves_like 'a resource', size: 1
   end
 
   context 'show store (not found)' do
@@ -85,8 +83,8 @@ describe 'Store resources' do
     end
 
     it 'performs a spatial search' do
-      response.json[:result].size == 2
-      response.json[:result][0][:distance_in_meters].should == 0
+      expect(response.json[:result].size).to eq 1
+      expect(response.json[:result][0][:distance_in_meters]).to eq 0
     end
   end
 
@@ -99,24 +97,24 @@ describe 'Store resources' do
     before { get "/products/#{@product1.id}/stores" }
 
     it 'is properly formed' do
-      response.json[:result].should be_a Array
-      response.json[:result][0].should be_a Hash
+      expect(response.json[:result]).to be_a Array
+      expect(response.json[:result][0]).to be_a Hash
     end
 
     it 'contains pager metadata in the response' do
-      response.json[:pager].should be_a Hash
+      expect(response.json[:pager]).to be_a Hash
     end
 
     it 'contains quantity in the store resource' do
-      response.json[:result][0][:quantity].should == @inv1.quantity
+      expect(response.json[:result][0][:quantity]).to eq @inv1.quantity
     end
 
     it 'contains product resource in the response' do
-      response.json[:product].should be_a Hash
+      expect(response.json[:product]).to be_a Hash
     end
 
     it 'contains updated_on in the store resource' do
-      response.json[:result][0][:updated_on].should == @inv1.updated_on.to_s
+      expect(response.json[:result][0][:updated_on]).to eq @inv1.updated_on.iso8601
     end
   end
 end

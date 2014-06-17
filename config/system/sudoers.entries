@@ -1,5 +1,0 @@
-deploy ALL=NOPASSWD: /sbin/start puma app=/sites/lcboapi.com/current
-deploy ALL=NOPASSWD: /sbin/status puma app=/sites/lcboapi.com/current
-deploy ALL=NOPASSWD: /sbin/stop puma app=/sites/lcboapi.com/current
-deploy ALL=NOPASSWD: /sbin/reload puma app=/sites/lcboapi.com/current
-deploy ALL=NOPASSWD: /sbin/restart puma app=/sites/lcboapi.com/current

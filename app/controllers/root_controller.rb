@@ -43,7 +43,7 @@ class RootController < ApplicationController
     yaml      = ERB.new(raw_yaml).result
     @sections = YAML.load(yaml)
     @sections.values.each do |section|
-      section.each { |doc| doc[:slug] = (doc[:menu] || doc[:title]).to_url }
+      section.each { |doc| doc[:slug] = (doc[:menu] || doc[:title]).parameterize }
     end
     @documents = @sections.values.flatten
   end

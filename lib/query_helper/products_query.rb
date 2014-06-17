@@ -1,22 +1,9 @@
 module QueryHelper
   class ProductsQuery < Query
-
     def initialize(request, params)
       super
       self.q = params[:q] if params[:q].present?
       validate
-    end
-
-    def self.table
-      :products
-    end
-
-    def self.csv_columns
-      Product.csv_columns
-    end
-
-    def self.as_csv_row(row)
-      Product.as_csv_row(row)
     end
 
     def self.max_limit
@@ -69,27 +56,28 @@ module QueryHelper
       %w[ is_dead ]
     end
 
-    def dataset
-      case
-      when has_fulltext?
-        db.search(:tags, q)
+    def scope
+      if has_fulltext?
+        model.search(q)
       else
-        db
+        model
       end.
-      filter(filter_hash).
+
+      where(filter_hash).
       order(*order)
     end
 
     def as_json
       h = super
-      h[:result] = page_dataset.all.map { |row| Product.as_json(row) }
+      h[:result] = page_scope.all.map { |product| serialize(product) }
+
       h[:suggestion] = if 0 == h[:result].size
         has_fulltext? ? Fuzz[:products, q] : nil
       else
         nil
       end
+
       h
     end
-
   end
 end

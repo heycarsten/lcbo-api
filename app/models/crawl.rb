@@ -1,5 +1,4 @@
-class Crawl < Sequel::Model
-
+class Crawl < ActiveRecord::Base
   class StateError < StandardError; end
 
   SERIALIZED_FIELDS = [
@@ -10,45 +9,26 @@ class Crawl < Sequel::Model
     :removed_product_ids,
     :removed_store_ids ]
 
-  plugin :redis
-  plugin :timestamps, update_on_create: true
-  plugin :serialization, :yaml, *SERIALIZED_FIELDS
-  plugin :api,
-    not_csv: SERIALIZED_FIELDS,
-    private: [
-      :crawl_event_id,
-      :state,
-      :task,
-      :total_jobs,
-      :total_finished_jobs ]
+  # plugin :redis
+  # list :crawled_store_ids,   :integer
+  # list :crawled_product_ids, :integer
+  # list :jobs
 
-  list :crawled_store_ids,   :integer
-  list :crawled_product_ids, :integer
-  list :jobs
-
-  many_to_one :crawl_event
-  one_to_many :crawl_events
-
-  def self.as_json(obj)
-    hsh = super
-    hsh.merge(
-      Hash[SERIALIZED_FIELDS.map { |key| [
-        key,
-        hsh[key].is_a?(Array) ? hsh[key] : YAML.load(hsh[key] || "[]\n")
-      ] }]
-    ).merge(csv_dump: "http://static.lcboapi.com/datasets/#{hsh[:id]}.zip")
+  SERIALIZED_FIELDS.each do |f|
+    serialize(f)
   end
+
+  scope :is, ->(*states) { where(state: states.map(&:to_s)) }
+
+  belongs_to :crawl_event
+  has_many :crawl_events
 
   def self.latest
-    order(Sequel.desc(:id)).first
-  end
-
-  def self.is(*states)
-    where(state: states.map(&:to_s))
+    order(id: :desc).first
   end
 
   def self.any_active?
-    !is(nil, :running, :paused).empty?
+    is(nil, :running, :paused).count != 0
   end
 
   def self.init
@@ -59,8 +39,8 @@ class Crawl < Sequel::Model
   def previous
     @previous ||= begin
       Crawl.
-        order(Sequel.desc(:id)).
-        exclude(id: id).
+        order(id: :desc).
+        where.not(id: id).
         where(state: 'finished').
         first
     end
@@ -77,6 +57,7 @@ class Crawl < Sequel::Model
   def diff!
     self.store_ids   = crawled_store_ids.all
     self.product_ids = crawled_product_ids.all
+
     if previous
       self.added_product_ids   = (product_ids - previous.product_ids)
       self.removed_product_ids = (previous.product_ids - product_ids)
@@ -88,6 +69,7 @@ class Crawl < Sequel::Model
       self.added_store_ids     = []
       self.removed_store_ids   = []
     end
+
     save
   end
 
@@ -132,12 +114,15 @@ class Crawl < Sequel::Model
 
   def log(message, level = :info, payload = {})
     verify_unlocked!
-    ce = add_crawl_event(
+
+    ce = crawl_event.create(
       level:      level.to_s,
       message:    message.to_s,
       payload:    JSON.dump(payload),
       created_at: Time.now.utc)
+
     self.crawl_event_id = ce.id
+
     save
   end
 
@@ -146,5 +131,4 @@ class Crawl < Sequel::Model
   def verify_unlocked!
     raise StateError, "Crawl is #{state}" if is_locked?
   end
-
 end

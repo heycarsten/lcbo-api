@@ -59,7 +59,8 @@ class Exporter
   end
 
   def copy(table)
+    db_name = ActiveRecord::Base.connection.current_database
     sql = "COPY #{table} (#{cols(table)}) TO STDOUT DELIMITER ',' CSV HEADER"
-    `psql -d #{DB.opts[:database]} -o #{csv_file(table)} -c "#{sql}"`
+    `psql -d #{db_name} -o #{csv_file(table)} -c "#{sql}"`
   end
 end

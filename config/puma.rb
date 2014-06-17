@@ -6,6 +6,6 @@ workers 4
 preload_app!
 
 on_worker_boot do
-  DB.disconnect
-  RDB.client.reconnect
+  ActiveRecord::Base.establish_connection
+  $redis.client.reconnect
 end

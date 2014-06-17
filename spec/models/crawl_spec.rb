@@ -1,17 +1,15 @@
 require 'spec_helper'
 
-describe Crawl do
-  describe 'with nil store_nos and product_nos' do
-    before do
-      @crawl = Fabricate(:crawl, :product_ids => nil, :store_ids => nil)
-    end
+describe Crawl, 'with nil store_nos and product_nos' do
+  let(:crawl) { Fabricate(:crawl, product_ids: nil, store_ids: nil) }
 
-    it 'should exist' do
-      @crawl.should be_persisted
-    end
+  it 'should exist' do
+    expect(crawl).to be_persisted
+  end
 
-    it 'should be serializable' do
-      @crawl.as_json[:product_ids].should == []
-    end
+  it 'should be serializable' do
+    payload = QueryHelper::DatasetsQuery.serialize(crawl)
+    expect(payload[:product_ids]).to eq []
+    expect(payload[:store_ids]).to eq []
   end
 end

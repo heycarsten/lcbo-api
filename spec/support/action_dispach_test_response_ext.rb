@@ -29,11 +29,6 @@ class ActionDispatch::TestResponse
     end
   end
 
-  def v1_payload?
-    result = payload[:result]
-    result.is_a?(Hash) || result.is_a?(Array)
-  end
-
   def tsv
     @tsv ||= parse_tsv
   end

@@ -28,11 +28,6 @@ class Crawler < Boticus::Bot
     model.log(msg, level, payload)
   end
 
-  def failure(error)
-    Exceptional.handle(error)
-    raise error
-  end
-
   def prepare
     log :info, 'Enumerating product job queue ...'
     model.push_jobs(:product, ProductListsGetter.run)
@@ -60,7 +55,7 @@ class Crawler < Boticus::Bot
 
   desc 'Performing calculations'
   task :calculate do
-    DB << <<-SQL
+    ActiveRecord::Base.connection.execute <<-SQL
       UPDATE stores SET
         products_count = (
           SELECT COUNT(inventories.product_id)
@@ -94,34 +89,23 @@ class Crawler < Boticus::Bot
 
   desc 'Marking dead products'
   task :mark_dead_products do
-    DB[:products].
-      where(id: model.removed_product_ids).
-      update(is_dead: true)
+    Product.where(id: model.removed_product_ids).update_all(is_dead: true)
   end
 
   desc 'Marking dead stores'
   task :mark_dead_stores do
-    DB[:stores].
-      where(id: model.removed_store_ids).
-      update(is_dead: true)
+    Store.where(id: model.removed_store_ids).update_all(is_dead: true)
   end
 
   desc 'Marking dead inventories'
   task :mark_dead_inventories do
-    DB[:inventories].
-      where(
-        Sequel.or([
-          [:product_id, model.removed_product_ids],
-          [:store_id, model.removed_store_ids]
-        ])
-      ).update(is_dead: true)
+    Inventory.where(product_id: model.removed_product_ids).update_all(is_dead: true)
+    Inventory.where(store_id: model.removed_store_ids).update_all(is_dead: true)
   end
 
   desc 'Marking orphaned inventories'
   task :update_orphaned_inventories do
-    DB[:inventories].
-      exclude(crawl_id: model.id).
-      update(quantity: 0, is_dead: true)
+    Inventory.where.not(crawl_id: model.id).update_all(quantity: 0, is_dead: true)
   end
 
   desc 'Exporting CSV data'

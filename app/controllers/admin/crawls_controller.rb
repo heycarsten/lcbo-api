@@ -1,10 +1,10 @@
 class Admin::CrawlsController < AdminController
   def index
-    @crawls = Crawl.order(Sequel.desc(:id)).limit(20).all
+    @crawls = Crawl.order(id: :desc).limit(20).all
   end
 
   def show
-    @crawl = Crawl[params[:id]]
-    @events = CrawlEvent.where(crawl_id: @crawl.id).limit(100).order(Sequel.desc(:id)).all
+    @crawl  = Crawl.find(params[:id])
+    @events = @craw.crawl_events.order(id: :desc).limit(100).all
   end
 end

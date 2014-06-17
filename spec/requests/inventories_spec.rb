@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe 'Inventories API' do
-  before :all do
-    clean_database
-
+  before do
     @products = [
       Fabricate(:product),
       Fabricate(:product),

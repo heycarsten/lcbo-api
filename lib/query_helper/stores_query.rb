@@ -1,36 +1,25 @@
 module QueryHelper
   class StoresQuery < Query
-
     attr_accessor :product_id, :lat, :lon, :geo
 
     def initialize(request, params)
       super
+
       if params[:is_geo_q]
         self.geo = params[:q] if params[:q].present?
       else
         self.geo = params[:geo] if params[:geo].present?
         self.q = params[:q] if params[:q].present?
       end
+
       self.product_id = params[:product_id] if params[:product_id].present?
       self.lat = params[:lat] if params[:lat].present?
       self.lon = params[:lon] if params[:lon].present?
       validate
     end
 
-    def self.table
-      :stores
-    end
-
     def self.max_limit
       200
-    end
-
-    def self.csv_columns
-      Store.csv_columns
-    end
-
-    def self.as_csv_row(row)
-      Store.as_csv_row(row)
     end
 
     def self.filterable_fields
@@ -122,33 +111,35 @@ module QueryHelper
       has_lat? && has_lon?
     end
 
-    def _filtered_dataset
+    def _filtered_scope
       case
       when is_spatial? && product_id
-        Store.distance_from_with_product(latitude, longitude, product_id)
+        model.distance_from_with_product(latitude, longitude, product_id)
       when is_spatial?
-        Store.distance_from(latitude, longitude)
+        model.distance_from(latitude, longitude)
       when product_id
-        db.join(:inventories, store_id: :id, product_id: product_id)
+        model.joins(:inventories).
+          select('stores.*, inventories.quantity, inventories.updated_on').
+          where('inventories.product_id' => product_id)
       else
-        db
+        model
       end.
-      filter(filter_hash)
+      where(filter_hash)
     end
 
-    def _ordered_dataset
+    def _ordered_scope
       if is_spatial?
-        _filtered_dataset.order(Sequel.asc(:distance_in_meters))
+        _filtered_scope
       else
-        _filtered_dataset.order(*order)
+        _filtered_scope.order(*order)
       end
     end
 
-    def dataset
+    def scope
       if has_fulltext?
-        _ordered_dataset.search(:tags, q)
+        _ordered_scope.search(q)
       else
-        _ordered_dataset
+        _ordered_scope
       end
     end
 
@@ -158,8 +149,8 @@ module QueryHelper
 
     def as_json
       h = super
-      h[:product] = product.as_json if product_id
-      h[:result]  = page_dataset.all.map { |row| Store.as_json(row) }
+      h[:product] = ProductsQuery.serialize(product) if product_id
+      h[:result]  = page_scope.all.map { |product| serialize(product) }
       h
     end
 
@@ -187,6 +178,5 @@ module QueryHelper
         "to the lon parameter to perform a spatial search."
       end
     end
-
   end
 end

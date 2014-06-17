@@ -1,5 +1,3 @@
-class CrawlEvent < Sequel::Model
-
-  many_to_one :crawl
-
+class CrawlEvent < ActiveRecord::Base
+  belongs_to :crawl
 end

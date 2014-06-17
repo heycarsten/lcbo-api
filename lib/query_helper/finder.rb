@@ -1,6 +1,5 @@
 module QueryHelper
   class Finder
-
     attr_reader :request, :params
 
     def initialize(request, params)
@@ -20,20 +19,31 @@ module QueryHelper
       to_s.demodulize.sub('Finder', '').downcase
     end
 
+    def self.query
+      @query ||= QueryHelper.const_get(:"#{type.classify.pluralize}Query")
+    end
+
+    def self.serialize(record, opts = {})
+      query.serialize(record, opts)
+    end
+
     def as_json
-      { result: self.class.find(*as_args).as_json }
+      { result: self.class.serialize(self.class.find(*as_args)) }
     end
 
     def as_csv(delimiter = ',')
-      rows = self.class.find(*as_args).as_csv(true)
+      record = self.class.find(*as_args)
+      json   = self.class.serialize(record, scope: :csv)
+      header = self.class.query.humanize_csv_columns(json.keys)
+
       CSV.generate(col_sep: delimiter) do |csv|
-        rows.each { |row| csv << row }
+        csv << header
+        csv << json.values
       end
     end
 
     def as_tsv
       as_csv("\t")
     end
-
   end
 end

@@ -1,6 +1,5 @@
 module QueryHelper
   class ProductFinder < Finder
-
     attr_accessor :product_id
 
     def initialize(request, params)
@@ -9,12 +8,11 @@ module QueryHelper
     end
 
     def self.get(id)
-      Product[id]
+      Product.where(id: id).first
     end
 
     def as_args
       [product_id]
     end
-
   end
 end

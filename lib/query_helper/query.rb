@@ -1,6 +1,5 @@
 module QueryHelper
   class Query
-
     attr_accessor :request, :params, :page, :per_page, :q
 
     def initialize(request, params)
@@ -30,20 +29,28 @@ module QueryHelper
       500
     end
 
-    def self.csv_columns
-      raise BadQueryError, 'CSV output is not supported for this resource.'
+    def self.humanize_csv_columns(cols)
+      cols.map { |c| c.to_s.gsub('_', ' ').titlecase }
     end
 
-    def self.human_csv_columns
-      csv_columns.map { |c| c.to_s.gsub('_', ' ').titlecase }
-    end
-
-    def self.as_csv_row(row)
-      raise BadQueryError, 'CSV output is not supported for this resource.'
+    def self.serialize(record, opts = {})
+      serializer.new(record, opts).as_json(root: false)
     end
 
     def self.table
-      raise NotImplementedError, "#{self}#table needs to be implemented."
+      @table ||= model.table_name.to_sym
+    end
+
+    def self.serializer
+      @serializer ||= "#{model.to_s}Serializer".constantize
+    end
+
+    def self.model_name
+      to_s.demodulize.sub('Query', '').underscore.singularize
+    end
+
+    def self.model
+      @model ||= model_name.to_s.classify.constantize
     end
 
     def self.filterable_fields
@@ -68,23 +75,26 @@ module QueryHelper
 
     def self.order_expr(term)
       field, ord = term.split('.').map { |v| v.to_s.downcase.strip }
+
       unless sortable_fields.include?(field)
         raise BadQueryError, "A value supplied for the order parameter " \
         "(#{term}) is not valid. It contains a field (#{field}) that is " \
         "not sortable. It must be one of: " \
         "#{sortable_fields.join(', ')}."
       end
+
       unless ['desc', 'asc', nil].include?(ord)
         raise BadQueryError, "A value supplied for the order parameter " \
         "(#{term}) is not valid. It contains an invalid sort order " \
         "(#{ord}) for (#{field}) try using: #{field}.desc or #{field}.asc " \
         "instead."
       end
+
       case ord
       when 'asc'
-        Sequel.asc(:"#{table}__#{field}", nulls: :last)
+        %{#{table}.#{field} ASC NULLS LAST}
       when 'desc', nil
-        Sequel.desc(:"#{table}__#{field}", nulls: :last)
+        %{#{table}.#{field} DESC NULLS LAST}
       end
     end
 
@@ -107,8 +117,8 @@ module QueryHelper
     end
 
     def filter_hash
-      Hash[where.map { |w| [:"#{self.class.table}__#{w}", true ] }].
-        merge(Hash[where_not.map { |w| [:"#{self.class.table}__#{w}", false] }])
+      Hash[where.map     { |w| ["#{self.class.table}.#{w}", true]  }].merge(
+      Hash[where_not.map { |w| ["#{self.class.table}.#{w}", false] }])
     end
 
     def limit=(value)
@@ -166,16 +176,24 @@ module QueryHelper
       q.present?
     end
 
-    def page_dataset
-      @page_dataset ||= dataset.paginate(page, per_page)
+    def page_scope
+      @page_scope ||= scope.page(page).per(per_page)
     end
 
-    def csv_dataset
-      @csv_dataset ||= dataset.limit(limit)
+    def csv_scope
+      @csv_scope ||= scope.limit(limit)
     end
 
-    def db
-      @db ||= DB[self.class.table]
+    def scope
+      model
+    end
+
+    def model
+      self.class.model
+    end
+
+    def serialize(record, opts = {})
+      self.class.serialize(record, opts)
     end
 
     def path_for_page(page_num)
@@ -198,15 +216,15 @@ module QueryHelper
       { current_page: :current_page,
         next_page:    :next_page,
         prev_page:    :previous_page,
-        page_count:   :final_page
+        total_pages:  :total_pages
       }.reduce(
-        records_per_page:          per_page,
-        total_record_count:        page_dataset.pagination_record_count,
-        current_page_record_count: page_dataset.current_page_record_count,
-        is_first_page:             page_dataset.first_page?,
-        is_final_page:             page_dataset.last_page?
+        records_per_page:          page_scope.limit_value,
+        total_record_count:        page_scope.total_count,
+        current_page_record_count: page_scope.load.size,
+        is_first_page:             page_scope.first_page?,
+        is_final_page:             page_scope.last_page?
       ) do |hsh, (meth, key)|
-        num = page_dataset.send(meth)
+        num = page_scope.send(meth)
         hsh.merge(
           key            => num,
           :"#{key}_path" => path_for_page(num)
@@ -221,10 +239,18 @@ module QueryHelper
     end
 
     def as_csv(delimiter = ',')
+      records = csv_scope.load
+      return '' if records.empty?
+
+      headers = self.class.humanize_csv_columns(
+        serialize(records.first, scope: :csv).keys
+      )
+
       CSV.generate(col_sep: delimiter) do |csv|
-        csv << self.class.human_csv_columns
-        csv_dataset.all do |row|
-          csv << self.class.as_csv_row(row)
+        csv << headers
+
+        records.each do |record|
+          csv << serialize(record, scope: :csv).values
         end
       end
     end
@@ -279,14 +305,15 @@ module QueryHelper
 
     def split_filter_list(name, value)
       vals = value.to_s.split(',').map { |v| v.strip.downcase }
+
       unless vals.all? { |v| self.class.filterable_fields.include?(v) }
         raise BadQueryError, "The value supplied for the #{name} parameter " \
         "(#{value}) is not valid. It must contain one or more of the " \
         "following values separated by commas (,): " \
         "#{self.class.filterable_fields.join(', ')}."
       end
+
       vals
     end
-
   end
 end

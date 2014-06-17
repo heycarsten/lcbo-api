@@ -1,6 +1,5 @@
 module QueryHelper
   class InventoriesQuery < Query
-
     attr_reader :product_id, :store_id
 
     def initialize(request, params)
@@ -8,18 +7,6 @@ module QueryHelper
       self.product_id = params[:product_id] if params[:product_id].present?
       self.store_id   = params[:store_id]   if params[:store_id].present?
       validate
-    end
-
-    def self.table
-      :inventories
-    end
-
-    def self.csv_columns
-      Inventory.csv_columns
-    end
-
-    def self.as_csv_row(row)
-      Inventory.as_csv_row(row)
     end
 
     def self.per_page
@@ -52,6 +39,7 @@ module QueryHelper
         "parameter (#{value}) is not valid. It must be a number greater than " \
         "zero."
       end
+
       @product_id = value.to_i
     end
 
@@ -61,6 +49,7 @@ module QueryHelper
         "parameter (#{value}) is not valid. It must be a number greater than " \
         "zero."
       end
+
       @store_id = value.to_i
     end
 
@@ -72,18 +61,18 @@ module QueryHelper
       @product ||= QueryHelper.find(:product, product_id)
     end
 
-    def dataset
+    def scope
       case
       when product_id && store_id
-        db.where(
+        model.where(
           product_id: product_id,
           store_id:   store_id)
       when product_id
-        db.where(product_id: product_id)
+        model.where(product_id: product_id)
       when store_id
-        db.where(store_id: store_id)
+        model.where(store_id: store_id)
       else
-        db
+        model
       end.
       where(filter_hash).
       order(*order)
@@ -91,11 +80,10 @@ module QueryHelper
 
     def as_json
       h = super
-      h[:store]   = store.as_json   if store_id
-      h[:product] = product.as_json if product_id
-      h[:result]  = page_dataset.all.map { |row| Inventory.as_json(row) }
+      h[:store]   = StoresQuery.serialize(store)     if store_id
+      h[:product] = ProductsQuery.serialize(product) if product_id
+      h[:result]  = page_scope.all.map { |inventory| serialize(inventory) }
       h
     end
-
   end
 end

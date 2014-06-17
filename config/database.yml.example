@@ -1,10 +1,11 @@
----
-:test:
-  :adapter: postgres
-  :database: lcboapi_test
-  :encoding: unicode
+test:
+  adapter: postgresql
+  database: lcboapi_test
+  encoding: unicode
+  pool: 5
 
-:development:
-  :adapter: postgres
-  :database: lcboapi_development
-  :encoding: unicode
+development:
+  adapter: postgresql
+  database: lcboapi_development
+  encoding: unicode
+  pool: 5

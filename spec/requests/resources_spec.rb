@@ -7,7 +7,7 @@ describe 'API resource' do
     it_behaves_like 'a JSON 400 error'
 
     it 'has a reasonable error message' do
-      response.json[:message].should include "can not be requested without specifying a callback"
+      expect(response.json[:message]).to include('can not be requested without specifying a callback')
     end
   end
 
@@ -17,7 +17,7 @@ describe 'API resource' do
     it_behaves_like 'a JSON 400 error'
 
     it 'has a reasonable error message' do
-      response.json[:message].should include "can not be requested with a callback"
+      expect(response.json[:message]).to include('can not be requested with a callback')
     end
   end
 
@@ -25,7 +25,7 @@ describe 'API resource' do
     before { get '/datasets?callback=test' }
 
     it 'returns JSON-P' do
-      response.should be_jsonp
+      expect(response).to be_jsonp
     end
   end
 
@@ -33,7 +33,7 @@ describe 'API resource' do
     before { get '/datasets' }
 
     it 'returns JSON' do
-      response.should be_json
+      expect(response).to be_json
     end
   end
 
@@ -41,7 +41,7 @@ describe 'API resource' do
     before { get '/datasets.csv?callback=test' }
 
     it 'returns CSV and ignores the callback' do
-      response.should be_csv
+      expect(response).to be_csv
     end
   end
 
@@ -49,7 +49,7 @@ describe 'API resource' do
     before { get '/datasets.tsv?callback=test' }
 
     it 'returns TSV and ignores the callback' do
-      response.should be_tsv
+      expect(response).to be_tsv
     end
   end
 
@@ -59,7 +59,7 @@ describe 'API resource' do
     it_behaves_like 'a JSON 400 error'
 
     it 'returns JSON' do
-      response.should be_json
+      expect(response).to be_json
     end
   end
 
@@ -67,15 +67,15 @@ describe 'API resource' do
     before { get '/datasets.js?callback=test&order=id.boom' }
 
     it 'returns JSON-P' do
-      response.should be_jsonp
+      expect(response).to be_jsonp
     end
 
     it 'has an HTTP status of 200' do
-      response.status.should == 200
+      expect(response.status).to eq 200
     end
 
     it 'indicates the actual status in the response object' do
-      response.jsonp[:status].should == 200
+      expect(response.jsonp[:status]).to eq 200
     end
   end
 

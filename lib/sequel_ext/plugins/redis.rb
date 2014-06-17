@@ -65,7 +65,7 @@ module Sequel
 
       def self.configure(model, opts = {})
         model.instance_eval do
-          @rdb = (opts[:redis] || RDB)
+          @rdb = (opts[:redis] || $redis)
         end
       end
 

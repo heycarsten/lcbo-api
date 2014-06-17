@@ -1,4 +1,5 @@
-class Product < Sequel::Model
+class Product < ActiveRecord::Base
+  include PgSearch
 
   SIMPLIFIED_CITIES = {
     'Cambridge-Preston'   => 'Preston',
@@ -16,31 +17,24 @@ class Product < Sequel::Model
     'Toronto-Scarborough' => 'Scarborough'
   }
 
-  unrestrict_primary_key
+  pg_search_scope :search,
+    against:  :tags,
+    ignoring: :accents,
+    using: {
+      tsearch: { prefix: true }
+    }
 
-  plugin :timestamps, update_on_create: true
-  plugin :api,
-    private: [
-      :created_at,
-      :crawl_id,
-      :store_id,
-      :product_id,
-      :total_package_volume_in_milliliters
-    ],
-    aliases: { id: :product_no }
-
-  many_to_one :crawl
-  one_to_many :inventories
+  belongs_to :crawl
+  has_many :inventories
 
   def self.place(attrs)
     attrs[:updated_at] = Time.now.utc
     attrs[:tags]       = attrs[:tags].any? ? attrs[:tags].join(' ') : nil
     attrs[:is_dead]    = false
     attrs[:city]       = SIMPLIFIED_CITIES[attrs[:city]] || attrs[:city]
-    if 0 == dataset.where(id: attrs[:id]).update(attrs)
-      attrs[:created_at] = attrs[:updated_at]
-      dataset.insert(attrs)
+
+    if 0 == where(id: attrs[:id]).update_all(attrs)
+      create!(attrs)
     end
   end
-
 end

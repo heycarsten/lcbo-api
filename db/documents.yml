@@ -187,11 +187,8 @@ root:
 
     * [Ruby](http://tryruby.org)
     * [Rails](http://rubyonrails.org)
-    * [Sequel](http://sequel.rubyforge.org)
     * [Redis](http://redis.io)
     * [Postgres](http://postgresql.org)
-    * [Nginx](http://wiki.nginx.org/Main)
-    * [Unicorn](http://unicorn.bogomips.org)
 
     ### Is it open source?
 

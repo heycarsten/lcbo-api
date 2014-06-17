@@ -1,6 +1,5 @@
 module QueryHelper
   class DatasetsQuery < Query
-
     attr_reader :dataset_id
 
     def initialize(request, params)
@@ -9,16 +8,12 @@ module QueryHelper
       validate
     end
 
-    def self.table
-      :crawls
+    def self.model_name
+      :crawl
     end
 
-    def self.csv_columns
-      Crawl.csv_columns
-    end
-
-    def self.as_csv_row(row)
-      Crawl.as_csv_row(row)
+    def self.serializer
+      DatasetSerializer
     end
 
     def self.sortable_fields
@@ -44,18 +39,18 @@ module QueryHelper
         "parameter (#{value}) is not valid. It must be a number greater than " \
         "zero."
       end
+
       @dataset_id = value.to_i
     end
 
-    def dataset
-      db.where(state: 'finished').order(*order)
+    def scope
+      model.where(state: 'finished').order(*order)
     end
 
     def as_json
       h = super
-      h[:result] = page_dataset.all.map { |row| Crawl.as_json(row) }
+      h[:result] = page_scope.all.map { |crawl| serialize(crawl) }
       h
     end
-
   end
 end

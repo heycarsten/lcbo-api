@@ -1,17 +1,17 @@
 source 'https://rubygems.org'
 
-gem 'rails',       '4.1.1'
+gem 'rails',        '4.1.1'
 gem 'oj'
 gem 'pg'
-gem 'sequel'
-gem 'sequel_pg',   require: 'sequel'
+gem 'pg_search'
+gem 'kaminari'
+gem 'active_model_serializers', github: 'rails-api/active_model_serializers'
 gem 'amatch'
-gem 'stringex'
 gem 'redis'
 gem 'gcoder'
-gem 'lcbo',        '1.5.0'
+gem 'lcbo',         '1.5.0'
 gem 'redcarpet'
-gem 'aws-s3',      require: false, github: 'fnando/aws-s3', ref: 'fef95c2d'
+gem 'aws-s3',       require: false, github: 'fnando/aws-s3', ref: 'fef95c2d'
 gem 'puma'
 gem 'sass-rails',   '~> 4.0.3'
 gem 'therubyracer', platforms: :ruby
@@ -25,13 +25,12 @@ group :development do
   gem 'capistrano-rvm',     require: false
   gem 'propro',             require: false
   gem 'quiet_assets'
-  gem 'awesome_print'
   gem 'pry-rails'
 end
 
 group :test, :development do
-  gem 'rspec',            '~> 2.99', require: false
+  gem 'rspec',       '~> 2.99', require: false
   gem 'rspec-rails'
-  gem 'fabrication',      require: false
-  gem 'database_cleaner', github: 'bmabey/database_cleaner'
+  gem 'fabrication', require: false
+  gem 'awesome_print', require: 'ap'
 end

@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe 'Datasets API' do
-  before :all do
-    clean_database
-
+  before do
     @crawls = [
       Fabricate(:crawl),
       Fabricate(:crawl),

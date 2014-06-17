@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe 'Products API' do
-  before :all do
-    clean_database
-
+  before do
     @product1 = Fabricate(:product, id: '1')
     @product2 = Fabricate(:product, id: '2', name: 'Fitzgibbons')
     @product3 = Fabricate(:product, id: '3', name: 'B\'ock hop bob-omb')
@@ -14,9 +12,9 @@ describe 'Products API' do
   end
 
   it 'contains sane objects' do
-    DB[:products].count.should == 3
-    DB[:stores].count.should == 1
-    DB[:inventories].count.should == 1
+    Product.count.should == 3
+    Store.count.should == 1
+    Inventory.count.should == 1
   end
 
   describe 'all products' do

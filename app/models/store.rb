@@ -1,41 +1,44 @@
-class Store < Sequel::Model
+class Store < ActiveRecord::Base
+  include PgSearch
+  include GeoScope
 
-  unrestrict_primary_key
+  belongs_to :crawl
+  has_many :inventories
 
-  plugin :timestamps, :update_on_create => true
-  plugin :geo
-  plugin :api,
-    aliases: { id: :store_no },
-    private: [
-      :latrad, :lngrad, :created_at, :crawl_id, :store_id, :product_id]
+  before_save :set_latlonrad
 
-  many_to_one :crawl
-  one_to_many :inventories
+  scope :distance_from_with_product, ->(lat, lon, product_id) {
+    distance_from(lat, lon).
+      joins(:inventories).
+      select('stores.*, inventories.quantity, inventories.updated_on').
+      where('inventories.quantity > 0').
+      where('inventories.product_id' => product_id)
+  }
+
+  pg_search_scope :search,
+    against:  :tags,
+    ignoring: :accents,
+    using: {
+      tsearch: { prefix: true }
+    }
 
   def self.place(attrs)
     id = attrs[:id]
+
     raise ArgumentError, "attrs must contain :id" unless id
+
     attrs[:is_dead] = false
     attrs[:tags] = attrs[:tags].any? ? attrs[:tags].join(' ') : nil
-    (store = self[id]) ? store.update(attrs) : create(attrs)
-  end
 
-  def_dataset_method :distance_from_with_product do |lat, lon, product_id|
-    distance_from(lat, lon).
-      join(:inventories,
-        store_id: :id,
-        product_id: product_id).
-      where('inventories.quantity > 0')
+    if (store = where(id: id).first)
+      store.update_attributes(attrs)
+    else
+      create!(attrs)
+    end
   end
 
   def set_latlonrad
     self.latrad = (self.latitude  * (Math::PI / 180.0))
     self.lngrad = (self.longitude * (Math::PI / 180.0))
   end
-
-  def before_save
-    super
-    set_latlonrad
-  end
-
 end

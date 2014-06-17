@@ -1,6 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'active_model/railtie'
+require 'active_record/railtie'
 require 'action_controller/railtie'
 require 'action_mailer/railtie'
 require 'action_view/railtie'
@@ -11,6 +12,8 @@ Bundler.require(*Rails.groups)
 module LCBOAPI
   class Application < Rails::Application
     # /lib requires
+    require 'geo_scope'
+    require 'legacy_model_api'
     require 'query_helper'
     require 'exporter'
     require 'boticus'
@@ -36,7 +39,7 @@ module LCBOAPI
 
   def self.recache
     rid = _cache_stamp
-    RDB.set('lcboapi:cache_stamp', rid)
+    $redis.set('lcboapi:cache_stamp', rid)
     rid
   end
 
@@ -62,7 +65,11 @@ module LCBOAPI
   end
 
   def self.last_crawl_id
-    ((crawl = Crawl.order(Sequel.desc(:id)).first) && crawl.id) || 0
+    if (crawl = Crawl.order(id: :desc).first)
+      crawl.id
+    else
+      0
+    end
   end
 
   def self._cache_stamp
@@ -70,6 +77,10 @@ module LCBOAPI
   end
 
   def self.cache_stamp
-    (rid = RDB.get('lcboapi:cache_stamp')) ? rid : recache
+    if (rid = $redis.get('lcboapi:cache_stamp'))
+      rid
+    else
+      recache
+    end
   end
 end
