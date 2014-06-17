@@ -13,7 +13,7 @@ module LCBOAPI
   class Application < Rails::Application
     # /lib requires
     require 'geo_scope'
-    require 'legacy_model_api'
+    require 'redis_abuse'
     require 'query_helper'
     require 'exporter'
     require 'boticus'

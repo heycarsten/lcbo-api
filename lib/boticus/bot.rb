@@ -2,10 +2,10 @@ module Boticus
   class Bot
 
     STATE_MATRIX = [
-      [ :run,    [ :paused, nil           ], :running   ],
-      [ :pause,  [ :running               ], :paused    ],
-      [ :cancel, [ :running, :paused, nil ], :cancelled ],
-      [ :finish, [ :running               ], :finished  ]]
+      [ :run,    [ :paused, :init           ], :running   ],
+      [ :pause,  [ :running                 ], :paused    ],
+      [ :cancel, [ :running, :paused, :init ], :cancelled ],
+      [ :finish, [ :running                 ], :finished  ]]
 
     STATES = STATE_MATRIX.map { |_, _, state| state.to_s }
 

@@ -10,10 +10,20 @@ class Crawl < ActiveRecord::Base
     :added_store_ids,
     :removed_product_ids,
     :removed_store_ids]
+
+  STATES = %w[
+    init
+    running
+    paused
+    cancelled
+    finished
+  ]
+
   list :crawled_store_ids,   :integer
   list :crawled_product_ids, :integer
   list :jobs
 
+  validates :state, inclusion: { in: STATES }
 
   SERIALIZED_FIELDS.each do |f|
     serialize(f)
@@ -29,12 +39,12 @@ class Crawl < ActiveRecord::Base
   end
 
   def self.any_active?
-    is(nil, :running, :paused).count != 0
+    is(:init, :running, :paused).count != 0
   end
 
   def self.init
     raise 'Crawl is already running' if any_active?
-    create
+    create(state: 'init')
   end
 
   def previous
@@ -83,7 +93,7 @@ class Crawl < ActiveRecord::Base
   end
 
   def is_active?
-    is? nil, :running, :paused
+    is? :init, :running, :paused
   end
 
   def has_jobs?
