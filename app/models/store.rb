@@ -2,6 +2,26 @@ class Store < ActiveRecord::Base
   include PgSearch
   include GeoScope
 
+  SIMPLIFIED_NAMES = {
+    'Victoria Street & Parry Sound' => 'Rosseau'
+  }
+
+  SIMPLIFIED_CITIES = {
+    'Cambridge-Preston'   => 'Preston',
+    'Ottawa-Gloucester'   => 'Gloucester',
+    'Ottawa-Kanata'       => 'Kanata',
+    'Ottawa-Nepean'       => 'Nepean',
+    'Ottawa-Orleans'      => 'Orleans',
+    'Ottawa-Vanier'       => 'Vanier',
+    'Sudbury-Downtown'    => 'Sudbury',
+    'Sudbury-New Sudbury' => 'New Sudbury',
+    'Sudbury-South End'   => 'Sudbury (South End)',
+    'Toronto-Central'     => 'Toronto',
+    'Toronto-Etobicoke'   => 'Etobicoke',
+    'Toronto-North York'  => 'North York',
+    'Toronto-Scarborough' => 'Scarborough'
+  }
+
   belongs_to :crawl
   has_many :inventories
 
@@ -29,9 +49,11 @@ class Store < ActiveRecord::Base
 
     attrs[:is_dead] = false
     attrs[:tags] = attrs[:tags].any? ? attrs[:tags].join(' ') : nil
+    attrs[:city] = SIMPLIFIED_CITIES[attrs[:city]] || attrs[:city]
+    attrs[:name] = SIMPLIFIED_NAMES[attrs[:name]] || attrs[:name]
 
     if (store = where(id: id).first)
-      store.update_attributes(attrs)
+      store.update!(attrs)
     else
       create!(attrs)
     end
@@ -40,5 +62,6 @@ class Store < ActiveRecord::Base
   def set_latlonrad
     self.latrad = (self.latitude  * (Math::PI / 180.0))
     self.lngrad = (self.longitude * (Math::PI / 180.0))
+    true
   end
 end
