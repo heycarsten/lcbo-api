@@ -130,11 +130,10 @@ class Crawl < ActiveRecord::Base
   def log(message, level = :info, payload = {})
     verify_unlocked!
 
-    ce = crawl_event.create(
+    ce = create_crawl_event(
       level:      level.to_s,
       message:    message.to_s,
-      payload:    JSON.dump(payload),
-      created_at: Time.now.utc)
+      payload:    JSON.dump(payload))
 
     self.crawl_event_id = ce.id
 
