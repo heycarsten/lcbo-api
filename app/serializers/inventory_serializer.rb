@@ -1,13 +1,17 @@
 class InventorySerializer < ApplicationSerializer
-  attributes \
+  DUMP_COLS = [
     :product_id,
     :store_id,
     :is_dead,
     :quantity,
     :updated_on,
     :updated_at,
+  ]
+
+  attributes *(DUMP_COLS + [
     :product_no,
     :store_no
+  ])
 
   def product_no
     object.product_id

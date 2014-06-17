@@ -1,5 +1,5 @@
 class StoreSerializer < ApplicationSerializer
-  attributes \
+  DUMP_COLS = [
     :id,
     :is_dead,
     :name,
@@ -39,11 +39,15 @@ class StoreSerializer < ApplicationSerializer
     :friday_close,
     :saturday_open,
     :saturday_close,
-    :updated_at,
+    :updated_at
+  ]
+
+  attributes *(DUMP_COLS + [
     :quantity,
     :updated_on,
     :distance_in_meters,
     :store_no
+  ])
 
   def store_no
     object.id
