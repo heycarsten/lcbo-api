@@ -120,7 +120,11 @@ class Crawl < ActiveRecord::Base
   end
 
   def popjob
-    (job = jobs.pop) && job.split(':')
+    if (job = jobs.pop)
+      job.split(':')
+    else
+      nil
+    end
   end
 
   def log(message, level = :info, payload = {})
