@@ -1,4 +1,6 @@
 class Crawl < ActiveRecord::Base
+  include RedisAbuse::Model
+
   class StateError < StandardError; end
 
   SERIALIZED_FIELDS = [
@@ -7,12 +9,11 @@ class Crawl < ActiveRecord::Base
     :added_product_ids,
     :added_store_ids,
     :removed_product_ids,
-    :removed_store_ids ]
+    :removed_store_ids]
+  list :crawled_store_ids,   :integer
+  list :crawled_product_ids, :integer
+  list :jobs
 
-  # plugin :redis
-  # list :crawled_store_ids,   :integer
-  # list :crawled_product_ids, :integer
-  # list :jobs
 
   SERIALIZED_FIELDS.each do |f|
     serialize(f)
