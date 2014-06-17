@@ -5,13 +5,8 @@ set :system_shmmax_percent, 0.35
 provision 'vagrant/system'
 
 set :pg_version, 9.3
+set :pg_install_postgis, true
 provision 'vagrant/pg'
-
-# CREATE EXTENSION hstore;
-# CREATE EXTENSION tsearch2;
-# CREATE EXTENSION pg_trgm;
-# CREATE EXTENSION fuzzystrmatch;
-# CREATE EXTENSION unaccent;
 
 set :redis_version, '2.8.11'
 provision 'vagrant/redis'

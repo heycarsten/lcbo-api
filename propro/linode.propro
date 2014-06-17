@@ -1,0 +1,72 @@
+source :vps
+source :app
+source :db
+
+set :system_shmall_percent, 0.65
+set :system_shmmax_percent, 0.5
+set :vps_system_hostname, 'lcboapi'
+set :vps_system_fqdn, 'lcboapi.com'
+set :vps_system_admin_authorized_github_users, %w[heycarsten]
+set :vps_system_admin_sudo_password, ENV['SUDO_PW']
+set :vps_system_public_netmask, '255.255.255.0'
+set :vps_system_private_netmask, '255.255.128.0'
+provision 'vps/system'
+
+set :nginx_version, '1.6.0'
+set :nginx_configure_opts, %w[
+  --with-http_ssl_module
+  --with-http_gzip_static_module
+  --with-http_realip_module
+]
+set :nginx_client_max_body_size, '5m'
+set :nginx_worker_connections, 2000
+provision 'app/nginx'
+
+set :redis_version, '2.8.11'
+provision 'db/redis'
+
+set :app_domain, 'lcboapi.com'
+set :app_authorized_github_users, %w[heycarsten]
+set :app_env, 'production'
+provision 'app'
+
+set :app_rvm_ruby_version, '2.1.2'
+provision 'app/rvm'
+
+set :app_puma_config_file_name, 'production.rb'
+provision 'app/puma'
+
+set :app_puma_nginx_access_log_file_name, 'access.log'
+set :app_puma_nginx_error_log_file_name, 'error.log'
+provision 'app/puma/nginx'
+
+set :node_version, '0.10.29'
+provision 'app/node'
+
+set :pg_version, 9.3
+set :pg_install_postgis, true
+set :pg_extensions, %w[
+  btree_gin
+  btree_gist
+  fuzzystrmatch
+  hstore
+  intarray
+  pg_trgm
+  tsearch2
+  unaccent
+  postgis
+] # see: http://www.postgresql.org/docs/9.3/static/contrib.html
+set :db_pg_name, 'lcboapi'
+set :db_pg_user, 'deploy'
+provision 'db/pg'
+provision 'app/pg'
+
+set :extra_packages, %w[
+  zip
+  git-core
+  libxslt-dev
+  libxml2-dev
+  libmagickwand-dev
+  imagemagick
+]
+provision 'extras'

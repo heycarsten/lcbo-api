@@ -5,7 +5,7 @@
 #  / .___/_/   \____/ .___/_/   \____/
 # /_/              /_/
 #
-# Built from: vagrant.propro
+# Built from: linode.propro
 
 unset UCF_FORCE_CONFFOLD
 export UCF_FORCE_CONFFNEW="YES"
@@ -912,141 +912,883 @@ function provision-extras {
 }
 
 
-# Propro package: vagrant.sh
+# Propro package: vps/system.sh
 #!/usr/bin/env bash
-VAGRANT_USER="vagrant"
-VAGRANT_DATA_DIR="/vagrant"
+VPS_SYSTEM_HOSTNAME="" # @require
+VPS_SYSTEM_FQDN="" # @require
+VPS_SYSTEM_ADMIN_AUTHORIZED_GITHUB_USERS="" # @require
+VPS_SYSTEM_ADMIN_SUDO_PASSWORD="" # @require
+VPS_SYSTEM_PRIVATE_IP="" # @specify
+VPS_SYSTEM_DNS_SERVERS="208.67.222.222 208.67.220.220"
+VPS_SYSTEM_ADMIN_USER="admin" # @specify
+VPS_SYSTEM_PRIVATE_NETMASK="255.255.128.0" # @specify Default is for Linode, DigitalOcean: 255.255.0.0
+VPS_SYSTEM_PUBLIC_NETMASK="255.255.255.0" # @specify Default is for Linode, DigitalOcean: 255.255.240.0
+VPS_SYSTEM_ALLOW_PORTS="www 443 ssh"
+VPS_SYSTEM_LIMIT_PORTS="ssh" # @specify Default will limit connection attempts from the same IP on SSH, this can cause problems with certain deployment techniques.
+VPS_SYSTEM_ALLOW_PRIVATE_IPS="" # @specify
+VPS_SYSTEM_ALLOW_PRIVATE_PORTS="5432 6379" # Postgres & Redis
+VPS_SYSTEM_GET_PUBLIC_IP_SERVICE_URL="http://ipecho.net/plain"
 
+function get-vps-system-public-ip {
+  wget -qO- $VPS_SYSTEM_GET_PUBLIC_IP_SERVICE_URL
+}
 
-# Propro package: vagrant/system.sh
-#!/usr/bin/env bash
-function vagrant-system-install-user-aliases {
-  announce "Installing helper aliases for user: $VAGRANT_USER"
-  tee -a /home/$VAGRANT_USER/.profile <<EOT
-alias be="bundle exec"
-alias r="bin/rails"
-alias v="cd $VAGRANT_DATA_DIR"
-cd $VAGRANT_DATA_DIR
+function get-vps-system-default-gateway {
+  ip route | awk '/default/ { print $3 }'
+}
+
+function vps-system-configure-hostname {
+  announce "Set hostname to $VPS_SYSTEM_HOSTNAME"
+  set-hostname $VPS_SYSTEM_HOSTNAME
+}
+
+function vps-system-configure-sshd {
+  announce "Configure sshd:"
+  announce-item "disable root login"
+  announce-item "disable password auth"
+  tee /etc/ssh/sshd_config <<EOT
+Port 22
+Protocol 2
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_dsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+UsePrivilegeSeparation yes
+KeyRegenerationInterval 3600
+ServerKeyBits 768
+SyslogFacility AUTH
+LogLevel INFO
+LoginGraceTime 120
+PermitRootLogin no
+StrictModes yes
+RSAAuthentication yes
+PubkeyAuthentication yes
+IgnoreRhosts yes
+RhostsRSAAuthentication no
+HostbasedAuthentication no
+PermitEmptyPasswords no
+ChallengeResponseAuthentication no
+PasswordAuthentication no
+X11Forwarding yes
+X11DisplayOffset 10
+PrintMotd no
+PrintLastLog yes
+TCPKeepAlive yes
+AcceptEnv LANG LC_*
+Subsystem sftp /usr/lib/openssh/sftp-server
+UsePAM yes
 EOT
+
+  announce "Restart sshd"
+  service ssh restart
 }
 
-function vagrant-system-purge-grub-menu-config {
-  ucf --purge /boot/grub/menu.lst
+function vps-system-configure-firewall {
+  section "Firewall"
+  install-packages ufw
+
+  announce "Configuring firewall:"
+  ufw default deny
+  ufw logging on
+
+  for port in $VPS_SYSTEM_ALLOW_PORTS; do
+    announce-item "allow $port"
+    ufw allow $port
+  done
+
+  for port in $VPS_SYSTEM_LIMIT_PORTS; do
+    announce-item "limit $port"
+    ufw limit $port
+  done
+
+  for local_ip in $VPS_SYSTEM_ALLOW_PRIVATE_IPS; do
+    for port in $VPS_SYSTEM_ALLOW_PRIVATE_PORTS; do
+      announce-item "allow $port from $local_ip"
+      ufw allow from $local_ip to any port $port
+    done
+  done
+
+  echo 'y' | ufw enable
 }
 
-function provision-vagrant-system {
-  section "Vagrant System"
-  vagrant-system-purge-grub-menu-config
+function vps-system-configure-admin-user {
+  announce "Adding admin user: $VPS_SYSTEM_ADMIN_USER"
+  add-user $VPS_SYSTEM_ADMIN_USER sudo $VPS_SYSTEM_ADMIN_SUDO_PASSWORD
+  add-pubkeys-from-github $VPS_SYSTEM_ADMIN_USER "$VPS_SYSTEM_ADMIN_AUTHORIZED_GITHUB_USERS"
+}
+
+function vps-system-configure-interfaces {
+  announce "Resolving extenal IP address"
+
+  local ip_addr=$(get-vps-system-public-ip)
+  local gateway=$(get-vps-system-default-gateway)
+  local fqdn="$ip_addr $VPS_SYSTEM_HOSTNAME $VPS_SYSTEM_FQDN"
+
+  announce "Setting FQDN: $fqdn"
+  echo "$fqdn" >> /etc/hosts
+
+  announce "Writing /etc/network/interfaces"
+  tee /etc/network/interfaces <<EOT
+auto lo
+iface lo inet loopback
+
+auto eth0 eth0:0 eth0:1
+
+# Public interface
+iface eth0 inet static
+ address $ip_addr
+ netmask $VPS_SYSTEM_PUBLIC_NETMASK
+ gateway $gateway
+ dns-nameservers $VPS_SYSTEM_DNS_SERVERS
+EOT
+
+  if [ $VPS_SYSTEM_PRIVATE_IP ]; then
+    tee -a /etc/network/interfaces <<EOT
+
+# Private interface
+iface eth0:1 inet static
+ address $VPS_SYSTEM_PRIVATE_IP
+ netmask $VPS_SYSTEM_PRIVATE_NETMASK
+EOT
+  fi
+
+  announce "Restart networking"
+  service networking restart
+}
+
+function provision-vps-system {
+  section "VPS System"
   system-upgrade
   system-configure-timezone
+  vps-system-configure-hostname
   system-configure-locale
   system-install-packages
   system-configure-shared-memory
   system-install-sources
-  vagrant-system-install-user-aliases
+  vps-system-configure-admin-user
+  vps-system-configure-interfaces
+  vps-system-configure-sshd
+  vps-system-configure-firewall
 }
 
 
-# Propro package: vagrant/pg.sh
+# Propro package: app.sh
 #!/usr/bin/env bash
-function vagrant-pg-create-user {
-  announce "Create database user: $VAGRANT_USER"
-  su - $PG_USER -c "createuser -s $VAGRANT_USER"
+#
+# Provides tools and commands for deploying a Rack application with Capistrano
+APP_DOMAIN="" # @require
+APP_AUTHORIZED_GITHUB_USERS="" # @require
+APP_USER="deploy" # @specify
+APPS_DIR="/sites" # @specify
+APP_ENV="production" # @specify
+
+function get-app-dir {
+  echo "$APPS_DIR/$APP_DOMAIN"
 }
 
-function provision-vagrant-pg {
-  section "PostgreSQL Server"
-  pg-install-packages
-  pg-tune
-  vagrant-pg-create-user
+function get-app-shared-dir {
+  echo "$(get-app-dir)/shared"
+}
+
+function get-app-shared-tmp-dir {
+  echo "$(get-app-shared-dir)/tmp"
+}
+
+function get-app-shared-log-dir {
+  echo "$(get-app-shared-dir)/log"
+}
+
+function get-app-shared-sockets-dir {
+  echo "$(get-app-shared-dir)/sockets"
+}
+
+function get-app-shared-config-dir {
+  echo "$(get-app-shared-dir)/config"
+}
+
+function get-app-current-dir {
+  echo "$(get-app-dir)/current"
+}
+
+function get-app-releases-dir {
+  echo "$(get-app-dir)/releases"
+}
+
+function get-app-current-public-dir {
+  echo "$(get-app-current-dir)/public"
+}
+
+function get-app-user {
+  echo $APP_USER
+}
+
+function get-app-home {
+  echo "/home/$(get-app-user)"
+}
+
+function get-app-env {
+  echo $APP_ENV
+}
+
+function get-app-id {
+  path-to-id $APP_DOMAIN
+}
+
+# $1 path
+function app-mkdir {
+  announce-item "$1"
+  as-user-mkdir $APP_USER "$1"
+}
+
+function app-create-user {
+  add-user $APP_USER "" ""
+  add-pubkeys-from-github $APP_USER "$APP_AUTHORIZED_GITHUB_USERS"
+}
+
+function app-create-dirs {
+  announce "Building app directory tree:"
+  app-mkdir "$APPS_DIR"
+  app-mkdir "$(get-app-dir)"
+  app-mkdir "$(get-app-releases-dir)"
+  app-mkdir "$(get-app-shared-config-dir)"
+  app-mkdir "$(get-app-shared-dir)"
+  app-mkdir "$(get-app-shared-tmp-dir)"
+  app-mkdir "$(get-app-shared-log-dir)"
+  app-mkdir "$(get-app-shared-sockets-dir)"
+}
+
+function provision-app {
+  app-create-user
+  app-create-dirs
 }
 
 
-# Propro package: vagrant/redis.sh
+# Propro package: app/rvm.sh
 #!/usr/bin/env bash
-function provision-vagrant-redis {
-  section "Redis"
-  redis-install
+# requires app.sh
+APP_RVM_RUBY_VERSION="2.1.2" # @specify
+
+function provision-app-rvm {
+  rvm-install-for-user $APP_USER $APP_RVM_RUBY_VERSION
 }
 
 
-# Propro package: vagrant/rvm.sh
+# Propro package: app/pg.sh
 #!/usr/bin/env bash
-VAGRANT_RVM_RUBY_VERSION="2.1.2" # @specify
-
-function provision-vagrant-rvm {
-  rvm-install-for-user $VAGRANT_USER $VAGRANT_RVM_RUBY_VERSION
+function provision-app-pg {
+  section "PostgreSQL Client"
+  install-packages libpq-dev
+  install-packages postgresql-client-$PG_VERSION
 }
 
 
-# Propro package: vagrant/node.sh
+# Propro package: app/nginx.sh
 #!/usr/bin/env bash
-function provision-vagrant-node {
-  section "Node.js"
-  node-install
-}
-
-
-# Propro package: vagrant/nginx.sh
-#!/usr/bin/env bash
-function provision-vagrant-nginx {
+function provision-app-nginx {
   section "Nginx"
   nginx-install
   nginx-configure
   nginx-conf-add-gzip
   nginx-conf-add-mimetypes
+  nginx-create-logrotate
+}
 
-  announce "Adding Nginx config for Vagrant"
-  tee "$NGINX_SITES_DIR/vagrant.conf" <<EOT
-upstream rack_app {
-  server 127.0.0.1:3000 fail_timeout=0;
+
+# Propro package: app/sidekiq.sh
+#!/usr/bin/env bash
+# requires app.sh
+APP_SIDEKIQ_CONFIG_DIR_RELATIVE="config/sidekiq"
+APP_SIDEKIQ_CONFIG_FILE_NAME="sidekiq.yml" # @specify
+APP_SIDEKIQ_PID_FILE_RELATIVE="tmp/sidekiq/worker.pid"
+APP_SIDEKIQ_CONF_FILE="/etc/sidekiq.conf"
+
+APP_SIDEKIQ_CONFIG_FILE_RELATIVE="$APP_SIDEKIQ_CONFIG_DIR_RELATIVE/$APP_SIDEKIQ_CONFIG_FILE_NAME"
+
+function provision-app-sidekiq {
+  section "Sidekiq"
+  announce "Create upstart for Sidekiq Manager"
+  tee /etc/init/sidekiq-manager.conf <<EOT
+description "Manages the set of sidekiq processes"
+start on runlevel [2345]
+stop on runlevel [06]
+env APP_SIDEKIQ_CONF="$APP_SIDEKIQ_CONF_FILE"
+
+pre-start script
+  for i in \`cat \$APP_SIDEKIQ_CONF_FILE\`; do
+    app=\`echo \$i | cut -d , -f 1\`
+    logger -t "sidekiq-manager" "Starting \$app"
+    start sidekiq app=\$app
+  done
+end script
+EOT
+
+  announce "Create upstart for Sidekiq Workers"
+  tee /etc/init/sidekiq.conf <<EOT
+description "Sidekiq Background Worker"
+stop on (stopping sidekiq-manager or runlevel [06])
+setuid $APP_USER
+setgid $APP_USER
+respawn
+respawn limit 3 30
+instance \${app}
+
+script
+exec /bin/bash <<'EOTT'
+  export HOME="\$(eval echo ~\$(id -un))"
+  source "\$HOME/.rvm/scripts/rvm"
+  logger -t sidekiq "Starting worker: \$app"
+  cd \$app
+  exec bundle exec sidekiq -e $APP_ENV -C $APP_SIDEKIQ_CONFIG_FILE_RELATIVE -P $APP_SIDEKIQ_PID_FILE_RELATIVE
+EOTT
+end script
+
+pre-stop script
+exec /bin/bash <<'EOTT'
+  export HOME="\$(eval echo ~\$(id -un))"
+  source "\$HOME/.rvm/scripts/rvm"
+  logger -t sidekiq "Stopping worker: \$app"
+  cd \$app
+  exec bundle exec sidekiqctl stop $APP_SIDEKIQ_PID_FILE_RELATIVE
+EOTT
+end script
+EOT
+
+  tee /etc/sidekiq.conf <<EOT
+$(get-app-current-dir)
+EOT
+
+  announce "Adding temp dir:"
+  app-mkdir "$(get-app-shared-tmp-dir)/sidekiq"
+
+  announce "Adding sudoers entries"
+  add-sudoers-entries $APP_USER "sidekiq-manager" ""
+  add-sudoers-entries $APP_USER "sidekiq" "app=$(get-app-current-dir)"
+}
+
+
+# Propro package: app/monit.sh
+#!/usr/bin/env bash
+function app-monit-install {
+  install-packages monit
+}
+
+function app-monit-logrotate {
+  announce "Create logrotate for Monit"
+  tee /etc/logrotate.d/monit <<EOT
+/var/log/monit.log {
+        rotate 4
+        weekly
+        minsize 1M
+        missingok
+        create 640 root adm
+        notifempty
+        compress
+        delaycompress
+        postrotate
+                invoke-rc.d monit reload > /dev/null
+        endscript
+}
+EOT
+}
+
+function app-monit-configure {
+  mv /etc/monit/monitrc /etc/monit/monitrc.defaults
+  touch /etc/monit/monitrc
+  tee "/etc/monit/monitrc" << EOT
+# copy into /etc/monit/monitrc
+# set ownership to root:root
+# set permissions to 600
+set daemon 60
+set logfile syslog facility log_daemon
+set mailserver localhost
+#set alert admin@domain.com
+
+set httpd port 2812
+
+allow localhost
+allow admin:monit
+
+include /etc/monit/conf.d/*
+EOT
+}
+
+function provision-app-monit {
+  section "Monit"
+  app-monit-install
+  app-monit-configure
+  app-monit-logrotate
+}
+
+
+# Propro package: app/ffmpeg.sh
+#!/usr/bin/env bash
+function provision-app-ffmpeg {
+  section "FFmpeg"
+  ffmpeg-install
+}
+
+
+# Propro package: app/puma.sh
+#!/usr/bin/env bash
+APP_PUMA_CONFIG_DIR_RELATIVE="config/puma"
+APP_PUMA_CONFIG_FILE_NAME="puma.rb" # @specify
+APP_PUMA_CONF_FILE="/etc/puma.conf"
+
+APP_PUMA_CONFIG_FILE_RELATIVE="$APP_PUMA_CONFIG_DIR_RELATIVE/$APP_PUMA_CONFIG_FILE_NAME"
+
+function get-app-puma-socket-file {
+  echo "$(get-app-shared-sockets-dir)/puma.sock"
+}
+
+function provision-app-puma {
+  section "Puma"
+  announce "Create upstart for Puma"
+  tee /etc/init/puma.conf <<EOT
+description "Puma Background Worker"
+stop on (stopping puma-manager or runlevel [06])
+setuid $APP_USER
+setgid $APP_USER
+respawn
+respawn limit 3 30
+instance \${app}
+script
+exec /bin/bash <<'EOTT'
+  export HOME="\$(eval echo ~\$(id -un))"
+  source "\$HOME/.rvm/scripts/rvm"
+  cd \$app
+  logger -t puma "Starting server: \$app"
+  exec bundle exec puma -C $APP_PUMA_CONFIG_FILE_RELATIVE
+EOTT
+end script
+EOT
+
+  announce "Create upstart for Puma Workers"
+  tee /etc/init/puma-manager.conf <<EOT
+description "Manages the set of Puma processes"
+start on runlevel [2345]
+stop on runlevel [06]
+# /etc/puma.conf format:
+# /path/to/app1
+# /path/to/app2
+env APP_PUMA_CONF="$APP_PUMA_CONF_FILE"
+pre-start script
+  for i in \`cat \$APP_PUMA_CONF\`; do
+    app=\`echo \$i | cut -d , -f 1\`
+    logger -t "puma-manager" "Starting \$app"
+    start puma app=\$app
+  done
+end script
+EOT
+
+  tee /etc/puma.conf <<EOT
+$(get-app-current-dir)
+EOT
+
+  announce "Adding temp dir"
+  app-mkdir "$(get-app-shared-tmp-dir)/puma"
+
+  announce "Adding sudoers entries"
+  add-sudoers-entries $APP_USER "puma-manager" ""
+  add-sudoers-entries $APP_USER "puma" "app=$(get-app-current-dir)"
+
+  provision-app-puma-nginx
+}
+
+
+# Propro package: app/puma/nginx.sh
+#!/usr/bin/env bash
+# requires nginx.sh
+# requires app.sh
+# requires app/puma.sh
+APP_PUMA_NGINX_ACCESS_LOG_FILE_NAME="access.log" # @specify
+APP_PUMA_NGINX_ERROR_LOG_FILE_NAME="error.log" # @specify
+APP_PUMA_NGINX_ACCESS_LOG_FILE="$NGINX_LOG_DIR/$APP_PUMA_NGINX_ACCESS_LOG_FILE_NAME"
+APP_PUMA_NGINX_ERROR_LOG_FILE="$NGINX_LOG_DIR/$APP_PUMA_NGINX_ERROR_LOG_FILE_NAME"
+
+function provision-app-puma-nginx {
+  tee "$NGINX_SITES_DIR/$APP_DOMAIN.conf" <<EOT
+upstream $(get-app-id) {
+  server unix:$(get-app-puma-socket-file) fail_timeout=0;
+}
+
+# Redirect www.$APP_DOMAIN => $APP_DOMAIN
+server {
+  listen 80;
+  listen 443 ssl;
+  server_name www.$APP_DOMAIN;
+  return 301 \$scheme://$APP_DOMAIN\$request_uri;
 }
 
 server {
-  root $VAGRANT_DATA_DIR/public;
+  server_name $APP_DOMAIN;
+  root $(get-app-current-public-dir);
 
-  access_log /dev/null;
-  error_log /dev/null;
+  access_log $APP_PUMA_NGINX_ACCESS_LOG_FILE combined;
+  error_log  $APP_PUMA_NGINX_ERROR_LOG_FILE notice;
 
-  try_files \$uri/index.html \$uri.html \$uri @upstream_app;
+  location ~* \.(eot|ttf|woff)\$ {
+    add_header Access-Control-Allow-Origin *;
+  }
 
-  location @upstream_app {
+  location ~ ^/(assets)/ {
+    root $(get-app-current-public-dir);
+    expires max;
+    add_header Cache-Control public;
+    gzip_static on;
+  }
+
+  try_files \$uri/index.html \$uri.html \$uri @rack_app;
+
+  location @rack_app {
     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
     proxy_set_header Host \$http_host;
     proxy_redirect off;
-    proxy_pass http://rack_app;
+    proxy_pass http://$(get-app-id);
+  }
+
+  error_page 500 502 503 504 /500.html;
+
+  location = /500.html {
+    root $(get-app-current-public-dir);
   }
 }
 EOT
 }
 
 
-# Propro package: vagrant/ffmpeg.sh
+# Propro package: app/node.sh
 #!/usr/bin/env bash
-function provision-vagrant-ffmpeg {
-  section "FFmpeg"
-  ffmpeg-install
+function provision-app-node {
+  section "Node.js"
+  node-install
 }
 
-# Options from: vagrant.propro
+
+# Propro package: app/unicorn.sh
+#!/usr/bin/env bash
+APP_UNICORN_CONFIG_DIR_RELATIVE="config/"
+APP_UNICORN_CONFIG_FILE_NAME="unicorn.rb" # @specify
+
+APP_UNICORN_CONFIG_FILE_RELATIVE="$APP_UNICORN_CONFIG_DIR_RELATIVE/$APP_UNICORN_CONFIG_FILE_NAME"
+
+function get-app-unicorn-app-root {
+  echo "$(get-app-current-dir)"
+}
+
+function get-app-unicorn-pid-file {
+  echo "$(get-app-unicorn-app-root)/log/unicorn.pid"
+}
+
+function app-unicorn-install {
+  announce "Create init.d for Unicorn"
+
+  tee /etc/init.d/unicorn <<EOT
+#!/bin/sh
+set -u
+set -e
+
+# copy this to /etc/init.d/unicorn
+# set owner to root:root
+# chmod a+x
+# update-rc.d unicorn defaults
+# adapted from http://gist.github.com/308216
+APP_ROOT=$(get-app-unicorn-app-root)
+PID=$(get-app-unicorn-pid-file)
+OLD_PID="\$PID.oldbin"
+ENV=$(get-app-env)
+HOME=$(get-app-home)
+
+cd \$APP_ROOT || exit 1
+
+start_unicorn () {
+        su deploy -c "cd \${APP_ROOT} && bin/unicorn -E \${ENV} -D -o 127.0.0.1 -c \${APP_ROOT}/config/unicorn.rb \${APP_ROOT}/config.ru"
+}
+
+sig () {
+        test -s "\$PID" && kill -\$1 \`cat \$PID\`
+}
+
+oldsig () {
+        test -s \$OLD_PID && kill -\$1 \`cat \$OLD_PID\`
+}
+
+
+case \$1 in
+start)
+        sig 0 && echo >&2 "Already running" && exit 0
+        start_unicorn
+        ;;
+stop)
+        sig QUIT && exit 0
+        echo >&2 "Not running"
+        ;;
+force-stop)
+        sig TERM && exit 0
+        echo >&2 "Not running"
+        ;;
+restart|reload)
+        sig HUP && echo reloaded OK && exit 0
+        echo >&2 "Couldn't reload, starting unicorn instead"
+        start_unicorn
+        ;;
+upgrade)
+        sig USR2 && exit 0
+        echo >&2 "Couldn't upgrade, starting unicorn instead"
+        start_unicorn
+        ;;
+rotate)
+        sig USR1 && echo rotated logs OK && exit 0
+        echo >&2 "Couldn't rotate logs" && exit 1
+        ;;
+*)
+        echo >&2 "Usage: \$0 <start|stop|restart|upgrade|rotate|force-stop>"
+        exit 1
+        ;;
+esac
+
+EOT
+
+chmod +x /etc/init.d/unicorn
+
+}
+
+function app-unicorn-sudoers {
+  announce "Adding sudoers entries"
+  for event in start status stop reload restart upgrade rotate; do
+    tee -a /etc/sudoers.d/unicorn.entries <<EOT
+$APP_USER ALL=NOPASSWD: /etc/init.d/unicorn $event
+EOT
+  done
+}
+
+function app-unicorn-logrotate {
+  announce "Create logrotate for Unicorn"
+  tee /etc/logrotate.d/unicorn <<EOT
+$(get-app-shared-dir)/log/*.log {
+        daily
+        missingok
+        rotate 90
+        compress
+        delaycompress
+        notifempty
+        dateext
+        create 640 deploy deploy
+        sharedscripts
+        postrotate
+                /etc/init.d/unicorn rotate
+        endscript
+}
+EOT
+}
+
+function provision-app-unicorn {
+  section "Unicorn"
+  app-unicorn-install
+  app-unicorn-sudoers
+  app-unicorn-logrotate
+}
+
+
+
+# Propro package: app/unicorn/nginx.sh
+#!/usr/bin/env bash
+# requires nginx.sh
+# requires app.sh
+# requires app/unicorn.sh
+APP_UNICORN_NGINX_ACCESS_LOG_FILE_NAME="access.log" # @specify
+APP_UNICORN_NGINX_ERROR_LOG_FILE_NAME="error.log" # @specify
+APP_UNICORN_UPSTREAM_PORT=4000 #@specify
+APP_UNICORN_NGINX_ACCESS_LOG_FILE="$NGINX_LOG_DIR/$APP_UNICORN_NGINX_ACCESS_LOG_FILE_NAME"
+APP_UNICORN_NGINX_ERROR_LOG_FILE="$NGINX_LOG_DIR/$APP_UNICORN_NGINX_ERROR_LOG_FILE_NAME"
+
+function provision-app-unicorn-nginx {
+  tee "$NGINX_SITES_DIR/$APP_DOMAIN.conf" <<EOT
+upstream $(get-app-id) {
+  server 127.0.0.1:$APP_UNICORN_UPSTREAM_PORT fail_timeout=0;
+}
+
+# Redirect www.$APP_DOMAIN => $APP_DOMAIN
+server {
+  listen 80;
+  listen 443 ssl;
+  server_name www.$APP_DOMAIN;
+  return 301 \$scheme://$APP_DOMAIN\$request_uri;
+}
+
+server {
+  server_name $APP_DOMAIN;
+  root $(get-app-current-public-dir);
+
+  access_log $APP_UNICORN_NGINX_ACCESS_LOG_FILE combined;
+  error_log  $APP_UNICORN_NGINX_ERROR_LOG_FILE notice;
+
+  location ~* \.(eot|ttf|woff)\$ {
+    add_header Access-Control-Allow-Origin *;
+  }
+
+  location ~ ^/(assets)/ {
+    root $(get-app-current-public-dir);
+    expires max;
+    add_header Cache-Control public;
+    gzip_static on;
+  }
+
+  try_files \$uri/index.html \$uri.html \$uri @rack_app;
+
+  location @rack_app {
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header Host \$http_host;
+    proxy_redirect off;
+    proxy_pass http://$(get-app-id);
+  }
+
+  error_page 500 502 503 504 /500.html;
+
+  location = /500.html {
+    root $(get-app-current-public-dir);
+  }
+}
+EOT
+}
+
+
+# Propro package: app/unicorn/monit.sh
+#!/usr/bin/env bash
+# requires nginx.sh
+# requires app.sh
+# requires app/unicorn.sh
+APP_UNICORN_NGINX_ACCESS_LOG_FILE_NAME="access.log" # @specify
+APP_UNICORN_NGINX_ERROR_LOG_FILE_NAME="error.log" # @specify
+APP_UNICORN_UPSTREAM_PORT=4000 #@specify
+APP_UNICORN_NGINX_ACCESS_LOG_FILE="$NGINX_LOG_DIR/$APP_UNICORN_NGINX_ACCESS_LOG_FILE_NAME"
+APP_UNICORN_NGINX_ERROR_LOG_FILE="$NGINX_LOG_DIR/$APP_UNICORN_NGINX_ERROR_LOG_FILE_NAME"
+
+function app-unicorn-monit-install {
+  tee "/etc/monit/conf.d/$APP_DOMAIN.conf" <<EOT
+check process unicorn_app
+  with pidfile $(get-app-unicorn-pid-file)
+  group unicorn
+  start program = "/etc/init.d/unicorn start" with timeout 100 seconds
+  stop program = "/etc/init.d/unicorn stop"
+EOT
+}
+function provision-app-unicorn-monit {
+  announce "installing Unicorn Monit"
+  app-unicorn-monit-install
+}
+
+
+# Propro package: db/pg.sh
+#!/usr/bin/env bash
+DB_PG_NAME="" # @require
+DB_PG_USER="" # @require
+DB_PG_BIND_IP="" # @specify Bind Postgres to specific interface
+DB_PG_TRUST_IPS="" # @specify Private network IPs allowed to connect to Postgres
+
+function db-pg-bind-ip {
+  if [ -z $DB_PG_BIND_IP ]; then
+    return 0
+  fi
+
+  announce "Bind PostgreSQL to $DB_PG_BIND_IP"
+  tee -a $PG_CONFIG_FILE <<EOT
+listen_addresses = 'localhost,$DB_PG_BIND_IP'
+EOT
+}
+
+function db-pg-trust-ips {
+  if [ -z "$DB_PG_TRUST_IPS" ]; then
+    return 0
+  fi
+
+  announce "Allow private network connections from:"
+  # hba format: TYPE DBNAME USER ADDR AUTH
+  for trust_ip in $DB_PG_TRUST_IPS; do
+    announce-item "$trust_ip"
+    tee -a $PG_HBA_FILE <<EOT
+host all all $trust_ip/32 trust
+EOT
+  done
+}
+
+# $1 db user name
+function db-pg-create-user {
+  announce "Create database user: $1"
+  su - $PG_USER -c "createuser -D -R $1"
+}
+
+function provision-db-pg {
+  section "PostgreSQL Server"
+  pg-install-packages
+  pg-tune
+  db-pg-bind-ip
+  db-pg-trust-ips
+  db-pg-create-user $DB_PG_USER
+  pg-createdb $DB_PG_USER $DB_PG_NAME
+}
+
+
+# Propro package: db/redis.sh
+#!/usr/bin/env bash
+DB_REDIS_BIND_IP="" # @specify
+
+# $1 ip (private IP of server)
+function redis-bind-ip {
+  if [ ! $DB_REDIS_BIND_IP ]; then
+    return 0
+  fi
+
+  announce "Bind Redis to local network interface"
+  tee -a $REDIS_CONF_FILE <<EOT
+bind $DB_REDIS_BIND_IP
+EOT
+}
+
+function provision-db-redis {
+  section "Redis"
+  redis-install
+  redis-bind-ip
+}
+
+# Options from: linode.propro
 SYSTEM_SHMALL_PERCENT="0.65"
-SYSTEM_SHMMAX_PERCENT="0.35"
+SYSTEM_SHMMAX_PERCENT="0.5"
+VPS_SYSTEM_HOSTNAME="lcboapi"
+VPS_SYSTEM_FQDN="lcboapi.com"
+VPS_SYSTEM_ADMIN_AUTHORIZED_GITHUB_USERS="heycarsten"
+VPS_SYSTEM_ADMIN_SUDO_PASSWORD=""
+VPS_SYSTEM_PUBLIC_NETMASK="255.255.255.0"
+VPS_SYSTEM_PRIVATE_NETMASK="255.255.128.0"
+NGINX_VERSION="1.6.0"
+NGINX_CONFIGURE_OPTS="--with-http_ssl_module --with-http_gzip_static_module --with-http_realip_module"
+NGINX_CLIENT_MAX_BODY_SIZE="5m"
+NGINX_WORKER_CONNECTIONS="2000"
+REDIS_VERSION="2.8.11"
+APP_DOMAIN="lcboapi.com"
+APP_AUTHORIZED_GITHUB_USERS="heycarsten"
+APP_ENV="production"
+APP_RVM_RUBY_VERSION="2.1.2"
+APP_PUMA_CONFIG_FILE_NAME="production.rb"
+APP_PUMA_NGINX_ACCESS_LOG_FILE_NAME="access.log"
+APP_PUMA_NGINX_ERROR_LOG_FILE_NAME="error.log"
+NODE_VERSION="0.10.29"
 PG_VERSION="9.3"
 PG_INSTALL_POSTGIS="yes"
-REDIS_VERSION="2.8.11"
-VAGRANT_RVM_RUBY_VERSION="2.1.2"
-NODE_VERSION="0.10.29"
-NGINX_VERSION="1.6.0"
-NGINX_WORKER_CONNECTIONS="100"
-EXTRA_PACKAGES="man zip git-core libxslt-dev libxml2-dev libmagickwand-dev imagemagick"
+PG_EXTENSIONS="btree_gin btree_gist fuzzystrmatch hstore intarray pg_trgm tsearch2 unaccent postgis"
+DB_PG_NAME="lcboapi"
+DB_PG_USER="deploy"
+EXTRA_PACKAGES="zip git-core libxslt-dev libxml2-dev libmagickwand-dev imagemagick"
 
 function main {
-  provision-vagrant-system
-  provision-vagrant-pg
-  provision-vagrant-redis
-  provision-vagrant-rvm
-  provision-vagrant-node
-  provision-vagrant-nginx
+  provision-vps-system
+  provision-app-nginx
+  provision-db-redis
+  provision-app
+  provision-app-rvm
+  provision-app-puma
+  provision-app-puma-nginx
+  provision-app-node
+  provision-db-pg
+  provision-app-pg
   provision-extras
   finished
   reboot-system
