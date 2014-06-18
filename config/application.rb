@@ -30,6 +30,7 @@ module LCBOAPI
     config.assets.precompile += %w[
       lcboapi.js
       lcboapi.css
+      lcboapi-admin.css
     ]
   end
 
