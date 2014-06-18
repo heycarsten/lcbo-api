@@ -427,17 +427,23 @@ Store Endpoints:
     name: Official LCBO store name
     postal_code: Postal code
     products_count: Total unique products at the store
-    store_no: LCBO store number [Deprecated]
+    store_no: "LCBO store number [Deprecated: Use id instead]"
     "[sunday..monday]_close": Minutes since midnight that the store closes
     "[sunday..monday]_open": Minutes since midnight that the store opens
     tags: A string of tags that reflect the store
     telephone: Telephone number
     updated_at: Time that the store information was updated
   :body: |
-    Minutes since midnight can be easily converted into 24 hour time. To get
-    the clock hour, divide the minutes since midnight by 60. To get the minute
-    value, mod the number by 60. Here is some example Javascript that
-    demonstrates how to perform the calculation:
+    Represents a physical LCBO location, please note that agency stores are not
+    included in LCBO API. Svante Richter was kind enough to provide a JSON dump
+    of LCBO agency stores, it can be found here:
+    [http://thirsty.kx.nu/js/agency.js](http://thirsty.kx.nu/js/agency.js)
+
+    Store Open / Close times are reperesented in minutes since midnight and can
+    be easily converted into 24 hour time. To get the clock hour, divide the
+    minutes since midnight by 60. To get the minute value, mod the number by 60.
+    Here is some example JavaScript that demonstrates how to perform the
+    calculation:
 
         function msmTo24time(msm) {
           var hour = msm / 60;
