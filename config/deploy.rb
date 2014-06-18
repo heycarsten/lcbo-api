@@ -8,6 +8,7 @@ set :repo_url, 'git@github.com:heycarsten/lcbo-api.git'
 set :linked_files, %w[
   config/database.yml
   config/secrets.yml
+  config/skylight.yml
 ]
 
 # Default value for linked_dirs is []
@@ -44,7 +45,7 @@ namespace :deploy do
   after :publishing, :restart
 end
 
-desc "Check that we can access everything"
+desc 'Check that we can access everything'
 task :check_write_permissions do
   on roles(:all) do |host|
     if test("[ -w #{fetch :deploy_to} ]")
