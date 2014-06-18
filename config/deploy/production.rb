@@ -1,7 +1,7 @@
-server 'lcboapi.com', user: 'deploy', roles: %w[ web app db ]
+server '69.164.210.217', user: 'deploy', roles: %w[ web app db ]
 
 set :deploy_to, '/sites/lcboapi.com'
-set :branch, 'deployed'
+set :branch,    ENV['branch'] || 'deployed'
 set :rails_env, 'production'
 
 desc 'Add tag for release'
