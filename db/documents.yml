@@ -8,21 +8,31 @@ root:
     unique benefits that come from having a single provider of alcoholic
     beverages in a large geographical area.
 
-    ### Usage
-
     The API is primarily designed to provide JSON data directly to mobile and
     web applications, but it is also capable of returning CSV data to be used
-    directly in a spreadsheet application.
-
-    Here are some examples of real-world applications:
-
-     * [LCBO Search](http://lcbosearch.com) by Carsten Nielsen [Web App]
-     * [Liquor, ON](http://hippofoundry.com/lcbo/) by Taylan Pince [iPhone App]
+    directly in a spreadsheet application, just add `.csv` to the end of any
+    LCBO API endpoint.
 
     If you plan on performing hundreds of queries per second for uses such as
-    data analysis then you should download the latest [dataset](/docs/dataset)
+    data analysis then you should download the latest [dataset](/docs/latest-dataset)
     and perform these operations offline. The datasets contain CSV data, if
     you need a different format please ask.
+
+    ### Users
+
+    Don&rsquo;t be shy, I'd love to hear how you or your company is using
+    LCBO API. Here is a small sampling of some companies and people using
+    LCBO API for fun, business, and mobile.
+
+     * [Collective Arts Beer Finder](http://collectiveartsbrewing.com/beer-finder) by Collective Arts Brewing
+     * [Dowser](http://theworkshed.com/projects/dowser) by Plank
+     * [Lickur](http://www.lickur.com) by Neil Chudleigh
+     * [Thirsty in Ontario?](http://thirsty.kx.nu) by Svante Richter
+     * [Booze Run](http://calvinwinter.ca/booze-run) by Calvin Winter
+     * [LCBO Finder](https://itunes.apple.com/ca/app/lcbo-finder/id353448944) by Brierwood Design Cooperative
+     * [LCBO Search](http://lcbosearch.com) by Carsten Nielsen
+     * [WineAlign](http://winealign.com) by Uncork Solutions
+     * [Liquor, ON](http://hippofoundry.com/lcbo/) by Taylan Pince
 
     ### Contact
 
