@@ -44,7 +44,15 @@ class Crawl < ActiveRecord::Base
 
   def self.init
     raise 'Crawl is already running' if any_active?
-    create(state: 'init')
+    create(
+      state: 'init',
+      store_ids: [],
+      product_ids: [],
+      added_product_ids: [],
+      added_store_ids: [],
+      removed_product_ids: [],
+      removed_store_ids: []
+    )
   end
 
   def previous
@@ -66,14 +74,22 @@ class Crawl < ActiveRecord::Base
   end
 
   def diff!
-    self.store_ids   = crawled_store_ids.all
+    store_ids_will_change!
+    self.store_ids = crawled_store_ids.all
+
+    product_ids_will_change!
     self.product_ids = crawled_product_ids.all
 
+    added_product_ids_will_change!
+    removed_product_ids_will_change!
+    added_store_ids_will_change!
+    removed_store_ids_will_change!
+
     if previous
-      self.added_product_ids   = (product_ids - previous.product_ids)
+      self.added_product_ids = (product_ids - previous.product_ids)
       self.removed_product_ids = (previous.product_ids - product_ids)
-      self.added_store_ids     = (store_ids - previous.store_ids)
-      self.removed_store_ids   = (previous.store_ids - store_ids)
+      self.added_store_ids = (store_ids - previous.store_ids)
+      self.removed_store_ids = (previous.store_ids - store_ids)
     else
       self.added_product_ids   = []
       self.removed_product_ids = []
@@ -81,7 +97,7 @@ class Crawl < ActiveRecord::Base
       self.removed_store_ids   = []
     end
 
-    save
+    save!
   end
 
   def is?(*states)
@@ -110,12 +126,14 @@ class Crawl < ActiveRecord::Base
 
   def push_jobs(type, ids)
     ids.each { |id| addjob(type, id) }
-    save
+    save!
   end
 
   def addjob(type, id)
     verify_unlocked!
     jobs << "#{type}:#{id}"
+
+    total_jobs_will_change!
     self.total_jobs += 1
   end
 
@@ -135,9 +153,10 @@ class Crawl < ActiveRecord::Base
       message:    message.to_s,
       payload:    JSON.dump(payload))
 
+    crawl_event_id_will_change!
     self.crawl_event_id = ce.id
 
-    save
+    save!
   end
 
   protected

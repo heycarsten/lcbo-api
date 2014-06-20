@@ -48,8 +48,10 @@ class Crawler < Boticus::Bot
         place_store(id)
       end
 
+      model.total_finished_jobs_will_change!
       model.total_finished_jobs += 1
-      model.save
+
+      model.save!
     end
 
     puts
@@ -138,8 +140,11 @@ class Crawler < Boticus::Bot
 
     Store.place(attrs)
 
+    model.total_stores_will_change!
     model.total_stores += 1
-    model.save
+
+    model.save!
+
     model.crawled_store_ids << id
   rescue LCBO::CrawlKit::NotFoundError
     log :warn, "Skipping store ##{id}, it does not exist."
@@ -171,13 +176,22 @@ class Crawler < Boticus::Bot
       Inventory.place(inv)
     end
 
-    model.total_products                                += 1
-    model.total_inventories                             += ia[:inventories].size
-    model.total_product_inventory_count                 += ia[:inventory_count]
-    model.total_product_inventory_price_in_cents        += pa[:inventory_price_in_cents]
+    model.total_products_will_change!
+    model.total_products += 1
+
+    model.total_inventories_will_change!
+    model.total_inventories += ia[:inventories].size
+
+    model.total_product_inventory_count_will_change!
+    model.total_product_inventory_count += ia[:inventory_count]
+
+    model.total_product_inventory_price_in_cents_will_change!
+    model.total_product_inventory_price_in_cents += pa[:inventory_price_in_cents]
+
+    model.total_product_inventory_volume_in_milliliters_will_change!
     model.total_product_inventory_volume_in_milliliters += pa[:inventory_volume_in_milliliters]
 
-    model.save
+    model.save!
 
     model.crawled_product_ids << id
   rescue LCBO::CrawlKit::NotFoundError, LCBO::CrawlKit::RedirectedError
