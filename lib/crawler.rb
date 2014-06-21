@@ -48,7 +48,6 @@ class Crawler < Boticus::Bot
         place_store(id)
       end
 
-      model.total_finished_jobs_will_change!
       model.total_finished_jobs += 1
 
       model.save!

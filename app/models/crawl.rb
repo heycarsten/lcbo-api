@@ -78,16 +78,8 @@ class Crawl < ActiveRecord::Base
   end
 
   def diff!
-    store_ids_will_change!
     self.store_ids = crawled_store_ids.all
-
-    product_ids_will_change!
     self.product_ids = crawled_product_ids.all
-
-    added_product_ids_will_change!
-    removed_product_ids_will_change!
-    added_store_ids_will_change!
-    removed_store_ids_will_change!
 
     if previous
       self.added_product_ids = (product_ids - previous.product_ids)
@@ -137,7 +129,6 @@ class Crawl < ActiveRecord::Base
     verify_unlocked!
     jobs << "#{type}:#{id}"
 
-    total_jobs_will_change!
     self.total_jobs += 1
   end
 
@@ -157,7 +148,6 @@ class Crawl < ActiveRecord::Base
       message:    message.to_s,
       payload:    JSON.dump(payload))
 
-    crawl_event_id_will_change!
     self.crawl_event_id = ce.id
 
     save!
