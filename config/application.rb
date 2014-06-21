@@ -25,6 +25,8 @@ module LCBOAPI
       g.view_specs false
     end
 
+    config.active_record.schema_format = :sql
+
     # Don't include default application.(css|js) manifest matcher
     config.assets.precompile -= [/(?:\/|\\|\A)application\.(css|js)$/]
     config.assets.precompile += %w[

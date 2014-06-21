@@ -5,7 +5,10 @@ class Product < ActiveRecord::Base
     against:  :tags,
     ignoring: :accents,
     using: {
-      tsearch: { prefix: true }
+      tsearch: {
+        prefix: true,
+        tsvector_column: :tag_vectors
+      }
     }
 
   belongs_to :crawl
