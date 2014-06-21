@@ -65,6 +65,10 @@ class Crawl < ActiveRecord::Base
     end
   end
 
+  def state=(val)
+    write_attribute :state, val ? val.to_s : val
+  end
+
   def product_ids
     super || []
   end
