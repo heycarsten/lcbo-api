@@ -549,6 +549,13 @@ CREATE INDEX index_inventories_on_product_id_and_store_id ON inventories USING b
 
 
 --
+-- Name: index_inventories_on_quantity; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_inventories_on_quantity ON inventories USING btree (quantity);
+
+
+--
 -- Name: index_inventories_on_store_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -887,4 +894,6 @@ INSERT INTO schema_migrations (version) VALUES ('20140616233032');
 INSERT INTO schema_migrations (version) VALUES ('20140621143738');
 
 INSERT INTO schema_migrations (version) VALUES ('20140621151939');
+
+INSERT INTO schema_migrations (version) VALUES ('20140625021830');
 
