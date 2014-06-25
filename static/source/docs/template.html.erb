@@ -1,8 +1,4 @@
-<% if @document[:reverse_html_title] %>
-  <% title @document[:title] + ' LCBO API' %>
-<% else %>
-  <% title 'LCBO API ' + @document[:title] %>
-<% end %>
+<% content_for :title, doc[:title] %>
 
 <div class="cols-1-2 clear">
   <div class="col-1">
@@ -12,46 +8,46 @@
       </h1>
     </div>
     <ul class="side-menu">
-      <% @sections.each_pair do |section, documents| %>
-        <%= render 'root/section', section: section, documents: documents %>
+      <% data.endpoints.group_by { |e| e[:heading] }.each do |section, documents| %>
+        <%= partial 'docs/section', locals: { section: section, documents: documents } %>
       <% end %>
     </ul>
   </div>
   <div class="col-2">
-    <% if @document[:route] %>
+    <% if doc[:route] %>
       <div class="document-title">
-        <h2><%= @document[:title] %></h2>
+        <h2><%= doc[:title] %></h2>
         <dl>
           <dt class="uri-specification hide">
             URL Template
           </dt>
           <dd class="uri-specification">
-            <code>http://lcboapi.com</code><%= format_route @document[:route] %>
+            <code>http://lcboapi.com</code><%= format_route doc[:route] %>
           </dd>
         </dl>
       </div>
       <article class="document-body">
-<%= markdown @document[:body] %>
+<%= markdown doc[:body] %>
         <h3>Formats</h3>
         <table class="formats">
-          <% @document[:formats].each_pair do |type, desc| %>
+          <% doc[:formats].each_pair do |type, desc| %>
             <tr>
               <td class="extension">
                 <b>.<%= type %></b>
               </td>
               <td class="desc">
-                <%= raw desc %>
+                <%= desc %>
               </td>
             </tr>
           <% end %>
         </table>
-        <% if @document[:params] %>
-          <%= render 'root/params' %>
+        <% if doc[:params] %>
+          <%= partial 'docs/params', locals: { doc: doc } %>
         <% end %>
-        <% if @document[:pairs] %>
+        <% if doc[:pairs] %>
           <h3>Fields</h3>
           <table class="fields">
-            <% @document[:pairs].each do |field, desc| %>
+            <% doc[:pairs].each do |field, desc| %>
               <tr>
                 <td class="field">
                   <code><%= field %></code>
@@ -64,7 +60,7 @@
           </table>
         <% end %>
       </article>
-      <% @document[:examples].each do |example| %>
+      <% doc[:examples].each do |example| %>
         <div class="document-example">
           <form class="usage-example-form" action="#" method="GET">
             <fieldset>
@@ -94,10 +90,10 @@
       <% end %>
     <% else %>
       <div class="document-title">
-        <h2><%= @document[:title] %></h2>
+        <h2><%= doc[:title] %></h2>
       </div>
       <div class="document-body">
-        <%= markdown @document[:body] %>
+<%= markdown doc[:body] %>
       </div>
     <% end %>
   </div>

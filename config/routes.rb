@@ -7,9 +7,7 @@ Rails.application.routes.draw do
     resources :crawl_events
   end
 
-  root to: 'root#index'
-
-  get '/docs(/:slug)' => 'root#show'
+  root to: 'root#show'
 
   scope version: 1, constraints: { lat: LATLON_RE, lon: LATLON_RE } do
     get '/download/:year-:month-:day'               => 'root#deprecated', name: :dataset_by_date

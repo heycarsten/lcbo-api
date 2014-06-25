@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="en">
-  <%= render 'layouts/head' %>
+  <%= partial 'layouts/head' %>
   <body id="lcboapi_body" class="gs768">
-    <%= render 'layouts/header' %>
+    <%= partial 'layouts/header' %>
     <div class="grid-body">
       <div class="constraint">
         <%= yield %>
       </div>
     </div>
-    <%= render 'layouts/footer' %>
-    <%= google_analytics_fragment %>
+    <%= partial 'layouts/footer' %>
+    <%= partial 'layouts/ga' %>
   </body>
 </html>

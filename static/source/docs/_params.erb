@@ -1,9 +1,8 @@
-<% query = "QueryHelper::#{@document[:query]}".constantize %>
-
 <h3>Parameters</h3>
+
 <dl class="query-params">
-  <% if @document[:params].include?(:defaults) %>
-    <% if query.filterable_fields.any? %>
+  <% if doc[:params].include?(:defaults) %>
+    <% if doc[:filterable_fields] %>
       <dt>
         <code>where</code>, <code>where_not</code>
       </dt>
@@ -16,11 +15,12 @@
           The fields below may be specified:
         </p>
         <p>
-          <code><%= query.filterable_fields.join(', ') %></code>
+          <code><%= doc[:filterable_fields].join(', ') %></code>
         </p>
       </dd>
     <% end %>
-    <% if query.sortable_fields.any? %>
+
+    <% if doc[:sortable_fields] %>
       <dt>
         <code>order</code>
       </dt>
@@ -33,7 +33,7 @@
           may be specified:
         </p>
         <p>
-          <code><%= query.sortable_fields.join(', ') %></code>
+          <code><%= doc[:sortable_fields].join(', ') %></code>
         </p>
       </dd>
     <% end %>
@@ -43,8 +43,8 @@
     <dd>
       <p>
         Only used for CSV and TSV responses, specifies the number of rows to
-        return. The default value is <b><%= query.limit %></b>, and the maximum
-        value is <b><%= query.max_limit %></b>.
+        return. The default value is <b><%= doc[:query_limit] %></b>, and the maximum
+        value is <b><%= doc[:query_max_limit] %></b>.
       </p>
     </dd>
     <dt>
@@ -63,12 +63,13 @@
     <dd>
       <p>
         The number of objects to include per page. The default value is
-        <b><%= query.per_page %></b>, and the maximum value is
-        <b><%= query.max_per_page %></b>.
+        <b><%= doc[:query_per_page] %></b>, and the maximum value is
+        <b><%= doc[:query_max_per_page] %></b>.
       </p>
     </dd>
   <% end %>
-  <% if @document[:params].include?(:q) %>
+
+  <% if doc[:params].include?(:q) %>
     <dt>
       <code>q</code>
     </dt>
@@ -78,7 +79,8 @@
       </p>
     </dd>
   <% end %>
-  <% if @document[:params].include?(:geo) %>
+
+  <% if doc[:params].include?(:geo) %>
     <dt>
       <code>geo</code>
     </dt>

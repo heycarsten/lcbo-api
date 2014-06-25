@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="description" content="A REST service for LCBO store, product, and inventory data.">
+  <title>Dataset</title>
+  <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/all.js" type="text/javascript"></script>
+</head>
+
+  <body id="lcboapi_body" class="gs960">
+    <div class="grid-header">
+  <div class="constraint">
+    <h1>
+      <a href="/">
+        <span>LCBO API</span>
+      </a>
+    </h1>
+    <p>
+      <a href="http://twitter.com/lcboapi">
+        <span>Follow on Twitter</span>
+      </a>
+    </p>
+  </div>
+</div>
+
+    <div class="grid-body">
+      <div class="constraint">
+        
+<div class="cols-1-2 clear">
+  <div class="col-1">
+    <div class="side-title">
+      <h1>
+        <span>LCBO API </span>Documentation
+      </h1>
+    </div>
+    <ul class="side-menu">
+        <li class="side-menu-section">
+    <div class="side-menu-section-caption">
+      Dataset Endpoints
+    </div>
+  <ul class="side-menu-list">
+      <li class="side-menu-item">
+        <a href="/docs/datasets">
+          Datasets
+        </a>
+      </li>
+      <li class="side-menu-item">
+        <a href="/docs/dataset">
+          Dataset
+        </a>
+      </li>
+      <li class="side-menu-item">
+        <a href="/docs/latest-dataset">
+          Latest Dataset
+        </a>
+      </li>
+  </ul>
+</li>
+
+        <li class="side-menu-section">
+    <div class="side-menu-section-caption">
+      Product Endpoints
+    </div>
+  <ul class="side-menu-list">
+      <li class="side-menu-item">
+        <a href="/docs/products">
+          Products
+        </a>
+      </li>
+      <li class="side-menu-item">
+        <a href="/docs/product">
+          Product
+        </a>
+      </li>
+      <li class="side-menu-item">
+        <a href="/docs/products-at-store">
+          Products at Store
+        </a>
+      </li>
+  </ul>
+</li>
+
+        <li class="side-menu-section">
+    <div class="side-menu-section-caption">
+      Store Endpoints
+    </div>
+  <ul class="side-menu-list">
+      <li class="side-menu-item">
+        <a href="/docs/stores-with-product">
+          Stores with Product
+        </a>
+      </li>
+      <li class="side-menu-item">
+        <a href="/docs/stores">
+          Stores
+        </a>
+      </li>
+      <li class="side-menu-item">
+        <a href="/docs/store">
+          Store
+        </a>
+      </li>
+  </ul>
+</li>
+
+        <li class="side-menu-section">
+    <div class="side-menu-section-caption">
+      Inventory Endpoints
+    </div>
+  <ul class="side-menu-list">
+      <li class="side-menu-item">
+        <a href="/docs/inventories">
+          Inventories
+        </a>
+      </li>
+      <li class="side-menu-item">
+        <a href="/docs/inventory">
+          Inventory
+        </a>
+      </li>
+      <li class="side-menu-item">
+        <a href="/docs/product-inventories">
+          Product Inventories
+        </a>
+      </li>
+  </ul>
+</li>
+
+    </ul>
+  </div>
+  <div class="col-2">
+      <div class="document-title">
+        <h2>Dataset</h2>
+        <dl>
+          <dt class="uri-specification hide">
+            URL Template
+          </dt>
+          <dd class="uri-specification">
+            <code>http://lcboapi.com</code><code class="route-spec">/datasets/<span>:dataset_id</span></code>
+          </dd>
+        </dl>
+      </div>
+      <article class="document-body">
+<p>Datasets represent snapshots of all stores, products, and inventories at a
+given time. They are created once per day and contain information such as
+the IDs of stores and products that were added and removed since the
+previous dataset.</p>
+
+        <h3>Formats</h3>
+        <table class="formats">
+            <tr>
+              <td class="extension">
+                <b>.json</b>
+              </td>
+              <td class="desc">
+                JSON (default format if no extension is supplied)
+              </td>
+            </tr>
+            <tr>
+              <td class="extension">
+                <b>.js</b>
+              </td>
+              <td class="desc">
+                JavaScript (for use with JSON-P, requires <code>callback</code> parameter)
+              </td>
+            </tr>
+            <tr>
+              <td class="extension">
+                <b>.csv</b>
+              </td>
+              <td class="desc">
+                Comma Separated Values
+              </td>
+            </tr>
+            <tr>
+              <td class="extension">
+                <b>.tsv</b>
+              </td>
+              <td class="desc">
+                Tab Separated Values
+              </td>
+            </tr>
+            <tr>
+              <td class="extension">
+                <b>.zip</b>
+              </td>
+              <td class="desc">
+                ZIP archive of all data (redirects to actual file)
+              </td>
+            </tr>
+        </table>
+          <h3>Fields</h3>
+          <table class="fields">
+              <tr>
+                <td class="field">
+                  <code>id</code>
+                </td>
+                <td class="desc">
+                  Dataset identifier
+                </td>
+              </tr>
+              <tr>
+                <td class="field">
+                  <code>total_products</code>
+                </td>
+                <td class="desc">
+                  Total unique retail products across all stores
+                </td>
+              </tr>
+              <tr>
+                <td class="field">
+                  <code>total_stores</code>
+                </td>
+                <td class="desc">
+                  Total stores
+                </td>
+              </tr>
+              <tr>
+                <td class="field">
+                  <code>total_inventories</code>
+                </td>
+                <td class="desc">
+                  Total inventory items across all stores
+                </td>
+              </tr>
+              <tr>
+                <td class="field">
+                  <code>total_product_inventory_count</code>
+                </td>
+                <td class="desc">
+                  Total product units across all stores
+                </td>
+              </tr>
+              <tr>
+                <td class="field">
+                  <code>total_product_inventory_volume_in_milliliters</code>
+                </td>
+                <td class="desc">
+                  Total volume of all product units across all stores
+                </td>
+              </tr>
+              <tr>
+                <td class="field">
+                  <code>total_product_inventory_price_in_cents</code>
+                </td>
+                <td class="desc">
+                  Total retail value of all product units across all stores
+                </td>
+              </tr>
+              <tr>
+                <td class="field">
+                  <code>created_at</code>
+                </td>
+                <td class="desc">
+                  The time the dataset was created
+                </td>
+              </tr>
+              <tr>
+                <td class="field">
+                  <code>product_ids</code>
+                </td>
+                <td class="desc">
+                  List of all active product IDs at the time the dataset was created
+                </td>
+              </tr>
+              <tr>
+                <td class="field">
+                  <code>store_ids</code>
+                </td>
+                <td class="desc">
+                  List of all active store IDs at the time the dataset was created
+                </td>
+              </tr>
+              <tr>
+                <td class="field">
+                  <code>added_product_ids</code>
+                </td>
+                <td class="desc">
+                  List of product IDs that were added since the previous update
+                </td>
+              </tr>
+              <tr>
+                <td class="field">
+                  <code>added_store_ids</code>
+                </td>
+                <td class="desc">
+                  List of store IDs that were added since the previous update
+                </td>
+              </tr>
+              <tr>
+                <td class="field">
+                  <code>removed_product_ids</code>
+                </td>
+                <td class="desc">
+                  List of product IDs that were removed since the previous update
+                </td>
+              </tr>
+              <tr>
+                <td class="field">
+                  <code>removed_store_ids</code>
+                </td>
+                <td class="desc">
+                  List of store IDs that were removed since the previous update
+                </td>
+              </tr>
+              <tr>
+                <td class="field">
+                  <code>csv_dump</code>
+                </td>
+                <td class="desc">
+                  Contains a path to a ZIP archive of CSV files for stores, products, and inventories.
+                </td>
+              </tr>
+          </table>
+      </article>
+        <div class="document-example">
+          <form class="usage-example-form" action="#" method="GET">
+            <fieldset>
+              <legend>Get a specific dataset</legend>
+              <dl>
+                <dt>
+                  <div class="hide">
+                    <label for="query">Query</label>
+                  </div>
+                </dt>
+                <dd class="query-widget">
+                  http://lcboapi.com
+                  <input id="query" name="query" type="text" value="/datasets/1">
+                  <input id="submit" name="commit" type="submit" value="Request">
+                </dd>
+                <dt class="hide">
+                  Response
+                </dt>
+                <dd class="example-response">
+                  <pre>
+<code class="example-json-response">{}</code></pre>
+                </dd>
+              </dl>
+            </fieldset>
+          </form>
+        </div>
+  </div>
+</div>
+
+      </div>
+    </div>
+    <div class="grid-footer">
+  <div class="constraint clear">
+    <p class="footer-copyright">
+      Built by
+      <a href="http://heycarsten.com">Carsten Nielsen</a>
+      <br>
+      from
+      <a href="http://unspace.ca">Unspace Interactive</a>
+    </p>
+    <p class="footer-disclaimer">
+      This service is not affiliated with the
+      <a href="http://lcbo.com" rel="nofollow">
+        <acronym title="Liquor Control Board of Ontario">LCBO</acronym>
+      </a>
+    </p>
+  </div>
+</div>
+
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-8617929-2', 'auto');
+  ga('send', 'pageview');
+</script>
+  </body>
+</html>

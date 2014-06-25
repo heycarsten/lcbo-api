@@ -24,21 +24,6 @@ class RootController < ApplicationController
   end
 
   def show
-    load_documents
-    redirect_to '/docs/about' and return unless params[:slug]
-    @document = @documents.find { |doc| doc[:slug] == params[:slug] }
-    return http_status(404) unless @document
-    render layout: 'document'
-  end
-
-  def index
-    load_documents
-  end
-
-  protected
-
-  def load_documents
-    @sections  = SECTIONS
-    @documents = DOCUMENTS
+    render text: ''
   end
 end
