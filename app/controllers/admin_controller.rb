@@ -1,8 +1,6 @@
 class AdminController < ApplicationController
   before_filter :authenticate
 
-  layout 'admin'
-
   protected
 
   def cacheable?

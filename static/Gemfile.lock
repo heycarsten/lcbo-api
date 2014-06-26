@@ -104,4 +104,3 @@ PLATFORMS
 
 DEPENDENCIES
   middleman (~> 3.3.3)
-  middleman-core
