@@ -12,6 +12,7 @@ Bundler.require(*Rails.groups)
 module LCBOAPI
   class Application < Rails::Application
     # /lib requires
+    require 'lcbo'
     require 'geo_scope'
     require 'redis_abuse'
     require 'query_helper'
