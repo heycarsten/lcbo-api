@@ -6,11 +6,19 @@ module LCBO
     end
 
     field :id do
-      lookup(:itemNumber).to_i
+      if (id = lookup(:itemNumber))
+        id.to_i
+      else
+        raise LCBO::DafuqError, "expected product to have ID"
+      end
     end
 
     field :name do
-      util.titlecase(lookup(:itemName))
+      if (name = lookup(:itemName))
+        util.titlecase(name)
+      else
+        raise LCBO::DafuqError, "expected product to have a name"
+      end
     end
 
     field :tags do

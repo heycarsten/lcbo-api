@@ -11,7 +11,7 @@ module LCBO
   class Error < StandardError; end
   class NotFoundError < Error; end
   class BadRequestError < Error; end
-  class TimeoutError < Error; end
+  class DafuqError < Error; end
 
   autoload :Util,             'lcbo/util'
   autoload :Parser,           'lcbo/parser'

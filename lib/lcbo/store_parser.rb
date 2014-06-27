@@ -16,11 +16,19 @@ module LCBO
     end
 
     field :id do
-      lookup(:locationNumber).to_i
+      if (id = lookup(:locationNumber))
+        id.to_i
+      else
+        raise LCBO::DafuqError, "expected store to have ID"
+      end
     end
 
     field :name do
-      util.titlecase(lookup(:locationIntersection))
+      if (name = lookup(:locationIntersection))
+        util.titlecase(name)
+      else
+        raise LCBO::DafuqError, "expected store to have name"
+      end
     end
 
     field :tags do
