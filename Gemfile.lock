@@ -67,7 +67,7 @@ GEM
     diff-lcs (1.2.5)
     erubis (2.7.0)
     excon (0.37.0)
-    execjs (2.2.0)
+    execjs (2.2.1)
     fabrication (2.11.3)
     gcoder (1.1.0)
       hashie
