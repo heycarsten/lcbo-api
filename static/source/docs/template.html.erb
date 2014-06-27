@@ -8,6 +8,7 @@
       </h1>
     </div>
     <ul class="side-menu">
+      <%= partial 'docs/section', locals: { section: nil, documents: data.documents } %>
       <% data.endpoints.group_by { |e| e[:heading] }.each do |section, documents| %>
         <%= partial 'docs/section', locals: { section: section, documents: documents } %>
       <% end %>

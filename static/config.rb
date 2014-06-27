@@ -30,6 +30,10 @@ data.endpoints.each do |doc|
   proxy "/docs/#{doc[:slug]}/index.html", '/docs/template.html', locals: { doc: doc }
 end
 
+data.documents.each do |doc|
+  proxy "/docs/#{doc[:slug]}/index.html", '/docs/template.html', locals: { doc: doc }
+end
+
 ###
 # Helpers
 ###

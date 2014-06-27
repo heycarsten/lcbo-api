@@ -1,7 +1,6 @@
 - :title: Datasets
   :slug: datasets
   :heading: Dataset Endpoints
-  :query: DatasetsQuery
   :route: /datasets
   :formats: &all_formats
     :json: JSON (default format if no extension is supplied)
@@ -9,7 +8,20 @@
     :csv: Comma Separated Values
     :tsv: Tab Separated Values
   :params:
-    - :defaults
+  - :defaults
+  :per_page: 20
+  :max_per_page: 100
+  :limit: 50
+  :max_limit: 500
+  :sortable_fields:
+  - id
+  - created_at
+  - total_products
+  - total_stores
+  - total_inventories
+  - total_product_inventory_count
+  - total_product_inventory_volume_in_milliliters
+  - total_product_inventory_price_in_cents
   :examples:
   - :path: /datasets
     :desc: Page all datasets
@@ -66,11 +78,43 @@
   :heading: Product Endpoints
   :route: /products
   :query: ProductsQuery
+  :per_page: 20
+  :max_per_page: 100
+  :limit: 50
+  :max_limit: 200
   :formats:
     <<: *all_formats
+  :filterable_fields:
+  - is_dead
+  - is_discontinued
+  - has_value_added_promotion
+  - has_limited_time_offer
+  - has_bonus_reward_miles
+  - is_seasonal
+  - is_vqa
+  - is_kosher
+  :sortable_fields:
+  - id
+  - price_in_cents
+  - regular_price_in_cents
+  - limited_time_offer_savings_in_cents
+  - limited_time_offer_ends_on
+  - bonus_reward_miles
+  - bonus_reward_miles_ends_on
+  - package_unit_volume_in_milliliters
+  - total_package_units
+  - total_package_volume_in_milliliters
+  - volume_in_milliliters
+  - alcohol_content
+  - price_per_liter_of_alcohol_in_cents
+  - price_per_liter_in_cents
+  - inventory_count
+  - inventory_volume_in_milliliters
+  - inventory_price_in_cents
+  - released_on
   :params:
-    - :defaults
-    - :q
+  - :defaults
+  - :q
   :examples:
   - :path: /products
     :desc: All products
@@ -96,10 +140,10 @@
     alcohol_content: Alcohol content (Divide by 100 for decimal value)
     bonus_reward_miles: Number of bonus air miles
     bonus_reward_miles_ends_on: When bonus air miles are no longer valid
-    clearance_sale_savings_in_cents: Savings in cents if on clearance
+    clearance_sale_savings_in_cents: Savings in cents if on clearance [Deprecated]
     description: Product description (not available for all products)
     has_bonus_reward_miles: True if the product has bonus air miles
-    has_clearance_sale: True if the product is currently on clearance
+    has_clearance_sale: True if the product is currently on clearance [Deprecated]
     has_limited_time_offer: True if the product is on sale
     has_value_added_promotion: True if the product has a value added promotion
     id: The LCBO product ID / number
@@ -150,11 +194,43 @@
   :heading: Product Endpoints
   :route: /stores/:store_id/products
   :query: ProductsQuery
+  :per_page: 20
+  :max_per_page: 100
+  :limit: 50
+  :max_limit: 200
   :formats:
     <<: *all_formats
+  :filterable_fields:
+  - is_dead
+  - is_discontinued
+  - has_value_added_promotion
+  - has_limited_time_offer
+  - has_bonus_reward_miles
+  - is_seasonal
+  - is_vqa
+  - is_kosher
+  :sortable_fields:
+  - id
+  - price_in_cents
+  - regular_price_in_cents
+  - limited_time_offer_savings_in_cents
+  - limited_time_offer_ends_on
+  - bonus_reward_miles
+  - bonus_reward_miles_ends_on
+  - package_unit_volume_in_milliliters
+  - total_package_units
+  - total_package_volume_in_milliliters
+  - volume_in_milliliters
+  - alcohol_content
+  - price_per_liter_of_alcohol_in_cents
+  - price_per_liter_in_cents
+  - inventory_count
+  - inventory_volume_in_milliliters
+  - inventory_price_in_cents
+  - released_on
   :params:
-    - :defaults
-    - :q
+  - :defaults
+  - :q
   :examples:
   - :path: /stores/511/products
     :desc: All products available at store 511
@@ -169,8 +245,30 @@
   :heading: Store Endpoints
   :route: /products/:product_id/stores
   :query: StoresQuery
+  :per_page: 20
+  :max_per_page: 100
+  :limit: 50
+  :max_limit: 500
   :formats:
     <<: *all_formats
+  :filterable_fields:
+  - is_dead
+  - has_wheelchair_accessability
+  - has_bilingual_services
+  - has_product_consultant
+  - has_tasting_bar
+  - has_beer_cold_room
+  - has_special_occasion_permits
+  - has_vintages_corner
+  - has_parking
+  - has_transit_access
+  :sortable_fields:
+  - distance_in_meters
+  - inventory_volume_in_milliliters
+  - id
+  - products_count
+  - inventory_count
+  - inventory_price_in_cents
   :params:
   - :defaults
   - :geo
@@ -187,12 +285,34 @@
   :slug: stores
   :route: /stores
   :query: StoresQuery
+  :per_page: 20
+  :max_per_page: 100
+  :limit: 50
+  :max_limit: 500
   :formats:
     <<: *all_formats
   :params:
   - :defaults
   - :geo
   - :q
+  :filterable_fields:
+  - is_dead
+  - has_wheelchair_accessability
+  - has_bilingual_services
+  - has_product_consultant
+  - has_tasting_bar
+  - has_beer_cold_room
+  - has_special_occasion_permits
+  - has_vintages_corner
+  - has_parking
+  - has_transit_access
+  :sortable_fields:
+  - distance_in_meters
+  - inventory_volume_in_milliliters
+  - id
+  - products_count
+  - inventory_count
+  - inventory_price_in_cents
   :examples:
   - :path: /stores
     :desc: All stores
@@ -273,8 +393,17 @@
   :heading: Inventory Endpoints
   :route: /inventories
   :query: InventoriesQuery
+  :per_page: 50
+  :max_per_page: 100
+  :limit: 50
+  :max_limit: 500
   :params:
   - :defaults
+  :filterable_fields:
+  - is_dead
+  :sortable_fields:
+  - quantity
+  - updated_on
   :formats:
     <<: *all_formats
   :examples:
@@ -312,8 +441,17 @@
   :heading: Inventory Endpoints
   :route: /products/:product_id/inventories
   :query: InventoriesQuery
+  :per_page: 50
+  :max_per_page: 100
+  :limit: 50
+  :max_limit: 500
   :params:
   - :defaults
+  :filterable_fields:
+  - is_dead
+  :sortable_fields:
+  - quantity
+  - updated_on
   :formats:
     <<: *all_formats
   :examples:

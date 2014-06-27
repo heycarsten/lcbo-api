@@ -43,8 +43,8 @@
     <dd>
       <p>
         Only used for CSV and TSV responses, specifies the number of rows to
-        return. The default value is <b><%= doc[:query_limit] %></b>, and the maximum
-        value is <b><%= doc[:query_max_limit] %></b>.
+        return. The default value is <b><%= doc[:limit] %></b>, and the maximum
+        value is <b><%= doc[:max_limit] %></b>.
       </p>
     </dd>
     <dt>
@@ -63,8 +63,8 @@
     <dd>
       <p>
         The number of objects to include per page. The default value is
-        <b><%= doc[:query_per_page] %></b>, and the maximum value is
-        <b><%= doc[:query_max_per_page] %></b>.
+        <b><%= doc[:per_page] %></b>, and the maximum value is
+        <b><%= doc[:max_per_page] %></b>.
       </p>
     </dd>
   <% end %>
