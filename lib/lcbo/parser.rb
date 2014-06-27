@@ -28,6 +28,28 @@ module LCBO
       define_method(name, &block)
     end
 
+    def as_json
+      @as_json ||= begin
+        before_parse
+
+        hsh = self.class.fields.reduce({}) { |h, field|
+          h.merge(field => __send__(field))
+        }
+
+        after_parse
+
+        hsh
+      end
+    end
+
+    protected
+
+    def before_parse
+    end
+
+    def after_parse
+    end
+
     def lookup(key)
       node = root.xpath("//#{key}").first
       return unless node
@@ -41,12 +63,6 @@ module LCBO
 
     def util
       Util
-    end
-
-    def as_json
-      @as_json ||= self.class.fields.reduce({}) do |h, field|
-        h.merge(field => __send__(field))
-      end
     end
   end
 end

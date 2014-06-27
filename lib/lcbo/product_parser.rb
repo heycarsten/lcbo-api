@@ -1,7 +1,8 @@
 module LCBO
   class ProductParser < Parser
-    def root
-      @root ||= xml.xpath('//products//product')
+    def before_parse
+      return if xml.xpath('//product').length == 1
+      raise LCBO::NotFoundError, "product XML contains no product data"
     end
 
     field :id do

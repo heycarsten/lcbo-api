@@ -285,7 +285,11 @@ CREATE TABLE products (
     sugar_in_grams_per_liter smallint DEFAULT 0,
     clearance_sale_savings_in_cents integer DEFAULT 0,
     has_clearance_sale boolean DEFAULT false,
-    tag_vectors pg_catalog.tsvector
+    tag_vectors pg_catalog.tsvector,
+    upc character varying(255),
+    scc character varying(255),
+    style_flavour character varying(255),
+    style_body character varying(255)
 );
 
 
@@ -366,7 +370,9 @@ CREATE TABLE stores (
     saturday_close smallint,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    tag_vectors pg_catalog.tsvector
+    tag_vectors pg_catalog.tsvector,
+    kind character varying(255),
+    landmark_name character varying(255)
 );
 
 
@@ -896,4 +902,6 @@ INSERT INTO schema_migrations (version) VALUES ('20140621143738');
 INSERT INTO schema_migrations (version) VALUES ('20140621151939');
 
 INSERT INTO schema_migrations (version) VALUES ('20140625021830');
+
+INSERT INTO schema_migrations (version) VALUES ('20140627024053');
 

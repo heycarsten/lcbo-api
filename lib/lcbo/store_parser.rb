@@ -10,6 +10,11 @@ module LCBO
       has_vintages_corner:          :vintageCorner,
       has_transit_access:           :transitAccess }
 
+    def before_parse
+      return if xml.xpath('//store').length == 1
+      raise LCBO::NotFoundError, "store XML contains no store data"
+    end
+
     field :id do
       lookup(:locationNumber).to_i
     end

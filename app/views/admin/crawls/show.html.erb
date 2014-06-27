@@ -7,11 +7,6 @@
   <dd><%= distance_of_time_in_words @crawl.created_at, @crawl.updated_at, true %></dd>
   <dt>Status</dt>
   <dd><%= @crawl.state %></dd>
-  <dt>Progress</dt>
-  <dd>
-    <%= @crawl.total_jobs %> / <%= @crawl.total_finished_jobs %> -
-    <%= "%0.0f%" % (@crawl.progress * 100) %>
-  </dd>
   <dt>Total Stores<dt>
   <dd>
     <%= @crawl.total_stores %>

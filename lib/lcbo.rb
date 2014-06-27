@@ -13,36 +13,33 @@ module LCBO
   class BadRequestError < Error; end
   class TimeoutError < Error; end
 
-  autoload :Util,          'lcbo/util'
-  autoload :Parser,        'lcbo/parser'
-  autoload :ProductParser, 'lcbo/product_parser'
-  autoload :StoreParser,   'lcbo/store_parser'
-
-  # Get all products
-  # 
-
-  # Get product details
-  # http://stage.lcbo.com/lcbo-webapp/productdetail.do?itemNumber=612804
-
-  # Get store details
-  # http://stage.lcbo.com/lcbo-webapp/storedetail.do?locationNumber=511
-
-  # Get all products and inventory levels at a store
-  # http://stage.lcbo.com/lcbo-webapp/productsearch.do?locationNumber=534&numProducts=15000
+  autoload :Util,             'lcbo/util'
+  autoload :Parser,           'lcbo/parser'
+  autoload :ProductParser,    'lcbo/product_parser'
+  autoload :StoreParser,      'lcbo/store_parser'
+  autoload :ProductIdsParser, 'lcbo/product_ids_parser'
+  autoload :StoreInventoriesParser, 'lcbo/store_inventories_parser'
 
   module_function
 
   def store(id)
-    StoreParser.parse(get("storedetail.do?locationNumber=#{id}"))
+    xml = get("storedetail.do?locationNumber=#{id}")
+    StoreParser.parse(xml)
   end
 
   def product(id)
-    ProductParser.parse(get("productdetail.do?itemNumber=#{id}"))
+    xml = get("productdetail.do?itemNumber=#{id}")
+    ProductParser.parse(xml)
   end
 
-  def products_list
+  def store_inventories(id)
+    xml = get("productsearch.do?locationNumber=#{id}&numProducts=#{NUM_PRODUCTS}")
+    StoreInventoriesParser.parse(xml)[:inventories]
+  end
+
+  def product_ids
     xml = get("productsearch.do?numProducts=#{NUM_PRODUCTS}")
-    xml.xpath('//products//product//itemNumber').map { |n| n.content.to_i }
+    ProductIdsParser.parse(xml)[:ids]
   end
 
   def get(path)
