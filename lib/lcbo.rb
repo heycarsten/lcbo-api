@@ -42,6 +42,20 @@ module LCBO
     ProductIdsParser.parse(xml)[:ids]
   end
 
+  def product_images(id)
+    id = product.id.to_s.rjust(7, '0')
+
+    thumb_url = "http://www.lcbo.com/app/images/products/thumbs/#{id}.jpg"
+    full_url  = "http://www.lcbo.com/app/images/products/#{id}.jpg"
+
+    if Excon.head(thumb_url).status == 200
+      { image_url:       full_url,
+        image_thumb_url: thumb_url }
+    else
+      nil
+    end
+  end
+
   def get(path)
     response = Excon.get(BASE_URL + path)
 

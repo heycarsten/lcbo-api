@@ -77,7 +77,7 @@ class Crawl < ActiveRecord::Base
   end
 
   def diff!
-    self.store_ids = crawled_store_ids.all
+    self.store_ids   = crawled_store_ids.all
     self.product_ids = crawled_product_ids.all
 
     if previous

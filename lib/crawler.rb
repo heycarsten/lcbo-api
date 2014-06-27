@@ -22,7 +22,21 @@ class Crawler < Boticus::Bot
   desc 'Crawling stores'
   task :crawl_stores do
     (1..UPTO_STORE_ID).each do |store_id|
-      place_store(store_id)
+      begin
+        log :dot, "Placing store: #{store_id}"
+
+        attrs = LCBO.store(store_id)
+        attrs[:is_dead]  = false
+        attrs[:crawl_id] = model.id
+
+        Store.place(attrs)
+
+        model.total_stores += 1
+        model.save!
+        model.crawled_store_ids << store_id
+      rescue LCBO::NotFoundError
+        log :info, "Skipping store: ##{store_id} (it does not exist)"
+      end
     end
     puts
   end
@@ -30,26 +44,30 @@ class Crawler < Boticus::Bot
   desc 'Crawling products'
   task :crawl_products do
     @product_ids.each do |product_id|
-      place_product(product_id)
+      begin
+        log :dot, "Placing product: #{product_id}"
+
+        attrs = LCBO.product(product_id)
+        attrs[:crawl_id] = model.id
+
+        Product.place(attrs)
+
+        model.total_products += 1
+        model.save!
+
+        model.crawled_product_ids << product_id
+      rescue LCBO::NotFoundError
+        log :warn, "Skipping product: #{product_id} (it does not exist)"
+      end
     end
     puts
   end
 
   desc 'Updating product images'
   task :update_product_images do
-    require 'excon'
-
-    Product.where("is_dead = 'f' AND image_url IS NULL").each do |product|
-      id = product.id.to_s.rjust(7, '0')
-
-      thumb_url = "http://www.lcbo.com/app/images/products/thumbs/#{id}.jpg"
-      full_url  = "http://www.lcbo.com/app/images/products/#{id}.jpg"
-
-      if Excon.head(thumb_url).status == 200
-        product.update_attributes(
-          image_url:       full_url,
-          image_thumb_url: thumb_url
-        )
+    Product.where("is_dead = 'f' AND image_url IS NULL").find_each do |product|
+      if (attrs = LCBO.product_images(product.id))
+        product.update_attributes!(attrs)
         log :dot, "Adding image for product: #{product.id}"
       end
     end
@@ -60,7 +78,28 @@ class Crawler < Boticus::Bot
   desc 'Crawling inventories by store'
   task :crawl_inventories do
     model.crawled_store_ids.all.each do |store_id|
-      place_store_inventories(store_id)
+      begin
+        log :dot, "Placing store inventories: #{store_id}"
+
+        inventories = LCBO.store_inventories(store_id)
+
+        Inventory.transaction do
+          inventories.each do |attrs|
+            attrs[:crawl_id]   = model.id
+            attrs[:is_dead]    = false
+            attrs[:store_id]   = store_id
+            attrs[:updated_on] = Time.now - 1.day # Lie just like the LOLCBO does.
+
+            Inventory.place(attrs)
+          end
+        end
+
+        model.total_product_inventory_count += inventories.sum { |inv| inv[:quantity] }
+        model.total_inventories += inventories.size
+        model.save!
+      rescue LCBO::NotFoundError
+        log :warn, "Skipping store inventories: #{store_id} (it does not exist)"
+      end
     end
     puts
   end
@@ -108,7 +147,8 @@ class Crawler < Boticus::Bot
         products_count = (
           SELECT COUNT(inventories.product_id)
             FROM inventories
-           WHERE inventories.store_id = stores.id
+           WHERE inventories.store_id = stores.id AND
+                 inventories.quantity > 0
         ),
 
         inventory_count = (
@@ -149,12 +189,12 @@ class Crawler < Boticus::Bot
 
   desc 'Marking dead products'
   task :mark_dead_products do
-    Product.where(id: model.removed_product_ids).update_all(is_dead: true)
+    Product.where.not(crawl_id: model.id).update_all(is_dead: true)
   end
 
   desc 'Marking dead stores'
   task :mark_dead_stores do
-    Store.where(id: model.removed_store_ids).update_all(is_dead: true)
+    Store.where.not(crawl_id: model.id).update_all(is_dead: true)
   end
 
   desc 'Marking dead inventories'
@@ -178,59 +218,8 @@ class Crawler < Boticus::Bot
     LCBOAPI.flush
   end
 
-  def place_store(id)
-    log :dot, "Placing store: #{id}"
-
-    attrs = LCBO.store(id)
-    attrs[:is_dead]     = false
-    attrs[:crawl_id]    = model.id
-    attrs[:postal_code] = attrs[:postal_code].gsub(' ', '')
-
-    Store.place(attrs)
-
-    model.total_stores += 1
-    model.save!
-    model.crawled_store_ids << id
-  rescue LCBO::NotFoundError
-    log :info, "Skipping store: ##{id} (it does not exist)"
-  end
-
-  def place_product(id)
-    log :dot, "Placing product: #{id}"
-
-    attrs = LCBO.product(id)
-    attrs[:crawl_id] = model.id
-
-    Product.place(attrs)
-
-    model.total_products += 1
-    model.save!
-
-    model.crawled_product_ids << id
-  rescue LCBO::NotFoundError
-    log :warn, "Skipping product: #{id} (it does not exist)"
-  end
-
-  def place_store_inventories(store_id)
-    log :dot, "Placing store inventories: #{store_id}"
-
-    inventories = LCBO.store_inventories(store_id)
-
-    Inventory.transaction do
-      inventories.each do |attrs|
-        attrs[:crawl_id]   = model.id
-        attrs[:is_dead]    = false
-        attrs[:store_id]   = store_id
-        attrs[:updated_on] = Time.now
-
-        Inventory.place(attrs)
-      end
-    end
-
-    model.total_product_inventory_count += inventories.sum { |inv| inv[:quantity] }
-    model.total_inventories += inventories.size
-    model.save!
-  rescue LCBO::NotFoundError
-    log :warn, "Skipping store inventories: #{store_id} (it does not exist)"
+  desc 'Cleanup'
+  task :cleanup do
+    model.rdb_flush!
   end
 end
