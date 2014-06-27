@@ -12,6 +12,7 @@ Bundler.require(*Rails.groups)
 module LCBOAPI
   class Application < Rails::Application
     # /lib requires
+    require 'lcbo'
     require 'geo_scope'
     require 'redis_abuse'
     require 'query_helper'
@@ -25,6 +26,7 @@ module LCBOAPI
       g.view_specs false
     end
 
+    config.i18n.enforce_available_locales = false
     config.active_record.schema_format = :sql
   end
 

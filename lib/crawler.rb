@@ -1,26 +1,12 @@
 require 'boticus'
 
 class Crawler < Boticus::Bot
-  class UnknownJobTypeError < StandardError; end
-
-  class ProductListsGetter
-    include LCBO::CrawlKit::Crawler
-
-    def request(params)
-      LCBO.product_list(params[:next_page] || 1)
-    end
-
-    def continue?(current_params)
-      current_params[:next_page] ? true : false
-    end
-
-    def reduce
-      responses.map { |params| params[:product_ids] }.flatten
-    end
-  end
+  UPTO_STORE_ID = 800
 
   def init(crawl = nil)
-    @model = (crawl || Crawl.init)
+    @model               = (crawl || Crawl.init)
+    @crawled_product_ids = []
+    @crawled_inventories_ids = []
   end
 
   def log(level, msg, payload = {})
@@ -29,31 +15,65 @@ class Crawler < Boticus::Bot
   end
 
   def prepare
-    log :info, 'Enumerating product job queue ...'
-    model.push_jobs(:product, ProductListsGetter.run)
-
-    log :info, 'Enumerating store job queue ...'
-    model.push_jobs(:store, LCBO.store_list[:store_ids])
+    log :info, 'Enumerating products queue'
+    @product_ids = LCBO.product_ids
   end
 
-  desc 'Crawling stores, products, and inventories'
-  task :crawl do
-    while (pair = model.popjob)
-      kind, id = *pair
+  desc 'Crawling stores'
+  task :crawl_stores do
+    (1..UPTO_STORE_ID).each do |store_id|
+      place_store(store_id)
+    end
+    puts
+  end
 
-      case kind
-      when 'product'
-        place_product_and_inventories(id)
-      when 'store'
-        place_store(id)
+  desc 'Crawling products'
+  task :crawl_products do
+    @product_ids.each do |product_id|
+      place_product(product_id)
+    end
+    puts
+  end
+
+  desc 'Updating product images'
+  task :update_product_images do
+    require 'excon'
+
+    Product.where("is_dead = 'f' AND image_url IS NULL").each do |product|
+      id = product.id.to_s.rjust(7, '0')
+
+      thumb_url = "http://www.lcbo.com/app/images/products/thumbs/#{id}.jpg"
+      full_url  = "http://www.lcbo.com/app/images/products/#{id}.jpg"
+
+      if Excon.head(thumb_url).status == 200
+        product.update_attributes(
+          image_url:       full_url,
+          image_thumb_url: thumb_url
+        )
+        log :dot, "Adding image for product: #{product.id}"
       end
-
-      model.total_finished_jobs += 1
-
-      model.save!
     end
 
     puts
+  end
+
+  desc 'Crawling inventories by store'
+  task :crawl_inventories do
+    model.crawled_store_ids.all.each do |store_id|
+      place_store_inventories(store_id)
+    end
+    puts
+  end
+
+  desc 'Checking sanity'
+  task :check_sanity do
+    if model.crawled_store_ids.length < 600
+      raise "Dafuq! Should have crawled more than 600 stores!"
+    end
+
+    if model.crawled_product_ids.length < 8000
+      raise "Dafuq! Should have crawled more than 8000 products!"
+    end
   end
 
   desc 'Refreshing fuzzy search dictionaries'
@@ -64,6 +84,26 @@ class Crawler < Boticus::Bot
   desc 'Performing calculations'
   task :calculate do
     ActiveRecord::Base.connection.execute <<-SQL
+      UPDATE products SET
+        inventory_count = (
+          SELECT SUM(inventories.quantity)
+            FROM inventories
+           WHERE inventories.product_id = products.id
+        ),
+
+        inventory_price_in_cents = (
+          SELECT SUM(inventories.quantity * products.price_in_cents)
+            FROM inventories
+           WHERE inventories.product_id = products.id
+        ),
+
+        inventory_volume_in_milliliters = (
+          SELECT SUM(inventories.quantity * products.volume_in_milliliters)
+            FROM inventories
+           WHERE inventories.product_id = products.id
+        )
+      ;
+
       UPDATE stores SET
         products_count = (
           SELECT COUNT(inventories.product_id)
@@ -90,7 +130,16 @@ class Crawler < Boticus::Bot
               LEFT JOIN inventories ON products.id = inventories.product_id
            WHERE inventories.store_id = stores.id
         )
+      ;
     SQL
+
+    model.total_product_inventory_volume_in_milliliters =
+      Product.where(id: model.crawled_product_ids.all).sum(:inventory_volume_in_milliliters)
+
+    model.total_product_inventory_price_in_cents =
+      Product.where(id: model.crawled_product_ids.all).sum(:inventory_price_in_cents)
+
+    model.save!
   end
 
   desc 'Performing diff'
@@ -139,61 +188,49 @@ class Crawler < Boticus::Bot
 
     Store.place(attrs)
 
-    model.total_stores_will_change!
     model.total_stores += 1
-
     model.save!
-
     model.crawled_store_ids << id
-  rescue LCBO::CrawlKit::NotFoundError
-    log :warn, "Skipping store ##{id}, it does not exist."
+  rescue LCBO::NotFoundError
+    log :info, "Skipping store: ##{id} (it does not exist)"
   end
 
-  # TODO: Make this not so beastly!
-  def place_product_and_inventories(id)
-    log :dot, "Placing product ##{id} and inventories"
+  def place_product(id)
+    log :dot, "Placing product: #{id}"
 
-    pa = LCBO.product(id)
-    ia = LCBO.inventory(id)
+    attrs = LCBO.product(id)
+    attrs[:crawl_id] = model.id
 
-    ia[:inventory_count].tap do |count|
-      pa.tap do |p|
-        p[:crawl_id] = model.id
-        p[:is_dead] = false
-        p[:inventory_count] = count
-        p[:inventory_price_in_cents] = (p[:price_in_cents] * count)
-        p[:inventory_volume_in_milliliters] = (p[:volume_in_milliliters] * count)
-      end
-    end
+    Product.place(attrs)
 
-    Product.place(pa)
-
-    ia[:inventories].each do |inv|
-      inv[:crawl_id] = model.id
-      inv[:is_dead] = false
-      inv[:product_id] = id
-      Inventory.place(inv)
-    end
-
-    model.total_products_will_change!
     model.total_products += 1
-
-    model.total_inventories_will_change!
-    model.total_inventories += ia[:inventories].size
-
-    model.total_product_inventory_count_will_change!
-    model.total_product_inventory_count += ia[:inventory_count]
-
-    model.total_product_inventory_price_in_cents_will_change!
-    model.total_product_inventory_price_in_cents += pa[:inventory_price_in_cents]
-
-    model.total_product_inventory_volume_in_milliliters_will_change!
-    model.total_product_inventory_volume_in_milliliters += pa[:inventory_volume_in_milliliters]
-
     model.save!
 
     model.crawled_product_ids << id
-  rescue LCBO::CrawlKit::NotFoundError, LCBO::CrawlKit::RedirectedError
-    log :warn, "Skipping product ##{id}, it does not exist"
+  rescue LCBO::NotFoundError
+    log :warn, "Skipping product: #{id} (it does not exist)"
+  end
+
+  def place_store_inventories(store_id)
+    log :dot, "Placing store inventories: #{store_id}"
+
+    inventories = LCBO.store_inventories(store_id)
+
+    Inventory.transaction do
+      inventories.each do |attrs|
+        attrs[:crawl_id]   = model.id
+        attrs[:is_dead]    = false
+        attrs[:store_id]   = store_id
+        attrs[:updated_on] = Time.now
+
+        Inventory.place(attrs)
+      end
+    end
+
+    model.total_product_inventory_count += inventories.sum { |inv| inv[:quantity] }
+    model.total_inventories += inventories.size
+    model.save!
+  rescue LCBO::NotFoundError
+    log :warn, "Skipping store inventories: #{store_id} (it does not exist)"
   end
 end

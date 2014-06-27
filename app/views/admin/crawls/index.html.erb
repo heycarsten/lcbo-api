@@ -3,7 +3,6 @@
   <tr>
     <th scope="col">Started</th>
     <th scope="col">Elapsed Time</th>
-    <th scope="col">Progress</th>
     <th scope="col">Status</th>
     <th scope="col">Log</th>
   </tr>
@@ -16,9 +15,6 @@
       </td>
       <td>
         <%= distance_of_time_in_words(crawl.created_at, crawl.updated_at) %>
-      </td>
-      <td title="<%= crawl.total_jobs %> / <%= crawl.total_finished_jobs %>">
-        <%= '%0.0f%' % (crawl.progress * 100) %>
       </td>
       <td>
         <%= crawl.state %>

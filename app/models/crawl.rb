@@ -21,7 +21,6 @@ class Crawl < ActiveRecord::Base
 
   list :crawled_store_ids,   :integer
   list :crawled_product_ids, :integer
-  list :jobs
 
   validates :state, inclusion: { in: STATES }
 
@@ -82,10 +81,10 @@ class Crawl < ActiveRecord::Base
     self.product_ids = crawled_product_ids.all
 
     if previous
-      self.added_product_ids = (product_ids - previous.product_ids)
+      self.added_product_ids   = (product_ids - previous.product_ids)
       self.removed_product_ids = (previous.product_ids - product_ids)
-      self.added_store_ids = (store_ids - previous.store_ids)
-      self.removed_store_ids = (previous.store_ids - store_ids)
+      self.added_store_ids     = (store_ids - previous.store_ids)
+      self.removed_store_ids   = (previous.store_ids - store_ids)
     else
       self.added_product_ids   = []
       self.removed_product_ids = []
@@ -106,38 +105,6 @@ class Crawl < ActiveRecord::Base
 
   def is_active?
     is? :init, :running, :paused
-  end
-
-  def has_jobs?
-    jobs.length > 0
-  end
-
-  def progress
-    if total_jobs == 0 || total_finished_jobs == 0
-      0.0
-    else
-      total_finished_jobs.to_f / total_jobs.to_f
-    end
-  end
-
-  def push_jobs(type, ids)
-    ids.each { |id| addjob(type, id) }
-    save!
-  end
-
-  def addjob(type, id)
-    verify_unlocked!
-    jobs << "#{type}:#{id}"
-
-    self.total_jobs += 1
-  end
-
-  def popjob
-    if (job = jobs.pop)
-      job.split(':')
-    else
-      nil
-    end
   end
 
   def log(message, level = :info, payload = {})
