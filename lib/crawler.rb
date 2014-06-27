@@ -1,7 +1,7 @@
 require 'boticus'
 
 class Crawler < Boticus::Bot
-  UPTO_STORE_ID = 850
+  UPTO_STORE_ID = 800
 
   def init(crawl = nil)
     @model               = (crawl || Crawl.init)
@@ -24,6 +24,7 @@ class Crawler < Boticus::Bot
     (1..UPTO_STORE_ID).each do |store_id|
       place_store(store_id)
     end
+    puts
   end
 
   desc 'Crawling products'
@@ -31,13 +32,15 @@ class Crawler < Boticus::Bot
     @product_ids.each do |product_id|
       place_product(product_id)
     end
+    puts
   end
 
   desc 'Crawling inventories by store'
   task :crawl_inventories do
-    model.crawled_store_ids.each do |store_id|
+    model.crawled_store_ids.all.each do |store_id|
       place_store_inventories(store_id)
     end
+    puts
   end
 
   desc 'Checking sanity'
@@ -206,6 +209,6 @@ class Crawler < Boticus::Bot
     model.total_inventories += inventories.size
     model.save!
   rescue LCBO::NotFoundError
-    log :warn, "Skipping store inventories: #{id} (it does not exist)"
+    log :warn, "Skipping store inventories: #{store_id} (it does not exist)"
   end
 end
