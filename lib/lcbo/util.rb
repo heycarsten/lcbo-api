@@ -161,5 +161,15 @@ module LCBO
       return unless month
       Date.new(year.to_i, month, day.to_i)
     end
+
+    def time_to_msm(val)
+      h, m, s = val.split(':').map(&:to_i)
+
+      if h == 0
+        nil
+      else
+        (h * 60) + m
+      end
+    end
   end
 end
