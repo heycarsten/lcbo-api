@@ -36,6 +36,26 @@
       </h1>
     </div>
     <ul class="side-menu">
+      <li class="side-menu-section">
+  <ul class="side-menu-list">
+      <li class="side-menu-item">
+        <a href="/docs/about">
+          About
+        </a>
+      </li>
+      <li class="side-menu-item">
+        <a href="/docs/conventions">
+          Conventions
+        </a>
+      </li>
+      <li class="side-menu-item">
+        <a href="/docs/faq">
+          FAQ
+        </a>
+      </li>
+  </ul>
+</li>
+
         <li class="side-menu-section">
     <div class="side-menu-section-caption">
       Dataset Endpoints
@@ -183,15 +203,45 @@
           <h3>Parameters</h3>
 
 <dl class="query-params">
+      <dt>
+        <code>where</code>, <code>where_not</code>
+      </dt>
+      <dd>
+        <p>
+          <code>where</code> filters products where the supplied fields are true.
+          <code>where_not</code> filters products where the supplied fields are
+          false. The two parameters can be used together. Multiple fields can be
+          specified by joining them with a comma: <code>where=field1,field2</code>.
+          The fields below may be specified:
+        </p>
+        <p>
+          <code>is_dead, has_wheelchair_accessability, has_bilingual_services, has_product_consultant, has_tasting_bar, has_beer_cold_room, has_special_occasion_permits, has_vintages_corner, has_parking, has_transit_access</code>
+        </p>
+      </dd>
 
+      <dt>
+        <code>order</code>
+      </dt>
+      <dd>
+        <p>
+          Orders the results by the specified fields in ascending
+          (<code>asc</code>) or descending (<code>desc</code>) order. Multiple
+          fields can be specified by joining them with a comma:
+          <code>order=field1.desc,field2.asc</code>. The fields below
+          may be specified:
+        </p>
+        <p>
+          <code>distance_in_meters, inventory_volume_in_milliliters, id, products_count, inventory_count, inventory_price_in_cents</code>
+        </p>
+      </dd>
     <dt>
       <code>limit</code>
     </dt>
     <dd>
       <p>
         Only used for CSV and TSV responses, specifies the number of rows to
-        return. The default value is <b></b>, and the maximum
-        value is <b></b>.
+        return. The default value is <b>50</b>, and the maximum
+        value is <b>500</b>.
       </p>
     </dd>
     <dt>
@@ -210,8 +260,8 @@
     <dd>
       <p>
         The number of objects to include per page. The default value is
-        <b></b>, and the maximum value is
-        <b></b>.
+        <b>20</b>, and the maximum value is
+        <b>100</b>.
       </p>
     </dd>
 

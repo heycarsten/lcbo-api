@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="description" content="A REST service for LCBO store, product, and inventory data.">
-  <title>Datasets</title>
+  <title>Frequently Asked Questions</title>
   <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
   <script src="/javascripts/all.js" type="text/javascript"></script>
 </head>
@@ -152,134 +152,53 @@
   </div>
   <div class="col-2">
       <div class="document-title">
-        <h2>Datasets</h2>
-        <dl>
-          <dt class="uri-specification hide">
-            URL Template
-          </dt>
-          <dd class="uri-specification">
-            <code>http://lcboapi.com</code><code class="route-spec">/datasets</code>
-          </dd>
-        </dl>
+        <h2>Frequently Asked Questions</h2>
       </div>
-      <article class="document-body">
-<p>Returns <a href="/docs/dataset">datasets</a>.</p>
+      <div class="document-body">
+<h3 id="is-it-free">Is it free?</h3>
 
-        <h3>Formats</h3>
-        <table class="formats">
-            <tr>
-              <td class="extension">
-                <b>.json</b>
-              </td>
-              <td class="desc">
-                JSON (default format if no extension is supplied)
-              </td>
-            </tr>
-            <tr>
-              <td class="extension">
-                <b>.js</b>
-              </td>
-              <td class="desc">
-                JavaScript (for use with JSON-P, requires <code>callback</code> parameter)
-              </td>
-            </tr>
-            <tr>
-              <td class="extension">
-                <b>.csv</b>
-              </td>
-              <td class="desc">
-                Comma Separated Values
-              </td>
-            </tr>
-            <tr>
-              <td class="extension">
-                <b>.tsv</b>
-              </td>
-              <td class="desc">
-                Tab Separated Values
-              </td>
-            </tr>
-        </table>
-          <h3>Parameters</h3>
+<p>Absolutely! There is no desire or intention to charge for the use of the
+API. I only ask that you tell me about what you are making with it. It costs
+roughly $50/month to host the project, donations are greatly appreciated!</p>
 
-<dl class="query-params">
+<h3 id="where-does-the-data-come-from">Where does the data come from?</h3>
 
-      <dt>
-        <code>order</code>
-      </dt>
-      <dd>
-        <p>
-          Orders the results by the specified fields in ascending
-          (<code>asc</code>) or descending (<code>desc</code>) order. Multiple
-          fields can be specified by joining them with a comma:
-          <code>order=field1.desc,field2.asc</code>. The fields below
-          may be specified:
-        </p>
-        <p>
-          <code>id, created_at, total_products, total_stores, total_inventories, total_product_inventory_count, total_product_inventory_volume_in_milliliters, total_product_inventory_price_in_cents</code>
-        </p>
-      </dd>
-    <dt>
-      <code>limit</code>
-    </dt>
-    <dd>
-      <p>
-        Only used for CSV and TSV responses, specifies the number of rows to
-        return. The default value is <b>50</b>, and the maximum
-        value is <b>500</b>.
-      </p>
-    </dd>
-    <dt>
-      <code>page</code>
-    </dt>
-    <dd>
-      <p>
-        The page number to return. Consult the API
-        <a href="/docs/conventions">conventions</a> documentation for more
-        information about pagination.
-      </p>
-    </dd>
-    <dt>
-      <code>per_page</code>
-    </dt>
-    <dd>
-      <p>
-        The number of objects to include per page. The default value is
-        <b>20</b>, and the maximum value is
-        <b>100</b>.
-      </p>
-    </dd>
+<p>Why, from the LCBO of course! Their website is periodically crawled to get
+up-to-date information. Search engines like Google and Bing use this same
+technique to index web pages.</p>
 
+<h3 id="why-did-you-do-this">Why did you do this?</h3>
 
-</dl>
+<p>I feel that publicly available information should be free and accessible in
+as many ways as possible. I want to see what individuals will do with this
+information when presented with it in an accessible format… and I wanted
+an LCBO app for my iPhone. Read the <a href="/docs/about">about section</a> for more
+information.</p>
 
-      </article>
-        <div class="document-example">
-          <form class="usage-example-form" action="#" method="GET">
-            <fieldset>
-              <legend>Page all datasets</legend>
-              <dl>
-                <dt>
-                  <div class="hide">
-                    <label for="query">Query</label>
-                  </div>
-                </dt>
-                <dd class="query-widget">
-                  http://lcboapi.com
-                  <input id="query" name="query" type="text" value="/datasets">
-                  <input id="submit" name="commit" type="submit" value="Request">
-                </dd>
-                <dt class="hide">
-                  Response
-                </dt>
-                <dd class="example-response">
-                  <pre>
-<code class="example-json-response">{}</code></pre>
-                </dd>
-              </dl>
-            </fieldset>
-          </form>
-        </div>
+<h3 id="can-you-add-barcode-information-products-please">Can you add barcode information products, please?</h3>
+
+<p>I do not currently have access to barcode information for all products that
+the LCBO stocks. I understand how useful barcode data would be for products
+and if this ever changes it will certainly be announced on
+<a href="http://twitter.com/lcboapi">@lcboapi</a>'s Twitter account.</p>
+
+<h3 id="can-you-add-xml-as-a-response-format">Can you add XML as a response format?</h3>
+
+<p>No, because <a href="http://www.json.org/xml.html">JSON</a> is a much better format for
+the output of this API.</p>
+
+<h3 id="im-a-geek-how-does-it-work">I'm a geek, how does it work?</h3>
+
+<ul>
+  <li><a href="http://tryruby.org">Ruby</a></li>
+  <li><a href="http://rubyonrails.org">Rails</a></li>
+  <li><a href="http://redis.io">Redis</a></li>
+  <li><a href="http://postgresql.org">Postgres</a></li>
+</ul>
+
+<p>You can also check me out on GitHub, I'm <a href="https://github.com/heycarsten">@heycarsten</a>.</p>
+
+      </div>
   </div>
 </div>
 

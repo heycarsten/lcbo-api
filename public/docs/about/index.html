@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="description" content="A REST service for LCBO store, product, and inventory data.">
-  <title>Datasets</title>
+  <title>About LCBO API</title>
   <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
   <script src="/javascripts/all.js" type="text/javascript"></script>
 </head>
@@ -152,134 +152,53 @@
   </div>
   <div class="col-2">
       <div class="document-title">
-        <h2>Datasets</h2>
-        <dl>
-          <dt class="uri-specification hide">
-            URL Template
-          </dt>
-          <dd class="uri-specification">
-            <code>http://lcboapi.com</code><code class="route-spec">/datasets</code>
-          </dd>
-        </dl>
+        <h2>About LCBO API</h2>
       </div>
-      <article class="document-body">
-<p>Returns <a href="/docs/dataset">datasets</a>.</p>
+      <div class="document-body">
+<p>The goal of LCBO API is to provide developers, hobbyists, and anyone who is
+interested with a way to create applications that take advantage of the
+unique benefits that come from having a single provider of alcoholic
+beverages in a large geographical area.</p>
 
-        <h3>Formats</h3>
-        <table class="formats">
-            <tr>
-              <td class="extension">
-                <b>.json</b>
-              </td>
-              <td class="desc">
-                JSON (default format if no extension is supplied)
-              </td>
-            </tr>
-            <tr>
-              <td class="extension">
-                <b>.js</b>
-              </td>
-              <td class="desc">
-                JavaScript (for use with JSON-P, requires <code>callback</code> parameter)
-              </td>
-            </tr>
-            <tr>
-              <td class="extension">
-                <b>.csv</b>
-              </td>
-              <td class="desc">
-                Comma Separated Values
-              </td>
-            </tr>
-            <tr>
-              <td class="extension">
-                <b>.tsv</b>
-              </td>
-              <td class="desc">
-                Tab Separated Values
-              </td>
-            </tr>
-        </table>
-          <h3>Parameters</h3>
+<p>The API is primarily designed to provide JSON data directly to mobile and
+web applications, but it is also capable of returning CSV data to be used
+directly in a spreadsheet application, just add <code>.csv</code> to the end of any
+LCBO API endpoint.</p>
 
-<dl class="query-params">
+<p>If you plan on performing hundreds of queries per second for uses such as
+data analysis then you should download the latest <a href="/docs/latest-dataset">dataset</a>
+and perform these operations offline. The datasets contain CSV data, if
+you need a different format please ask.</p>
 
-      <dt>
-        <code>order</code>
-      </dt>
-      <dd>
-        <p>
-          Orders the results by the specified fields in ascending
-          (<code>asc</code>) or descending (<code>desc</code>) order. Multiple
-          fields can be specified by joining them with a comma:
-          <code>order=field1.desc,field2.asc</code>. The fields below
-          may be specified:
-        </p>
-        <p>
-          <code>id, created_at, total_products, total_stores, total_inventories, total_product_inventory_count, total_product_inventory_volume_in_milliliters, total_product_inventory_price_in_cents</code>
-        </p>
-      </dd>
-    <dt>
-      <code>limit</code>
-    </dt>
-    <dd>
-      <p>
-        Only used for CSV and TSV responses, specifies the number of rows to
-        return. The default value is <b>50</b>, and the maximum
-        value is <b>500</b>.
-      </p>
-    </dd>
-    <dt>
-      <code>page</code>
-    </dt>
-    <dd>
-      <p>
-        The page number to return. Consult the API
-        <a href="/docs/conventions">conventions</a> documentation for more
-        information about pagination.
-      </p>
-    </dd>
-    <dt>
-      <code>per_page</code>
-    </dt>
-    <dd>
-      <p>
-        The number of objects to include per page. The default value is
-        <b>20</b>, and the maximum value is
-        <b>100</b>.
-      </p>
-    </dd>
+<h3 id="users">Users</h3>
 
+<p>Don’t be shy, I'd love to hear how you or your company is using
+LCBO API. Here is a small sampling of some companies and people using
+LCBO API for fun, business, and mobile.</p>
 
-</dl>
+<ul>
+  <li><a href="http://collectiveartsbrewing.com/beer-finder">Collective Arts Beer Finder</a> by Collective Arts Brewing</li>
+  <li><a href="http://www.codebeard.io/#/work/liqbo">Liqbo</a> by Neil Fenton</li>
+  <li><a href="http://theworkshed.com/projects/dowser">Dowser</a> by Plank</li>
+  <li><a href="http://www.lickur.com">Lickur</a> by Neil Chudleigh</li>
+  <li><a href="http://thirsty.kx.nu">Thirsty in Ontario?</a> by Svante Richter</li>
+  <li><a href="http://calvinwinter.ca/booze-run">Booze Run</a> by Calvin Winter</li>
+  <li><a href="https://itunes.apple.com/ca/app/lcbo-stores/id587694374">LCBO Stores</a> by Chang Jun Lee</li>
+  <li><a href="https://itunes.apple.com/ca/app/lcbo-finder/id353448944">LCBO Finder</a> by Brierwood Design Cooperative</li>
+  <li><a href="http://winealign.com">WineAlign</a> by Uncork Solutions</li>
+  <li><a href="http://lcbosearch.com">LCBO Search</a> by Carsten Nielsen</li>
+  <li><a href="http://hippofoundry.com/lcbo/">Liquor, ON</a> by Taylan Pince</li>
+</ul>
 
-      </article>
-        <div class="document-example">
-          <form class="usage-example-form" action="#" method="GET">
-            <fieldset>
-              <legend>Page all datasets</legend>
-              <dl>
-                <dt>
-                  <div class="hide">
-                    <label for="query">Query</label>
-                  </div>
-                </dt>
-                <dd class="query-widget">
-                  http://lcboapi.com
-                  <input id="query" name="query" type="text" value="/datasets">
-                  <input id="submit" name="commit" type="submit" value="Request">
-                </dd>
-                <dt class="hide">
-                  Response
-                </dt>
-                <dd class="example-response">
-                  <pre>
-<code class="example-json-response">{}</code></pre>
-                </dd>
-              </dl>
-            </fieldset>
-          </form>
-        </div>
+<h3 id="contact">Contact</h3>
+
+<p>I would love to hear about how you are using the data or API. I would also
+love to hear from you if you want to do something with the data but are not
+sure how to get started. You can reach me through
+<a href="http://twitter.com/heycarsten">Twitter</a>, and by
+<a href="&#109;&#097;&#105;&#108;&#116;&#111;:&#104;&#101;&#121;&#099;&#097;&#114;&#115;&#116;&#101;&#110;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;">email</a>.</p>
+
+      </div>
   </div>
 </div>
 
