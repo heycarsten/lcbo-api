@@ -26,6 +26,7 @@ module LCBOAPI
       g.view_specs false
     end
 
+    config.i18n.enforce_available_locales = false
     config.active_record.schema_format = :sql
 
     # Don't include default application.(css|js) manifest matcher
