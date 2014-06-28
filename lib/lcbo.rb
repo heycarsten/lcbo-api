@@ -43,7 +43,7 @@ module LCBO
   end
 
   def product_images(id)
-    id = product.id.to_s.rjust(7, '0')
+    id = id.to_s.rjust(7, '0')
 
     thumb_url = "http://www.lcbo.com/app/images/products/thumbs/#{id}.jpg"
     full_url  = "http://www.lcbo.com/app/images/products/#{id}.jpg"
