@@ -112,9 +112,9 @@ class API::V1::APIController < APIController
 
   def render_json(data)
     if jsonp?
-      render text: encode_json(data, params[:callback])
+      render js: encode_json(data, params[:callback])
     else
-      render text: encode_json(data)
+      render json: encode_json(data)
     end
   end
 
