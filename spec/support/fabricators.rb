@@ -117,11 +117,11 @@ Fabricator(:store) do
 end
 
 Fabricator(:inventory) do
-  store_id   1
-  product_id 1
-  crawl_id   1
-  quantity   100
-  updated_on Date.new(2010, 10, 10)
-  created_at Time.at(1293645823)
-  updated_at Time.at(1293645823)
+  store_id    1
+  product_id  1
+  crawl_id    1
+  quantity    100
+  reported_on Date.new(2010, 10, 10)
+  created_at  Time.at(1293645823)
+  updated_at  Time.at(1293645823)
 end

@@ -73,14 +73,28 @@ module V1QueryHelper
       []
     end
 
+    def self.sortable_field_names
+      @sortable_fields_names ||= if sortable_fields.is_a?(Array)
+        sortable_fields
+      else
+        sortable_fields.keys.map(&:to_s)
+      end
+    end
+
+    def self.sortable_column_for_field(field)
+      return field.to_s unless sortable_fields.is_a?(Hash)
+
+      sortable_fields[field.to_sym].to_s
+    end
+
     def self.order_expr(term)
       field, ord = term.split('.').map { |v| v.to_s.downcase.strip }
 
-      unless sortable_fields.include?(field)
+      unless sortable_field_names.include?(field)
         raise BadQueryError, "A value supplied for the order parameter " \
         "(#{term}) is not valid. It contains a field (#{field}) that is " \
         "not sortable. It must be one of: " \
-        "#{sortable_fields.join(', ')}."
+        "#{sortable_field_names.join(', ')}."
       end
 
       unless ['desc', 'asc', nil].include?(ord)
@@ -90,11 +104,13 @@ module V1QueryHelper
         "instead."
       end
 
+      col = sortable_column_for_field(field)
+
       case ord
       when 'asc'
-        %{#{table}.#{field} ASC NULLS LAST}
+        %{#{table}.#{col} ASC NULLS LAST}
       when 'desc', nil
-        %{#{table}.#{field} DESC NULLS LAST}
+        %{#{table}.#{col} DESC NULLS LAST}
       end
     end
 

@@ -203,7 +203,7 @@ CREATE TABLE inventories (
     crawl_id integer,
     is_dead boolean DEFAULT false,
     quantity integer DEFAULT 0,
-    updated_on date,
+    reported_on date,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     id integer NOT NULL
@@ -904,4 +904,6 @@ INSERT INTO schema_migrations (version) VALUES ('20140621151939');
 INSERT INTO schema_migrations (version) VALUES ('20140625021830');
 
 INSERT INTO schema_migrations (version) VALUES ('20140627024053');
+
+INSERT INTO schema_migrations (version) VALUES ('20140706215519');
 

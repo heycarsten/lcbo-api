@@ -119,7 +119,7 @@ module V1QueryHelper
         model.distance_from(latitude, longitude)
       when product_id
         model.joins(:inventories).
-          select('stores.*, inventories.quantity, inventories.updated_on').
+          select('stores.*, inventories.quantity, inventories.reported_on').
           where('inventories.product_id' => product_id)
       else
         model

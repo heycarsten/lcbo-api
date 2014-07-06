@@ -30,7 +30,7 @@ class Store < ActiveRecord::Base
   scope :distance_from_with_product, ->(lat, lon, product_id) {
     distance_from(lat, lon).
       joins(:inventories).
-      select('stores.*, inventories.quantity, inventories.updated_on').
+      select('stores.*, inventories.quantity, inventories.reported_on').
       where('inventories.quantity > 0').
       where('inventories.product_id' => product_id)
   }

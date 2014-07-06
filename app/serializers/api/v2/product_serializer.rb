@@ -1,4 +1,4 @@
-class API::V1::ProductSerializer < ApplicationSerializer
+class API::V2::ProductSerializer < ApplicationSerializer
   DUMP_COLS = [
     :id,
     :is_dead,
@@ -52,21 +52,16 @@ class API::V1::ProductSerializer < ApplicationSerializer
 
   attributes *(DUMP_COLS + [
     :quantity,
-    :updated_on,
-    :distance_in_meters,
-    :product_no
+    :reported_on,
+    :distance_in_meters
   ])
-
-  def product_no
-    object.id
-  end
 
   def quantity
     object.try(:quantity)
   end
 
-  def updated_on
-    object.try(:reported_on)
+  def reported_on
+    object.try(:updated_on)
   end
 
   def distance_in_meters
@@ -82,7 +77,7 @@ class API::V1::ProductSerializer < ApplicationSerializer
       keys.delete(:quantity)
     end
 
-    unless object.respond_to?(:reported_on)
+    unless object.respond_to?(:updated_on)
       keys.delete(:updated_on)
     end
 

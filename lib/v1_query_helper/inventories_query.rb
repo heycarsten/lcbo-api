@@ -18,7 +18,8 @@ module V1QueryHelper
     end
 
     def self.sortable_fields
-      %w[ quantity updated_on ]
+      { quantity: :quantity,
+        updated_on: :reported_on }
     end
 
     def self.order

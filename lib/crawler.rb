@@ -85,10 +85,10 @@ class Crawler < Boticus::Bot
 
         Inventory.transaction do
           inventories.each do |attrs|
-            attrs[:crawl_id]   = model.id
-            attrs[:is_dead]    = false
-            attrs[:store_id]   = store_id
-            attrs[:updated_on] = Time.now - 1.day # Lie just like the LOLCBO does.
+            attrs[:crawl_id]    = model.id
+            attrs[:is_dead]     = false
+            attrs[:store_id]    = store_id
+            attrs[:reported_on] = Time.now - 1.day # Lie just like the LOLCBO does.
 
             Inventory.place(attrs)
           end

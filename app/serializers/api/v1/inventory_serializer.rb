@@ -13,6 +13,10 @@ class API::V1::InventorySerializer < ApplicationSerializer
     :store_no
   ])
 
+  def updated_on
+    object.reported_on
+  end
+
   def product_no
     object.product_id
   end

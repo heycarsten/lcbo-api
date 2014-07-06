@@ -114,7 +114,7 @@ describe 'Stores API (V1)' do
     end
 
     it 'contains updated_on in the store resource' do
-      expect(response.json[:result][0][:updated_on]).to eq @inv1.updated_on.iso8601
+      expect(response.json[:result][0][:updated_on]).to eq @inv1.reported_on.iso8601
     end
   end
 end

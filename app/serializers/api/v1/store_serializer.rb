@@ -58,7 +58,7 @@ class API::V1::StoreSerializer < ApplicationSerializer
   end
 
   def updated_on
-    object.try(:updated_on)
+    object.try(:reported_on)
   end
 
   def distance_in_meters
@@ -74,7 +74,7 @@ class API::V1::StoreSerializer < ApplicationSerializer
       keys.delete(:quantity)
     end
 
-    unless object.respond_to?(:updated_on)
+    unless object.respond_to?(:reported_on)
       keys.delete(:updated_on)
     end
 
