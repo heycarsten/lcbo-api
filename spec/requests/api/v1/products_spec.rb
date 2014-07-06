@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Products API' do
+describe 'Products API (V1)' do
   before do
     @product1 = Fabricate(:product, id: '1')
     @product2 = Fabricate(:product, id: '2', name: 'Fitzgibbons')

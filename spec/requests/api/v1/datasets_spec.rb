@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Datasets API' do
+describe 'Datasets API (V1)' do
   before do
     @crawls = [
       Fabricate(:crawl),

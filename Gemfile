@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails',        '4.1.1'
+gem 'rails',        '4.1.4'
 gem 'oj'
 gem 'pg'
 gem 'pg_search'
@@ -8,7 +8,6 @@ gem 'kaminari'
 gem 'active_model_serializers', github: 'rails-api/active_model_serializers'
 gem 'redis'
 gem 'gcoder'
-gem 'redcarpet'
 gem 'puma'
 gem 'sass-rails',   '~> 4.0.3'
 gem 'therubyracer', platforms: :ruby

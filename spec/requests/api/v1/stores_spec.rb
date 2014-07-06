@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Store resources' do
+describe 'Stores API (V1)' do
   before do
     @store1   = Fabricate(:store)
     @store2   = Fabricate(:store, name: 'Test Store')

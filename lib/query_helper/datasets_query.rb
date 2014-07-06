@@ -13,7 +13,7 @@ module QueryHelper
     end
 
     def self.serializer
-      DatasetSerializer
+      Api::V1::DatasetSerializer
     end
 
     def self.sortable_fields

@@ -1,4 +1,4 @@
-module ApplicationHelper
+module AdminHelper
   NICE_FORMATS = {
     date:        '%b %e, %Y',
     time:        '%I:%M %p',

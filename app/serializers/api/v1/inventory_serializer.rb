@@ -1,4 +1,4 @@
-class InventorySerializer < ApplicationSerializer
+class Api::V1::InventorySerializer < ApplicationSerializer
   DUMP_COLS = [
     :product_id,
     :store_id,

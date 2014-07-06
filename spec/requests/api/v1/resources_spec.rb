@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'API resource' do
+describe 'API resource (V1)' do
   describe 'with JS format and no callback' do
     before { get '/datasets.js' }
 

@@ -1,4 +1,4 @@
-class DatasetSerializer < ApplicationSerializer
+class Api::V1::DatasetSerializer < ApplicationSerializer
   attributes \
     :id,
     :total_products,

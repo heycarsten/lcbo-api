@@ -42,7 +42,7 @@ module QueryHelper
     end
 
     def self.serializer
-      @serializer ||= "#{model.to_s}Serializer".constantize
+      @serializer ||= "Api::V1::#{model.to_s}Serializer".constantize
     end
 
     def self.model_name

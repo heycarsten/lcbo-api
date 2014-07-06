@@ -1,6 +1,6 @@
-class ProductsController < ApplicationController
+class Api::V1::StoresController < Api::V1::ApiController
   def index
-    @query = query(:products)
+    @query = query(:stores)
 
     respond_to do |format|
       format.csv { render text: @query.as_csv }
@@ -10,7 +10,7 @@ class ProductsController < ApplicationController
   end
 
   def show
-    @query = query(:product)
+    @query = query(:store)
 
     respond_to do |format|
       format.csv { render text: @query.as_csv }

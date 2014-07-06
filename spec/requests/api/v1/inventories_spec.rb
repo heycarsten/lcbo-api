@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Inventories API' do
+describe 'Inventories API (V1)' do
   before do
     @products = [
       Fabricate(:product),
