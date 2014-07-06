@@ -1,5 +1,6 @@
 class API::V1::APIController < APIController
   CALLBACK_NAME_RE = /\A[a-z0-9_]+(\.{0,1}[a-z0-9_]+)*\z/i
+  VERSION          = 1
 
   rescue_from \
     GCoder::NoResultsError,
@@ -12,6 +13,10 @@ class API::V1::APIController < APIController
   after_filter  :set_jsonp_status
 
   protected
+
+  def api_version
+    VERSION
+  end
 
   def http_status(code)
     path = (Rails.root + 'public' + "#{code}.html").to_s

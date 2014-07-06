@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   root to: 'root#show'
 
   namespace :api, path: '/', format: :json do
-    scope module: :v2, api_version: 2, constraints: APIConstraint.new(2) do
+    scope module: :v2, constraints: APIConstraint.new(2) do
       # get '/accounts/mine'
       # get '/tokens'
       # get '/hooks'
@@ -22,7 +22,7 @@ Rails.application.routes.draw do
       # get '/inventories'
     end
 
-    scope module: :v1, api_version: 1, constraints: APIConstraint.new(1, true) do
+    scope module: :v1, constraints: APIConstraint.new(1, true) do
       # Legacy V1
       scope constraints: { lat: LATLON_RE, lon: LATLON_RE } do
         get '/download/:year-:month-:day'               => 'root#deprecated', name: :dataset_by_date
