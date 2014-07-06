@@ -1,37 +1,22 @@
-class Api::V1::ApiController < ApplicationController
+class API::V1::APIController < APIController
   CALLBACK_NAME_RE = /\A[a-z0-9_]+(\.{0,1}[a-z0-9_]+)*\z/i
 
   rescue_from \
     GCoder::NoResultsError,
     GCoder::OverLimitError,
     GCoder::GeocoderError,
-    QueryHelper::NotFoundError,
-    QueryHelper::BadQueryError, with: :render_exception
+    V1QueryHelper::NotFoundError,
+    V1QueryHelper::BadQueryError, with: :render_exception
 
-  before_filter :set_cache_control, if: :cacheable?
-  before_filter :set_api_format,    if: :api_request?
-  after_filter  :set_jsonp_status,  if: :api_request?
+  before_filter :set_api_format
+  after_filter  :set_jsonp_status
 
   protected
-
-  def cacheable?
-    Rails.env.production?
-  end
 
   def http_status(code)
     path = (Rails.root + 'public' + "#{code}.html").to_s
     render file: path, status: code
     false
-  end
-
-  def set_cache_control
-    response.etag                   = LCBOAPI.cache_stamp
-    response.cache_control[:public] = true
-    response.cache_control[:extras] = %W[ s-maxage=#{30.minutes} ]
-  end
-
-  def api_request?
-    params[:version] ? true : false
   end
 
   def default_format?
@@ -84,7 +69,7 @@ class Api::V1::ApiController < ApplicationController
   end
 
   def query(type)
-    QueryHelper.query(type, request, params)
+    V1QueryHelper.query(type, request, params)
   end
 
   def render_error(error, message, status = 400)
@@ -101,11 +86,11 @@ class Api::V1::ApiController < ApplicationController
     case error
     when 'no_results_error', 'over_limit_error', 'geocoder_error'
       if params[:store_id].present?
-        h[:store] = QueryHelper.find(:store, params[:store_id]).as_json
+        h[:store] = V1QueryHelper.find(:store, params[:store_id]).as_json
       end
 
       if params[:product_id].present?
-        h[:product] = QueryHelper.find(:product, params[:product_id]).as_json
+        h[:product] = V1QueryHelper.find(:product, params[:product_id]).as_json
       end
     end
 
@@ -116,7 +101,7 @@ class Api::V1::ApiController < ApplicationController
     render_error(
       error.class.to_s.demodulize.underscore,
       error.message,
-      (error.is_a?(QueryHelper::NotFoundError) ? 404 : 400)
+      (error.is_a?(V1QueryHelper::NotFoundError) ? 404 : 400)
     )
   end
 

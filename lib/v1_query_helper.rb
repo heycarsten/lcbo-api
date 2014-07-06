@@ -1,15 +1,15 @@
-require 'query_helper/finder'
-require 'query_helper/query'
-require 'query_helper/dataset_finder'
-require 'query_helper/datasets_query'
-require 'query_helper/inventories_query'
-require 'query_helper/inventory_finder'
-require 'query_helper/product_finder'
-require 'query_helper/products_query'
-require 'query_helper/store_finder'
-require 'query_helper/stores_query'
+require 'v1_query_helper/finder'
+require 'v1_query_helper/query'
+require 'v1_query_helper/dataset_finder'
+require 'v1_query_helper/datasets_query'
+require 'v1_query_helper/inventories_query'
+require 'v1_query_helper/inventory_finder'
+require 'v1_query_helper/product_finder'
+require 'v1_query_helper/products_query'
+require 'v1_query_helper/store_finder'
+require 'v1_query_helper/stores_query'
 
-module QueryHelper
+module V1QueryHelper
   MIN_PER_PAGE = 5
   MAX_PER_PAGE = 100
 

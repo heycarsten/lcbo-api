@@ -8,7 +8,7 @@ describe Crawl, 'with nil store_nos and product_nos' do
   end
 
   it 'should be serializable' do
-    payload = QueryHelper::DatasetsQuery.serialize(crawl)
+    payload = V1QueryHelper::DatasetsQuery.serialize(crawl)
     expect(payload[:product_ids]).to eq []
     expect(payload[:store_ids]).to eq []
   end

@@ -1,4 +1,4 @@
-module QueryHelper
+module V1QueryHelper
   class ProductFinder < Finder
     attr_accessor :product_id
 

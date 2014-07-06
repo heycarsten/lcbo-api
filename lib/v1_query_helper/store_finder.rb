@@ -1,4 +1,4 @@
-module QueryHelper
+module V1QueryHelper
   class StoreFinder < Finder
     attr_accessor :store_id
 

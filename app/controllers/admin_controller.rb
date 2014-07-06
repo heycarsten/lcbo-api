@@ -3,10 +3,6 @@ class AdminController < ApplicationController
 
   protected
 
-  def cacheable?
-    false
-  end
-
   def authenticate
     authenticate_or_request_with_http_basic do |username, password|
       Rails.application.secrets.admin_username == username &&

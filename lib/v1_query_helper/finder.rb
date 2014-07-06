@@ -1,4 +1,4 @@
-module QueryHelper
+module V1QueryHelper
   class Finder
     attr_reader :request, :params
 
@@ -20,7 +20,7 @@ module QueryHelper
     end
 
     def self.query
-      @query ||= QueryHelper.const_get(:"#{type.classify.pluralize}Query")
+      @query ||= V1QueryHelper.const_get(:"#{type.classify.pluralize}Query")
     end
 
     def self.serialize(record, opts = {})

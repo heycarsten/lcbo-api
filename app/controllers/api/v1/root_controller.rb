@@ -1,4 +1,4 @@
-class Api::V1::RootController < Api::V1::ApiController
+class API::V1::RootController < API::V1::APIController
   def deprecated
     msg = case params[:name]
     when :dataset_by_date

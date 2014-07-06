@@ -1,4 +1,4 @@
-module QueryHelper
+module V1QueryHelper
   class Query
     attr_accessor :request, :params, :page, :per_page, :q
 
@@ -42,7 +42,7 @@ module QueryHelper
     end
 
     def self.serializer
-      @serializer ||= "Api::V1::#{model.to_s}Serializer".constantize
+      @serializer ||= "API::V1::#{model.to_s}Serializer".constantize
     end
 
     def self.model_name

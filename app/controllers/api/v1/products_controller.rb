@@ -1,4 +1,4 @@
-class Api::V1::ProductsController < Api::V1::ApiController
+class API::V1::ProductsController < API::V1::APIController
   def index
     @query = query(:products)
 

@@ -1,4 +1,4 @@
-class Api::V1::DatasetsController < Api::V1::ApiController
+class API::V1::DatasetsController < API::V1::APIController
   def index
     @query = query(:datasets)
 

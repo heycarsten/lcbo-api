@@ -1,4 +1,4 @@
-module QueryHelper
+module V1QueryHelper
   class InventoriesQuery < Query
     attr_reader :product_id, :store_id
 
@@ -54,11 +54,11 @@ module QueryHelper
     end
 
     def store
-      @store ||= QueryHelper.find(:store, store_id)
+      @store ||= V1QueryHelper.find(:store, store_id)
     end
 
     def product
-      @product ||= QueryHelper.find(:product, product_id)
+      @product ||= V1QueryHelper.find(:product, product_id)
     end
 
     def scope

@@ -1,4 +1,4 @@
-class Api::V1::ProductSerializer < ApplicationSerializer
+class API::V1::ProductSerializer < ApplicationSerializer
   DUMP_COLS = [
     :id,
     :is_dead,

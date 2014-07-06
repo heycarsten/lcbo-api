@@ -15,7 +15,7 @@ module LCBOAPI
     require 'lcbo'
     require 'geo_scope'
     require 'redis_abuse'
-    require 'query_helper'
+    require 'v1_query_helper'
     require 'exporter'
     require 'boticus'
     require 'crawler'

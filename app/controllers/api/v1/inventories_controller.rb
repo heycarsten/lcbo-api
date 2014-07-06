@@ -1,4 +1,4 @@
-class Api::V1::InventoriesController < Api::V1::ApiController
+class API::V1::InventoriesController < API::V1::APIController
   def index
     @query = query(:inventories)
 

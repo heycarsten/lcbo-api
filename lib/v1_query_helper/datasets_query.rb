@@ -1,4 +1,4 @@
-module QueryHelper
+module V1QueryHelper
   class DatasetsQuery < Query
     attr_reader :dataset_id
 
@@ -13,7 +13,7 @@ module QueryHelper
     end
 
     def self.serializer
-      Api::V1::DatasetSerializer
+      API::V1::DatasetSerializer
     end
 
     def self.sortable_fields

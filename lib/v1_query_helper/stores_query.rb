@@ -1,4 +1,4 @@
-module QueryHelper
+module V1QueryHelper
   class StoresQuery < Query
     attr_accessor :product_id, :lat, :lon, :geo
 
@@ -66,7 +66,7 @@ module QueryHelper
     end
 
     def lat=(value)
-      unless QueryHelper.is_float?(value) && (-90.0..90.0).include?(value.to_f)
+      unless V1QueryHelper.is_float?(value) && (-90.0..90.0).include?(value.to_f)
         raise BadQueryError, "The value supplied for the lat parameter " \
         "(#{value}) is not valid. It must be a valid latitude; a number " \
         "between -90.0 and 90.0."
@@ -75,7 +75,7 @@ module QueryHelper
     end
 
     def lon=(value)
-      unless QueryHelper.is_float?(value) && (-180.0..180.0).include?(value.to_f)
+      unless V1QueryHelper.is_float?(value) && (-180.0..180.0).include?(value.to_f)
         raise BadQueryError, "The value supplied for the lon parameter " \
         "(#{value}) is not valid. It must be a valid longitude; a number " \
         "between -180.0 and 180.0."
@@ -144,7 +144,7 @@ module QueryHelper
     end
 
     def product
-      @product ||= QueryHelper.find(:product, product_id)
+      @product ||= V1QueryHelper.find(:product, product_id)
     end
 
     def as_json

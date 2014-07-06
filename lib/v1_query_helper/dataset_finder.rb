@@ -1,4 +1,4 @@
-module QueryHelper
+module V1QueryHelper
   class DatasetFinder < Finder
     attr_accessor :crawl_id
 

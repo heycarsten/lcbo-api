@@ -1,4 +1,4 @@
-module QueryHelper
+module V1QueryHelper
   class ProductsQuery < Query
     def initialize(request, params)
       super
