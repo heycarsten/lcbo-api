@@ -6,11 +6,13 @@ class API::V1::APIController < APIController
     GCoder::NoResultsError,
     GCoder::OverLimitError,
     GCoder::GeocoderError,
-    V1QueryHelper::NotFoundError,
-    V1QueryHelper::BadQueryError, with: :render_exception
+    V1::QueryHelper::NotFoundError,
+    V1::QueryHelper::BadQueryError, with: :render_exception
 
   before_filter :set_api_format
   after_filter  :set_jsonp_status
+
+  respond_to :json, :js, :csv, :tsv
 
   protected
 
@@ -74,7 +76,7 @@ class API::V1::APIController < APIController
   end
 
   def query(type)
-    V1QueryHelper.query(type, request, params)
+    V1::QueryHelper.query(type, request, params)
   end
 
   def render_error(error, message, status = 400)
@@ -91,11 +93,11 @@ class API::V1::APIController < APIController
     case error
     when 'no_results_error', 'over_limit_error', 'geocoder_error'
       if params[:store_id].present?
-        h[:store] = V1QueryHelper.find(:store, params[:store_id]).as_json
+        h[:store] = V1::QueryHelper.find(:store, params[:store_id]).as_json
       end
 
       if params[:product_id].present?
-        h[:product] = V1QueryHelper.find(:product, params[:product_id]).as_json
+        h[:product] = V1::QueryHelper.find(:product, params[:product_id]).as_json
       end
     end
 
@@ -106,7 +108,7 @@ class API::V1::APIController < APIController
     render_error(
       error.class.to_s.demodulize.underscore,
       error.message,
-      (error.is_a?(V1QueryHelper::NotFoundError) ? 404 : 400)
+      (error.is_a?(V1::QueryHelper::NotFoundError) ? 404 : 400)
     )
   end
 

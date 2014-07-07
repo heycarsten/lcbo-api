@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-class BaseQuery < V1QueryHelper::Query
+class BaseQuery < V1::QueryHelper::Query
   def initialize(*args)
     super
     validate
@@ -60,9 +60,9 @@ def mkquery(type, params = {})
   path = "/#{type}?#{q}"
   case type
   when :stores
-    V1QueryHelper::StoresQuery.new(mkreq(path), params)
+    V1::QueryHelper::StoresQuery.new(mkreq(path), params)
   when :products
-    V1QueryHelper::ProductsQuery.new(mkreq(path), params)
+    V1::QueryHelper::ProductsQuery.new(mkreq(path), params)
   when :lambda
     LambdaTableQuery.new(mkreq(path), params)
   else
@@ -76,7 +76,7 @@ describe BaseQuery do
       it "should not allow value: #{page.inspect}" do
         expect {
           mkquery(nil, page: page)
-        }.to raise_error V1QueryHelper::BadQueryError
+        }.to raise_error V1::QueryHelper::BadQueryError
       end
     end
   end
@@ -86,7 +86,7 @@ describe BaseQuery do
       it "should not allow value: #{per_page.inspect}" do
         expect {
           mkquery(nil, per_page: per_page)
-        }.to raise_error V1QueryHelper::BadQueryError
+        }.to raise_error V1::QueryHelper::BadQueryError
       end
     end
   end
@@ -111,15 +111,15 @@ describe BaseQuery do
     it 'rejects incorrect values' do
       expect {
         mkquery(nil, order: 'height.asc,weight.desk')
-      }.to raise_error V1QueryHelper::BadQueryError
+      }.to raise_error V1::QueryHelper::BadQueryError
 
       expect {
         mkquery(nil, order: 'SELECT * FROM products;')
-      }.to raise_error V1QueryHelper::BadQueryError
+      }.to raise_error V1::QueryHelper::BadQueryError
 
       expect {
         mkquery(nil, order: 'hite.asc')
-      }.to raise_error V1QueryHelper::BadQueryError
+      }.to raise_error V1::QueryHelper::BadQueryError
     end
   end
 
@@ -136,7 +136,7 @@ describe BaseQuery do
 
       expect {
         mkquery(nil, where: 'has_coolness')
-      }.to raise_error(V1QueryHelper::BadQueryError)
+      }.to raise_error(V1::QueryHelper::BadQueryError)
     end
 
     it 'should not allow same values as #where_not' do
@@ -144,7 +144,7 @@ describe BaseQuery do
         mkquery(nil,
           where: 'is_cool,has_thumbs',
           where_not: 'is_cool')
-      }.to raise_error(V1QueryHelper::BadQueryError)
+      }.to raise_error(V1::QueryHelper::BadQueryError)
     end
   end
 
@@ -161,7 +161,7 @@ describe BaseQuery do
 
       expect {
         mkquery(nil, where: 'has_coolness')
-      }.to raise_error(V1QueryHelper::BadQueryError)
+      }.to raise_error(V1::QueryHelper::BadQueryError)
     end
   end
 
@@ -177,7 +177,7 @@ describe BaseQuery do
   end
 end
 
-describe V1QueryHelper::ProductsQuery do
+describe V1::QueryHelper::ProductsQuery do
   before do
     Fabricate(:product, name: 'Magic Merlot')
     Fabricate(:product, name: 'Sassy Shiraz')
@@ -197,7 +197,7 @@ describe V1QueryHelper::ProductsQuery do
   end
 end
 
-describe V1QueryHelper::StoresQuery do
+describe V1::QueryHelper::StoresQuery do
   before do
     @store_1  = Fabricate(:store, name: 'Toronto',  latitude: 43.65285, longitude: -79.38143)
     @store_2  = Fabricate(:store, name: 'London',   latitude: 42.97941, longitude: -81.24608)
@@ -239,7 +239,7 @@ describe V1QueryHelper::StoresQuery do
     it "should not allow #{lat.inspect} as a latitude" do
       expect {
         mkquery(:stores, lat: lat)
-      }.to raise_error V1QueryHelper::BadQueryError
+      }.to raise_error V1::QueryHelper::BadQueryError
     end
   end
 
@@ -247,24 +247,24 @@ describe V1QueryHelper::StoresQuery do
     it "should not allow #{lon.inspect} as a longitude" do
       expect {
         mkquery(:stores, lon: lon)
-      }.to raise_error V1QueryHelper::BadQueryError
+      }.to raise_error V1::QueryHelper::BadQueryError
     end
   end
 
   it 'should require both :lat and :lon be present if only one is present' do
     expect {
       mkquery(:stores, lat: '43.0')
-    }.to raise_error V1QueryHelper::BadQueryError
+    }.to raise_error V1::QueryHelper::BadQueryError
 
     expect {
       mkquery(:stores, lon: '-78.0')
-    }.to raise_error V1QueryHelper::BadQueryError
+    }.to raise_error V1::QueryHelper::BadQueryError
   end
 
   it 'should not allow :lat or :lon in combination with :geo' do
     expect {
       mkquery(:stores, lat: '43.0', lon: '-78.0', geo: 'a place')
-    }.to raise_error V1QueryHelper::BadQueryError
+    }.to raise_error V1::QueryHelper::BadQueryError
   end
 
   describe 'A spatial query via :lat and :lon' do
