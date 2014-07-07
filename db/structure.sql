@@ -107,6 +107,20 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
+--
+-- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
+
+
 SET search_path = public, pg_catalog;
 
 SET default_tablespace = '';
@@ -227,6 +241,23 @@ CREATE SEQUENCE inventories_id_seq
 --
 
 ALTER SEQUENCE inventories_id_seq OWNED BY inventories.id;
+
+
+--
+-- Name: keys; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE keys (
+    id uuid DEFAULT uuid_generate_v1() NOT NULL,
+    user_id integer,
+    data character varying(255) NOT NULL,
+    label character varying(255),
+    usage integer,
+    url character varying(255),
+    info text,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
 
 
 --
@@ -396,6 +427,25 @@ ALTER SEQUENCE stores_id_seq OWNED BY stores.id;
 
 
 --
+-- Name: users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE users (
+    id uuid DEFAULT uuid_generate_v1() NOT NULL,
+    name character varying(255),
+    email character varying(255),
+    password_digest character varying(60) NOT NULL,
+    pending_email character varying(255),
+    verification_token character varying(36),
+    auth_token character varying(36) NOT NULL,
+    last_seen_ip character varying(255),
+    last_seen_at timestamp without time zone,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -455,6 +505,14 @@ ALTER TABLE ONLY inventories
 
 
 --
+-- Name: keys_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY keys
+    ADD CONSTRAINT keys_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: products_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -468,6 +526,14 @@ ALTER TABLE ONLY products
 
 ALTER TABLE ONLY stores
     ADD CONSTRAINT stores_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
 
 
 --
@@ -569,6 +635,13 @@ CREATE INDEX index_inventories_on_store_id ON inventories USING btree (store_id)
 
 
 --
+-- Name: index_keys_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_keys_on_user_id ON keys USING btree (user_id);
+
+
+--
 -- Name: index_products_on_is_dead_and_inventory_volume_in_milliliters; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -587,6 +660,13 @@ CREATE INDEX index_products_on_tag_vectors ON products USING gin (tag_vectors);
 --
 
 CREATE INDEX index_stores_on_tag_vectors ON stores USING gin (tag_vectors);
+
+
+--
+-- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_users_on_email ON users USING btree (email) WHERE (email IS NOT NULL);
 
 
 --
@@ -906,4 +986,8 @@ INSERT INTO schema_migrations (version) VALUES ('20140625021830');
 INSERT INTO schema_migrations (version) VALUES ('20140627024053');
 
 INSERT INTO schema_migrations (version) VALUES ('20140706215519');
+
+INSERT INTO schema_migrations (version) VALUES ('20140707151430');
+
+INSERT INTO schema_migrations (version) VALUES ('20140707173828');
 

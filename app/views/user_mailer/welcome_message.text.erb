@@ -1,0 +1,6 @@
+Hi <%= @user.first_name %>,
+
+Welcome to LCBO API, and thanks for taking the time to register, click the link
+below to finish the process of setting up your account:
+
+<%= verify_registration_url(@user.verify_token) %>

@@ -48,6 +48,7 @@ GEM
       tins (~> 1.0)
     arel (5.0.1.20140414130214)
     awesome_print (1.2.0)
+    bcrypt (3.1.7)
     builder (3.2.2)
     capistrano (3.2.1)
       i18n
@@ -206,6 +207,7 @@ DEPENDENCIES
   amatch
   awesome_print
   aws-s3!
+  bcrypt
   capistrano (~> 3.2.1)
   capistrano-bundler
   capistrano-rails

@@ -7,7 +7,16 @@ Rails.application.routes.draw do
     resources :crawl_events
   end
 
-  root to: 'root#show'
+  controller :root, action: :ember do
+    get '/register'
+    get '/register/:token', as: :verify_registration
+    get '/account'
+    get '/account/verify/:token'
+    get '/manage'
+    get '/manage/keys/new'
+    get '/manage/keys/:key_id'
+    get '/log-in'
+  end
 
   namespace :api, path: '/', format: :json do
     scope module: :v2, path: '(v2)', constraints: APIConstraint.new(2) do
@@ -23,11 +32,6 @@ Rails.application.routes.draw do
           put '/account/verifications/:token' => :update
         end
 
-        controller :crawls do
-          get '/crawls'     => :index
-          get '/crawls/:id' => :show
-        end
-
         controller :sessions do
           get    '/session'  => :show,    as: :session
           delete '/session'  => :destroy
@@ -35,19 +39,12 @@ Rails.application.routes.draw do
           post   '/sessions' => :create,  as: :sessions
         end
 
-        controller :apps do
-          get    '/apps'     => :index,  as: :apps
-          post   '/apps'     => :create
-          get    '/apps/:id' => :show,   as: :app
-          patch  '/apps/:id' => :update
-          delete '/apps/:id' => :destroy
-        end
-
         controller :keys do
-          get    '/keys'        => :index,   as: :keys
-          post   '/keys'        => :create
-          get    '/keys/:token' => :show,    as: :key
-          delete '/keys/:token' => :destroy
+          get    '/keys'     => :index,  as: :keys
+          post   '/keys'     => :create
+          get    '/keys/:id' => :show,   as: :key
+          patch  '/keys/:id' => :update
+          delete '/keys/:id' => :destroy
         end
       end
 

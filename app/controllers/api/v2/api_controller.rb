@@ -15,8 +15,16 @@ class API::V2::APIController < APIController
     headers['X-API-Key'] || params[:api_key]
   end
 
-  def auth_token
-    headers['X-Auth-Token']
+  def render_error(message, opts = { status: 400 })
+    render({
+      json: { message: message }
+    }.merge(opts))
+    false
+  end
+
+  def not_authorized
+    render_error(I18n.t('unauthorized'), status: 401)
+    false
   end
 
   def rate_limit!
@@ -36,10 +44,7 @@ class API::V2::APIController < APIController
     response.headers['X-Rate-Limit-Reset'] = ttl
 
     if count > max
-      render json: {
-        message: I18n.t('rate_limited', max: max, ttl: ttl)
-      }, status: 403
-
+      render_error(I18n.t('rate_limited', max: max, ttl: ttl), status: 403)
       return false
     end
 
@@ -47,10 +52,6 @@ class API::V2::APIController < APIController
   end
 
   def authenticate!
-    render json: {
-      message: I18n.t('unauthorized')
-    }, status: 401
-
-    false
+    not_authorized
   end
 end
