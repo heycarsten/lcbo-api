@@ -20,4 +20,5 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  unauthorized: "A valid API key must be provided to use LCBO API, to learn more visit: http://lcboapi.com/v2/#authentication."
+  rate_limited: "The maximum requests per hour has been reached (%{max}). This limit will be reset in %{ttl} second(s), to learn more visit: http://lcboapi.com/v2/#rate-limiting."

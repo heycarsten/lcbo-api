@@ -10,19 +10,69 @@ Rails.application.routes.draw do
   root to: 'root#show'
 
   namespace :api, path: '/', format: :json do
-    scope module: :v2, constraints: APIConstraint.new(2) do
-      # get '/accounts/mine'
-      # get '/tokens'
-      # get '/hooks'
-      # get '/datasets'
-      # get '/products'
-      # get '/products/categories'
-      # get '/products/preferences'
-      # get '/stores'
-      # get '/inventories'
+    scope module: :v2, path: '(v2)', constraints: APIConstraint.new(2) do
+      scope module: :manager, path: '/manager' do
+        controller :accounts do
+          get    '/account'  => :show,   as: :account
+          patch  '/account'  => :update
+          delete '/account'  => :destroy
+          post   '/accounts' => :create, as: :accounts
+        end
+
+        controller :verifications do
+          put '/account/verifications/:token' => :update
+        end
+
+        controller :crawls do
+          get '/crawls'     => :index
+          get '/crawls/:id' => :show
+        end
+
+        controller :sessions do
+          get    '/session'  => :show,    as: :session
+          delete '/session'  => :destroy
+          put    '/session'  => :update
+          post   '/sessions' => :create,  as: :sessions
+        end
+
+        controller :apps do
+          get    '/apps'     => :index,  as: :apps
+          post   '/apps'     => :create
+          get    '/apps/:id' => :show,   as: :app
+          patch  '/apps/:id' => :update
+          delete '/apps/:id' => :destroy
+        end
+
+        controller :keys do
+          get    '/keys'        => :index,   as: :keys
+          post   '/keys'        => :create
+          get    '/keys/:token' => :show,    as: :key
+          delete '/keys/:token' => :destroy
+        end
+      end
+
+      controller :datasets do
+        get '/datasets'     => :index, as: :datasets
+        get '/datasets/:id' => :show,  as: :dataset
+      end
+
+      controller :inventories do
+        get '/inventories' => :index, as: :inventories
+        get '/stores/:store_id/products/:product_id/inventory' => :show, as: :inventory
+      end
+
+      controller :products do
+        get '/products'     => :index, as: :products
+        get '/products/:id' => :show,  as: :product
+      end
+
+      controller :stores do
+        get '/stores'     => :index, as: :stores
+        get '/stores/:id' => :show,  as: :store
+      end
     end
 
-    scope module: :v1, constraints: APIConstraint.new(1, true) do
+    scope module: :v1, path: '(v1)', constraints: APIConstraint.new(1, true) do
       # Legacy V1
       scope constraints: { lat: LATLON_RE, lon: LATLON_RE } do
         get '/download/:year-:month-:day'               => 'root#deprecated', name: :dataset_by_date
