@@ -7,6 +7,9 @@ require 'capistrano/bundler'
 require 'capistrano/rails'
 require 'capistrano/rvm'
 
+# Include 3rd party cap tasks
+require 'honeybadger/capistrano'
+
 # Includes tasks from other gems included in your Gemfile
 #
 # For documentation on these, see for example:

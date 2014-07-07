@@ -75,6 +75,8 @@ GEM
       ruby-hmac
     hashie (3.1.0)
     hike (1.2.3)
+    honeybadger (1.15.3)
+      json
     i18n (0.6.9)
     json (1.8.1)
     kaminari (0.16.1)
@@ -211,6 +213,7 @@ DEPENDENCIES
   excon
   fabrication
   gcoder
+  honeybadger
   kaminari
   nokogiri
   oj

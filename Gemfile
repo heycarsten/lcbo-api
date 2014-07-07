@@ -13,6 +13,7 @@ gem 'sass-rails',   '~> 4.0.3'
 gem 'therubyracer', platforms: :ruby
 gem 'uglifier'
 gem 'skylight'
+gem 'honeybadger'
 
 # Crawler Junk
 gem 'excon',         require: false
