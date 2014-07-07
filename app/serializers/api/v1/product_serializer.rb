@@ -1,5 +1,5 @@
 class API::V1::ProductSerializer < ApplicationSerializer
-  DUMP_COLS = [
+  attributes \
     :id,
     :is_dead,
     :name,
@@ -47,15 +47,11 @@ class API::V1::ProductSerializer < ApplicationSerializer
     :tertiary_category,
     :sugar_in_grams_per_liter,
     :clearance_sale_savings_in_cents,
-    :has_clearance_sale
-  ]
-
-  attributes *(DUMP_COLS + [
+    :has_clearance_sale,
     :quantity,
     :updated_on,
     :distance_in_meters,
     :product_no
-  ])
 
   def product_no
     object.id

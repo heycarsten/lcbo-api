@@ -2,7 +2,7 @@ class APIController < ApplicationController
   before_filter :set_api_headers
 
   clear_respond_to
-  respond_to :json, :js
+  respond_to :json
 
   protected
 

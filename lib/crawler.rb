@@ -204,7 +204,7 @@ class Crawler < Boticus::Bot
 
   desc 'Exporting CSV data'
   task :export do
-    Exporter.run(model.id)
+    V1::Exporter.run(model.id)
   end
 
   desc 'Flushing page caches'

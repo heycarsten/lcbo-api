@@ -1,5 +1,5 @@
 class API::V2::ProductSerializer < ApplicationSerializer
-  DUMP_COLS = [
+  attributes \
     :id,
     :is_dead,
     :name,
@@ -47,21 +47,17 @@ class API::V2::ProductSerializer < ApplicationSerializer
     :tertiary_category,
     :sugar_in_grams_per_liter,
     :clearance_sale_savings_in_cents,
-    :has_clearance_sale
-  ]
-
-  attributes *(DUMP_COLS + [
+    :has_clearance_sale,
     :quantity,
     :reported_on,
     :distance_in_meters
-  ])
 
   def quantity
     object.try(:quantity)
   end
 
   def reported_on
-    object.try(:updated_on)
+    object.try(:reported_on)
   end
 
   def distance_in_meters
@@ -69,16 +65,12 @@ class API::V2::ProductSerializer < ApplicationSerializer
   end
 
   def filter(keys)
-    if scope == :csv
-      keys.delete(:product_no)
-    end
-
     unless object.respond_to?(:quantity)
       keys.delete(:quantity)
     end
 
-    unless object.respond_to?(:updated_on)
-      keys.delete(:updated_on)
+    unless object.respond_to?(:reported_on)
+      keys.delete(:reported_on)
     end
 
     unless object.respond_to?(:distance_in_meters)

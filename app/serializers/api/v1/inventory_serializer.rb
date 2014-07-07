@@ -1,17 +1,13 @@
 class API::V1::InventorySerializer < ApplicationSerializer
-  DUMP_COLS = [
+  attributes \
     :product_id,
     :store_id,
     :is_dead,
     :quantity,
     :updated_on,
     :updated_at,
-  ]
-
-  attributes *(DUMP_COLS + [
     :product_no,
     :store_no
-  ])
 
   def updated_on
     object.reported_on

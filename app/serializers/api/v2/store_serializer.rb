@@ -1,4 +1,4 @@
-class API::V1::StoreSerializer < ApplicationSerializer
+class API::V2::StoreSerializer < ApplicationSerializer
   attributes \
     :id,
     :is_dead,
@@ -41,19 +41,14 @@ class API::V1::StoreSerializer < ApplicationSerializer
     :saturday_close,
     :updated_at,
     :quantity,
-    :updated_on,
-    :distance_in_meters,
-    :store_no
-
-  def store_no
-    object.id
-  end
+    :reported_on,
+    :distance_in_meters
 
   def quantity
     object.try(:quantity)
   end
 
-  def updated_on
+  def reported_on
     object.try(:reported_on)
   end
 
@@ -62,16 +57,12 @@ class API::V1::StoreSerializer < ApplicationSerializer
   end
 
   def filter(keys)
-    if scope == :csv
-      keys.delete(:store_no)
-    end
-
     unless object.respond_to?(:quantity)
       keys.delete(:quantity)
     end
 
     unless object.respond_to?(:reported_on)
-      keys.delete(:updated_on)
+      keys.delete(:reported_on)
     end
 
     unless object.respond_to?(:distance_in_meters)
