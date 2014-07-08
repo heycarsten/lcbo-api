@@ -12,33 +12,33 @@ describe 'Products API (V1)' do
   end
 
   it 'contains sane objects' do
-    Product.count.should == 3
-    Store.count.should == 1
-    Inventory.count.should == 1
+    expect(Product.count).to eq 3
+    expect(Store.count).to eq 1
+    expect(Inventory.count).to eq 1
   end
 
   describe 'all products' do
     subject { '/products' }
-    it_behaves_like 'a resource', :size => 3
+    it_behaves_like 'a resource', size: 3
   end
 
   describe 'full text search with match' do
     subject { '/products?q=fitzgibbons' }
-    it_behaves_like 'a resource', :size => 1
+    it_behaves_like 'a resource', size: 1
   end
 
   describe 'full text search with match (JSON)' do
     before { get '/products?q=fitzgibbons' }
 
     it 'contains a matched product' do
-      response.json[:result].size.should == 1
-      response.json[:result][0].should be_a Hash
-      response.json[:result][0][:name].should == 'Fitzgibbons'
-      response.json[:result][0][:id].should == @product2.id
+      expect(response.json[:result].size).to eq 1
+      expect(response.json[:result][0]).to be_a Hash
+      expect(response.json[:result][0][:name]).to eq 'Fitzgibbons'
+      expect(response.json[:result][0][:id]).to eq @product2.id
     end
 
     it 'does not contain a suggestion' do
-      response.json[:suggestion].should be_nil
+      expect(response.json[:suggestion]).to be_nil
     end
   end
 
@@ -48,12 +48,12 @@ describe 'Products API (V1)' do
     end
 
     it 'does not contain a product resource' do
-      response.json[:result].should be_a Array
-      response.json[:result].size.should be_zero
+      expect(response.json[:result]).to be_a Array
+      expect(response.json[:result].size).to be_zero
     end
 
     it 'contains a suggestion' do
-      response.json[:suggestion].should == 'fitzgibbons'
+      expect(response.json[:suggestion]).to eq 'fitzgibbons'
     end
   end
 
@@ -63,8 +63,8 @@ describe 'Products API (V1)' do
     end
 
     it 'does contain a product' do
-      response.json[:result].size.should == 1
-      response.json[:result].first[:id].should == 3
+      expect(response.json[:result].size).to eq 1
+      expect(response.json[:result].first[:id]).to eq 3
     end
   end
 
@@ -74,8 +74,8 @@ describe 'Products API (V1)' do
     end
 
     it 'does contain a product' do
-      response.json[:result].size.should == 1
-      response.json[:result].first[:id].should == 3
+      expect(response.json[:result].size).to eq 1
+      expect(response.json[:result].first[:id]).to eq 3
     end
   end
 
@@ -85,7 +85,7 @@ describe 'Products API (V1)' do
     end
 
     it 'returns json' do
-      response.json[:result].should be_a Array
+      expect(response.json[:result]).to be_a Array
     end
   end
 
@@ -95,12 +95,12 @@ describe 'Products API (V1)' do
     end
 
     it 'does not contain a product resource' do
-      response.json[:result].should be_a Array
-      response.json[:result].size.should be_zero
+      expect(response.json[:result]).to be_a Array
+      expect(response.json[:result].size).to be_zero
     end
 
     it 'contains a suggestion' do
-      response.json[:suggestion].should == 'fitzgibbons'
+      expect(response.json[:suggestion]).to eq 'fitzgibbons'
     end
   end
 

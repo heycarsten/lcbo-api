@@ -32,10 +32,12 @@ group :development do
   gem 'propro',             require: false
   gem 'quiet_assets'
   gem 'pry-rails'
+  gem 'spring'
+  gem 'spring-commands-rspec'
 end
 
 group :test, :development do
-  gem 'rspec',       '~> 2.99', require: false
+  #gem 'rspec',       '~> 2.99'
   gem 'rspec-rails'
   gem 'fabrication',            require: false
   gem 'awesome_print',          require: 'ap'

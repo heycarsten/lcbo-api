@@ -12,6 +12,7 @@ Bundler.require(*Rails.groups)
 module LCBOAPI
   class Application < Rails::Application
     # /lib requires
+    require 'base62'
     require 'token'
     require 'secure_compare'
     require 'lcbo'

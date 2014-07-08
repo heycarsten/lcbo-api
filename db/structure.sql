@@ -434,8 +434,8 @@ CREATE TABLE users (
     id uuid DEFAULT uuid_generate_v1() NOT NULL,
     name character varying(255),
     email character varying(255),
+    new_email character varying(255),
     password_digest character varying(60) NOT NULL,
-    pending_email character varying(255),
     verification_token character varying(36),
     auth_token character varying(36) NOT NULL,
     last_seen_ip character varying(255),
@@ -667,6 +667,13 @@ CREATE INDEX index_stores_on_tag_vectors ON stores USING gin (tag_vectors);
 --
 
 CREATE UNIQUE INDEX index_users_on_email ON users USING btree (email) WHERE (email IS NOT NULL);
+
+
+--
+-- Name: index_users_on_new_email; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_users_on_new_email ON users USING btree (new_email) WHERE (new_email IS NOT NULL);
 
 
 --

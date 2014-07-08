@@ -14,7 +14,7 @@ class APIConstraint
       return true
     end
 
-    if req.headers['Accept'].include?(@mime)
+    if req.headers['Accept'].to_s.include?(@mime)
       return true
     end
 
