@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'API resource (V1)' do
+RSpec.describe 'API resource (V1)', type: :request do
   describe 'with JS format and no callback' do
     before { get '/datasets.js' }
 

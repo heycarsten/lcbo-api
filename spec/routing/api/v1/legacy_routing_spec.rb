@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'V1 Legacy routing' do
+RSpec.describe 'V1 Legacy routing', type: :routing do
   it 'routes /products/:product_no' do
     expect(get '/products/18').to route_to(
       controller: 'api/v1/products',

@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'Stores API (V1)' do
+RSpec.describe 'Stores API (V1)', type: :request do
   before do
     @store1   = Fabricate(:store)
     @store2   = Fabricate(:store, name: 'Test Store')

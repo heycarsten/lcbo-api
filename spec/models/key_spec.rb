@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe Key do
+RSpec.describe Key, type: :model do
 end

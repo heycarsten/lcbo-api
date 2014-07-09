@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'Datasets API (V1)' do
+RSpec.describe 'Datasets API (V1)', type: :request do
   before do
     @crawls = [
       Fabricate(:crawl),

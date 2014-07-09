@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe User, '(creation)' do
+RSpec.describe User, '(creation)', type: :model do
   describe '#password' do
     it 'is required' do
       u = User.create(name: 'Carsten', email: 'hi@example.com')

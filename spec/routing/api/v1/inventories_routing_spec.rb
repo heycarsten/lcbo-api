@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'V1 Inventory resources routing' do
+RSpec.describe 'V1 Inventory resources routing', type: :routing do
   it 'routes /inventories' do
     expect(get '/inventories').to route_to(
       controller:  'api/v1/inventories',

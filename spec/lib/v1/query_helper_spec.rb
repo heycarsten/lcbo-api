@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 class BaseQuery < V1::QueryHelper::Query
   def initialize(*args)
@@ -70,7 +70,7 @@ def mkquery(type, params = {})
   end
 end
 
-describe BaseQuery do
+RSpec.describe BaseQuery do
   describe '#page' do
     ['0', 0, 'x x'].each do |page|
       it "should not allow value: #{page.inspect}" do
@@ -177,7 +177,7 @@ describe BaseQuery do
   end
 end
 
-describe V1::QueryHelper::ProductsQuery do
+RSpec.describe V1::QueryHelper::ProductsQuery do
   before do
     Fabricate(:product, name: 'Magic Merlot')
     Fabricate(:product, name: 'Sassy Shiraz')
@@ -197,7 +197,7 @@ describe V1::QueryHelper::ProductsQuery do
   end
 end
 
-describe V1::QueryHelper::StoresQuery do
+RSpec.describe V1::QueryHelper::StoresQuery do
   before do
     @store_1  = Fabricate(:store, name: 'Toronto',  latitude: 43.65285, longitude: -79.38143)
     @store_2  = Fabricate(:store, name: 'London',   latitude: 42.97941, longitude: -81.24608)

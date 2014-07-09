@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'Inventories API (V1)' do
+RSpec.describe 'Inventories API (V1)', type: :request do
   before do
     @products = [
       Fabricate(:product),

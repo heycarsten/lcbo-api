@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'Products API (V1)' do
+RSpec.describe 'Products API (V1)', type: :request do
   before do
     @product1 = Fabricate(:product, id: '1')
     @product2 = Fabricate(:product, id: '2', name: 'Fitzgibbons')

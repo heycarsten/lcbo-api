@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'V1 Store resources routing' do
+RSpec.describe 'V1 Store resources routing', type: :routing do
   it 'routes /stores' do
     expect(get '/stores').to route_to(
       controller: 'api/v1/stores',
