@@ -208,6 +208,21 @@ ALTER SEQUENCE crawls_id_seq OWNED BY crawls.id;
 
 
 --
+-- Name: emails; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE emails (
+    id uuid DEFAULT uuid_generate_v1() NOT NULL,
+    user_id uuid NOT NULL,
+    address character varying(120) NOT NULL,
+    is_verified boolean DEFAULT false NOT NULL,
+    verification_secret character varying(36) NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
 -- Name: inventories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -250,7 +265,7 @@ ALTER SEQUENCE inventories_id_seq OWNED BY inventories.id;
 CREATE TABLE keys (
     id uuid DEFAULT uuid_generate_v1() NOT NULL,
     user_id integer,
-    data character varying(255) NOT NULL,
+    secret character varying(255) NOT NULL,
     label character varying(255),
     usage integer,
     url character varying(255),
@@ -433,11 +448,10 @@ ALTER SEQUENCE stores_id_seq OWNED BY stores.id;
 CREATE TABLE users (
     id uuid DEFAULT uuid_generate_v1() NOT NULL,
     name character varying(255),
-    email character varying(255),
-    new_email character varying(255),
+    email character varying(120),
     password_digest character varying(60) NOT NULL,
-    verification_token character varying(36),
-    auth_token character varying(36) NOT NULL,
+    verification_secret character varying(36) NOT NULL,
+    auth_secret character varying(36) NOT NULL,
     last_seen_ip character varying(255),
     last_seen_at timestamp without time zone,
     created_at timestamp without time zone,
@@ -494,6 +508,14 @@ ALTER TABLE ONLY crawl_events
 
 ALTER TABLE ONLY crawls
     ADD CONSTRAINT crawls_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: emails_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY emails
+    ADD CONSTRAINT emails_pkey PRIMARY KEY (id);
 
 
 --
@@ -607,6 +629,27 @@ CREATE INDEX crawls_updated_at_index ON crawls USING btree (updated_at);
 
 
 --
+-- Name: index_emails_on_address; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_emails_on_address ON emails USING btree (address);
+
+
+--
+-- Name: index_emails_on_is_verified_and_address; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_emails_on_is_verified_and_address ON emails USING btree (is_verified, address);
+
+
+--
+-- Name: index_emails_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_emails_on_user_id ON emails USING btree (user_id);
+
+
+--
 -- Name: index_inventories_on_product_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -660,20 +703,6 @@ CREATE INDEX index_products_on_tag_vectors ON products USING gin (tag_vectors);
 --
 
 CREATE INDEX index_stores_on_tag_vectors ON stores USING gin (tag_vectors);
-
-
---
--- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_users_on_email ON users USING btree (email) WHERE (email IS NOT NULL);
-
-
---
--- Name: index_users_on_new_email; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_users_on_new_email ON users USING btree (new_email) WHERE (new_email IS NOT NULL);
 
 
 --
@@ -997,4 +1026,6 @@ INSERT INTO schema_migrations (version) VALUES ('20140706215519');
 INSERT INTO schema_migrations (version) VALUES ('20140707151430');
 
 INSERT INTO schema_migrations (version) VALUES ('20140707173828');
+
+INSERT INTO schema_migrations (version) VALUES ('20140709004216');
 

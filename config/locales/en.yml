@@ -34,5 +34,8 @@ en:
     curiosity:   "Just Curious (Using LCBO API to toy around and see what's possible)"
     other:       "Other"
 
+  email:
+    invalid_address: "must contain one '@' character"
+
   user:
-    invalid_email: "must contain one '@' character"
+    invalid_name: "can't contain non-alphanumeric characters"

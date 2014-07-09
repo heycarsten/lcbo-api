@@ -17,7 +17,14 @@ class Token
       raise ArgumentError, "Unknown kind: #{kind.inspect}"
     end
 
-    key    = opts[:key]    || random(opts[:key_size] || KEY_SIZE)
+    key = if opts[:id]
+      Base62.uuid_encode(opts[:id])
+    elsif opts[:key]
+      opts[:key]
+    else
+      random(opts[:key_size] || KEY_SIZE)
+    end
+
     secret = opts[:secret] || random(opts[:secret_size] || SECRET_SIZE)
 
     new(key, secret, kind)
@@ -57,6 +64,10 @@ class Token
     @key, @secret, @kind = key, secret, kind
   end
 
+  def id
+    @id ||= Base62.uuid_decode(@key)
+  end
+
   def api?
     kind == :api
   end
@@ -75,5 +86,9 @@ class Token
 
   def to_s
     KINDS[kind] + key + DELIMITER + secret
+  end
+
+  def to_param
+    to_s
   end
 end

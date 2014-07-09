@@ -1,28 +1,35 @@
 class User < ActiveRecord::Base
   SESSION_TTL = 3.weeks
-  EMAIL_RE = /\A[^@]+@[^@]+\Z/
+  NAME_RE  = /\A[[:alpha:] '\-]+\Z/u
 
-  has_many :keys, dependent: :destroy
+  has_many :keys,   dependent: :destroy
+  has_many :emails, dependent: :destroy
 
-  before_create :generate_verification_token
-  after_create  :deliver_welcome_message
-  before_save   :encrypt_password,      if: :password_changed?
-  after_update  :verify_email_address,  if: :email_changed?
+  before_create :generate_auth_secret, :generate_verification_secret
+  before_save   :set_password_digest, if: :password_changed?
+
+  after_create  :welcome_and_update_email, if: :email_changed?
+  after_update  :update_email,  if: :email_changed?
+
+  validates :email,
+    presence: true,
+    if: :new_record?
 
   validates :password,
     presence: true,
     length: { minimum: 6, maximum: 200 },
     if: :password_changed?
 
-  validates :email,
+  validates :name,
+    presence: true,
     format: {
-      with: EMAIL_RE,
-      message: I18n.t('user.invalid_email')
-    },
-    length: { minimum: 6, maximum: 200 },
-    if: :email_changed?
+      with: NAME_RE,
+      message: I18n.t('user.invalid_name')
+    }
 
-  validates :name, presence: true
+  validate :validate_email, if: :email_changed?
+
+  attr_reader :email
 
   def self.challenge(params)
     email    = params[:email].to_s.downcase
@@ -51,10 +58,9 @@ class User < ActiveRecord::Base
   end
 
   def self.lookup_auth_token(token)
-    id = Base62.uuid_decode(token.key)
-    return unless user = where(id: id).first
+    return unless user = where(id: token.id).first
 
-    if SecureCompare.compare(user.auth_token, token.secret)
+    if SecureCompare.compare(user.auth_secret, token.secret)
       user
     else
       nil
@@ -74,22 +80,18 @@ class User < ActiveRecord::Base
   end
 
   def self.lookup_verification_token(token)
-    id = Base62.uuid_decode(token.key)
-    return unless user = where(id: id).first
+    return unless user = where(id: token.id).first
 
-    if SecureCompare.compare(user.verification_token, token.secret)
-      user.update_attribute(:verification_token, nil)
+    if SecureCompare.compare(user.verification_secret, token.secret)
+      user.generate_verification_secret
       user
     else
       nil
     end
   end
 
-  def id62
-    Base62.uuid_encode(id)
-  end
-
   def password_changed?
+    return true if new_record?
     @password_changed ? true : false
   end
 
@@ -106,31 +108,38 @@ class User < ActiveRecord::Base
     BCrypt::Password.new(read_attribute(:password_digest))
   end
 
+  def first_name
+    name.present? ? name.split(' ')[0] : nil
+  end
+
+  def email_contact
+    "#{name} <#{email}>"
+  end
+
   def email_changed?
+    return true if new_record?
     @email_changed ? true : false
   end
 
   def email=(val)
     @email_changed = true
-    @email = val
-    write_attribute :new_email, val
-    generate_verification_token
+    @email = emails.build(address: val)
   end
 
-  def generate_auth_token
-    self.auth_token = Token.generate(:auth).secret
+  def generate_auth_secret
+    self.auth_secret = Token.generate(:auth).secret
   end
 
-  def generate_verification_token
-    self.verification_token = Token.generate(:verification).secret
+  def generate_verification_secret
+    self.verification_secret = Token.generate(:verification).secret
   end
 
   def verification_token
-    Token.new(id62, read_attribute(:verification_token), :verification).to_s
+    Token.generate(:verification, id: id, secret: verification_secret)
   end
 
   def auth_token
-    Token.new(id62, read_attribute(:auth_token), :auth).to_s
+    Token.generate(:auth, id: id, secret: auth_secret)
   end
 
   def generate_session_token
@@ -142,13 +151,27 @@ class User < ActiveRecord::Base
 
   private
 
-  def set_password_digest
-    return true unless password_changed?
-    self.password_digest = BCrypt::Password.create(password)
+  def validate_email
+    return true unless @email
+    return true if @email.valid?
+    @email.errors[:address].each do |error|
+      errors.add(:email, error)
+    end
+    true
   end
 
-  def deliver_welcome_message
-    UserMailer.welcome_message(id).deliver
-    true
+  def welcome_and_update_email
+    return unless @email
+    @email.save_with_welcome_verification_message
+  end
+
+  def update_email
+    return unless @email
+    @email.save_with_verification_message
+  end
+
+  def set_password_digest
+    return true unless password_changed?
+    self.password_digest = BCrypt::Password.create(@password)
   end
 end

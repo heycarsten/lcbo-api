@@ -9,9 +9,8 @@ Rails.application.routes.draw do
 
   controller :root, action: :ember do
     get '/register'
-    get '/register/:token', as: :verify_registration
     get '/account'
-    get '/account/verify/:token'
+    get '/verify/:token', as: :verification
     get '/manage'
     get '/manage/keys/new'
     get '/manage/keys/:key_id'
