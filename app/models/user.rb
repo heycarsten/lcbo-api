@@ -11,10 +11,6 @@ class User < ActiveRecord::Base
   after_create  :welcome_and_update_email, if: :email_changed?
   after_update  :update_email,  if: :email_changed?
 
-  validates :email,
-    presence: true,
-    if: :new_record?
-
   validates :password,
     presence: true,
     length: { minimum: 6, maximum: 200 },
@@ -27,9 +23,10 @@ class User < ActiveRecord::Base
       message: I18n.t('user.invalid_name')
     }
 
-  validate :validate_email, if: :email_changed?
+  validate :validate_email_presence, if: :new_record?
+  validate :validate_email,          if: :email_changed?
 
-  attr_reader :email
+  attr_reader :new_email
 
   def self.challenge(params)
     email    = params[:email].to_s.downcase
@@ -39,7 +36,7 @@ class User < ActiveRecord::Base
 
     if (found = where('email IS NOT NULL AND LOWER(email) = ?', email).first)
       return if (password_digest = found.password_digest).blank?
-      password_digest == password
+      password_digest == password ? found : nil
     else
       nil
     end
@@ -123,7 +120,7 @@ class User < ActiveRecord::Base
 
   def email=(val)
     @email_changed = true
-    @email = emails.build(address: val)
+    @new_email = emails.build(address: val)
   end
 
   def generate_auth_secret
@@ -149,25 +146,37 @@ class User < ActiveRecord::Base
     token
   end
 
+  def assign_email_address!(email)
+    e = Email.verified.where(address: email).first!
+    write_attribute :email, e.address
+    save!
+  end
+
   private
 
+  def validate_email_presence
+    return true unless new_record?
+    return true if @new_email
+    errors.add :email, 'must be provided'
+  end
+
   def validate_email
-    return true unless @email
-    return true if @email.valid?
-    @email.errors[:address].each do |error|
+    return true unless @new_email
+    return true if @new_email.valid?
+    @new_email.errors[:address].each do |error|
       errors.add(:email, error)
     end
     true
   end
 
   def welcome_and_update_email
-    return unless @email
-    @email.save_with_welcome_verification_message
+    return unless @new_email
+    @new_email.save_with_welcome_verification_message
   end
 
   def update_email
-    return unless @email
-    @email.save_with_verification_message
+    return unless @new_email
+    @new_email.save_with_verification_message
   end
 
   def set_password_digest

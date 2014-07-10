@@ -37,10 +37,14 @@ class Email < ActiveRecord::Base
 
   def verify!
     transaction do
-      Email.where(address: user.email).destroy!
-      user.update_attribute!(:email, address)
-      update_attribute!(:is_verified, true)
+      if (old = Email.where(address: user.email).first)
+        old.destroy!
+      end
+
+      update!(is_verified: true)
+      user.assign_email_address!(address)
     end
+
     self
   end
 
