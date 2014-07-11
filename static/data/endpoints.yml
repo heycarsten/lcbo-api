@@ -120,8 +120,6 @@
     :desc: All products
   - :path: /products?q=waupoos
     :desc: Full-text search
-  - :path: /products?geo=queen+and+spadina
-    :desc: Geospatial search
   - :path: /products?where=is_vqa&order=released_on.desc
     :desc: All VQA products ordered by release date
   :body: |
@@ -276,6 +274,8 @@
   :examples:
   - :path: /products/18/stores
     :desc: Stores that stock product 18
+  - :path: /products/18/stores?geo=bloor+st+and+lansdowne+ave+toronto
+    :desc: Nearby Stores with Product
   :body: |
     Returns all of the [stores](/docs/store) that carry the specified product
     along with the quantity that each store currently has in stock.
