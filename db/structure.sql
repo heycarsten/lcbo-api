@@ -323,8 +323,8 @@ CREATE TABLE products (
     tasting_note text,
     updated_at timestamp without time zone NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    image_thumb_url character varying(100),
-    image_url character varying(100),
+    image_thumb_url character varying(120),
+    image_url character varying(120),
     varietal character varying(100),
     style character varying(100),
     tertiary_category character varying(60),
@@ -1028,4 +1028,6 @@ INSERT INTO schema_migrations (version) VALUES ('20140707151430');
 INSERT INTO schema_migrations (version) VALUES ('20140707173828');
 
 INSERT INTO schema_migrations (version) VALUES ('20140709004216');
+
+INSERT INTO schema_migrations (version) VALUES ('20140712015328');
 
