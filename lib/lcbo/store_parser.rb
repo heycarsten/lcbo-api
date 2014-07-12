@@ -46,16 +46,19 @@ module LCBO
     end
 
     field :address_line_1 do
-      util.titlecase(lookup(:locationAddress1))
+      util.titlecase(lookup(:locationAddress1).strip)
     end
 
     field :address_line_2 do
-      val = lookup(:locationAddress2)
-      val ? util.titlecase(val) : nil
+      if (val = lookup(:locationAddress2)).present?
+        util.titlecase(val)
+      else
+        nil
+      end
     end
 
     field :city do
-      util.titlecase(lookup(:locationCityName))
+      util.titlecase(lookup(:locationCityName).strip)
     end
 
     field :postal_code do
@@ -67,18 +70,18 @@ module LCBO
     end
 
     field :telephone do
-      if (tel = lookup(:phoneNumber1))
+      if (tel = lookup(:phoneNumber1)).present?
         area = lookup(:phoneAreaCode)
-        "(#{area}) #{tel}"
+        "(#{area}) #{tel}".strip
       else
         nil
       end
     end
 
     field :fax do
-      if (fax = lookup(:faxNumber))
+      if (fax = lookup(:faxNumber)).present?
         area = lookup(:phoneAreaCode)
-        "(#{area}) #{fax}"
+        "(#{area}) #{fax}".strip
       else
         nil
       end
@@ -95,8 +98,8 @@ module LCBO
     end
 
     field :landmark_name do
-      if (val = lookup(:anchorStoreName))
-        util.titlecase(val).
+      if (val = lookup(:anchorStoreName)).present?
+        util.titlecase(val.strip).
           sub('Mkt', 'Market')
       else
         nil
