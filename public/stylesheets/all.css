@@ -249,28 +249,34 @@ a {
 /* line 189, /vagrant/static/source/stylesheets/all.css.sass */
 .footer-copyright {
   float: left; }
+  /* line 191, /vagrant/static/source/stylesheets/all.css.sass */
+  .footer-copyright span, .footer-copyright span a {
+    color: #959a8a; }
+  /* line 193, /vagrant/static/source/stylesheets/all.css.sass */
+  .footer-copyright .heart {
+    color: #bb6666; }
 
-/* line 191, /vagrant/static/source/stylesheets/all.css.sass */
+/* line 195, /vagrant/static/source/stylesheets/all.css.sass */
 .footer-disclaimer {
   float: right;
   text-align: right;
   color: #959a8a; }
-  /* line 195, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 199, /vagrant/static/source/stylesheets/all.css.sass */
   .footer-disclaimer a {
     color: #959a8a; }
 
-/* line 199, /vagrant/static/source/stylesheets/all.css.sass */
+/* line 203, /vagrant/static/source/stylesheets/all.css.sass */
 .page-section {
   margin: 42px 0;
   padding: 0 22px; }
-  /* line 202, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 206, /vagrant/static/source/stylesheets/all.css.sass */
   .page-section h2, .page-section p {
     margin: 18px 0; }
-  /* line 204, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 208, /vagrant/static/source/stylesheets/all.css.sass */
   .page-section h2 {
     font-size: 1.5em; }
 
-/* line 206, /vagrant/static/source/stylesheets/all.css.sass */
+/* line 210, /vagrant/static/source/stylesheets/all.css.sass */
 .document-title {
   color: #222222;
   background: #dbe1c9;
@@ -278,65 +284,65 @@ a {
   padding-top: 18px;
   border-bottom: 2px solid #c2c9ad;
   line-height: 1; }
-  /* line 213, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 217, /vagrant/static/source/stylesheets/all.css.sass */
   .document-title h2 {
     font-size: 1.5em; }
-  /* line 215, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 219, /vagrant/static/source/stylesheets/all.css.sass */
   .document-title h2, .document-title dl, .document-title dd {
     margin: 12px 0; }
-  /* line 217, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 221, /vagrant/static/source/stylesheets/all.css.sass */
   .document-title .route-spec span {
     color: #852f88; }
 
-/* line 219, /vagrant/static/source/stylesheets/all.css.sass */
+/* line 223, /vagrant/static/source/stylesheets/all.css.sass */
 .document-body {
   padding: 1px 22px;
   color: #222222; }
-  /* line 222, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 226, /vagrant/static/source/stylesheets/all.css.sass */
   .document-body a {
     text-decoration: none;
     color: #852f88; }
-    /* line 225, /vagrant/static/source/stylesheets/all.css.sass */
+    /* line 229, /vagrant/static/source/stylesheets/all.css.sass */
     .document-body a:hover {
       text-decoration: underline; }
-  /* line 227, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 231, /vagrant/static/source/stylesheets/all.css.sass */
   .document-body h1, .document-body h2, .document-body h3, .document-body h4, .document-body h5, .document-body h6, .document-body p, .document-body ul, .document-body ol, .document-body pre, .document-body dl, .document-body blockquote, .document-body address, .document-body table, .document-body hr {
     margin: 22px 0; }
-  /* line 229, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 233, /vagrant/static/source/stylesheets/all.css.sass */
   .document-body h1, .document-body h2, .document-body h3 {
     font-size: 1.15em; }
-  /* line 231, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 235, /vagrant/static/source/stylesheets/all.css.sass */
   .document-body ul, .document-body ol, .document-body blockquote {
     margin: 22px 1.9em; }
-  /* line 233, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 237, /vagrant/static/source/stylesheets/all.css.sass */
   .document-body small {
     font-size: 0.85em; }
-  /* line 235, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 239, /vagrant/static/source/stylesheets/all.css.sass */
   .document-body ul {
     list-style: outside square; }
-  /* line 237, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 241, /vagrant/static/source/stylesheets/all.css.sass */
   .document-body ol {
     list-style: outside decimal; }
-  /* line 239, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 243, /vagrant/static/source/stylesheets/all.css.sass */
   .document-body code {
     letter-spacing: -1px;
     font-family: Consolas, Monaco, "Lucida Console", "Bitstream Vera Sans Mono", "Dejavu Sans Mono", Monospace, "Courier New"; }
-    /* line 242, /vagrant/static/source/stylesheets/all.css.sass */
+    /* line 246, /vagrant/static/source/stylesheets/all.css.sass */
     .document-body code em {
       font-style: normal;
       background: #bbeedd; }
-  /* line 245, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 249, /vagrant/static/source/stylesheets/all.css.sass */
   .document-body pre {
     margin: 0 -2px;
     overflow: hidden;
     background: #eeeeee;
     line-height: 1.3;
     padding: 16px; }
-  /* line 251, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 255, /vagrant/static/source/stylesheets/all.css.sass */
   .document-body img {
     margin-left: -2px;
     max-width: 600px; }
-  /* line 254, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 258, /vagrant/static/source/stylesheets/all.css.sass */
   .document-body blockquote {
     margin: 2em 1em;
     padding: 0 1em;
@@ -344,38 +350,38 @@ a {
     color: #555555;
     font-family: Georgia, Constantia, "Times New Roman", Times, Serif;
     font-style: italic; }
-  /* line 261, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 265, /vagrant/static/source/stylesheets/all.css.sass */
   .document-body hr {
     height: 2px;
     border: none;
     color: #dddddd;
     background: #dddddd; }
-  /* line 266, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 270, /vagrant/static/source/stylesheets/all.css.sass */
   .document-body pre code {
     color: #222222; }
-  /* line 268, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 272, /vagrant/static/source/stylesheets/all.css.sass */
   .document-body dl.query-params dt code {
     font-weight: bold; }
-  /* line 270, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 274, /vagrant/static/source/stylesheets/all.css.sass */
   .document-body td {
     vertical-align: top;
     padding: 8px; }
-  /* line 273, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 277, /vagrant/static/source/stylesheets/all.css.sass */
   .document-body .note {
     font-size: 0.85em;
     background: #c7e1ff;
     border: 1px solid #a2c5ed;
     padding: 8px; }
-    /* line 278, /vagrant/static/source/stylesheets/all.css.sass */
+    /* line 282, /vagrant/static/source/stylesheets/all.css.sass */
     .document-body .note a {
       font-weight: bold;
       color: #222222; }
 
-/* line 281, /vagrant/static/source/stylesheets/all.css.sass */
+/* line 285, /vagrant/static/source/stylesheets/all.css.sass */
 .document-example {
   margin: 22px;
   color: #222222; }
-  /* line 284, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 288, /vagrant/static/source/stylesheets/all.css.sass */
   .document-example dd.example-response {
     padding: 0 8px;
     background: #f7eefb;
@@ -387,12 +393,12 @@ a {
     max-height: 240px;
     overflow-y: auto; }
 
-/* line 295, /vagrant/static/source/stylesheets/all.css.sass */
+/* line 299, /vagrant/static/source/stylesheets/all.css.sass */
 .usage-example-form legend {
   display: block;
   font-weight: bold;
   padding-bottom: 22px; }
-/* line 299, /vagrant/static/source/stylesheets/all.css.sass */
+/* line 303, /vagrant/static/source/stylesheets/all.css.sass */
 .usage-example-form .query-widget {
   border: 1px solid #c79adb;
   border-width: 2px 1px;
@@ -400,24 +406,24 @@ a {
   line-height: 42px;
   padding: 0 8px;
   background: #e2c5ef; }
-/* line 306, /vagrant/static/source/stylesheets/all.css.sass */
+/* line 310, /vagrant/static/source/stylesheets/all.css.sass */
 .usage-example-form #submit, .usage-example-form #query {
   font-family: "Helvetica Neue", Corbel, Arial, Freesans, Sans-Serif;
   font-size: 14px; }
-/* line 309, /vagrant/static/source/stylesheets/all.css.sass */
+/* line 313, /vagrant/static/source/stylesheets/all.css.sass */
 .usage-example-form #query {
   border: 1px solid #c79adb;
   padding: 2px;
   background: white;
   width: 372px; }
 
-/* line 314, /vagrant/static/source/stylesheets/all.css.sass */
+/* line 318, /vagrant/static/source/stylesheets/all.css.sass */
 #index_introduction {
   margin-top: 38px;
   margin-bottom: 56px;
   font-size: 1.85em; }
 
-/* line 318, /vagrant/static/source/stylesheets/all.css.sass */
+/* line 322, /vagrant/static/source/stylesheets/all.css.sass */
 #index_using_it {
   padding: 22px;
   padding-top: 6px;
@@ -427,39 +433,39 @@ a {
   -moz-border-radius: 12px;
   -webkit-border-radius: 12px;
   border-radius: 12px; }
-  /* line 325, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 329, /vagrant/static/source/stylesheets/all.css.sass */
   #index_using_it a {
     text-decoration: none;
     color: #fca9ff; }
-    /* line 328, /vagrant/static/source/stylesheets/all.css.sass */
+    /* line 332, /vagrant/static/source/stylesheets/all.css.sass */
     #index_using_it a:hover {
       text-decoration: underline; }
-  /* line 330, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 334, /vagrant/static/source/stylesheets/all.css.sass */
   #index_using_it p {
     padding-right: 100px; }
-  /* line 332, /vagrant/static/source/stylesheets/all.css.sass */
+  /* line 336, /vagrant/static/source/stylesheets/all.css.sass */
   #index_using_it table {
     width: 100%; }
-    /* line 334, /vagrant/static/source/stylesheets/all.css.sass */
+    /* line 338, /vagrant/static/source/stylesheets/all.css.sass */
     #index_using_it table td {
       font-size: 18px;
       padding: 6px 0; }
-    /* line 337, /vagrant/static/source/stylesheets/all.css.sass */
+    /* line 341, /vagrant/static/source/stylesheets/all.css.sass */
     #index_using_it table .action-cell {
       width: 35%;
       font-weight: bold; }
-      /* line 340, /vagrant/static/source/stylesheets/all.css.sass */
+      /* line 344, /vagrant/static/source/stylesheets/all.css.sass */
       #index_using_it table .action-cell a {
         color: white; }
-    /* line 342, /vagrant/static/source/stylesheets/all.css.sass */
+    /* line 346, /vagrant/static/source/stylesheets/all.css.sass */
     #index_using_it table .route-cell {
       font-size: 15px;
       width: 65%; }
 
-/* line 345, /vagrant/static/source/stylesheets/all.css.sass */
+/* line 349, /vagrant/static/source/stylesheets/all.css.sass */
 .route-spec span {
   color: #fca9ff; }
 
-/* line 347, /vagrant/static/source/stylesheets/all.css.sass */
+/* line 351, /vagrant/static/source/stylesheets/all.css.sass */
 #index_availability {
   margin-bottom: 58px; }
