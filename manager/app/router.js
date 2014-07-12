@@ -11,9 +11,9 @@ Router.map(function() {
   this.route('account');
   this.route('verification', { path: '/account/verify/:token' });
 
-  this.resource('keys', { path: '/manage' }, function() {
-    this.route('new', { path: '/manage/keys/new' });
-    this.route('show', { path: '/manage/keys/:key_id' });
+  this.resource('keys', { path: '/manage/keys' }, function() {
+    this.route('addKey', { path: '/manage/keys/add' });
+    this.route('edit', { path: '/manage/keys/:key_id' });
   });
 });
 
