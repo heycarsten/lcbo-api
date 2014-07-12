@@ -1,8 +1,6 @@
 require 'boticus'
 
 class Crawler < Boticus::Bot
-  UPTO_STORE_ID = 800
-
   def init(crawl = nil)
     @model               = (crawl || Crawl.init)
     @crawled_product_ids = []
@@ -15,13 +13,14 @@ class Crawler < Boticus::Bot
   end
 
   def prepare
-    log :info, 'Enumerating products queue'
+    log :info, 'Enumerating product and store queues'
     @product_ids = LCBO.product_ids
+    @store_ids   = LCBO.store_ids
   end
 
   desc 'Crawling stores'
   task :crawl_stores do
-    (1..UPTO_STORE_ID).each do |store_id|
+    @store_ids.each do |store_id|
       begin
         log :dot, "Placing store: #{store_id}"
 
@@ -65,9 +64,9 @@ class Crawler < Boticus::Bot
 
   desc 'Updating product images'
   task :update_product_images do
-    Product.where("is_dead = 'f' AND image_url IS NULL").find_each do |product|
+    Product.where(is_dead: false).find_each do |product|
       if (attrs = LCBO.product_images(product.id))
-        product.update_attributes!(attrs)
+        product.update!(attrs)
         log :dot, "Adding image for product: #{product.id}"
       end
     end
@@ -75,32 +74,28 @@ class Crawler < Boticus::Bot
     puts
   end
 
-  desc 'Crawling inventories by store'
+  desc 'Crawling inventories by product'
   task :crawl_inventories do
-    model.crawled_store_ids.all.each do |store_id|
-      begin
-        log :dot, "Placing store inventories: #{store_id}"
+    model.crawled_product_ids.all.each do |product_id|
+      log :dot, "Placing product inventories: #{product_id}"
 
-        inventories = LCBO.store_inventories(store_id)
+      inventories = LCBO.product_inventories(product_id)
 
-        Inventory.transaction do
-          inventories.each do |attrs|
-            attrs[:crawl_id]    = model.id
-            attrs[:is_dead]     = false
-            attrs[:store_id]    = store_id
-            attrs[:reported_on] = Time.now - 1.day # Lie just like the LOLCBO does.
+      Inventory.transaction do
+        inventories.each do |attrs|
+          attrs[:crawl_id]    = model.id
+          attrs[:is_dead]     = false
+          attrs[:product_id]  = product_id
 
-            Inventory.place(attrs)
-          end
+          Inventory.place(attrs)
         end
-
-        model.total_product_inventory_count += inventories.sum { |inv| inv[:quantity] }
-        model.total_inventories += inventories.size
-        model.save!
-      rescue LCBO::NotFoundError
-        log :warn, "Skipping store inventories: #{store_id} (it does not exist)"
       end
+
+      model.total_product_inventory_count += inventories.sum { |inv| inv[:quantity] }
+      model.total_inventories += inventories.size
+      model.save!
     end
+
     puts
   end
 
@@ -189,17 +184,30 @@ class Crawler < Boticus::Bot
 
   desc 'Marking dead products'
   task :mark_dead_products do
-    Product.where.not(crawl_id: model.id).update_all(is_dead: true)
+    Product.where.not(crawl_id: model.id).update_all(
+      is_dead: true,
+      inventory_count: 0,
+      inventory_price_in_cents: 0,
+      inventory_volume_in_milliliters: 0)
   end
 
   desc 'Marking dead stores'
   task :mark_dead_stores do
-    Store.where.not(crawl_id: model.id).update_all(is_dead: true)
+    Store.where.not(crawl_id: model.id).update_all(
+      is_dead: true,
+      products_count: 0,
+      inventory_count: 0,
+      inventory_price_in_cents: 0,
+      inventory_volume_in_milliliters: 0
+    )
   end
 
   desc 'Marking dead inventories'
   task :mark_dead_inventories do
-    Inventory.where.not(crawl_id: model.id).update_all(quantity: 0, is_dead: true)
+    Inventory.where.not(crawl_id: model.id).update_all(
+      is_dead: true,
+      quantity: 0
+    )
   end
 
   desc 'Exporting CSV data'
