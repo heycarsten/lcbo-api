@@ -44,7 +44,7 @@ class Crawler < Boticus::Bot
   desc 'Crawling products via API'
   task :crawl_api_products do
     @api_product_ids.each do |product_id|
-      crawl_product_id(product_id)
+      crawl_product_id(product_id, :api)
     end
     puts
   end
@@ -52,7 +52,7 @@ class Crawler < Boticus::Bot
   desc 'Crawling products that only appear on LCBO.com'
   task :crawl_lcbo_dot_com_products do
     @lcbo_dot_com_product_ids.each do |product_id|
-      crawl_product_id(product_id)
+      crawl_product_id(product_id, :lcbo)
     end
     puts
   end
@@ -220,11 +220,12 @@ class Crawler < Boticus::Bot
     model.rdb_flush!
   end
 
-  def crawl_product_id(product_id)
+  def crawl_product_id(product_id, data_source)
     log :dot, "Placing product: #{product_id}"
 
     attrs = LCBO.product(product_id)
     attrs[:crawl_id] = model.id
+    attrs[:data_source] = data_source
 
     Product.place(attrs)
 

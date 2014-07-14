@@ -1,6 +1,11 @@
 class Product < ActiveRecord::Base
   include PgSearch
 
+  enum data_source: [
+    :api,
+    :lcbo
+  ]
+
   pg_search_scope :search,
     against:  :tags,
     ignoring: :accents,

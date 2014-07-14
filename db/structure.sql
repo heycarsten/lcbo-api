@@ -336,7 +336,8 @@ CREATE TABLE products (
     scc character varying(255),
     style_flavour character varying(255),
     style_body character varying(255),
-    value_added_promotion_ends_on date
+    value_added_promotion_ends_on date,
+    data_source integer DEFAULT 0
 );
 
 
@@ -1040,4 +1041,6 @@ INSERT INTO schema_migrations (version) VALUES ('20140709004216');
 INSERT INTO schema_migrations (version) VALUES ('20140712015328');
 
 INSERT INTO schema_migrations (version) VALUES ('20140714201631');
+
+INSERT INTO schema_migrations (version) VALUES ('20140714202224');
 
