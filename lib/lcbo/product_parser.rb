@@ -247,6 +247,22 @@ module LCBO
       lookup(:vao) == 'Y'
     end
 
+    field :value_added_promotion_ends_on do
+      if has_value_added_promotion
+        util.parse_date(lookup(:vaoExpiration))
+      else
+        nil
+      end
+    end
+
+    field :value_added_promotion_description do
+      if has_value_added_promotion
+        lookup(:vaoDescription)
+      else
+        nil
+      end
+    end
+
     field :is_seasonal do
       lookup(:isLimited) == 'true'
     end
@@ -269,14 +285,6 @@ module LCBO
 
     field :tasting_note do
       lookup(:tastingNotes)
-    end
-
-    field :value_added_promotion_description do
-      if has_value_added_promotion
-        lookup(:vaoDescription)
-      else
-        nil
-      end
     end
   end
 end

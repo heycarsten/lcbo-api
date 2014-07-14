@@ -57,23 +57,14 @@ class Crawl < ActiveRecord::Base
   def previous
     @previous ||= begin
       Crawl.
+        where("id != ? AND state = 'finished'", id).
         order(id: :desc).
-        where.not(id: id).
-        where(state: 'finished').
         first
     end
   end
 
   def state=(val)
     write_attribute :state, val ? val.to_s : val
-  end
-
-  def product_ids
-    super || []
-  end
-
-  def store_ids
-    super || []
   end
 
   def diff!
@@ -110,7 +101,8 @@ class Crawl < ActiveRecord::Base
   def log(message, level = :info, payload = {})
     verify_unlocked!
 
-    ce = create_crawl_event(
+    ce = CrawlEvent.create!(
+      crawl_id:   id,
       level:      level.to_s,
       message:    message.to_s,
       payload:    JSON.dump(payload))

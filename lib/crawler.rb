@@ -14,8 +14,9 @@ class Crawler < Boticus::Bot
 
   def prepare
     log :info, 'Enumerating product and store queues'
-    @product_ids = LCBO.product_ids
-    @store_ids   = LCBO.store_ids
+    @api_product_ids          = LCBO.product_ids
+    @lcbo_dot_com_product_ids = LCBO.catalog_product_ids.ids - @api_product_ids
+    @store_ids                = LCBO.store_ids
   end
 
   desc 'Crawling stores'
@@ -40,24 +41,18 @@ class Crawler < Boticus::Bot
     puts
   end
 
-  desc 'Crawling products'
-  task :crawl_products do
-    @product_ids.each do |product_id|
-      begin
-        log :dot, "Placing product: #{product_id}"
+  desc 'Crawling products via API'
+  task :crawl_api_products do
+    @api_product_ids.each do |product_id|
+      crawl_product_id(product_id)
+    end
+    puts
+  end
 
-        attrs = LCBO.product(product_id)
-        attrs[:crawl_id] = model.id
-
-        Product.place(attrs)
-
-        model.total_products += 1
-        model.save!
-
-        model.crawled_product_ids << product_id
-      rescue LCBO::NotFoundError
-        log :warn, "Skipping product: #{product_id} (it does not exist)"
-      end
+  desc 'Crawling products that only appear on LCBO.com'
+  task :crawl_lcbo_dot_com_products do
+    @lcbo_dot_com_product_ids.each do |product_id|
+      crawl_product_id(product_id)
     end
     puts
   end
@@ -223,5 +218,21 @@ class Crawler < Boticus::Bot
   desc 'Cleanup'
   task :cleanup do
     model.rdb_flush!
+  end
+
+  def crawl_product_id(product_id)
+    log :dot, "Placing product: #{product_id}"
+
+    attrs = LCBO.product(product_id)
+    attrs[:crawl_id] = model.id
+
+    Product.place(attrs)
+
+    model.total_products += 1
+    model.save!
+
+    model.crawled_product_ids << product_id
+  rescue LCBO::NotFoundError
+    log :warn, "Skipping product: #{product_id} (it does not exist)"
   end
 end

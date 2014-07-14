@@ -263,10 +263,6 @@ module LCBO
       vao_info ? true : false
     end
 
-    field :has_limited_supply do
-      css('.limited-quantity-product').size > 0
-    end
-
     field :is_seasonal do
       css('.seasonal-product').size > 0
     end
@@ -279,12 +275,16 @@ module LCBO
       css('.kosher-product').size > 0
     end
 
-    field :description do
+    field :tasting_note do
       if node = css('.description blockquote')[0]
         node.content.strip
       else
         nil
       end
+    end
+
+    field :description do
+      details[:description]
     end
 
     field :value_added_promotion_description do
@@ -342,6 +342,8 @@ module LCBO
               { varietal: set[i + 1].content.strip }
             when /sugar content/i
               { sugar_content: set[i + 1].content.strip }
+            when /description/i
+              { description: set[i + 1].content.strip }
             when / mL /
               { package: label }
             else
