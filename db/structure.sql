@@ -335,7 +335,8 @@ CREATE TABLE products (
     upc character varying(255),
     scc character varying(255),
     style_flavour character varying(255),
-    style_body character varying(255)
+    style_body character varying(255),
+    value_added_promotion_ends_on date
 );
 
 
@@ -699,6 +700,13 @@ CREATE INDEX index_products_on_tag_vectors ON products USING gin (tag_vectors);
 
 
 --
+-- Name: index_products_on_value_added_promotion_ends_on; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_products_on_value_added_promotion_ends_on ON products USING btree (value_added_promotion_ends_on);
+
+
+--
 -- Name: index_stores_on_tag_vectors; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1030,4 +1038,6 @@ INSERT INTO schema_migrations (version) VALUES ('20140707173828');
 INSERT INTO schema_migrations (version) VALUES ('20140709004216');
 
 INSERT INTO schema_migrations (version) VALUES ('20140712015328');
+
+INSERT INTO schema_migrations (version) VALUES ('20140714201631');
 
