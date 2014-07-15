@@ -1,17 +1,17 @@
 require 'rails_helper'
 
-RSpec.describe 'v2/manager/sessions API' do
-  before do
-    request.headers['Accept'] = 'application/vnd.lcboapi.v2+json'
+RSpec.describe 'V2 Manager Sessions API' do
+  it 'returns an auth token with correct credentials for verified user' do
+    u = create_verified_user!
+    api_post '/manager/sessions', session: {
+      email: u.email,
+      password: 'password'
+    }
+    expect(response).to be_invalid
+    expect(json).to have_key :errors
   end
 
-  it 'returns an auth token with correct credentials for validated user' do
-    u = create_validated_user!
-
-    post '/manager/sessions', session: { email: u.email, password: 'password' }
-  end
-
-  it 'returns errors with correct credentials for an invalidated user' do
+  it 'returns errors with correct credentials for an unverifed user' do
     u = create_user!
     post '/manager/sessions', session: { email: u.email, password: 'password' }
   end

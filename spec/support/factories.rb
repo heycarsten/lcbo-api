@@ -19,9 +19,9 @@ module Factories
     u
   end
 
-  def create_validated_user!(attrs = {})
+  def create_verified_user!(attrs = {})
     e = create_user!.new_email
-    e.validate!
+    e.verify!
     e.user
   end
 end
