@@ -98,8 +98,9 @@ GEM
     nokogiri (1.6.2.1)
       mini_portile (= 0.6.0)
     oj (2.9.9)
+    oj_mimic_json (1.0.1)
     pg (0.17.1)
-    pg_search (0.7.4)
+    pg_search (0.7.5)
       activerecord (>= 3.1)
       activesupport (>= 3.1)
       arel
@@ -219,6 +220,7 @@ DEPENDENCIES
   kaminari
   nokogiri
   oj
+  oj_mimic_json
   pg
   pg_search
   propro
