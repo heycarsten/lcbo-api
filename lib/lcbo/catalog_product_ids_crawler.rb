@@ -85,6 +85,10 @@ module LCBO
       @page += 1
     end
 
+    def total_pages
+      @total_pages ||= (total / PER.to_f).round
+    end
+
     def ids
       links.map { |l| l.match(ID_PART)[1].to_i }
     end
@@ -95,7 +99,7 @@ module LCBO
         dot
         increment_page!
 
-        break if links.size >= total
+        break if page > total_pages
       end
     end
   end

@@ -12,11 +12,19 @@ class Crawler < Boticus::Bot
     model.log(msg, level, payload)
   end
 
-  def prepare
-    log :info, 'Enumerating product and store queues'
-    @api_product_ids          = LCBO.product_ids
+  desc 'Getting store IDs'
+  task :get_store_ids do
+    @store_ids = LCBO.store_ids
+  end
+
+  desc 'Get product IDs via iPhone API'
+  task :get_product_ids_via_iphone_api do
+    @api_product_ids = LCBO.product_ids
+  end
+
+  desc 'Get product IDs via lcbo.com'
+  task :get_product_ids_via_lcbo_dot_com do
     @lcbo_dot_com_product_ids = LCBO.catalog_product_ids.ids - @api_product_ids
-    @store_ids                = LCBO.store_ids
   end
 
   desc 'Crawling stores'
