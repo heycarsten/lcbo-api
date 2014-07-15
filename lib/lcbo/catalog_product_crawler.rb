@@ -6,7 +6,6 @@ module LCBO
     VAO_DESCRIPTION_RNG = /\AFREE (.+) until/
     DATE_RNG            = /([A-Z]{1}[a-z]+ [0-9]+, [0-9]{4}+){1}/
     VAO_DATE_RNG        = /until #{DATE_RNG} or/
-    PRICE_RNG           = /\$([0-9]+\.[0-9]{1,2}){1}/
 
     def self.parse(url)
       new(url).as_json
@@ -49,10 +48,8 @@ module LCBO
     end
 
     field :price_in_cents do
-      price = css('.prices strong')[0].content.match(PRICE_RNG)[1]
-
-      if price
-        (price.to_f * 100).to_i
+      if (dollars = util.parse_dollars(css('.prices strong')[0].content))
+        (dollars * 100).to_i
       else
         0
       end
@@ -60,7 +57,7 @@ module LCBO
 
     field :regular_price_in_cents do
       if has_limited_time_offer
-        dollars = css('.prices small')[0].content.match(PRICE_RNG)[1].to_f
+        dollars = util.parse_dollars(css('.prices small')[0].content)
         (dollars * 100).to_i
       else
         price_in_cents

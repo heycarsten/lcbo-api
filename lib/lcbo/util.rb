@@ -42,8 +42,17 @@ module LCBO
     DELETION_RE       = /\"|\\|\/|\(|\)|\[|\]|\./
     WHITESPACE_RE     = /\*|\+|\&|\_|\,|\s/
     PACKAGE_VOLUME_RE = /([0-9]+|[0-9]+x[0-9]+) (mL) ([a-z]+)/
+    PRICE_RE          = /\$([0-9,]+\.[0-9]{1,2}){1}/
 
     module_function
+
+    def parse_dollars(string)
+      if (match = string.match(PRICE_RE)[1])
+        match.gsub(',', '').to_f
+      else
+        nil
+      end
+    end
 
     def upcase(string)
       UnicodeUtils.simple_upcase(string)
