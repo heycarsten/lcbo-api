@@ -218,6 +218,7 @@ class Crawler < Boticus::Bot
   desc 'Cleanup'
   task :cleanup do
     model.rdb_flush!
+    CrawlEvent.where.not(crawl_id: model.id).delete_all
   end
 
   def crawl_product_id(product_id, data_source)
