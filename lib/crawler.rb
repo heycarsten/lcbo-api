@@ -226,7 +226,7 @@ class Crawler < Boticus::Bot
 
     attrs = LCBO.product(product_id)
     attrs[:crawl_id] = model.id
-    attrs[:data_source] = data_source
+    attrs[:data_source] = Product.data_sources[data_source]
 
     Product.place(attrs)
 
