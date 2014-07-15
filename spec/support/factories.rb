@@ -18,4 +18,10 @@ module Factories
     u.save!
     u
   end
+
+  def create_validated_user!(attrs = {})
+    e = create_user!.new_email
+    e.validate!
+    e.user
+  end
 end
