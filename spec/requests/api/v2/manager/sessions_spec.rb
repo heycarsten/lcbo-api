@@ -43,6 +43,7 @@ RSpec.describe 'V2 Manager Sessions API' do
       log_in_user(u = create_verified_user!)
       api_put '/manager/session'
       expect(response.status).to eq 200
+      expect(json[:session][:token]).to be_a String
       expires = Time.parse(json[:session][:expires_at])
       now     = Time.now
       ttl     = (expires - now).round
@@ -50,16 +51,40 @@ RSpec.describe 'V2 Manager Sessions API' do
     end
 
     it 'fails to update with an invalid token' do
-      
+      api_headers['X-Auth-Token'] = Token.generate(:session).to_s
+      api_put '/manager/session'
+      expect(response.status).to eq 401
     end
   end
 
   describe 'GET /manager/session' do
     it 'returns the current session with an active auth token' do
-
+      log_in_user(u = create_verified_user!)
+      api_get '/manager/session'
+      expect(response.status).to eq 200
+      expect(json[:session][:token]).to be_a String
+      expires = Time.parse(json[:session][:expires_at])
+      now     = Time.now
+      expect(expires).to be > now
     end
 
     it 'fails to return the current session with an inactive auth token' do
+      api_headers['X-Auth-Token'] = Token.generate(:session).to_s
+      api_get '/manager/session'
+      expect(response.status).to eq 401
+    end
+  end
+
+  describe 'DELETE /manager/session' do
+    it 'destroys the session token when given a valid token' do
+      log_in_user(u = create_verified_user!)
+      token = api_headers['X-Auth-Token']
+      expect(User.lookup(token)).to be_a User
+      api_delete '/manager/session'
+      expect(response.status).to eq 202
+      expect(User.lookup(token)).to be_nil
+      api_delete '/manager/session'
+      expect(response.status).to eq 401
     end
   end
 end
