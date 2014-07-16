@@ -16,4 +16,11 @@ class API::V2::Manager::ManagerController < API::V2::APIController
   def current_user
     @current_user ||= User.lookup(auth_token)
   end
+
+  def render_session(token, ttl = User::SESSION_TTL)
+    render json: { session: {
+      token:      token.to_s,
+      expires_at: Time.now + ttl
+    } }, status: 200
+  end
 end

@@ -28,7 +28,7 @@ Rails.application.routes.draw do
         end
 
         controller :verifications do
-          put '/account/verifications/:token' => :update
+          put '/verifications/:token' => :update
         end
 
         controller :sessions do

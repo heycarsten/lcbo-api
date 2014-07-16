@@ -90,7 +90,6 @@ class User < ActiveRecord::Base
     return unless user = where(id: token.id).first
 
     if SecureCompare.compare(user.verification_secret, token.secret)
-      user.generate_verification_secret
       user
     else
       nil

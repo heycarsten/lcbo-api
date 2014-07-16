@@ -9,10 +9,11 @@ class Token
   DELIMITER   = '-'
 
   KINDS = {
-    api:          'k_',
-    session:      's_',
-    auth:         'a_',
-    verification: 'v_'
+    api:                'k_',
+    session:            's_',
+    auth:               'a_',
+    verification:       'v_',
+    email_verification: 'e_'
   }
 
   def self.generate(kind, opts = {})
@@ -93,6 +94,10 @@ class Token
 
   def verification?
     kind == :verification
+  end
+
+  def email_verification?
+    kind == :email_verification
   end
 
   def to_s

@@ -25,13 +25,4 @@ class API::V2::Manager::SessionsController < API::V2::Manager::ManagerController
     unauthenticate!
     render text: '', status: 202
   end
-
-  private
-
-  def render_session(token, ttl = User::SESSION_TTL)
-    render json: { session: {
-      token:      token.to_s,
-      expires_at: Time.now + ttl
-    } }, status: 200
-  end
 end
