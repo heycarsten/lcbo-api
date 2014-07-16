@@ -18,8 +18,8 @@ Rails.application.routes.draw do
   end
 
   namespace :api, path: '/', format: :json do
-    scope module: :v2, path: '(v2)', constraints: APIConstraint.new(2) do
-      scope module: :manager, path: '/manager' do
+    scope module: :v2, as: :v2, path: '(v2)', constraints: APIConstraint.new(2) do
+      namespace :manager do
         controller :accounts do
           get    '/account'  => :show,   as: :account
           patch  '/account'  => :update

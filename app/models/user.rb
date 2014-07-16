@@ -13,8 +13,13 @@ class User < ActiveRecord::Base
 
   validates :password,
     presence: true,
-    length: { minimum: 6, maximum: 200 },
-    if: :password_changed?
+    length: { minimum: 8, maximum: 200 },
+    if: :password_given?
+
+  validates :new_password,
+    presence: true,
+    length: { minimum: 8, maximum: 200 },
+    if: :new_password_given?
 
   validates :name,
     presence: true,
@@ -23,10 +28,16 @@ class User < ActiveRecord::Base
       message: I18n.t('user.invalid_name')
     }
 
-  validate :validate_email_presence, if: :new_record?
-  validate :validate_email,          if: :email_changed?
+  validate :validate_password_change, if: :new_password_given?
+  validate :validate_email_presence,  if: :new_record?
+  validate :validate_email,           if: :email_changed?
 
-  attr_reader :new_email
+  scope :verified, -> { where.not(email: nil) }
+
+  attr_reader \
+    :password,
+    :new_password,
+    :new_email
 
   def self.challenge(params)
     email    = params[:email].to_s.downcase
@@ -34,7 +45,7 @@ class User < ActiveRecord::Base
 
     return if email.blank? || password.blank?
 
-    if (found = where('email IS NOT NULL AND LOWER(email) = ?', email).first)
+    if (found = verified.where('LOWER(email) = ?', email).first)
       return if (password_digest = found.password_digest).blank?
       password_digest == password ? found : nil
     else
@@ -55,7 +66,7 @@ class User < ActiveRecord::Base
   end
 
   def self.lookup_auth_token(token)
-    return unless user = where(id: token.id).first
+    return unless user = verified.where(id: token.id).first
 
     if SecureCompare.compare(user.auth_secret, token.secret)
       user
@@ -95,13 +106,29 @@ class User < ActiveRecord::Base
     @password_changed ? true : false
   end
 
+  def password_given?
+    @password_given ? true : false
+  end
+
   def password=(val)
+    @password_given = true
     @password_changed = true
     @password = val
   end
 
-  def password
-    @password
+  def new_password_given?
+    @new_password_given ? true : false
+  end
+
+  def new_password=(val)
+    @new_password_given = true
+    @new_password = val
+    self.password = val
+    @password_given = false
+  end
+
+  def current_password=(val)
+    @current_password = val
   end
 
   def password_digest
@@ -171,6 +198,12 @@ class User < ActiveRecord::Base
 
   def redis_session_key(token)
     self.class.redis_session_key(token)
+  end
+
+  def validate_password_change
+    return true unless new_password_given?
+    return true if password_digest == @current_password.to_s
+    errors.add :current_password, 'is not correct'
   end
 
   def validate_email_presence

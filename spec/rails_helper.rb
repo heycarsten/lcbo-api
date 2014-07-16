@@ -23,7 +23,8 @@ RSpec.configure do |config|
   config.include APIHelpers, type: :request
 
   config.after :suite do
-    $redis.del(*$redis.keys('test*'))
+    keys = $redis.keys('test*')
+    $redis.del(*keys) if keys.any?
   end
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your

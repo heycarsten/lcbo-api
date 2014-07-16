@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe User, '(creation)', type: :model do
+RSpec.describe User, type: :model do
   let :verified_user do
     e = create_user(email: 'a@b.ca', password: 'password').new_email
     e.verify!
@@ -11,6 +11,15 @@ RSpec.describe User, '(creation)', type: :model do
     it 'is required' do
       u = create_user(password: nil)
       expect(u.errors[:password]).to_not be_empty
+    end
+  end
+
+  describe '#new_password' do
+    it 'is required when supplied' do
+      u = create_user!
+      u.new_password = ''
+      expect(u).to_not be_valid
+      expect(u.errors[:new_password]).to_not be_empty
     end
   end
 

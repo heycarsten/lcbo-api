@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Crawl, 'with nil store_nos and product_nos', type: :model do
-  let(:crawl) { Fabricate(:crawl, product_ids: nil, store_ids: nil) }
+RSpec.describe Crawl, type: :model do
+  let(:crawl) { Crawl.init }
 
   it 'should exist' do
     expect(crawl).to be_persisted
