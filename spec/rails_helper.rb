@@ -22,6 +22,10 @@ RSpec.configure do |config|
   config.include Factories
   config.include APIHelpers, type: :request
 
+  config.after :suite do
+    $redis.del(*$redis.keys('test*'))
+  end
+
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.

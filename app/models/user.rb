@@ -65,12 +65,11 @@ class User < ActiveRecord::Base
   end
 
   def self.lookup_session_token(token)
-    return unless json = $redis.get("sessions:#{token.key}")
-
+    return unless json = $redis.get(redis_session_key(token))
     payload = JSON.parse(json)
 
-    if SecureCompare.compare(token.secret, json['secret'])
-      where(id: json['user_id']).first
+    if SecureCompare.compare(token.secret, payload['secret'])
+      where(id: payload['user_id']).first
     else
       nil
     end
@@ -85,6 +84,10 @@ class User < ActiveRecord::Base
     else
       nil
     end
+  end
+
+  def self.redis_session_key(token)
+    "#{Rails.env}:sessions:#{token.key}"
   end
 
   def password_changed?
@@ -142,8 +145,20 @@ class User < ActiveRecord::Base
   def generate_session_token
     token = Token.generate(:session)
     json = %|{"user_id":"#{id}","secret":"#{token.secret}"}|
-    $redis.setex("sessions:#{token.key}", SESSION_TTL, json)
+    $redis.setex(redis_session_key(token), SESSION_TTL, json)
     token
+  end
+
+  def session_token_ttl(token)
+    $redis.ttl(redis_session_key(token))
+  end
+
+  def refresh_session_token(token)
+    $redis.expire(redis_session_key(token), User::SESSION_TTL)
+  end
+
+  def destroy_session_token(token)
+    $redis.del(redis_session_key(token))
   end
 
   def assign_email_address!(email)
@@ -153,6 +168,10 @@ class User < ActiveRecord::Base
   end
 
   private
+
+  def redis_session_key(token)
+    self.class.redis_session_key(token)
+  end
 
   def validate_email_presence
     return true unless new_record?

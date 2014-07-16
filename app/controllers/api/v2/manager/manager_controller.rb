@@ -1,6 +1,6 @@
 class API::V2::Manager::ManagerController < API::V2::APIController
   def auth_token
-    headers['X-Auth-Token']
+    @auth_token ||= Token.parse(request.headers['X-Auth-Token'])
   end
 
   def authenticate!
@@ -9,9 +9,7 @@ class API::V2::Manager::ManagerController < API::V2::APIController
   end
 
   def unauthenticate!
-    token = Token.parse(auth_token)
-    key   = 'sessions:' + token.id
-    $redis.del(key)
+    current_user.destroy_session_token(auth_token)
     @current_user = nil
   end
 

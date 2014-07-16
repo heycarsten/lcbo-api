@@ -1,4 +1,7 @@
 class Token
+  class Error < StandardError; end
+  class InvalidError < Error; end
+
   attr_reader :key, :secret, :kind
 
   KEY_SIZE    = 12
@@ -34,26 +37,34 @@ class Token
     SecureRandom.urlsafe_base64(size)[0, size].tr('_-', 'aA')
   end
 
-  def self.parse(payload)
-    raise InvalidError if payload.blank?
-    raise InvalidError unless payload.include?(DELIMITER)
+  def self.parse!(raw_payload)
+    payload = raw_payload.to_s.strip
+
+    raise InvalidError, "payload is empty" if payload.blank?
+    raise InvalidError, "payload has no delimiter" unless payload.include?(DELIMITER)
 
     key    = nil
     secret = nil
     kind   = nil
 
-    KINDS.each_pair do |kind, tag|
+    KINDS.each_pair do |k, tag|
       next unless payload.start_with?(tag)
       key, secret = *payload.sub(tag, '').split(DELIMITER)
-      kind = kind
+      kind = k
       break
     end
 
     if kind
       new(key, secret, kind)
     else
-      nil
+      raise InvalidError, "payload is an unknown type"
     end
+  end
+
+  def self.parse(payload)
+    parse!(payload)
+  rescue InvalidError
+    nil
   end
 
   def initialize(key, secret, kind)

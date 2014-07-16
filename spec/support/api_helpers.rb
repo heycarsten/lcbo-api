@@ -4,7 +4,9 @@ module APIHelpers
   end
 
   def log_in_user(user)
-    api_headers['X-Auth-Token'] = user.generate_session_token.to_s
+    token = user.generate_session_token.to_s
+    api_headers['X-Auth-Token'] = token
+    token
   end
 
   def auth_user(user)
