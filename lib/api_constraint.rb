@@ -2,9 +2,16 @@ class APIConstraint
   def initialize(version, default = false)
     @version = version
     @default = default
-    @mime    = "application/vnd.lcboapi.v#{@version}"
     @path    = "/v#{@version}"
     @verstr  = @version.to_s
+    @mimes   = case @version
+    when 1
+      ['application/json', 'application/vnd.lcboapi.v1+json']
+    when 2
+      ['application/vnd.api+json', 'application/vnd.lcboapi.v2+json']
+    else
+      raise ArgumentError, "unknown API version: #{@version.inspect}"
+    end
   end
 
   def matches?(req)
@@ -14,7 +21,7 @@ class APIConstraint
       return true
     end
 
-    if req.headers['Accept'].to_s.include?(@mime)
+    if @mimes.any? { |m| req.headers['Accept'].to_s.include?(m) }
       return true
     end
 

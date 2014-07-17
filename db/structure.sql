@@ -264,12 +264,12 @@ ALTER SEQUENCE inventories_id_seq OWNED BY inventories.id;
 
 CREATE TABLE keys (
     id uuid DEFAULT uuid_generate_v1() NOT NULL,
-    user_id integer,
     secret character varying(255) NOT NULL,
     label character varying(255),
     info text,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    user_id uuid NOT NULL
 );
 
 

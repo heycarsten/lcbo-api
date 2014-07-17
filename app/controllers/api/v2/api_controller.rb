@@ -5,6 +5,8 @@ class API::V2::APIController < APIController
   before_filter :rate_limit!
   before_filter :authenticate!
 
+  self.responder = API::V2::Responder
+
   protected
 
   def api_version

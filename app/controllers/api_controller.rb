@@ -4,6 +4,7 @@ class APIController < ApplicationController
     'text/vnd.lcboapi.v2+tsv' => :tsv,
     'text/vnd.lcboapi.v1+csv' => :csv,
     'text/vnd.lcboapi.v2+csv' => :csv,
+    'application/vnd.api+json'        => :json,
     'application/vnd.lcboapi.v1+json' => :json,
     'application/vnd.lcboapi.v2+json' => :json
   }

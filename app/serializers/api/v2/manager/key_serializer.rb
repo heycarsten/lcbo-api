@@ -1,6 +1,9 @@
 class API::V2::Manager::KeySerializer < ApplicationSerializer
   attributes \
     :id,
-    :payload,
-    :label
+    :label,
+    :info,
+    :token,
+    :created_at,
+    :updated_at
 end
