@@ -16,6 +16,7 @@ module LCBOAPI
     require 'token'
     require 'secure_compare'
     require 'lcbo'
+    require 'magiq'
     require 'geo_scope'
     require 'redis_abuse'
     require 'api_constraint'
