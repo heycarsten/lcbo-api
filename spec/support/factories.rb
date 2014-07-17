@@ -24,4 +24,23 @@ module Factories
     e.verify!
     e.user
   end
+
+  def build_key(attrs = {})
+    Key.new({
+      label: "API Key ##{rand 99999}",
+      info: ('LOL ' * 30).chop
+    }.merge(attrs))
+  end
+
+  def create_key(attrs = {})
+    k = build_key(attrs)
+    k.save
+    k
+  end
+
+  def create_key!(attrs = {})
+    k = build_key(attrs)
+    k.save!
+    k
+  end
 end

@@ -1,16 +1,4 @@
 class Key < ActiveRecord::Base
-  enum usage: [
-    :mobile,
-    :server,
-    :client,
-    :plugin,
-    :business,
-    :consulting,
-    :aggregation,
-    :curiosity,
-    :other
-  ]
-
   belongs_to :user
 
   before_validation :generate_secret, on: :create

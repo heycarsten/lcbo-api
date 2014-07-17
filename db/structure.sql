@@ -267,8 +267,6 @@ CREATE TABLE keys (
     user_id integer,
     secret character varying(255) NOT NULL,
     label character varying(255),
-    usage integer,
-    url character varying(255),
     info text,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
@@ -1043,4 +1041,6 @@ INSERT INTO schema_migrations (version) VALUES ('20140712015328');
 INSERT INTO schema_migrations (version) VALUES ('20140714201631');
 
 INSERT INTO schema_migrations (version) VALUES ('20140714202224');
+
+INSERT INTO schema_migrations (version) VALUES ('20140717031508');
 
