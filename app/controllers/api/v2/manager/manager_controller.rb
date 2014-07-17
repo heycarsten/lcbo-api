@@ -1,4 +1,6 @@
 class API::V2::Manager::ManagerController < API::V2::APIController
+  protected
+
   def auth_token
     @auth_token ||= Token.parse(request.headers['X-Auth-Token'])
   end

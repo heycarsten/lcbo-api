@@ -1,6 +1,17 @@
 class API::V2::Manager::PasswordsController < API::V2::Manager::ManagerController
-  skip_before_filter :authenticate!, only: :update
+  skip_before_filter :authenticate!, only: [:create, :update]
   before_filter :find_user, only: :update
+
+  def create
+    if (user = User.verified.where(email: params[:email].to_s.downcase).first)
+      UserMailer.change_password_message(user.id).deliver
+      render text: '', status: 204
+    else
+      render json: { errors: {
+        email: ['is not associated with an active account']
+      } }, status: 422
+    end
+  end
 
   def update
     if @user.update(password: params[:password])
@@ -18,7 +29,7 @@ class API::V2::Manager::PasswordsController < API::V2::Manager::ManagerControlle
       true
     else
       render json: {
-        messsage: 'new password link is invalid or was already used'
+        message: 'new password link is invalid or was already used'
       }, status: 404
       false
     end

@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  LATLON_RE = /\-{0,1}[0-9]+\.[0-9]+/
-
   namespace :admin do
     root to: 'crawls#index'
     resources :crawls
@@ -10,7 +8,8 @@ Rails.application.routes.draw do
   controller :root, action: :ember do
     get '/register'
     get '/account'
-    get '/verify/:token', as: :verification
+    get '/verify/:token',   as: :verification
+    get '/password/:token', as: :password
     get '/manage'
     get '/manage/keys/new'
     get '/manage/keys/:key_id'
@@ -18,7 +17,7 @@ Rails.application.routes.draw do
   end
 
   namespace :api, path: '/', format: :json do
-    scope module: :v2, as: :v2, path: '(v2)', constraints: APIConstraint.new(2) do
+    namespace :v2, path: '(v2)', constraints: APIConstraint.new(2) do
       namespace :manager do
         controller :accounts do
           get    '/account'  => :show,   as: :account
@@ -29,6 +28,10 @@ Rails.application.routes.draw do
 
         controller :verifications do
           put '/verifications/:token' => :update
+        end
+
+        controller :passwords do
+          put '/passwords/:token' => :update
         end
 
         controller :sessions do
@@ -70,7 +73,7 @@ Rails.application.routes.draw do
 
     scope module: :v1, path: '(v1)', constraints: APIConstraint.new(1, true) do
       # Legacy V1
-      scope constraints: { lat: LATLON_RE, lon: LATLON_RE } do
+      scope constraints: { lat: GeoScope::LATLON_RE, lon: GeoScope::LATLON_RE } do
         get '/download/:year-:month-:day'               => 'root#deprecated', name: :dataset_by_date
         get '/download/current'                         => 'root#deprecated', name: :current_dataset
         get '/products/search'                          => 'products#index'

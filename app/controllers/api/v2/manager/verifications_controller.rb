@@ -10,7 +10,7 @@ class API::V2::Manager::VerificationsController < API::V2::Manager::ManagerContr
       end
     else
       render json: {
-        messsage: 'verification link is invalid or was already used'
+        message: 'verification link is invalid or was already used'
       }, status: 404
     end
   end

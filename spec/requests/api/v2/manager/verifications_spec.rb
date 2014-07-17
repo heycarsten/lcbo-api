@@ -21,5 +21,14 @@ RSpec.describe 'V2 Manager Verifications API' do
 
       expect(response.status).to eq 404
     end
+
+    it 'fails for an invalid token' do
+      t = Token.generate(:verification)
+
+      api_put "/manager/verifications/#{t}"
+
+      expect(response.status).to eq 404
+      expect(json[:message]).to be_present
+    end
   end
 end

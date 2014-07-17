@@ -2,6 +2,7 @@ module GeoScope
   extend ActiveSupport::Concern
 
   EARTH_RADIUS_M = 6371000
+  LATLON_RE = /\-{0,1}[0-9]+\.[0-9]+/
 
   module_function def deg2rad(deg)
     deg.to_f * (Math::PI / 180.0)
