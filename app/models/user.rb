@@ -61,7 +61,7 @@ class User < ActiveRecord::Base
     elsif token.auth?
       lookup_auth_token(token)
     elsif token.verification?
-      lookup_verificaiton_token(token)
+      lookup_verification_token(token)
     end
   end
 

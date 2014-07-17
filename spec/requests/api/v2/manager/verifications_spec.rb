@@ -23,7 +23,7 @@ RSpec.describe 'V2 Manager Verifications API' do
     end
 
     it 'fails for an invalid token' do
-      t = Token.generate(:verification)
+      t = Token.generate(:email_verification)
 
       api_put "/manager/verifications/#{t}"
 

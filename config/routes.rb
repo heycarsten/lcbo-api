@@ -31,7 +31,8 @@ Rails.application.routes.draw do
         end
 
         controller :passwords do
-          put '/passwords/:token' => :update
+          post '/passwords'        => :create
+          put  '/passwords/:token' => :update
         end
 
         controller :sessions do

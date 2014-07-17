@@ -34,6 +34,10 @@ module APIHelpers
     @json ||= Oj.load(response.body, symbol_keys: true)
   end
 
+  def last_delivery
+    ActionMailer::Base.deliveries.last
+  end
+
   [:get, :put, :post, :patch, :delete].each do |action|
     define_method :"api_#{action}" do |path, params = {}|
       send(action, path, params, api_headers)

@@ -16,6 +16,7 @@ class API::V2::Manager::PasswordsController < API::V2::Manager::ManagerControlle
   def update
     if @user.update(password: params[:password])
       @user.generate_verification_secret
+      @user.save!
       render_session @user.generate_session_token
     else
       respond_with @user
