@@ -6,6 +6,7 @@ RSpec.describe 'V2 Manager Accounts API' do
       log_in_user(u = create_verified_user!)
       api_get '/manager/account'
       expect(response.status).to eq 200
+      expect(json.keys).to include :account
       expect(json[:account].keys).to include :name, :email
     end
 

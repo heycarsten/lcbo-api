@@ -7,12 +7,23 @@ class API::V2::DatasetSerializer < ApplicationSerializer
     :total_product_inventory_count,
     :total_product_inventory_volume_in_milliliters,
     :total_product_inventory_price_in_cents,
-    :added_product_ids,
-    :added_store_ids,
-    :removed_product_ids,
-    :removed_store_ids,
     :created_at,
     :updated_at
+
+  def attributes
+    hsh = super
+
+    hsh[:links] = {}.tap do |h|
+      h[:products]         = object.product_ids unless scope == :index
+      h[:removed_products] = object.removed_product_ids
+      h[:added_products]   = object.added_product_ids
+      h[:stores]           = object.store_ids unless scope == :index
+      h[:removed_stores]   = object.removed_store_ids
+      h[:added_stores]     = object.added_store_ids
+    end
+
+    hsh
+  end
 
   def filter(keys)
     if scope == :csv

@@ -2,7 +2,7 @@ class API::V2::Manager::AccountsController < API::V2::Manager::ManagerController
   skip_before_filter :authenticate!, only: :create
 
   def show
-    render json: current_user, serializer: serializer
+    render_json current_user
   end
 
   def create

@@ -1,4 +1,5 @@
 class APIController < ApplicationController
+  RATE_MAX = 1800
   FORMATS = {
     'text/vnd.lcboapi.v1+tsv' => :tsv,
     'text/vnd.lcboapi.v2+tsv' => :tsv,
@@ -17,7 +18,7 @@ class APIController < ApplicationController
   protected
 
   def rate_limit!
-    uniq      = (user_token || request.ip)
+    uniq      = (auth_token || api_token || request.ip)
     count_key = "#{Rails.env}:ratelimit:count:#{uniq}"
     max_key   = "#{Rails.env}:ratelimit:max:#{uniq}"
     max       = ($redis.get(max_key) || RATE_MAX).to_i
@@ -32,7 +33,6 @@ class APIController < ApplicationController
     response.headers['X-Rate-Limit-Max']   = max
     response.headers['X-Rate-Limit-Count'] = count
     response.headers['X-Rate-Limit-Reset'] = ttl
-    response.headers['Content-Type']       = request.format
 
     if count > max
       render_error \
