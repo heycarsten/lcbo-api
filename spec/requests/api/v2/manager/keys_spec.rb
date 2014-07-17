@@ -148,7 +148,7 @@ RSpec.describe 'V2 Manager Keys API' do
       api_delete "/manager/keys/#{k1.id}"
 
       expect(response.status).to eq 204
-      expect(Key.exists?(k1.id)).to be false
+      expect(Key.exists?(k1.id)).to eq false
 
       expect {
         api_delete "/manager/keys/#{k2.id}"

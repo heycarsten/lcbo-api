@@ -42,11 +42,12 @@ RSpec.describe 'V2 Manager Sessions API' do
       }
 
       expect(response.status).to eq 422
-      expect(json[:errors][:base][0]).to be_a String
+      expect(json[:error][:detail]).to_not be_empty
     end
 
     it 'returns errors with incorrect credentials' do
       u = create_verified_user!
+
       api_post '/manager/sessions', session: {
         email: u.email,
         password: 'fail'
@@ -82,7 +83,7 @@ RSpec.describe 'V2 Manager Sessions API' do
       expect(User.lookup(token)).to be_a User
 
       api_delete '/manager/session'
-      expect(response.status).to eq 202
+      expect(response.status).to eq 204
       expect(User.lookup(token)).to be_nil
 
       api_headers['X-Auth-Token'] = token

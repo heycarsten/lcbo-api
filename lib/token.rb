@@ -100,6 +100,10 @@ class Token
     kind == :email_verification
   end
 
+  def access?
+    api? || auth? || session?
+  end
+
   def to_s
     KINDS[kind] + key + DELIMITER + secret
   end

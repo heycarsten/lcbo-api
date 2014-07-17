@@ -38,6 +38,15 @@ module APIHelpers
     ActionMailer::Base.deliveries.last
   end
 
+  def errors_for(path)
+    return [] unless json[:errors]
+    json[:errors].select { |e| e[:path] == path.to_s }
+  end
+
+  def has_errors_for(path)
+    errors_for(path).any?
+  end
+
   [:get, :put, :post, :patch, :delete].each do |action|
     define_method :"api_#{action}" do |path, params = {}|
       send(action, path, params, api_headers)

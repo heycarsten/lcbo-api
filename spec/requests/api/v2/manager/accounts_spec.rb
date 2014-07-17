@@ -13,7 +13,7 @@ RSpec.describe 'V2 Manager Accounts API' do
       api_headers['X-Auth-Token'] = Token.generate(:session).to_s
       api_get '/manager/account'
       expect(response.status).to eq 401
-      expect(json[:message]).to be_a String
+      expect(json[:error][:detail]).to be_a String
     end
   end
 
@@ -27,7 +27,7 @@ RSpec.describe 'V2 Manager Accounts API' do
       }
 
       expect(response.status).to eq 422
-      expect(json[:errors][:email]).to_not be_empty
+      expect(has_errors_for(:email)).to eq true
     end
 
     it 'returns errors if the password is too short' do
@@ -38,7 +38,7 @@ RSpec.describe 'V2 Manager Accounts API' do
       }
 
       expect(response.status).to eq 422
-      expect(json[:errors][:password]).to_not be_empty
+      expect(has_errors_for(:password)).to eq true
     end
 
     it 'returns a new unverified account' do
@@ -78,8 +78,8 @@ RSpec.describe 'V2 Manager Accounts API' do
       }
 
       expect(response.status).to eq 422
-      expect(json[:errors][:password]).to be_blank
-      expect(json[:errors][:current_password]).to be_present
+      expect(has_errors_for(:password)).to eq false
+      expect(has_errors_for(:current_password)).to eq true
     end
 
     it 'fails to update password when new password is invalid' do
@@ -91,9 +91,9 @@ RSpec.describe 'V2 Manager Accounts API' do
       }
 
       expect(response.status).to eq 422
-      expect(json[:errors][:password]).to be_blank
-      expect(json[:errors][:current_password]).to be_blank
-      expect(json[:errors][:new_password]).to be_present
+      expect(has_errors_for(:password)).to eq false
+      expect(has_errors_for(:current_password)).to eq false
+      expect(has_errors_for(:new_password)).to eq true
     end
 
     it 'updates name' do
@@ -117,7 +117,7 @@ RSpec.describe 'V2 Manager Accounts API' do
       }
 
       expect(response.status).to eq 422
-      expect(json[:errors][:name]).to be_present
+      expect(has_errors_for(:name)).to eq true
     end
   end
 

@@ -7,9 +7,11 @@ class API::V2::Manager::PasswordsController < API::V2::Manager::ManagerControlle
       UserMailer.change_password_message(user.id).deliver
       render text: '', status: 204
     else
-      render json: { errors: {
-        email: ['is not associated with an active account']
-      } }, status: 422
+      render json: { errors: [{
+        code:   'invalid',
+        path:   'email',
+        detail: 'is not associated with an active account'
+      }] }, status: 422
     end
   end
 
@@ -29,10 +31,11 @@ class API::V2::Manager::PasswordsController < API::V2::Manager::ManagerControlle
     if @user = lookup_user_by_token
       true
     else
-      render json: {
-        message: 'new password link is invalid or was already used'
-      }, status: 404
-      false
+      render_error \
+        code:   'not_found',
+        title:  'Not found',
+        detail: 'new password link is invalid or was already used',
+        status: 404
     end
   end
 

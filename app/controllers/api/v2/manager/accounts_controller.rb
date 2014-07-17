@@ -13,9 +13,8 @@ class API::V2::Manager::AccountsController < API::V2::Manager::ManagerController
   end
 
   def update
-    user = current_user
-    user.update_attributes(update_user_params)
-    respond_with :api, :v2, :manager, user,
+    current_user.update(update_user_params)
+    respond_with :api, :v2, :manager, current_user,
       location: api_v2_manager_account_url,
       serializer: serializer
   end

@@ -16,6 +16,35 @@ class APIController < ApplicationController
 
   protected
 
+  def rate_limit!
+    uniq      = (user_token || request.ip)
+    count_key = "#{Rails.env}:ratelimit:count:#{uniq}"
+    max_key   = "#{Rails.env}:ratelimit:max:#{uniq}"
+    max       = ($redis.get(max_key) || RATE_MAX).to_i
+    count     = $redis.incr(count_key).to_i
+
+    if count == 1
+      $redis.expire(count_key, 1.hour)
+    end
+
+    ttl = $redis.ttl(count_key).to_i + 1
+
+    response.headers['X-Rate-Limit-Max']   = max
+    response.headers['X-Rate-Limit-Count'] = count
+    response.headers['X-Rate-Limit-Reset'] = ttl
+    response.headers['Content-Type']       = request.format
+
+    if count > max
+      render_error \
+        code:   'rate_limited',
+        title:  'Rate limit reached',
+        detail: I18n.t('rate_limited', max: max, ttl: ttl),
+        status: 403
+    else
+      true
+    end
+  end
+
   def api_version
     raise NotImplementedError
   end
@@ -29,5 +58,23 @@ class APIController < ApplicationController
   def set_api_headers
     response.headers['X-API-Version'] = api_version
     true
+  end
+
+  def render_error(error)
+    status = error.delete(:status) || raise(ArgumentError, 'must supply :status')
+    error[:code]   || raise(ArgumentError, 'must supply :code')
+    error[:detail] || raise(ArgumentError, 'must supply :detail')
+
+    render json: { error: error }, status: status
+
+    false
+  end
+
+  def not_authorized
+    render_error \
+      code:   'unauthorized',
+      title:  'Unauthorized',
+      detail: I18n.t('unauthorized'),
+      status: 401
   end
 end

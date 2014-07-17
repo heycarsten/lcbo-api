@@ -16,7 +16,7 @@ RSpec.describe 'V2 Manager Passwords API' do
       api_post '/manager/passwords', email: 'herp@example.com'
 
       expect(response.status).to eq 422
-      expect(json[:errors][:email]).to be_present
+      expect(has_errors_for(:email)).to eq true
     end
 
     it 'fails to send message to unverified email' do
@@ -25,7 +25,7 @@ RSpec.describe 'V2 Manager Passwords API' do
       api_post '/manager/passwords', email: u.new_email.address
 
       expect(response.status).to eq 422
-      expect(json[:errors][:email]).to be_present
+      expect(has_errors_for(:email)).to eq true
     end
   end
 
@@ -53,7 +53,7 @@ RSpec.describe 'V2 Manager Passwords API' do
       api_put "/manager/passwords/#{t}"
 
       expect(response.status).to eq 404
-      expect(json[:message]).to be_present
+      expect(json[:error][:detail]).to be_present
     end
 
     it 'fails for an invalid password' do
@@ -63,7 +63,7 @@ RSpec.describe 'V2 Manager Passwords API' do
       api_put "/manager/passwords/#{t}", password: '2short'
 
       expect(response.status).to eq 422
-      expect(json[:errors][:password]).to be_present
+      expect(json[:errors][0][:path]).to eq 'password'
     end
   end
 end

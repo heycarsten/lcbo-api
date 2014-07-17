@@ -9,9 +9,11 @@ class API::V2::Manager::VerificationsController < API::V2::Manager::ManagerContr
         render_session(user.generate_session_token)
       end
     else
-      render json: {
-        message: 'verification link is invalid or was already used'
-      }, status: 404
+      render_error \
+        code:   'not_found',
+        title:  'Not found',
+        detail: 'verification link is invalid or was already used',
+        status: 404
     end
   end
 

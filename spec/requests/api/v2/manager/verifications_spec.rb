@@ -28,7 +28,7 @@ RSpec.describe 'V2 Manager Verifications API' do
       api_put "/manager/verifications/#{t}"
 
       expect(response.status).to eq 404
-      expect(json[:message]).to be_present
+      expect(json[:error][:detail]).to be_present
     end
   end
 end

@@ -10,9 +10,11 @@ class API::V2::Manager::SessionsController < API::V2::Manager::ManagerController
     if (user = User.challenge(params[:session]))
       render_session(user.generate_session_token)
     else
-      render json: { errors: {
-        base: ['could not log you in with that email and password']
-      } }, status: 422
+      render_error \
+        code:   'invalid',
+        title:  'Unable to log in',
+        detail: 'could not log in with that email and password',
+        status: 422
     end
   end
 
@@ -23,6 +25,6 @@ class API::V2::Manager::SessionsController < API::V2::Manager::ManagerController
 
   def destroy
     unauthenticate!
-    render text: '', status: 202
+    render text: '', status: 204
   end
 end
