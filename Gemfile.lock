@@ -76,7 +76,7 @@ GEM
       ruby-hmac
     hashie (3.2.0)
     hike (1.2.3)
-    honeybadger (1.16.1)
+    honeybadger (1.16.2)
       json
     i18n (0.6.11)
     json (1.8.1)
@@ -100,7 +100,7 @@ GEM
     oj (2.9.9)
     oj_mimic_json (1.0.1)
     pg (0.17.1)
-    pg_search (0.7.5)
+    pg_search (0.7.6)
       activerecord (>= 3.1)
       activesupport (>= 3.1)
       arel
@@ -162,9 +162,9 @@ GEM
       sass (~> 3.2.0)
       sprockets (~> 2.8, <= 2.11.0)
       sprockets-rails (~> 2.0)
-    skylight (0.3.17)
+    skylight (0.3.18)
       activesupport (>= 3.0.0)
-    slop (3.5.0)
+    slop (3.6.0)
     spring (1.1.3)
     spring-commands-rspec (1.0.2)
       spring (>= 0.9.1)
@@ -194,7 +194,7 @@ GEM
       polyglot (>= 0.3.1)
     tzinfo (1.2.1)
       thread_safe (~> 0.1)
-    uglifier (2.5.1)
+    uglifier (2.5.3)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
     unicode_utils (1.4.0)
