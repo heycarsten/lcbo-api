@@ -34,14 +34,15 @@ class Crawler < Boticus::Bot
     @product_ids      = @api_product_ids & @lcbo_product_ids
 
     # Choose to crawl/re-crawl product on LCBO.com if:
-    @lcbo_product_ids.select! do |p|
+    @lcbo_product_ids.select! do |id|
+      p = @lcbo_index.detect { |p| p[:id] == id }
       # API didn't return the product
-      return true unless (ap = @api_index.detect { |a| a[:id] == p[:id] })
+      next true unless (ap = @api_index.detect { |a| a[:id] == p[:id] })
       # API product has different prices
-      return true if ap[:price_in_cents] != p[:price_in_cents]
-      return true if ap[:regular_price_in_cents] != p[:regular_price_in_cents]
+      next true if ap[:price_in_cents] != p[:price_in_cents]
+      next true if ap[:regular_price_in_cents] != p[:regular_price_in_cents]
       # API product has different Air Miles
-      return true if ap[:bonus_reward_miles] != p[:bonus_reward_miles]
+      next true if ap[:bonus_reward_miles] != p[:bonus_reward_miles]
       # Otherwise the API source will be fine
       false
     end

@@ -99,7 +99,7 @@ module LCBO
         dot
         increment_page!
 
-        break if page > total_pages
+        break if page > 10 #total_pages
       end
     end
 
