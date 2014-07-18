@@ -17,14 +17,34 @@ class Crawler < Boticus::Bot
     @store_ids = LCBO.store_ids
   end
 
-  desc 'Get product IDs via iPhone API'
-  task :get_product_ids_via_iphone_api do
-    @api_product_ids = LCBO.product_ids
+  desc 'Get products index via API'
+  task :get_products_index_via_api do
+    @api_index = LCBO.products
   end
 
-  desc 'Get product IDs via lcbo.com'
-  task :get_product_ids_via_lcbo_dot_com do
-    @lcbo_dot_com_product_ids = LCBO.catalog_product_ids.ids - @api_product_ids
+  desc 'Get products index via LCBO.com'
+  task :get_products_index_via_lcbo do
+    @lcbo_index = LCBO.catalog_products
+  end
+
+  desc 'Determining how to crawl products'
+  task :determine_how_to_crawl_products do
+    @lcbo_product_ids = @lcbo_index.map { |p| p[:id] }
+    @api_product_ids  = @api_index.map { |p| p[:id] }
+    @product_ids      = @api_product_ids & @lcbo_product_ids
+
+    # Choose to crawl/re-crawl product on LCBO.com if:
+    @lcbo_product_ids.select! do |p|
+      # API didn't return the product
+      return true unless (ap = @api_index.detect { |a| a[:id] == p[:id] })
+      # API product has different prices
+      return true if ap[:price_in_cents] != p[:price_in_cents]
+      return true if ap[:regular_price_in_cents] != p[:regular_price_in_cents]
+      # API product has different Air Miles
+      return true if ap[:bonus_reward_miles] != p[:bonus_reward_miles]
+      # Otherwise the API source will be fine
+      false
+    end
   end
 
   desc 'Crawling stores'
@@ -57,9 +77,9 @@ class Crawler < Boticus::Bot
     puts
   end
 
-  desc 'Crawling products that only appear on LCBO.com'
+  desc 'Crawling/re-crawling products from LCBO.com'
   task :crawl_lcbo_dot_com_products do
-    @lcbo_dot_com_product_ids.each do |id|
+    @lcbo_product_ids.each do |id|
       crawl_product_id(id, :lcbo) { LCBO.catalog_product(id) }
     end
     puts

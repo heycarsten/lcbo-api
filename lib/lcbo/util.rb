@@ -47,7 +47,7 @@ module LCBO
     module_function
 
     def parse_dollars(string)
-      if (match = string.match(PRICE_RE)[1])
+      if string && (match = string.match(PRICE_RE)[1])
         match.gsub(',', '').to_f
       else
         nil

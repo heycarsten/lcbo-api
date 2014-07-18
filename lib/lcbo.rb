@@ -19,11 +19,11 @@ module LCBO
 
   autoload :ProductParser,             'lcbo/product_parser'
   autoload :CatalogProductCrawler,     'lcbo/catalog_product_crawler'
+  autoload :CatalogProductsCrawler,    'lcbo/catalog_products_crawler'
   autoload :StoreIdsParser,            'lcbo/store_ids_parser'
   autoload :StoreParser,               'lcbo/store_parser'
-  autoload :ProductIdsParser,          'lcbo/product_ids_parser'
+  autoload :ProductsParser,            'lcbo/products_parser'
   autoload :ProductInventoriesCrawler, 'lcbo/product_inventories_crawler'
-  autoload :CatalogProductIdsCrawler,  'lcbo/catalog_product_ids_crawler'
   autoload :StoreInventoriesParser,    'lcbo/store_inventories_parser'
 
   module_function
@@ -59,13 +59,13 @@ module LCBO
     ProductInventoriesCrawler.crawl(id)
   end
 
-  def product_ids
+  def products
     xml = api("productsearch.do?numProducts=#{NUM_PRODUCTS}")
-    ProductIdsParser.parse(xml)[:ids]
+    ProductsParser.parse(xml)[:products]
   end
 
-  def catalog_product_ids
-    CatalogProductIdsCrawler.crawl
+  def catalog_products
+    CatalogProductsCrawler.crawl
   end
 
   def product_images(id)

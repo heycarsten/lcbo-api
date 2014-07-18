@@ -2,10 +2,11 @@ require 'excon'
 require 'nokogiri'
 
 module LCBO
-  class CatalogProductIdsCrawler
+  class CatalogProductsCrawler
     PER     = 50 # 50 is the max
     URL     = "http://www.lcbo.com/webapp/wcs/stores/servlet/CategoryNavigationResultsView?pageSize=#{PER}&manufacturer=&searchType=&resultCatEntryType=&catalogId=10001&categoryId=&langId=-1&pageName=&storeId=10151&sType=SimpleSearch&filterFacet=&metaData="
     ID_PART = /\/([0-9]+)\Z/
+    AIR_MILES_PART = /\A([0-9]+) Bonus/i
 
     DATA = {
       contentBeginIndex: 0,
@@ -33,11 +34,10 @@ module LCBO
       'Origin'           => 'http://www.lcbo.com',
       'Content-Type'     => 'application/x-www-form-urlencoded',
       'X-Requested-With' => 'XMLHttpRequest',
-      'Referer'          => 'http://www.lcbo.com/lcbo/search?searchTerm=',
-      'User-Agent'       => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.103 Safari/537.36'
+      'Referer'          => 'http://www.lcbo.com/lcbo/search?searchTerm='
     }
 
-    attr_reader :links, :total
+    attr_reader :products, :total
     attr_accessor :page
 
     def self.crawl
@@ -45,7 +45,7 @@ module LCBO
       crawler = new
       crawler.crawl
       puts
-      crawler
+      crawler.products
     end
 
     def self.crawl_page(page)
@@ -56,7 +56,7 @@ module LCBO
     end
 
     def initialize
-      @links = []
+      @products = []
       @page  = 1
       @total = nil
     end
@@ -68,12 +68,12 @@ module LCBO
       resp   = Excon.post(URL, body: params, headers: HEADERS)
       doc    = Nokogiri::HTML(resp.body)
 
-      links = doc.css('.products > .product .product-name a').map { |a|
-        a[:href].strip
-      }
+      products = doc.css('.products > .product').map do |node|
+        parse_product_node(node)
+      end
 
       @total ||= doc.css('.results-count .count')[0].content.to_i
-      @links.concat(links)
+      @products.concat(products)
     end
 
     def dot
@@ -89,8 +89,8 @@ module LCBO
       @total_pages ||= (total / PER.to_f).round
     end
 
-    def ids
-      links.map { |l| l.match(ID_PART)[1].to_i }
+    def util
+      Util
     end
 
     def crawl
@@ -101,6 +101,44 @@ module LCBO
 
         break if page > total_pages
       end
+    end
+
+    def parse_product_node(node)
+      hsh  = {}
+      href = node.css('.product-name a')[0][:href].strip
+      id   = href.match(ID_PART)[1].to_i
+
+      was_price = if (was_node = node.css('.was-price')[0])
+        util.parse_dollars(was_node.content)
+      end
+
+      price = util.parse_dollars(node.css('.price')[0].content)
+
+      bonus_reward_miles = if (air_node = node.css('.air-miles')[0])
+        am = air_node.content.to_s.strip
+        am.blank? ? 0 : am.match(AIR_MILES_PART)[1].to_i
+      else
+        0
+      end
+
+      if was_price
+        regular_price_in_cents = (was_price * 100).to_i
+        price_in_cents         = (price * 100).to_i
+      else
+        regular_price_in_cents = (price * 100).to_i
+        price_in_cents         = regular_price_in_cents
+      end
+
+      lto_savings_in_cents = regular_price_in_cents - price_in_cents
+
+      { id:                                  id,
+        href:                                ('http://www.lcbo.com' + href),
+        bonus_reward_miles:                  bonus_reward_miles,
+        has_bonus_reward_miles:              bonus_reward_miles != 0,
+        price_in_cents:                      price_in_cents,
+        regular_price_in_cents:              regular_price_in_cents,
+        limited_time_offer_savings_in_cents: lto_savings_in_cents,
+        has_limited_time_offer:              lto_savings_in_cents != 0 }
     end
   end
 end
