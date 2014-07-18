@@ -1,5 +1,6 @@
 class API::V2::APIController < APIController
   VERSION = 2
+  PER     = 50
 
   before_filter :rate_limit!, :authenticate!
 
