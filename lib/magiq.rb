@@ -1,12 +1,15 @@
 require 'ostruct'
 
 module Magiq
+  class Error < StandardError; end
+  class ParamsError < Error; end
+
   DEFAULT_CONFIG = OpenStruct.new(
     page_size: 50
   )
 
-  autoload :Builder,   'magiq/builder'
-  autoload :Attribute, 'magiq/attribute'
+  autoload :Builder, 'magiq/builder'
+  autoload :Query,   'magiq/query'
 
   module_function
 

@@ -1,20 +1,19 @@
 class API::V2::APIController < APIController
-  VERSION  = 2
-  PER      = 50
+  VERSION = 2
 
   before_filter :rate_limit!, :authenticate!
 
-  self.responder = Class.new(ActionController::Responder) do
+  self.responder = Class.new(responder) do
     def json_resource_errors
-      errs = []
+      errors = []
 
       resource.errors.each do |field, messages|
         Array(messages).each do |msg|
-          errs << { code: 'invalid', path: field, detail: msg }
+          errors << { code: 'invalid', path: field, detail: msg }
         end
       end
 
-      { errors: errs }
+      { errors: errors }
     end
   end
 

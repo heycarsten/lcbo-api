@@ -4,7 +4,9 @@ RSpec.describe 'V2 Manager Accounts API' do
   describe 'GET /manager/account' do
     it 'returns the account with a valid session token' do
       log_in_user(u = create_verified_user!)
+
       api_get '/manager/account'
+
       expect(response.status).to eq 200
       expect(json.keys).to include :account
       expect(json[:account].keys).to include :name, :email
@@ -13,6 +15,7 @@ RSpec.describe 'V2 Manager Accounts API' do
     it 'fails with an invalid session token' do
       api_headers['X-Auth-Token'] = Token.generate(:session).to_s
       api_get '/manager/account'
+
       expect(response.status).to eq 401
       expect(json[:error][:detail]).to be_a String
     end
@@ -21,6 +24,7 @@ RSpec.describe 'V2 Manager Accounts API' do
   describe 'POST /manager/accounts' do
     it 'returns errors if the email address has already been taken' do
       u = create_user!
+
       api_post '/manager/accounts', account: {
         name:     'Carsten',
         email:    u.new_email.address,
