@@ -78,8 +78,8 @@ module LCBO
 
     field :limited_time_offer_ends_on do
       if has_limited_time_offer
-        text = css('.lto-end-date')[0].content.match(DATE_RNG)[1]
-        util.parse_date(text)
+        # LOLCBO doesn't give all stuff an end date
+        css('.lto-end-date')[0].content =~ DATE_RNG ? util.parse_date($1) : nil
       else
         nil
       end
@@ -95,8 +95,7 @@ module LCBO
 
     field :bonus_reward_miles_ends_on do
       if has_bonus_reward_miles
-        date = css('.air-miles-end-date')[0].content.match(DATE_RNG)[1]
-        util.parse_date(date)
+        css('.air-miles-end-date')[0].content =~ DATE_RNG ? util.parse_date($1) : nil
       else
         nil
       end
