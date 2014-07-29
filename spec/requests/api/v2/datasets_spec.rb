@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'V2 Manager Datasets API' do
+RSpec.describe 'V2 Datasets API' do
   describe 'GET /datasets' do
     def generate_data!
       @user   = create_verified_user!

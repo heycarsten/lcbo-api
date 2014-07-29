@@ -75,7 +75,7 @@ class API::V2::APIController < APIController
     { pagination: {
         total_records: scope.total_count,
         total_pages:   scope.total_pages,
-        page_size:     scope.max_per_page,
+        page_size:     scope.limit_value,
         current_page:  scope.current_page,
         prev_page:     scope.prev_page,
         next_page:     scope.next_page,
