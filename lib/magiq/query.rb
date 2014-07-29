@@ -27,11 +27,11 @@ module Magiq
     end
 
     def self.apply(*params, &block)
-      builder.add_listener(params, &block)
+      builder.add_listener(:apply, params, &block)
     end
 
     def self.check(*params, &block)
-      builder.add_check(params, &block)
+      builder.add_listener(:check, params, &block)
     end
 
     def self.mutual(params, opts = {})
@@ -161,6 +161,7 @@ module Magiq
 
     def initialize(params)
       @raw_params = params
+      @listeners  = {}
     end
 
     def builder
@@ -175,10 +176,11 @@ module Magiq
     def extract!
       @params = {}
 
-      builder.params.each_pair do |key, param|
+      raw_params.each_pair do |key, raw_value|
+        next unless (param = builder.params[key.to_sym])
         begin
-          next unless (value = param.extract_from(raw_params))
-          params[key] = value
+          next unless (value = param.extract(raw_value))
+          @params[key] = value
         rescue BadParamError => e
           raise BadParamError, "The `#{param.name}` parameter is invalid: " \
           "#{e.message}"
@@ -228,7 +230,7 @@ module Magiq
       @model = instance_exec(&self.class.model_proc)
       @scope = instance_exec(&self.class.scope_proc)
 
-      builder.checks.each do |find_params, op|
+      each_listener_for :check do |find_params, op|
         if find_params.empty?
           instance_exec(&op)
         else
@@ -240,7 +242,7 @@ module Magiq
     end
 
     def apply!
-      builder.listeners.each do |find_params, op|
+      each_listener_for :apply do |find_params, op|
         if find_params.empty?
           apply(&op)
         else
@@ -253,6 +255,28 @@ module Magiq
 
     def bad!(message)
       raise BadParamError, message
+    end
+
+    def listeners_for(type)
+      @listeners[type] ||= begin
+        sorted_keys = @params.keys
+
+        builder.listeners_for(type).sort_by do |_, keys|
+          next -1 if !keys || keys.empty?
+          i = sorted_keys.index(keys.first)
+          i ? i : -1
+        end
+      end
+    end
+
+    def each_listener_for(type, &block)
+      listeners_for(type).each do |t, params, op|
+        block.(params, op)
+      end
+    end
+
+    def fire_listeners_for(type, &block)
+      instance_exec(&block)
     end
 
     def to_scope

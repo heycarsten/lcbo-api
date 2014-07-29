@@ -88,7 +88,6 @@ RSpec.describe Magiq::Query do
       range :distance, type: :whole
 
       check :temp do |val|
-        STDOUT.puts(val.inspect)
         next unless val < -273.15
         bad! "Temperatures can't be below absolute zero Celsius!"
       end

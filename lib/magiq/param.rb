@@ -16,19 +16,22 @@ module Magiq
       end
     end
 
-    def extract_from(params)
-      return unless params.key?(name)
-      return unless v = params[name]
+    def extract(value)
+      return unless value
 
-      if v.is_a?(Array) && !@array
+      if value.is_a?(Array) && !@array
         raise BadParamError, "An array of values was passed to the `#{name}` " \
         "parameter but it is not permitted to accept more than one value."
       end
 
-      if v.is_a?(Array)
-        v.map { |val| @type.cast(clean(val)) }
+      if value.is_a?(Array)
+        value.map { |v| @type.cast(clean(v)) }
       else
-        clean(v) ? @type.cast(v) : nil
+        if (v = clean(value))
+          @type.cast(v)
+        else
+          nil
+        end
       end
     end
   end

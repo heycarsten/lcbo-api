@@ -1,24 +1,28 @@
 module Magiq
   class Builder
-    END_RNG   = /\}([a-z0-9_]+)\Z/
-    START_RNG = /\A([a-z0-9_]+)\{/
+    END_RNG     = /\}([a-z0-9_]+)\Z/
+    START_RNG   = /\A([a-z0-9_]+)\{/
     CONSTRAINTS = [:mutual, :exclusive]
+    LISTENERS   = [:check, :apply]
 
-    attr_reader :listeners, :constraints, :checks, :params
+    attr_reader :listeners, :constraints, :params
 
     def initialize
-      @listeners   = []
+      @listeners   = Hash.new { |h, k| h[k] = [] }
       @constraints = []
-      @checks      = []
       @params      = {}
     end
 
-    def add_listener(params, &block)
-      listeners << [params, block]
+    def add_listener(type, params, &block)
+      listeners_for(type) << [type, params, block]
     end
 
-    def add_check(params, &block)
-      checks << [params, block]
+    def listeners_for(type)
+      if !LISTENERS.include?(type)
+        raise ArgumentError, "unknown listener type: #{type.inspect}"
+      end
+
+      listeners[type]
     end
 
     def add_param(name, opts = {})
