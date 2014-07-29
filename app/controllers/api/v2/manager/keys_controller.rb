@@ -1,11 +1,12 @@
 class API::V2::Manager::KeysController < API::V2::Manager::ManagerController
   def index
     keys = current_user.keys.page(params[:page]).per(PER).order(id: :desc)
-    render_json keys
+    render json: serialize(keys)
   end
 
   def show
-    render_json key = current_user.keys.find(params[:id])
+    key = current_user.keys.find(params[:id])
+    respond_with :api, :v2, :manager, key, serializer: serializer
   end
 
   def create

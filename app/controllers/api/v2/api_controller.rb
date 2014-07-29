@@ -69,44 +69,19 @@ class API::V2::APIController < APIController
     (current_key || current_user) ? true : not_authorized
   end
 
-  def serialize(stuff, opts = {})
-    root  = opts.delete(:root)
-    meta  = opts.delete(:meta) || {}
-    merge = opts.delete(:merge)
-    data  = {}
+  def pagination_for(scope)
+    return nil if !scope.respond_to?(:next_page)
 
-    if stuff.respond_to?(:all)
-      root   ||= self.class.controller_name.pluralize
-      resource = stuff.map { |i|
-        self.class.serializer.new(i, opts).as_json(root: false)
-      }
-      meta.merge!(page_meta(stuff)) if stuff.respond_to?(:next_page)
-    else
-      root   ||= self.class.controller_name.singularize
-      resource = self.class.serializer.new(stuff, opts).as_json(root: false)
-    end
-
-    data.merge!(merge) if merge
-    data[:meta] = meta unless meta.empty?
-    data[root]  = resource
-
-    data
-  end
-
-  def render_json(stuff, opts = {})
-    status = opts.delete(:status) || 200
-    render json: serialize(stuff, opts), status: status
-  end
-
-  def page_meta(scope)
-    { total_records: scope.total_count,
-      total_pages:   scope.total_pages,
-      page_size:     scope.max_per_page,
-      current_page:  scope.current_page,
-      prev_page:     scope.prev_page,
-      next_page:     scope.next_page,
-      prev_href:     resources_url(page: scope.prev_page, page_size: scope.max_per_page),
-      next_href:     resources_url(page: scope.next_page, page_size: scope.max_per_page) }
+    { pagination: {
+        total_records: scope.total_count,
+        total_pages:   scope.total_pages,
+        page_size:     scope.max_per_page,
+        current_page:  scope.current_page,
+        prev_page:     scope.prev_page,
+        next_page:     scope.next_page,
+        prev_href:     resources_url(page: scope.prev_page, page_size: scope.max_per_page),
+        next_href:     resources_url(page: scope.next_page, page_size: scope.max_per_page)
+    } }
   end
 
   def resources_url(*args)

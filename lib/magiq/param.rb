@@ -7,6 +7,7 @@ module Magiq
       @type  = Types.lookup(opts[:type] || :string)
       @array = opts[:array] ? true : false
       @solo  = opts[:solo]  ? true : false
+      @limit = opts[:limit] || Magiq[:array_param_limit]
     end
 
     def clean(raw_value)
@@ -28,6 +29,12 @@ module Magiq
       if value.is_a?(Array) && !accepts_array?
         raise BadParamError, "An array of values was passed to the `#{name}` " \
         "parameter but it is not permitted to accept more than one value."
+      end
+
+      if value.is_a?(Array) && @limit && value.size > @limit
+        raise BadParamError, "The number of items passed to the `#{name}` " \
+        "parameter is #{value.size} which exceeds the permitted maxium of " \
+        "#{@limit} items."
       end
 
       if value.is_a?(Array)

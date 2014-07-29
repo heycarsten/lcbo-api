@@ -1,10 +1,22 @@
 class API::V2::DatasetsController < API::V2::APIController
   def index
-    crawls = Crawl.is(:finished).page(params[:page]).per(PER)
-    render_json crawls, scope: :index
+    query = API::V2::DatasetsQuery.new(params)
+    scope = query.to_scope
+    data  = {}
+
+    data[:datasets] = scope.map do |r|
+      API::V2::DatasetSerializer.new(r, scope: :index).as_json(root: false)
+    end
+
+    if (pagination = pagination_for(scope))
+      data[:meta] = pagination
+    end
+
+    render json: data
   end
 
   def show
-    render_json Crawl.finished.find(params[:id])
+    dataset = Crawl.finished.find(params[:id])
+    respond_with :api, :v2, dataset, serializer: serializer
   end
 end

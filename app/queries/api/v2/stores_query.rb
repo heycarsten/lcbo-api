@@ -35,10 +35,32 @@ class API::V2::StoresQuery < Magiq::Query
   range :inventory_count,                 type: :whole
   range :inventory_price_in_cents,        type: :whole
 
+  param :product_id, type: :id
+  apply :product_id do |product_id|
+    scope.joins(:inventories).
+      select('stores.*, inventories.quantity, inventories.reported_on').
+      where('inventories.product_id' => product.id)
+  end
+
+  def product
+    @product ||= begin
+      if (id = params[:product_id])
+        Product.find(id)
+      else
+        nil
+      end
+    end
+  end
+
   param :lat, type: :latitude
   param :lon, type: :longitude
   apply :lat, :lon do |lat, lon|
     scope.distance_from(lat, lon)
+  end
+
+  param :q, type: :string
+  apply :q do |q|
+    scope.search(q)
   end
 
   param :geo

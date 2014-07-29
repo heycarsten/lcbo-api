@@ -1,3 +1,5 @@
+require 'date'
+
 module Magiq
   module Types
     module_function
@@ -148,5 +150,19 @@ module Magiq
       end
     end
     register :enum_sort, EnumSort
+
+    class Date < Type
+      DATE_RNG = /[12]{1}[0-9]{3}\-[10]{1}[0-9]{1}\-[0123]{1}[0-9]{1}/
+
+      def cast!
+        if raw =~ DATE_RNG
+          Date.parse($1)
+        else
+          bad! "provided value of #{raw.inspect} is not permitted, it must " \
+          "be an ISO 8601 formatted date: YYYY-MM-DD"
+        end
+      end
+    end
+    register :date, Date
   end
 end

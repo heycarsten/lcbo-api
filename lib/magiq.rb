@@ -6,6 +6,7 @@ module Magiq
   class BadParamError < Error; end
 
   DEFAULT_CONFIG = OpenStruct.new(
+    array_param_limit: 150,
     default_page_size: 50,
     max_page_size: 250,
     min_page_size: 1
