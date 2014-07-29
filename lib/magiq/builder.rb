@@ -4,39 +4,30 @@ module Magiq
     START_RNG = /\A([a-z0-9_]+)\{/
     CONSTRAINTS = [:mutual, :exclusive]
 
-    attr_reader :listeners, :constraints
+    attr_reader :listeners, :constraints, :checks, :params
 
     def initialize
       @listeners   = []
       @constraints = []
+      @checks      = []
+      @params      = {}
     end
 
-    def add_matcher(macro, &block)
-      case macro
-      when Symbol
-        listeners << [:eq, macro.to_s, block]
-      when String
-        ends   = $1 if macro =~ END_RNG
-        starts = $1 if macro =~ START_RNG
+    def add_listener(params, &block)
+      listeners << [params, block]
+    end
 
-        if ends && starts
-          listeners << [:start_end, [starts, ends], block]
-        elsif ends
-          listeners << [:end, ends, block]
-        elsif starts
-          listeners << [:start, starts, block]
-        else
-          raise ArgumentError, 'expected matcher macro to contain ' \
-            'placeholder {param}'
-        end
-      else
-        raise ArgumentError, 'expected matcher to be string or symbol'
-      end
+    def add_check(params, &block)
+      checks << [params, block]
+    end
+
+    def add_param(name, opts = {})
+      params[name.to_sym] = Param.new(name, opts)
     end
 
     def add_constraint(op, params_arg, opts = {})
       if !CONSTRAINTS.include?(op)
-        raise ArgumentError, "unkown constraint type: #{op.inspect}"
+        raise ArgumentError, "unknown constraint type: #{op.inspect}"
       end
 
       params = Array(params_arg)
