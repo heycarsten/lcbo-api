@@ -42,7 +42,7 @@ module Magiq
 
     class String < Type
       def cast!
-        raw
+        raw == nil ? nil : raw.to_s
       end
     end
     register :string, String
@@ -75,6 +75,20 @@ module Magiq
       end
     end
     register :int, Int
+
+    class ID < Type
+      def cast!
+        v = raw.to_i
+
+        if v > 0
+          v
+        else
+          bad! "provided value of #{raw.inspect} is not permitted, it must " \
+          "be a numerical ID greater than zero."
+        end
+      end
+    end
+    register :id, ID
 
     class Latitude < Type
       def cast!

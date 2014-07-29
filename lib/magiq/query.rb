@@ -1,6 +1,6 @@
 module Magiq
   class Query
-    attr_reader :raw_params, :params, :scope, :model
+    attr_reader :raw_params, :params, :scope, :model, :solo_param
 
     def self.builder
       @builder ||= Builder.new
@@ -27,11 +27,13 @@ module Magiq
     end
 
     def self.apply(*params, &block)
-      builder.add_listener(:apply, params, &block)
+      opts = params.last.is_a?(Hash) ? params.pop : {}
+      builder.add_listener(:apply, params, opts, &block)
     end
 
     def self.check(*params, &block)
-      builder.add_listener(:check, params, &block)
+      opts = params.last.is_a?(Hash) ? params.pop : {}
+      builder.add_listener(:check, params, opts, &block)
     end
 
     def self.mutual(params, opts = {})
@@ -43,32 +45,36 @@ module Magiq
     end
 
     def self.has_pagination(opts = {})
-      max_per = opts[:max_page_size] || Magiq[:max_page_size]
-      min_per = opts[:min_page_size] || Magiq[:min_page_size]
+      max_page_size     = opts[:max_page_size] || Magiq[:max_page_size]
+      min_page_size     = opts[:min_page_size] || Magiq[:min_page_size]
+      default_page_size = opts[:default_page_size] || Magiq[:default_page_size]
 
-      param :page, type: :whole
+      param :page,      type: :whole
+      param :page_size, type: :whole
 
-      apply :page do |val|
-        if val >= 1
-          scope.page(val)
-        else
+      check :page, :page_size, any: true do |page, page_size|
+        if page && page < 1
           bad! "The value provided for `page` must be 1 or greater, but " \
-          "#{val.inspect} was provided."
+          "#{page.inspect} was provided."
+        end
+
+        if page_size && page_size > max_page_size
+          bad! "The maximum permitted value for `page_size` is " \
+          "#{max_page_size}, but #{page_size.inspect} was provided."
+        elsif page_size && page_size < min_page_size
+          bad! "The minimum permitted value for `page_size` is " \
+          "#{min_page_size}, but #{page_size.inspect} was provided."
         end
       end
 
-      param :page_size, type: :whole
+      apply do
+        next if solo?
 
-      apply :page_size do |val|
-        if val > max_page_size
-          bad! "The maximum permitted value for `page_size` is #{max_per}, " \
-          "but #{val.inspect} was provided."
-        elsif val < min_page_size
-          bad! "The minimum permitted value for `page_size` is #{min_per}, " \
-          "but #{val.inspect} was provided."
-        else
-          scope.per(val)
-        end
+        page      = params[:page]
+        page_size = params[:page_size]
+        new_scope = scope.page(page)
+
+        page_size ? new_scope.per(page_size) : new_scope
       end
     end
 
@@ -92,7 +98,7 @@ module Magiq
     end
 
     def self.equal(field, opts = {})
-      param(field, opts)
+      param(field, { solo: true }.merge(opts))
 
       apply(field) do |val|
         scope.where(field => val)
@@ -168,9 +174,9 @@ module Magiq
       self.class.builder
     end
 
-    def apply(&block)
-      return unless (updated_scope = block.())
-      @scope = updated_scope
+    def update_scope!(new_scope)
+      return unless new_scope
+      @scope = new_scope
     end
 
     def extract!
@@ -178,12 +184,26 @@ module Magiq
 
       raw_params.each_pair do |key, raw_value|
         next unless (param = builder.params[key.to_sym])
+
         begin
           next unless (value = param.extract(raw_value))
           @params[key] = value
         rescue BadParamError => e
           raise BadParamError, "The `#{param.name}` parameter is invalid: " \
           "#{e.message}"
+        end
+      end
+
+      @params.keys.each do |p|
+        next unless (found = builder.params[p])
+        next unless found.solo?
+
+        if @params.size > 1
+          raise BadParamError, "The `#{found.name}` parameter can only be used " \
+          "by itself in a query."
+        else
+          @has_solo_param = true
+          @solo_param = found
         end
       end
     end
@@ -230,27 +250,27 @@ module Magiq
       @model = instance_exec(&self.class.model_proc)
       @scope = instance_exec(&self.class.scope_proc)
 
-      each_listener_for :check do |find_params, op|
-        if find_params.empty?
-          instance_exec(&op)
-        else
-          next unless find_params.all? { |p| params.key?(p) }
-          vals = find_params.map { |p| params[p] }
-          instance_exec(*vals, &op)
-        end
+      each_listener_for :check do |seek_params, opts, op|
+        next instance_exec(&op) if seek_params.empty?
+        next if !opts[:any] && !seek_params.all? { |p| params.key?(p) }
+
+        vals = seek_params.map { |p| params[p] }
+        instance_exec(*vals, &op)
       end
     end
 
     def apply!
-      each_listener_for :apply do |find_params, op|
-        if find_params.empty?
-          apply(&op)
-        else
-          next unless find_params.all? { |p| params.key?(p) }
-          vals = find_params.map { |p| params[p] }
-          apply { instance_exec(*vals, &op) }
-        end
+      each_listener_for :apply do |seek_params, opts, op|
+        next update_scope! instance_exec(&op) if seek_params.empty?
+        next if !opts[:any] && !seek_params.all? { |p| params.key?(p) }
+
+        vals = seek_params.map { |p| params[p] }
+        update_scope! instance_exec(*vals, &op)
       end
+    end
+
+    def solo?
+      @has_solo_param ? true : false
     end
 
     def bad!(message)
@@ -270,13 +290,9 @@ module Magiq
     end
 
     def each_listener_for(type, &block)
-      listeners_for(type).each do |t, params, op|
-        block.(params, op)
+      listeners_for(type).each do |t, params, opts, op|
+        block.(params, opts, op)
       end
-    end
-
-    def fire_listeners_for(type, &block)
-      instance_exec(&block)
     end
 
     def to_scope

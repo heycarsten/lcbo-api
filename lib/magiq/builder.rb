@@ -13,8 +13,8 @@ module Magiq
       @params      = {}
     end
 
-    def add_listener(type, params, &block)
-      listeners_for(type) << [type, params, block]
+    def add_listener(type, params, opts = {}, &block)
+      listeners_for(type) << [type, params, opts, block]
     end
 
     def listeners_for(type)

@@ -6,7 +6,7 @@ module Magiq
   class BadParamError < Error; end
 
   DEFAULT_CONFIG = OpenStruct.new(
-    page_size:     50,
+    default_page_size: 50,
     max_page_size: 250,
     min_page_size: 1
   )
@@ -17,6 +17,10 @@ module Magiq
   autoload :Param,   'magiq/param'
 
   module_function
+
+  def [](key)
+    config[key]
+  end
 
   def config
     @config ||= DEFAULT_CONFIG.dup

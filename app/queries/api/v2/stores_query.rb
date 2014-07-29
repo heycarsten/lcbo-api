@@ -8,7 +8,7 @@ class API::V2::StoresQuery < Magiq::Query
     scope.where(is_dead: false) unless params[:include_dead]
   end
 
-  equal :id, array: true
+  equal :id, type: :id, alias: :ids, array: true
 
   order \
     :id,

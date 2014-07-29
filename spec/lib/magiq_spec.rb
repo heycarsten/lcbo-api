@@ -2,17 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Magiq::Query do
   class MockScope
-    attr_reader :where_args, :order_args, :data
+    attr_reader :args, :data
 
     def initialize
       @data = {}
-      @where_factors = []
-      @order_factors = []
-    end
-
-    def where(*args)
-      @where_factors << args
-      self
+      @args = Hash.new { |h, k| h[k] = [] }
     end
 
     def merge(h)
@@ -20,9 +14,15 @@ RSpec.describe Magiq::Query do
       self
     end
 
-    def order(*args)
-      @order_factors << args
-      self
+    [:where, :order, :page, :per].each do |slot|
+      define_method(:"#{slot}_args") do
+        @args[slot]
+      end
+
+      define_method(slot) do |*args|
+        @args[slot] << args
+        self
+      end
     end
   end
 
@@ -49,50 +49,63 @@ RSpec.describe Magiq::Query do
     end
   end
 
-  subject do
-    Class.new(Magiq::Query) do
-      model { MockModel }
+  class MockQuery < Magiq::Query
+    attr_reader :dis, :dat
 
-      equal :id, array: true
+    model { MockModel }
 
-      param :lat, type: :latitude
-      param :lon, type: :longitude
-      apply :lat, :lon do |lat, lon|
-        scope.merge(lat: lat, lon: lon)
-      end
+    has_pagination
 
-      param :geo
+    equal :id, type: :id, array: true
 
-      mutual [:lat, :lon], exclusive: :geo
+    param :lat, type: :latitude
+    param :lon, type: :longitude
+    apply :lat, :lon do |lat, lon|
+      scope.merge(lat: lat, lon: lon)
+    end
 
-      param :total, type: :whole
-      apply :total do |val|
-        scope.merge(total: val)
-      end
+    param :geo
 
-      param :temp, type: :float
-      apply :temp do |val|
-        scope.merge(temp: val)
-      end
+    mutual [:lat, :lon], exclusive: :geo
 
-      param :place, type: :int
-      apply :place do |val|
-        scope.merge(place: val)
-      end
+    param :total, type: :whole
+    apply :total do |val|
+      scope.merge(total: val)
+    end
 
-      bool \
-        :is_awesome,
-        :is_nawsome
+    param :temp, type: :float
+    apply :temp do |val|
+      scope.merge(temp: val)
+    end
 
-      order :distance
-      range :distance, type: :whole
+    param :place, type: :int
+    apply :place do |val|
+      scope.merge(place: val)
+    end
 
-      check :temp do |val|
-        next unless val < -273.15
-        bad! "Temperatures can't be below absolute zero Celsius!"
-      end
+    bool \
+      :is_awesome,
+      :is_nawsome
+
+    order :distance
+    range :distance, type: :whole
+
+    check :temp do |val|
+      next unless val < -273.15
+      bad! "Temperatures can't be below absolute zero Celsius!"
+    end
+
+    param :dis
+    param :dat
+
+    apply :dis, :dat, any: true do |dis, dat|
+      @dis = dis
+      @dat = dat
+      scope.merge(dis: dis, dat: dat)
     end
   end
+
+  subject { MockQuery }
 
   it 'allows parameter listeners to be registered' do
     expect(subject.builder.listeners.size).to_not eq 0
@@ -150,5 +163,40 @@ RSpec.describe Magiq::Query do
         distance_gte: '300'
       ).to_scope
     }.to raise_error Magiq::ParamsError
+  end
+
+  it 'understands that solo parameters are not to be mixed with others' do
+    expect {
+      subject.new(
+        id: '100',
+        geo: 'hiiiii'
+      ).to_scope
+    }.to raise_error Magiq::BadParamError
+  end
+
+  it 'understands that array params can be supplied' do
+    s = subject.new(id: ['1', '2', '3']).to_scope
+
+    expect(s.where_args[0][0][:id]).to include 1, 2, 3
+  end
+
+  it 'runs apply hooks if any dependent attributes are provided when :any option is specified' do
+    s = subject.new(dat: 'yayo!')
+    s.to_scope
+
+    expect(s.dis).to eq nil
+    expect(s.dat).to eq 'yayo!'
+  end
+
+  it 'applies pagination always' do
+    s = subject.new(dat: 'coo').to_scope
+
+    expect(s.page_args[0].size).to eq 1
+  end
+
+  it 'does not apply pagination if a solo param is specified' do
+    s = subject.new(id: '20').to_scope
+
+    expect(s.page_args.size).to eq 0
   end
 end
