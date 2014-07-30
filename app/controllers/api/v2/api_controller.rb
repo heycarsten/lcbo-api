@@ -55,7 +55,7 @@ class API::V2::APIController < APIController
   def render_exception(error)
     render_error \
       status: 400,
-      code: error.class.to_s.demodulize.underscore,
+      code:   error.class.to_s.demodulize.underscore.sub('_error', ''),
       detail: error.message
     false
   end
