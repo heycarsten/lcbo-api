@@ -2,6 +2,13 @@ class API::V2::APIController < APIController
   VERSION = 2
   PER     = 50
 
+  rescue_from \
+    GCoder::NoResultsError,
+    GCoder::OverLimitError,
+    GCoder::GeocoderError,
+    Magiq::Error,
+    with: :render_exception
+
   before_filter :rate_limit!, :authenticate!
 
   self.responder = Class.new(responder) do
@@ -44,6 +51,14 @@ class API::V2::APIController < APIController
   end
 
   protected
+
+  def render_exception(error)
+    render_error \
+      status: 400,
+      code: error.class.to_s.demodulize.underscore,
+      detail: error.message
+    false
+  end
 
   def api_version
     VERSION

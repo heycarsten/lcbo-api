@@ -12,11 +12,11 @@ class API::V2::DatasetsController < API::V2::APIController
       data[:meta] = pagination
     end
 
-    render json: data
+    render json: data, callback: params[:callback]
   end
 
   def show
     dataset = Crawl.finished.find(params[:id])
-    respond_with :api, :v2, dataset, serializer: serializer
+    respond_with :api, :v2, dataset, serializer: serializer, callback: params[:callback]
   end
 end

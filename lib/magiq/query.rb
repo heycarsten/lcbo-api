@@ -71,7 +71,7 @@ module Magiq
         next if solo?
 
         page      = params[:page]
-        page_size = params[:page_size]
+        page_size = params[:page_size] || default_page_size
         new_scope = scope.page(page)
 
         page_size ? new_scope.per(page_size) : new_scope
@@ -182,8 +182,10 @@ module Magiq
     def extract!
       @params = {}
 
-      raw_params.each_pair do |key, raw_value|
-        next unless (param = builder.params[key.to_sym])
+      raw_params.each_pair do |raw_key, raw_value|
+        key = raw_key.to_sym
+
+        next unless (param = builder.params[key])
 
         begin
           next unless (value = param.extract(raw_value))
@@ -232,16 +234,17 @@ module Magiq
           next if found_keys == keys && found_excl.empty?
 
           if found_excl.any?
-            raise ParamsError, "you specified the following " \
-            "parameter#{found_keys.one? ? '' : 's'} in your query: " \
-            "#{found_keys.join ', '} and also specified: " \
-            "#{found_excl.join ', '} but they are mutually exclusive"
+            raise ParamsError, "The provided " \
+            "parameter#{found_keys.one? ? '' : 's'}: " \
+            "#{found_keys.map { |k| "`#{k}`" }.join(', ')} " \
+            "#{found_keys.one? ? 'is' : 'are'} mutually exclusive to: " \
+            "#{found_excl.map { |k| "`#{k}`" }.join ', '}."
           end
 
-          raise ParamsError, "you specified the following " \
-          "parameter#{found_keys.one? ? '' : ''} in your query: " \
-          "#{found_keys.join ', '} but failed to specify: " \
-          "#{(keys - found_keys).join(', ')}"
+          raise ParamsError, "The provided " \
+          "parameter#{found_keys.one? ? '' : 's'}: " \
+          "#{found_keys.map { |k| "`#{k}`" }.join(', ')} requires: " \
+          "#{(keys - found_keys).map { |k| "`#{k}`" }.join(', ')}."
         end
       end
     end
