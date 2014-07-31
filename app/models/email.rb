@@ -25,14 +25,17 @@ class Email < ActiveRecord::Base
 
   def self.verify(raw_token)
     return unless token = Token.parse(raw_token)
-    return unless token.email_verification?
-    return unless (email = unverified.where(id: token.id).first)
+    return unless token.is?(:email)
+    return unless (email = unverified.where(id: token[:email_id]).first)
 
-    if SecureCompare.compare(email.verification_secret, token.secret)
+    if SecureCompare.compare(email.verification_secret, token[:secret])
       email.verify!
     else
       nil
     end
+
+  rescue ActiveRecord::StatementInvalid
+    nil
   end
 
   def verify!
@@ -49,7 +52,7 @@ class Email < ActiveRecord::Base
   end
 
   def verification_token
-    Token.generate(:email_verification, id: id, secret: verification_secret)
+    Token.new(:email, email_id: id, secret: verification_secret)
   end
 
   def has_delivery?
@@ -81,6 +84,6 @@ class Email < ActiveRecord::Base
   end
 
   def generate_verification_secret
-    self.verification_secret = Token.generate(:email_verification).secret
+    self.verification_secret = Token.generate_secret
   end
 end

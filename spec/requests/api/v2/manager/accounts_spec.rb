@@ -13,7 +13,7 @@ RSpec.describe 'V2 Manager Accounts API' do
     end
 
     it 'fails with an invalid session token' do
-      api_headers['X-Auth-Token'] = Token.generate(:session).to_s
+      api_headers['X-Auth-Token'] = Token.generate(:session, user_id: 'herp').to_s
       api_get '/manager/account'
 
       expect(response.status).to eq 401

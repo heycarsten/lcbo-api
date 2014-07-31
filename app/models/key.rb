@@ -8,14 +8,16 @@ class Key < ActiveRecord::Base
 
   def self.lookup(raw_token)
     return unless token = Token.parse(raw_token)
-    return unless token.api?
-    return unless key = where(id: token.id).first
+    return unless token.is?(:api)
+    return unless key = where(id: token[:key_id]).first
 
-    SecureCompare.compare(key.secret, token.secret) ? key : nil
+    SecureCompare.compare(key.secret, token[:secret]) ? key : nil
+  rescue ActiveRecord::StatementInvalid
+    nil
   end
 
   def token
-    @token ||= Token.generate(:api, id: id, secret: secret)
+    @token ||= Token.new(:api, key_id: id, user_id: user_id, secret: secret)
   end
 
   def to_s
@@ -29,6 +31,6 @@ class Key < ActiveRecord::Base
   private
 
   def generate_secret
-    self.secret = Token.generate(:api).secret
+    self.secret = Token.generate_secret
   end
 end

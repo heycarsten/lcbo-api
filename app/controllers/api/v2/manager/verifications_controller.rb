@@ -22,7 +22,7 @@ class API::V2::Manager::VerificationsController < API::V2::Manager::ManagerContr
   def lookup_user_by_token(raw_token)
     return unless token = Token.parse(raw_token)
 
-    if token.email_verification?
+    if token.is?(:email)
       Email.verify(token).try(:user)
     else
       nil

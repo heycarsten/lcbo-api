@@ -8,6 +8,7 @@ RSpec.describe 'V2 Manager Verifications API' do
       t = e.verification_token
 
       expect(u.email).to be_blank
+      expect(t).to_not be_blank
 
       api_put "/manager/verifications/#{t}"
 
@@ -23,7 +24,7 @@ RSpec.describe 'V2 Manager Verifications API' do
     end
 
     it 'fails for an invalid token' do
-      t = Token.generate(:email_verification)
+      t = Token.generate(:email, email_id: 'herp')
 
       api_put "/manager/verifications/#{t}"
 

@@ -13,7 +13,7 @@ RSpec.describe 'V2 Manager Sessions API' do
     end
 
     it 'fails to return the current session with an inactive auth token' do
-      api_headers['X-Auth-Token'] = Token.generate(:session).to_s
+      api_headers['X-Auth-Token'] = Token.generate(:session, user_id: 'herp').to_s
       api_get '/manager/session'
       expect(response.status).to eq 401
     end
@@ -70,7 +70,7 @@ RSpec.describe 'V2 Manager Sessions API' do
     end
 
     it 'fails to update with an invalid token' do
-      api_headers['X-Auth-Token'] = Token.generate(:session).to_s
+      api_headers['X-Auth-Token'] = Token.generate(:session, user_id: 'herp').to_s
       api_put '/manager/session'
       expect(response.status).to eq 401
     end

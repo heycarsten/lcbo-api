@@ -56,19 +56,22 @@ class User < ActiveRecord::Base
   def self.lookup(raw_token)
     return unless token = Token.parse(raw_token)
 
-    if token.session?
+    if token.is?(:session)
       lookup_session_token(token)
-    elsif token.auth?
+    elsif token.is?(:auth)
       lookup_auth_token(token)
-    elsif token.verification?
+    elsif token.is?(:verification)
       lookup_verification_token(token)
     end
+
+  rescue ActiveRecord::StatementInvalid
+    nil
   end
 
   def self.lookup_auth_token(token)
-    return unless user = verified.where(id: token.id).first
+    return unless user = verified.where(id: token[:user_id]).first
 
-    if SecureCompare.compare(user.auth_secret, token.secret)
+    if SecureCompare.compare(user.auth_secret, token[:secret])
       user
     else
       nil
@@ -79,7 +82,7 @@ class User < ActiveRecord::Base
     return unless json = $redis.get(redis_session_key(token))
     payload = JSON.parse(json)
 
-    if SecureCompare.compare(token.secret, payload['secret'])
+    if SecureCompare.compare(token[:secret], payload['secret'])
       where(id: payload['user_id']).first
     else
       nil
@@ -87,9 +90,9 @@ class User < ActiveRecord::Base
   end
 
   def self.lookup_verification_token(token)
-    return unless user = where(id: token.id).first
+    return unless user = where(id: token[:user_id]).first
 
-    if SecureCompare.compare(user.verification_secret, token.secret)
+    if SecureCompare.compare(user.verification_secret, token[:secret])
       user
     else
       nil
@@ -97,7 +100,7 @@ class User < ActiveRecord::Base
   end
 
   def self.redis_session_key(token)
-    "#{Rails.env}:sessions:#{token.key}"
+    "#{Rails.env}:sessions:#{token[:user_id]}"
   end
 
   def password_changed?
@@ -153,24 +156,24 @@ class User < ActiveRecord::Base
   end
 
   def generate_auth_secret
-    self.auth_secret = Token.generate(:auth).secret
+    self.auth_secret = Token.generate_secret
   end
 
   def generate_verification_secret
-    self.verification_secret = Token.generate(:verification).secret
+    self.verification_secret = Token.generate_secret
   end
 
   def verification_token
-    Token.generate(:verification, id: id, secret: verification_secret)
+    Token.new(:verification, user_id: id, secret: verification_secret)
   end
 
   def auth_token
-    Token.generate(:auth, id: id, secret: auth_secret)
+    Token.new(:auth, user_id: id, secret: auth_secret)
   end
 
   def generate_session_token
-    token = Token.generate(:session)
-    json = %|{"user_id":"#{id}","secret":"#{token.secret}"}|
+    token = Token.generate(:session, user_id: id)
+    json = %|{"user_id":"#{id}","secret":"#{token[:secret]}"}|
     $redis.setex(redis_session_key(token), SESSION_TTL, json)
     token
   end

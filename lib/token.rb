@@ -2,110 +2,114 @@ class Token
   class Error < StandardError; end
   class InvalidError < Error; end
 
-  attr_reader :key, :secret, :kind
+  attr_reader :kind, :index, :values, :params
 
-  KEY_SIZE    = 12
   SECRET_SIZE = 36
-  DELIMITER   = '-'
+  DELIMITER   = ':'
 
-  KINDS = {
-    api:                'k_',
-    session:            's_',
-    auth:               'a_',
-    verification:       'v_',
-    email_verification: 'e_'
+  SIGNATURES = {
+    api:          [:user_id,  :key_id, :secret],
+    session:      [:user_id,  :secret],
+    auth:         [:user_id,  :secret],
+    verification: [:user_id,  :secret],
+    email:        [:email_id, :secret]
   }
 
-  def self.generate(kind, opts = {})
-    unless KINDS.keys.include?(kind)
-      raise ArgumentError, "Unknown kind: #{kind.inspect}"
-    end
+  def self.lookup_index(kind_index)
+    lookup(SIGNATURES.keys[kind_index])
+  end
 
-    key = if opts[:id]
-      Base62.uuid_encode(opts[:id])
-    elsif opts[:key]
-      opts[:key]
+  def self.lookup(kind)
+    if (found = SIGNATURES[kind])
+      found
     else
-      random(opts[:key_size] || KEY_SIZE)
+      raise ArgumentError, "unknown kind: #{kind.inspect}"
     end
-
-    secret = opts[:secret] || random(opts[:secret_size] || SECRET_SIZE)
-
-    new(key, secret, kind)
   end
 
   def self.random(size)
     SecureRandom.urlsafe_base64(size)[0, size].tr('_-', 'aA')
   end
 
+  def self.generate_secret
+    random(SECRET_SIZE)
+  end
+
+  def self.generate(kind, params = {})
+    params[:secret] ||= generate_secret
+    new(kind, params)
+  end
+
   def self.parse!(raw_payload)
     payload = raw_payload.to_s.strip
 
     raise InvalidError, "payload is empty" if payload.blank?
-    raise InvalidError, "payload has no delimiter" unless payload.include?(DELIMITER)
 
-    key    = nil
-    secret = nil
-    kind   = nil
+    decoded = Base64.urlsafe_decode64(payload)
 
-    KINDS.each_pair do |k, tag|
-      next unless payload.start_with?(tag)
-      key, secret = *payload.sub(tag, '').split(DELIMITER)
-      kind = k
-      break
+    raise InvalidError, "payload has no delimiter" unless decoded.include?(DELIMITER)
+
+    parts     = decoded.split(DELIMITER)
+    index     = parts[0].to_i
+    signature = lookup_index(index)
+    kind      = SIGNATURES.keys[index]
+
+    params = {}
+
+    signature.each_with_index do |part, i|
+      if (val = parts[i + 1])
+        params[part] = val
+      else
+        raise InvalidError, "payload is missing value at :#{part}"
+      end
     end
 
-    if kind
-      new(key, secret, kind)
-    else
-      raise InvalidError, "payload is an unknown type"
-    end
+    new(kind, params)
   end
 
-  def self.parse(payload)
-    parse!(payload)
+  def self.parse(raw_payload)
+    parse!(raw_payload)
   rescue InvalidError
     nil
   end
 
-  def initialize(key, secret, kind)
-    unless KINDS.keys.include?(kind)
-      raise ArgumentError, "Unknown token kind: #{kind.inspect}"
+  def initialize(kind_or_index, params = {})
+    if kind_or_index.is_a?(Fixnum)
+      @signature = self.class.lookup_index(kind_or_index)
+      @index     = kind_or_index
+    else
+      @signature = self.class.lookup(kind_or_index)
+      @index     = SIGNATURES.keys.index(kind_or_index)
     end
 
-    @key, @secret, @kind = key, secret, kind
+    @kind   = SIGNATURES.keys[@index]
+    @params = params
+    @values = []
+
+    @signature.each do |key|
+      if (val = params[key])
+        @values << val
+      else
+        raise InvalidError, "token params must include :#{key}"
+      end
+    end
   end
 
-  def id
-    @id ||= Base62.uuid_decode(@key)
+  def is?(kind)
+    self.class.lookup(kind)
+    @kind == kind
   end
 
-  def api?
-    kind == :api
+  def [](key)
+    @params[key]
   end
 
-  def session?
-    kind == :session
-  end
-
-  def auth?
-    kind == :auth
-  end
-
-  def verification?
-    kind == :verification
-  end
-
-  def email_verification?
-    kind == :email_verification
-  end
-
-  def access?
-    api? || auth? || session?
+  def payload
+    @payload ||= [@index].concat(@values).join(DELIMITER)
   end
 
   def to_s
-    KINDS[kind] + key + DELIMITER + secret
+    @to_s ||= Base64.urlsafe_encode64(payload)
   end
 
   def to_param

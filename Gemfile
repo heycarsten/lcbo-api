@@ -38,7 +38,6 @@ group :development do
 end
 
 group :test, :development do
-  #gem 'rspec',       '~> 2.99'
   gem 'rspec-rails'
   gem 'fabrication',            require: false
   gem 'awesome_print',          require: 'ap'

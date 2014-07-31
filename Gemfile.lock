@@ -10,7 +10,7 @@ GIT
 
 GIT
   remote: git://github.com/rails-api/active_model_serializers.git
-  revision: e185becd5d007da2f951d1f88c8872a2deb929e5
+  revision: 045ba2a48c0728c58386a6ccf7cbd5fa9925194d
   specs:
     active_model_serializers (0.9.0.alpha1)
       activemodel (>= 3.2)
@@ -76,7 +76,7 @@ GEM
       ruby-hmac
     hashie (3.2.0)
     hike (1.2.3)
-    honeybadger (1.16.2)
+    honeybadger (1.16.3)
       json
     i18n (0.6.11)
     json (1.8.1)
@@ -95,7 +95,7 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.1)
-    nokogiri (1.6.2.1)
+    nokogiri (1.6.3.1)
       mini_portile (= 0.6.0)
     oj (2.9.9)
     oj_mimic_json (1.0.1)
@@ -139,14 +139,14 @@ GEM
     rake (10.3.2)
     redis (3.1.0)
     ref (1.0.5)
-    rspec-core (3.0.2)
+    rspec-core (3.0.3)
       rspec-support (~> 3.0.0)
-    rspec-expectations (3.0.2)
+    rspec-expectations (3.0.3)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.0.0)
-    rspec-mocks (3.0.2)
+    rspec-mocks (3.0.3)
       rspec-support (~> 3.0.0)
-    rspec-rails (3.0.1)
+    rspec-rails (3.0.2)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       railties (>= 3.0)
@@ -154,7 +154,7 @@ GEM
       rspec-expectations (~> 3.0.0)
       rspec-mocks (~> 3.0.0)
       rspec-support (~> 3.0.0)
-    rspec-support (3.0.2)
+    rspec-support (3.0.3)
     ruby-hmac (0.4.0)
     sass (3.2.19)
     sass-rails (4.0.3)
@@ -162,7 +162,7 @@ GEM
       sass (~> 3.2.0)
       sprockets (~> 2.8, <= 2.11.0)
       sprockets-rails (~> 2.0)
-    skylight (0.3.18)
+    skylight (0.3.19)
       activesupport (>= 3.0.0)
     slop (3.6.0)
     spring (1.1.3)

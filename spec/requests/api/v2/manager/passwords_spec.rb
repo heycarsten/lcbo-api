@@ -48,7 +48,7 @@ RSpec.describe 'V2 Manager Passwords API' do
     end
 
     it 'fails for an invalid token' do
-      t = Token.generate(:verification)
+      t = Token.generate(:verification, user_id: 'herp')
 
       api_put "/manager/passwords/#{t}"
 

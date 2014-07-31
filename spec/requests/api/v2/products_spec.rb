@@ -12,3 +12,4 @@ RSpec.describe 'V2 Products API' do
     ]
     api_headers['X-API-Key'] = @key
   end
+end

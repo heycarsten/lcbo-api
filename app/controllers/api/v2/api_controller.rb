@@ -9,7 +9,7 @@ class API::V2::APIController < APIController
     Magiq::Error,
     with: :render_exception
 
-  before_filter :rate_limit!, :authenticate!
+  before_filter :rate_limit!, :authenticate!, :verify_api_key!
 
   self.responder = Class.new(responder) do
     def json_resource_errors
@@ -51,6 +51,32 @@ class API::V2::APIController < APIController
   end
 
   protected
+
+  def verify_api_key!
+    return true unless current_key
+
+    STDOUT.puts(request.headers['Origin'].inspect)
+    true
+    # if current_key.has_domain?
+    #   request.origin
+    # end
+
+    # /stores
+    # X-API-Key: k_329394448-asdlkfn03nfwefh2389ne
+    # =>
+    #   k = Key.lookup 329394448
+    #     checks redis if not there checks db and caches in redis
+    #
+    #   if no key, then 401
+    #
+    #   if key has domain
+    #     check origin matches domain
+    #     allow cors (set headers)
+    #     allow json-p
+    #   else
+    #     disable cors
+    #     disable json-p
+  end
 
   def render_exception(error)
     render_error \

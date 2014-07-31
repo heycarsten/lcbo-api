@@ -41,7 +41,7 @@ class API::V2::Manager::PasswordsController < API::V2::Manager::ManagerControlle
 
   def lookup_user_by_token
     return unless token = Token.parse(params[:token])
-    return unless token.verification?
+    return unless token.is?(:verification)
     User.lookup(token)
   end
 end
