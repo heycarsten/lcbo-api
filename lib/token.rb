@@ -45,7 +45,11 @@ class Token
 
     raise InvalidError, "payload is empty" if payload.blank?
 
-    decoded = Base64.urlsafe_decode64(payload)
+    begin
+      decoded = Base64.urlsafe_decode64(payload)
+    rescue ArgumentError
+      raise InvalidError, "payload is not valid base64"
+    end
 
     raise InvalidError, "payload has no delimiter" unless decoded.include?(DELIMITER)
 
