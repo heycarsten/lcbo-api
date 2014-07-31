@@ -128,4 +128,10 @@ class API::V2::APIController < APIController
   def resources_url(*args)
     send(self.class.resources_url_method, *args)
   end
+
+  # def set_response_format
+  #   return true unless params.key?(:callback)
+  #   response.format = :js
+  #   true
+  # end
 end

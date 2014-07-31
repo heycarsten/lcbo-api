@@ -10,10 +10,11 @@ class APIController < ApplicationController
     'application/vnd.lcboapi.v2+json' => :json
   }
 
-  before_filter :set_api_headers, :normalize_vendor_format
+  before_filter :set_api_headers, :normalize_request_format
+  after_filter :normalize_response_format
 
   clear_respond_to
-  respond_to :json
+  respond_to :json, :js
 
   protected
 
@@ -49,9 +50,25 @@ class APIController < ApplicationController
     raise NotImplementedError
   end
 
-  def normalize_vendor_format
-    return true unless (match = FORMATS[request.format.to_s])
-    request.format = match
+  def normalize_request_format
+    Rails.logger.info("DAFUQ NIGGA!!!?")
+
+    if (match = FORMATS[request.format.to_s])
+      request.format = match
+      return true
+    end
+
+    if params[:callback].present?
+      request.format = :js
+      return true
+    end
+
+    true
+  end
+
+  def normalize_response_format
+    return true unless params[:callback].present?
+    response.headers['Content-Type'] = 'text/javascript'
     true
   end
 

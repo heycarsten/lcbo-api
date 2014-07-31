@@ -12,11 +12,13 @@ class API::V2::StoresController < API::V2::APIController
       data[:meta] = pagination
     end
 
-    render json: data
+    render json: data, callback: params[:callback]
   end
 
   def show
-    respond_with :api, :v2, Store.find(params[:id]), serializer: serializer
+    respond_with :api, :v2, Store.find(params[:id]),
+      serializer: serializer,
+      callback:   params[:callback]
   end
 
   private
