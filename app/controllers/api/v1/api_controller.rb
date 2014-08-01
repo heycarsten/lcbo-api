@@ -10,8 +10,8 @@ class API::V1::APIController < APIController
     V1::QueryHelper::BadQueryError, with: :render_exception
 
   before_filter :set_api_format
-  after_filter  :set_jsonp_status
 
+  clear_respond_to
   respond_to :json, :js, :csv, :tsv
 
   protected
@@ -65,10 +65,6 @@ class API::V1::APIController < APIController
         "JSON-P callback (#{params[:callback]}) is not valid, it can only " \
         "contain letters, numbers, underscores, and dots."
     end
-  end
-
-  def set_jsonp_status
-    response.status = 200 if jsonp?
   end
 
   def query(type)

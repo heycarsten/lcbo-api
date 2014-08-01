@@ -47,7 +47,7 @@ module APIHelpers
     errors_for(path).any?
   end
 
-  [:get, :put, :post, :patch, :delete].each do |action|
+  [:get, :put, :post, :patch, :delete, :head, :options].each do |action|
     define_method :"api_#{action}" do |path, params = {}|
       send(action, path, params, api_headers)
     end

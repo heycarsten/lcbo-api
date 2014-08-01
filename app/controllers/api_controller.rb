@@ -1,11 +1,27 @@
 class APIController < ApplicationController
   before_filter :set_api_headers
-  after_filter :twerk_content_type_for_jsonp
+  after_filter :twerk_response_for_jsonp
 
   clear_respond_to
   respond_to :json, :js
 
   protected
+
+  def api_token
+    @api_token ||= Token.parse(request.headers['X-API-Key'] || params[:api_key])
+  end
+
+  def auth_token
+    @auth_token ||= Token.parse(request.headers['X-Auth-Token'])
+  end
+
+  def current_user
+    @current_user ||= User.lookup(auth_token)
+  end
+
+  def current_key
+    @current_key ||= Key.lookup(api_token)
+  end
 
   def jsonp?
     (request.format && request.format.js?) && params[:callback].present?
@@ -41,8 +57,10 @@ class APIController < ApplicationController
     raise NotImplementedError
   end
 
-  def twerk_content_type_for_jsonp
-    response.headers['Content-Type'] = 'text/javascript' if jsonp?
+  def twerk_response_for_jsonp
+    return true unless jsonp?
+    response.headers['Content-Type'] = 'text/javascript'
+    response.status = 200
     true
   end
 
@@ -56,7 +74,7 @@ class APIController < ApplicationController
     error[:code]   || raise(ArgumentError, 'must supply :code')
     error[:detail] || raise(ArgumentError, 'must supply :detail')
 
-    render json: { error: error }, status: status
+    render json: { error: error }, status: status, callback: params[:callback]
 
     false
   end

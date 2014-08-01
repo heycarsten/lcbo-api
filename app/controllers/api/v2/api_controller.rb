@@ -108,7 +108,13 @@ class API::V2::APIController < APIController
 
   def verify_request!
     return true unless current_key
-    return true unless current_key[:is_public]
+
+    if !current_key[:is_public]
+      params.delete(:callback)
+      return true
+    end
+
+    @enable_cors = true
 
     if origin && (LOOPBACKS.include?(origin) || origin.include?(current_key[:domain]))
       true
@@ -125,6 +131,7 @@ class API::V2::APIController < APIController
   end
 
   def add_cors_headers(allow_origin = '*')
+    return true unless @enable_cors
     headers.merge!(CORS_HEADERS)
     headers['Access-Control-Allow-Origin'] = allow_origin
   end
@@ -141,27 +148,10 @@ class API::V2::APIController < APIController
     VERSION
   end
 
-  def api_token
-    @api_token ||= Token.parse(request.headers['X-API-Key'] || params[:api_key])
-  end
-
-  def auth_token
-    @auth_token ||= Token.parse(request.headers['X-Auth-Token'])
-  end
-
-  def current_user
-    @current_user ||= User.lookup(auth_token)
-  end
-
-  def current_key
-    @current_key ||= Key.lookup(api_token)
-  end
-
   def origin
     @origin ||= begin
-      return true unless current_key
-
       origin = (request.headers['Origin'] || request.headers['Referer'])
+
       return if origin.blank?
 
       origin.downcase!
