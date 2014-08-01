@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   SESSION_TTL = 3.weeks
-  NAME_RE  = /\A[[:alpha:] '\-]+\Z/u
+  NAME_RE     = /\A[[:alpha:] '\-]+\Z/u
+  MAX_RATE    = 1000
 
   has_many :keys,   dependent: :destroy
   has_many :emails, dependent: :destroy
@@ -63,7 +64,6 @@ class User < ActiveRecord::Base
     elsif token.is?(:verification)
       lookup_verification_token(token)
     end
-
   rescue ActiveRecord::StatementInvalid
     nil
   end
@@ -101,6 +101,10 @@ class User < ActiveRecord::Base
 
   def self.redis_session_key(token)
     "#{Rails.env}:sessions:#{token[:user_id]}"
+  end
+
+  def max_rate
+    MAX_RATE
   end
 
   def password_changed?

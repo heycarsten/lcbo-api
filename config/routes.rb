@@ -18,6 +18,8 @@ Rails.application.routes.draw do
 
   namespace :api, path: '/', format: :json do
     namespace :v2, path: '(v2)', constraints: APIConstraint.new(2) do
+      match '*path', to: 'api#preflight_cors', via: :options
+
       namespace :manager do
         controller :accounts do
           get    '/account'  => :show,   as: :account

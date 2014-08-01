@@ -38,6 +38,20 @@ COMMENT ON EXTENSION btree_gin IS 'support for indexing common datatypes in GIN'
 
 
 --
+-- Name: btree_gist; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION btree_gist; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION btree_gist IS 'support for indexing common datatypes in GiST';
+
+
+--
 -- Name: fuzzystrmatch; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -63,6 +77,20 @@ CREATE EXTENSION IF NOT EXISTS hstore WITH SCHEMA public;
 --
 
 COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs';
+
+
+--
+-- Name: intarray; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS intarray WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION intarray; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION intarray IS 'functions, operators, and index support for 1-D arrays of integers';
 
 
 --
@@ -269,7 +297,10 @@ CREATE TABLE keys (
     info text,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    user_id uuid NOT NULL
+    user_id uuid NOT NULL,
+    is_public boolean DEFAULT false NOT NULL,
+    domain character varying(100),
+    max_rate integer
 );
 
 
@@ -1043,4 +1074,6 @@ INSERT INTO schema_migrations (version) VALUES ('20140714201631');
 INSERT INTO schema_migrations (version) VALUES ('20140714202224');
 
 INSERT INTO schema_migrations (version) VALUES ('20140717031508');
+
+INSERT INTO schema_migrations (version) VALUES ('20140801013002');
 

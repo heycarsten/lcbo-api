@@ -71,10 +71,6 @@ class API::V1::APIController < APIController
     response.status = 200 if jsonp?
   end
 
-  def jsonp?
-    request.format && request.format.js? && params[:callback].present?
-  end
-
   def query(type)
     V1::QueryHelper.query(type, request, params)
   end
