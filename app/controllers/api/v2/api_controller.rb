@@ -7,7 +7,6 @@ class API::V2::APIController < APIController
     0.0.0.0
     127.0.0.1
     localhost
-    ::1
   ]
 
   CORS_HEADERS = {
