@@ -8,7 +8,7 @@ class API::V2::ProductsQuery < Magiq::Query
     scope.where(is_dead: false) unless params[:include_dead]
   end
 
-  equal :id,  type: :id,     array: true, limit: 150
+  equal :id,  type: :id, alias: :ids, array: true, limit: 150
   equal :upc, type: :string, array: true, limit: 150
 
   bool \

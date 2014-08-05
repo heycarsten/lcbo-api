@@ -40,15 +40,17 @@ class API::V2::StoreSerializer < ApplicationSerializer
     :saturday_open,
     :saturday_close,
     :updated_at,
-    :quantity,
-    :reported_on,
+    :inventory_quantity,
+    :inventory_reported_on,
+    :inventory_quantities,
+    :inventories_reported_on,
     :distance_in_meters
 
-  def quantity
+  def inventory_quantity
     object.try(:quantity)
   end
 
-  def reported_on
+  def inventory_reported_on
     object.try(:reported_on)
   end
 
@@ -56,13 +58,29 @@ class API::V2::StoreSerializer < ApplicationSerializer
     object.try(:distance_in_meters)
   end
 
+  def inventories_reported_on
+    object.try(:inventories_reported_on)
+  end
+
+  def inventory_quantities
+    object.try(:inventory_quantities)
+  end
+
   def filter(keys)
     unless object.respond_to?(:quantity)
-      keys.delete(:quantity)
+      keys.delete(:inventory_quantity)
+    end
+
+    unless object.respond_to?(:inventory_quantities)
+      keys.delete(:inventory_quantities)
     end
 
     unless object.respond_to?(:reported_on)
-      keys.delete(:reported_on)
+      keys.delete(:inventory_reported_on)
+    end
+
+    unless object.respond_to?(:inventories_reported_on)
+      keys.delete(:inventories_reported_on)
     end
 
     unless object.respond_to?(:distance_in_meters)

@@ -27,6 +27,20 @@ class Store < ActiveRecord::Base
 
   before_save :set_latlonrad
 
+  scope :with_product_ids, ->(*raw_ids) {
+    ids      = raw_ids.flatten
+    ids_size = ids.size
+
+    select(
+      'stores.*, ' \
+      'array_agg(inventories.quantity) AS inventory_quantities, ' \
+      'array_agg(inventories.reported_on) AS inventories_reported_on').
+    joins('LEFT JOIN inventories ON (stores.id = inventories.store_id)').
+    where('inventories.product_id IN (?) AND inventories.quantity != 0', ids).
+    group('stores.id').
+    having('array_length(array_agg(inventories.quantity), 1) = ?', ids_size)
+  }
+
   scope :distance_from_with_product, ->(lat, lon, product_id) {
     distance_from(lat, lon).
       joins(:inventories).

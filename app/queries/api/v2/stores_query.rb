@@ -42,6 +42,13 @@ class API::V2::StoresQuery < Magiq::Query
       where('inventories.product_id' => product.id)
   end
 
+  param :product_ids, type: :id, array: true, limit: 10
+  apply :product_ids do |ids|
+    scope.with_product_ids(ids)
+  end
+
+  exclusive :product_id, :product_ids
+
   def product
     @product ||= begin
       if (id = params[:product_id])
