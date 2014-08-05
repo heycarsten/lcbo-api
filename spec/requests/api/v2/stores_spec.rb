@@ -149,7 +149,7 @@ RSpec.describe 'V2 Stores API' do
     prepare!
     api_headers['X-Access-Key'] = @private_key
 
-    api_get "/stores?id_order=desc"
+    api_get "/stores?order_id=desc"
 
     expect(response.status).to eq 200
     expect(json[:stores].size).to eq 3
