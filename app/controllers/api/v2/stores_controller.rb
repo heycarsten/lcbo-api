@@ -20,10 +20,4 @@ class API::V2::StoresController < API::V2::APIController
       serializer: serializer,
       callback:   params[:callback]
   end
-
-  private
-
-  def serializer
-    API::V2::StoreSerializer
-  end
 end

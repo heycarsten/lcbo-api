@@ -13,13 +13,13 @@ class Key < ActiveRecord::Base
   validates :user_id, presence: true
   validates :secret,  presence: true
   validates :domain,
-    presence: true,
+    allow_blank: true,
     format: { with: DOMAIN_RNG },
     if: :is_public?
 
   def self.lookup(raw_token)
     return unless token = Token.parse(raw_token)
-    return unless token.is?(:api)
+    return unless token.is?(:access)
     return unless key = fetch(token[:key_id])
 
     SecureCompare.compare(key[:secret], token[:secret]) ? key : nil
@@ -80,7 +80,7 @@ class Key < ActiveRecord::Base
   end
 
   def token
-    @token ||= Token.new(:api, key_id: id, user_id: user_id, secret: secret)
+    @token ||= Token.new(:access, key_id: id, user_id: user_id, secret: secret)
   end
 
   def to_s

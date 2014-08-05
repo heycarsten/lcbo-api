@@ -5,6 +5,7 @@ RSpec.describe 'V2 Stores API' do
     @user        = create_verified_user!
     @private_key = @user.keys.create!
     @public_key  = @user.keys.create!(is_public: true, domain: 'lcboapi.test')
+    @public_key_no_origin = @user.keys.create!(is_public: true)
     @stores = [
       Fabricate(:store, id: 4, name: 'Store B', inventory_count: 10),
       Fabricate(:store, id: 3, name: 'Store C', inventory_count: 20),
@@ -41,12 +42,24 @@ RSpec.describe 'V2 Stores API' do
       expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
     end
 
-    it 'returns data when no origin is present'
-    it 'returns data with JSONP origin is local'
-    it 'returns error with JSONP when origin is wrong'
-    it 'returns data with CORS when origin is null'
-    it 'returns data with CORS when origin is correct'
-    it 'returns error with CORS when origin is wrong'
+    it 'enforces origin for public keys with domains' do
+      prepare!
+      api_headers['Origin'] = nil
+      api_headers['X-Access-Key'] = @public_key
+      api_get '/stores'
+      expect(response.status).to eq 403
+      expect(json[:error][:code]).to eq 'bad_origin'
+    end
+
+    it 'does not enforce origin for public keys without domains' do
+      prepare!
+      api_headers['Origin'] = nil
+      api_headers['X-Access-Key'] = @public_key_no_origin
+      api_get '/stores'
+      expect(response.headers['Access-Control-Allow-Origin']).to eq nil
+      expect(response.status).to eq 200
+      expect(json[:stores].size).to_not eq 0
+    end
   end
 
   it 'requires authentication' do

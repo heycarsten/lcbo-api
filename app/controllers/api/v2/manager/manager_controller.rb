@@ -1,6 +1,4 @@
 class API::V2::Manager::ManagerController < API::V2::APIController
-  skip_before_filter :rate_limit!
-
   protected
 
   def authenticate!
@@ -19,7 +17,7 @@ class API::V2::Manager::ManagerController < API::V2::APIController
     if stuff.respond_to?(:all)
       root ||= self.class.controller_name.pluralize
       resource = stuff.map { |i|
-        self.class.serializer.new(i, opts).as_json(root: false)
+        serializer.new(i, opts).as_json(root: false)
       }
 
       if (pagination = pagination_for(stuff))

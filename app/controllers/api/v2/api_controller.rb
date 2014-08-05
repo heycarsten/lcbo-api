@@ -84,6 +84,10 @@ class API::V2::APIController < APIController
 
   protected
 
+  def serializer
+    self.class.serializer
+  end
+
   def rate_limit!
     max = case
     when current_key
@@ -94,11 +98,8 @@ class API::V2::APIController < APIController
       MAX_RATE
     end
 
-    uniq = case
-    when current_key && !current_key[:is_public]
+    uniq = if current_key && !current_key[:is_public]
       current_key[:id]
-    when current_user
-      current_user.id
     else
       request.ip
     end
@@ -109,7 +110,7 @@ class API::V2::APIController < APIController
   def verify_request!
     return true unless current_key
 
-    if !current_key[:is_public]
+    if !current_key[:is_public] || current_key[:domain].blank?
       params.delete(:callback)
       return true
     end
@@ -127,7 +128,7 @@ class API::V2::APIController < APIController
   end
 
   def authenticate!
-    (current_key || current_user) ? true : not_authorized
+    current_key ? true : not_authorized
   end
 
   def add_cors_headers(allow_origin = '*')

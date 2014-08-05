@@ -5,7 +5,7 @@ class API::V2::DatasetsController < API::V2::APIController
     data  = {}
 
     data[:datasets] = scope.map do |r|
-      API::V2::DatasetSerializer.new(r, scope: :index).as_json(root: false)
+      serializer.new(r, scope: :index).as_json(root: false)
     end
 
     if (pagination = pagination_for(scope))
@@ -16,7 +16,7 @@ class API::V2::DatasetsController < API::V2::APIController
   end
 
   def show
-    dataset = Crawl.finished.find(params[:id])
+    dataset = Crawl.is(:finished).find(params[:id])
     respond_with :api, :v2, dataset, serializer: serializer, callback: params[:callback]
   end
 end
