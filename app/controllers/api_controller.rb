@@ -7,8 +7,8 @@ class APIController < ApplicationController
 
   protected
 
-  def api_token
-    @api_token ||= Token.parse(request.headers['X-API-Key'] || params[:api_key])
+  def access_key
+    @access_key ||= Token.parse(request.headers['X-Access-Key'] || params[:access_key])
   end
 
   def auth_token
@@ -20,7 +20,7 @@ class APIController < ApplicationController
   end
 
   def current_key
-    @current_key ||= Key.lookup(api_token)
+    @current_key ||= Key.lookup(access_key)
   end
 
   def jsonp?

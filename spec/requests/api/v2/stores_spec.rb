@@ -16,19 +16,19 @@ RSpec.describe 'V2 Stores API' do
   describe 'JSONP and CORS' do
     it 'allows JSONP for public keys' do
       prepare!
-      api_get "/stores?api_key=#{@public_key}&callback=jsonpcb"
+      api_get "/stores?access_key=#{@public_key}&callback=jsonpcb"
       expect(response.body).to start_with 'jsonpcb({'
     end
 
     it 'disables JSONP for private keys' do
       prepare!
-      api_get "/stores?api_key=#{@private_key}&callback=jsonpcb"
+      api_get "/stores?access_key=#{@private_key}&callback=jsonpcb"
       expect(response.body).to_not start_with 'jsonpcb({'
     end
 
     it 'disables CORS for private keys' do
       prepare!
-      api_headers['X-API-Key'] = @private_key
+      api_headers['X-Access-Key'] = @private_key
       api_get '/stores'
       expect(response.headers['Access-Control-Allow-Origin']).to eq nil
     end
@@ -36,10 +36,17 @@ RSpec.describe 'V2 Stores API' do
     it 'enables CORS for public keys' do
       prepare!
       api_headers['Origin'] = 'null'
-      api_headers['X-API-Key'] = @public_key
+      api_headers['X-Access-Key'] = @public_key
       api_get '/stores'
       expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
     end
+
+    it 'returns data when no origin is present'
+    it 'returns data with JSONP origin is local'
+    it 'returns error with JSONP when origin is wrong'
+    it 'returns data with CORS when origin is null'
+    it 'returns data with CORS when origin is correct'
+    it 'returns error with CORS when origin is wrong'
   end
 
   it 'requires authentication' do
@@ -52,7 +59,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'returns all stores' do
     prepare!
-    api_headers['X-API-Key'] = @private_key
+    api_headers['X-Access-Key'] = @private_key
 
     api_get '/stores'
 
@@ -63,7 +70,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'returns stores by an array of ids (index)' do
     prepare!
-    api_headers['X-API-Key'] = @private_key
+    api_headers['X-Access-Key'] = @private_key
 
     api_get "/stores?id[]=#{@stores[0].id}&id[]=#{@stores[1].id}"
 
@@ -75,7 +82,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'returns stores by id (show)' do
     prepare!
-    api_headers['X-API-Key'] = @private_key
+    api_headers['X-Access-Key'] = @private_key
 
     api_get "/stores/#{@stores[2].id}"
 
@@ -86,7 +93,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'fails to return stores by id and query' do
     prepare!
-    api_headers['X-API-Key'] = @private_key
+    api_headers['X-Access-Key'] = @private_key
 
     api_get "/stores?id=1&q=fail"
 
@@ -96,7 +103,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'returns stores by query' do
     prepare!
-    api_headers['X-API-Key'] = @private_key
+    api_headers['X-Access-Key'] = @private_key
 
     api_get '/stores?q=store+b'
 
@@ -106,7 +113,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'returns stores by lat/lon' do
     prepare!
-    api_headers['X-API-Key'] = @private_key
+    api_headers['X-Access-Key'] = @private_key
 
     api_get "/stores?lat=#{@stores[2].latitude}&lon=#{@stores[2].longitude}"
 
@@ -117,7 +124,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'can include dead stores' do
     prepare!
-    api_headers['X-API-Key'] = @private_key
+    api_headers['X-Access-Key'] = @private_key
 
     api_get "/stores?include_dead=yes"
 
@@ -127,7 +134,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'can order results' do
     prepare!
-    api_headers['X-API-Key'] = @private_key
+    api_headers['X-Access-Key'] = @private_key
 
     api_get "/stores?id_order=desc"
 
@@ -140,7 +147,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'can constrain results' do
     prepare!
-    api_headers['X-API-Key'] = @private_key
+    api_headers['X-Access-Key'] = @private_key
 
     api_get "/stores?inventory_count_gt=10"
 
@@ -151,7 +158,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'returns stores that have a product' do
     prepare!
-    api_headers['X-API-Key'] = @private_key
+    api_headers['X-Access-Key'] = @private_key
 
     product   = Fabricate(:product, id: 1)
     inventory = Fabricate(:inventory, store_id: @stores[1].id, product_id: product.id)

@@ -27,7 +27,7 @@ module Factories
 
   def build_key(attrs = {})
     Key.new({
-      label: "API Key ##{rand 99999}",
+      label: "Access Key ##{rand 99999}",
       info: ('LOL ' * 30).chop
     }.merge(attrs))
   end

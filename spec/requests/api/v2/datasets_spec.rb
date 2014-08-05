@@ -12,10 +12,10 @@ RSpec.describe 'V2 Datasets API' do
       ]
     end
 
-    it 'returns datasets when provided an API Key via param' do
+    it 'returns datasets when provided an Access Key via param' do
       generate_data!
 
-      api_get '/datasets', api_key: @key
+      api_get '/datasets', access_key: @key
 
       expect(response.status).to eq 200
       expect(json.keys).to include :meta, :datasets
@@ -24,10 +24,10 @@ RSpec.describe 'V2 Datasets API' do
       expect(json[:datasets][0][:links][:stores]).to be_blank
     end
 
-    it 'returns datasets when provided an API Key via header' do
+    it 'returns datasets when provided an Access Key via header' do
       generate_data!
 
-      api_headers['X-API-Key'] = @key
+      api_headers['X-Access-Key'] = @key
       api_get '/datasets'
 
       expect(response.status).to eq 200

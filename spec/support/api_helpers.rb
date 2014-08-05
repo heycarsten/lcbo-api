@@ -13,12 +13,12 @@ module APIHelpers
     api_headers['X-Auth-Token'] = user.auth_token.to_s
   end
 
-  def auth_api_key(key)
-    api_headers['X-API-Key'] = key.token.to_s
+  def auth_access_key(key)
+    api_headers['X-Access-Key'] = key.token.to_s
   end
 
-  def clear_api_key
-    api_headers['X-API-Key'] = nil
+  def clear_access_key
+    api_headers['X-Access-Key'] = nil
   end
 
   def clear_auth_token
@@ -26,7 +26,7 @@ module APIHelpers
   end
 
   def clear_auth_headers
-    clear_api_key
+    clear_access_key
     clear_auth_token
   end
 
