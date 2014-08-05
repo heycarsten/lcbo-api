@@ -22,8 +22,8 @@ module Magiq
       @scope_proc || -> { model.unscoped }
     end
 
-    def self.param(name, opts = {})
-      builder.add_param(name, opts)
+    def self.param(key, opts = {})
+      builder.add_param(key, opts)
     end
 
     def self.apply(*params, &block)
@@ -189,9 +189,9 @@ module Magiq
 
         begin
           next unless (value = param.extract(raw_value))
-          @params[key] = value
+          @params[param.key] = value
         rescue BadParamError => e
-          raise BadParamError, "The `#{param.name}` parameter is invalid: " \
+          raise BadParamError, "The `#{param.key}` parameter is invalid: " \
           "#{e.message}"
         end
       end
@@ -201,7 +201,7 @@ module Magiq
         next unless found.solo?
 
         if @params.size > 1
-          raise BadParamError, "The `#{found.name}` parameter can only be used " \
+          raise BadParamError, "The `#{found.key}` parameter can only be used " \
           "by itself in a query."
         else
           @has_solo_param = true

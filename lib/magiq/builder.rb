@@ -25,8 +25,17 @@ module Magiq
       listeners[type]
     end
 
-    def add_param(name, opts = {})
-      params[name.to_sym] = Param.new(name, opts)
+    def add_param(key, opts = {})
+      param = Param.new(key, opts)
+
+      param.keys.each do |k|
+        if params.key?(k.to_sym)
+          raise ArgumentError, "already registered param under key/alias: " \
+          "#{k}"
+        end
+
+        params[k] = param
+      end
     end
 
     def add_constraint(op, params_arg, opts = {})

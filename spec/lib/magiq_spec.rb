@@ -56,7 +56,7 @@ RSpec.describe Magiq::Query do
 
     has_pagination
 
-    equal :id, type: :id, array: true
+    equal :id, type: :id, array: true, alias: :ids
 
     param :lat, type: :latitude
     param :lon, type: :longitude
@@ -198,5 +198,11 @@ RSpec.describe Magiq::Query do
     s = subject.new(id: '20').to_scope
 
     expect(s.page_args.size).to eq 0
+  end
+
+  it 'allows parameter names to have aliases' do
+    s = subject.new(ids: ['20', '30']).to_scope
+
+    expect(s.where_args[0][0][:id]).to include 20, 30
   end
 end

@@ -8,15 +8,15 @@ module Magiq
       @registry ||= {}
     end
 
-    def register(ident, adapter)
-      registry[ident.to_sym] = adapter
+    def register(id, adapter)
+      registry[id.to_sym] = adapter
     end
 
-    def lookup(name)
-      if (found = registry[name.to_sym])
+    def lookup(id)
+      if (found = registry[id.to_sym])
         found
       else
-        raise ArgumentError, "no type is registered under: #{name.inspect}"
+        raise ArgumentError, "no type is registered under: #{id.inspect}"
       end
     end
 
