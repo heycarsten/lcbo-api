@@ -80,7 +80,7 @@ class Key < ActiveRecord::Base
   end
 
   def token
-    @token ||= Token.new(:access, key_id: id, user_id: user_id, secret: secret)
+    @token ||= Token.new(:access, key_id: id, secret: secret)
   end
 
   def to_s

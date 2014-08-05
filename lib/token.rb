@@ -8,7 +8,7 @@ class Token
   DELIMITER   = ':'
 
   SIGNATURES = {
-    access:       [:user_id,  :key_id, :secret],
+    access:       [:key_id,   :secret],
     session:      [:user_id,  :secret],
     auth:         [:user_id,  :secret],
     verification: [:user_id,  :secret],
