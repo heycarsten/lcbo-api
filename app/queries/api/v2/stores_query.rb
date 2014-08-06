@@ -1,24 +1,21 @@
-class API::V2::StoresQuery < Magiq::Query
+class API::V2::StoresQuery < API::V2::APIQuery
   model { Store }
 
   has_pagination
+  has_include_dead
 
-  param :include_dead, type: :bool
-  apply do
-    scope.where(is_dead: false) unless params[:include_dead]
-  end
+  by :id
 
-  equal :id, type: :id, alias: :ids, array: true
-
-  order \
+  sort [
     :id,
     :distance_in_meters,
     :inventory_volume_in_milliliters,
     :products_count,
     :inventory_count,
     :inventory_price_in_cents
+  ]
 
-  bool \
+  toggle \
     :has_wheelchair_accessability,
     :has_bilingual_services,
     :has_product_consultant,
@@ -35,15 +32,13 @@ class API::V2::StoresQuery < Magiq::Query
   range :inventory_count,                 type: :whole
   range :inventory_price_in_cents,        type: :whole
 
-  param :product_id, type: :id
-  apply :product_id do |product_id|
+  param :product_id, type: :id do |product_id|
     scope.joins(:inventories).
       select('stores.*, inventories.quantity, inventories.reported_on').
       where('inventories.product_id' => product.id)
   end
 
-  param :product_ids, type: :id, array: true, limit: 10
-  apply :product_ids do |ids|
+  param :product_ids, type: :id, array: :always, limit: 10 do |ids|
     scope.with_product_ids(ids)
   end
 
@@ -59,19 +54,25 @@ class API::V2::StoresQuery < Magiq::Query
     end
   end
 
-  param :lat, type: :latitude
-  param :lon, type: :longitude
-  apply :lat, :lon do |lat, lon|
+  def products
+    @products ||= begin
+      if (ids = params[:product_ids])
+        Product.by_ids(ids)
+      else
+        nil
+      end
+    end
+  end
+
+  params :lat, :lon, type: { lat: :latitude, lon: :longitude } do |lat, lon|
     scope.distance_from(lat, lon)
   end
 
-  param :q, type: :string
-  apply :q do |q|
+  param :q, type: :string do |q|
     scope.search(q)
   end
 
-  param :geo
-  apply :geo do |geo|
+  param :geo do |geo|
     loc = GEO[geo].first.geometry.location
     scope.distance_from(loc.lat, loc.lng)
   end

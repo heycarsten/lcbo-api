@@ -47,6 +47,10 @@ RSpec.describe Magiq::Query do
     def self.unscoped
       MockScope.new
     end
+
+    def self.table_name
+      'mocks'
+    end
   end
 
   class MockQuery < Magiq::Query
@@ -56,11 +60,9 @@ RSpec.describe Magiq::Query do
 
     has_pagination
 
-    equal :id, type: :id, array: true, alias: :ids
+    by :id
 
-    param :lat, type: :latitude
-    param :lon, type: :longitude
-    apply :lat, :lon do |lat, lon|
+    params :lat, :lon, type: { lat: :latitude, lon: :longitude } do |lat, lon|
       scope.merge(lat: lat, lon: lon)
     end
 
@@ -68,26 +70,23 @@ RSpec.describe Magiq::Query do
 
     mutual [:lat, :lon], exclusive: :geo
 
-    param :total, type: :whole
-    apply :total do |val|
+    param :total, type: :whole do |val|
       scope.merge(total: val)
     end
 
-    param :temp, type: :float
-    apply :temp do |val|
+    param :temp, type: :float do |val|
       scope.merge(temp: val)
     end
 
-    param :place, type: :int
-    apply :place do |val|
+    param :place, type: :int do |val|
       scope.merge(place: val)
     end
 
-    bool \
+    toggle \
       :is_awesome,
       :is_nawsome
 
-    order :distance
+    sort [:distance]
     range :distance, type: :whole
 
     check :temp do |val|

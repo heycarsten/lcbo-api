@@ -28,11 +28,12 @@ class Store < ActiveRecord::Base
   before_save :set_latlonrad
 
   scope :with_product_ids, ->(*raw_ids) {
-    ids      = raw_ids.flatten
+    ids      = raw_ids.flatten.map(&:to_i)
     ids_size = ids.size
 
     select(
       'stores.*, ' \
+      "ARRAY[#{ids.join(', ')}] AS inventory_product_ids, " \
       'array_agg(inventories.quantity) AS inventory_quantities, ' \
       'array_agg(inventories.reported_on) AS inventories_reported_on').
     joins('LEFT JOIN inventories ON (stores.id = inventories.store_id)').

@@ -22,7 +22,28 @@ module Magiq
       @scope_proc || -> { model.unscoped }
     end
 
-    def self.param(key, opts = {})
+    def self.params(*keys, &block)
+      opts = keys.last.is_a?(Hash) ? keys.pop : {}
+
+      if block_given?
+        types = opts.delete(:type)
+
+        keys.each do |k|
+          type = types.is_a?(Hash) ? types[k] : types
+          def_param(k, opts.merge(type: type))
+        end
+
+        apply(*keys, &block)
+      else
+        def_param(keys[0], opts)
+      end
+    end
+
+    def self.param(*args, &block)
+      params(*args, &block)
+    end
+
+    def self.def_param(key, opts = {})
       builder.add_param(key, opts)
     end
 
@@ -78,7 +99,7 @@ module Magiq
       end
     end
 
-    def self.bool(*fields)
+    def self.toggle(*fields)
       fields.each do |field|
         param(field, type: :bool)
         apply(field) do |val|
@@ -87,21 +108,56 @@ module Magiq
       end
     end
 
-    def self.order(*fields)
-      fields.each do |field|
-        p = :"order_#{field}"
-        param(p, type: :enum_sort)
-        apply(p) do |ord|
-          scope.order(field => ord)
+    def self.sort(fields)
+      param :sort, type: :string, array: :always, limit: fields.size
+      apply :sort do |raw_vals|
+        vals = raw_vals.is_a?(Array) ? raw_vals : raw_vals.split(',')
+
+        vals.reduce(scope) do |scope, val|
+          direction = :asc
+
+          col = if val.start_with?('-')
+            direction = :desc
+            val.sub('-', '').to_sym
+          else
+            val.to_sym
+          end
+
+          unless fields.include?(col)
+            bad! "A provided sorting field: #{col}, is unknown or unsortable. The " \
+            "permitted values are: #{fields.join(', ')}"
+          end
+
+          scope.order(col => direction)
         end
       end
     end
 
-    def self.equal(field, opts = {})
-      param(field, { solo: true }.merge(opts))
+    def self.by(column, opts = {}, &block)
+      param(column, {
+        solo:  true,
+        type:  :id,
+        alias: column.to_s.pluralize.to_sym,
+        array: :always
+      }.merge(opts))
 
-      apply(field) do |val|
-        scope.where(field => val)
+      if block_given?
+        apply(column, &block)
+      else
+        apply(column) do |ids|
+          if ids.empty?
+            nil
+          else
+            tbl = model.table_name
+
+            sql = ids.each_with_index.map { |raw_id, i|
+              id = raw_id.is_a?(Numeric) ? raw_id : "'#{raw_id}'"
+              "WHEN #{id} THEN #{i}"
+            }.join(' ')
+
+            scope.where(column => ids).order("CASE #{tbl}.#{column} #{sql} END")
+          end
+        end
       end
     end
 
@@ -281,15 +337,7 @@ module Magiq
     end
 
     def listeners_for(type)
-      @listeners[type] ||= begin
-        sorted_keys = @params.keys
-
-        builder.listeners_for(type).sort_by do |_, keys|
-          next -1 if !keys || keys.empty?
-          i = sorted_keys.index(keys.first)
-          i ? i : -1
-        end
-      end
+      builder.listeners_for(type)
     end
 
     def each_listener_for(type, &block)
