@@ -28,7 +28,7 @@ module GeoScope
   included do
     scope :distance_from, ->(lat, lon) {
       sql = GeoScope.distance_sql(lat, lon)
-      select("*, #{sql} AS distance_in_meters").order('distance_in_meters ASC')
+      select("#{table_name}.*, #{sql} AS distance_in_meters").order('distance_in_meters ASC')
     }
   end
 end

@@ -4,7 +4,7 @@ class API::V2::DatasetsQuery < API::V2::APIQuery
 
   has_pagination
 
-  equal :id, type: :id, alias: :ids, array: :allow
+  by :id
 
   sort [
     :id,

@@ -22,6 +22,14 @@ module Magiq
       @scope_proc || -> { model.unscoped }
     end
 
+    def self.unqualified_columns
+      @unqualified_columns ||= []
+    end
+
+    def self.unqualified(fields)
+      unqualified_columns.concat(fields)
+    end
+
     def self.params(*keys, &block)
       opts = keys.last.is_a?(Hash) ? keys.pop : {}
 
@@ -114,10 +122,10 @@ module Magiq
         vals = raw_vals.is_a?(Array) ? raw_vals : raw_vals.split(',')
 
         vals.reduce(scope) do |scope, val|
-          direction = :asc
+          direction = :ASC
 
           col = if val.start_with?('-')
-            direction = :desc
+            direction = :DESC
             val.sub('-', '').to_sym
           else
             val.to_sym
@@ -128,7 +136,11 @@ module Magiq
             "permitted values are: #{fields.join(', ')}"
           end
 
-          scope.order(col => direction)
+          if is_unqualified?(col)
+            scope.order("\"#{col}\" #{direction}")
+          else
+            scope.order(col => direction)
+          end
         end
       end
     end
@@ -205,19 +217,35 @@ module Magiq
       end
 
       apply(gt_param) do |val|
-        scope.where(model.arel_table[field].gt(val))
+        if is_unqualified?(field)
+          scope.where("#{field} > ?", val)
+        else
+          scope.where(model.arel_table[field].gt(val))
+        end
       end
 
       apply(lt_param) do |val|
-        scope.where(model.arel_table[field].lt(val))
+        if is_unqualified?(field)
+          scope.where("#{field} < ?", val)
+        else
+          scope.where(model.arel_table[field].lt(val))
+        end
       end
 
       apply(gte_param) do |val|
-        scope.where(model.arel_table[field].gte(val))
+        if is_unqualified?(field)
+          scope.where("#{field} >= ?", val)
+        else
+          scope.where(model.arel_table[field].gte(val))
+        end
       end
 
       apply(lte_param) do |val|
-        scope.where(model.arel_table[field].lte(val))
+        if is_unqualified?
+          scope.where("#{field} <= ?", val)
+        else
+          scope.where(model.arel_table[field].lte(val))
+        end
       end
     end
 
@@ -233,6 +261,10 @@ module Magiq
     def update_scope!(new_scope)
       return unless new_scope
       @scope = new_scope
+    end
+
+    def is_unqualified?(column)
+      self.class.unqualified_columns.include?(column)
     end
 
     def extract!

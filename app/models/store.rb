@@ -35,11 +35,24 @@ class Store < ActiveRecord::Base
       'stores.*, ' \
       "ARRAY[#{ids.join(', ')}] AS inventory_product_ids, " \
       'array_agg(inventories.quantity) AS inventory_quantities, ' \
-      'array_agg(inventories.reported_on) AS inventories_reported_on').
-    joins('LEFT JOIN inventories ON (stores.id = inventories.store_id)').
+      'array_agg(inventories.reported_on) AS inventories_reported_on, ' \
+      'array_agg(inventories.updated_at) AS inventories_updated_at').
+    joins('INNER JOIN inventories ON (stores.id = inventories.store_id)').
     where('inventories.product_id IN (?) AND inventories.quantity != 0', ids).
     group('stores.id').
     having('array_length(array_agg(inventories.quantity), 1) = ?', ids_size)
+  }
+
+  scope :with_product_id, ->(raw_id) {
+    id = raw_id.to_i
+    joins(:inventories).
+    select(
+      'stores.*, ' \
+      "#{id} AS inventory_product_id, " \
+      'inventories.quantity AS inventory_quantity, ' \
+      'inventories.reported_on AS inventory_reported_on, ' \
+      'inventories.updated_at AS inventory_updated_at').
+    where('inventories.quantity > 0 AND inventories.product_id = ?', id)
   }
 
   scope :distance_from_with_product, ->(lat, lon, product_id) {

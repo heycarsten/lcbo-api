@@ -41,39 +41,31 @@ class API::V2::StoreSerializer < ApplicationSerializer
     :saturday_open,
     :saturday_close,
     :updated_at,
-    :inventory_quantity,
-    :inventory_reported_on,
     :distance_in_meters,
-    :links
-
-  def inventory_quantity
-    object.try(:quantity)
-  end
-
-  def inventory_reported_on
-    object.try(:reported_on)
-  end
+    :inventory_ids,
+    :inventory_id
 
   def distance_in_meters
     object.try(:distance_in_meters)
   end
 
-  def links
+  def inventory_id
+    return unless (id = object.try(:inventory_product_id))
+    "#{id}-#{object.id}"
+  end
+
+  def inventory_ids
     return unless (ids = object.try(:inventory_product_ids))
-    { inventories: ids.each_with_index.map { |id, i| "#{id}-#{object.id}" } }
+    ids.map { |id, i| "#{id}-#{object.id}" }
   end
 
   def filter(keys)
-    unless links
-      keys.delete(:links)
+    unless inventory_id
+      keys.delete(:inventory_id)
     end
 
-    unless object.respond_to?(:quantity)
-      keys.delete(:inventory_quantity)
-    end
-
-    unless object.respond_to?(:reported_on)
-      keys.delete(:inventory_reported_on)
+    unless inventory_ids
+      keys.delete(:inventory_ids)
     end
 
     unless object.respond_to?(:distance_in_meters)

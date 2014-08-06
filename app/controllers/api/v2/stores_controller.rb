@@ -38,6 +38,28 @@ class API::V2::StoresController < API::V2::APIController
   private
 
   def extract_inventories(stores)
+    extract_product_inventories(stores) || extract_products_inventories(stores)
+  end
+
+  def extract_product_inventories(stores)
+    return unless params.key?(:product_id)
+
+    stores.reduce([]) { |ary, store|
+      next ary unless (product_id = store.try(:inventory_product_id))
+
+      ary << {
+        id:          "#{product_id}-#{store.id}",
+        is_dead:     false,
+        product_id:  product_id,
+        store_id:    store.id,
+        quantity:    store.inventory_quantity,
+        reported_on: store.inventory_reported_on,
+        updated_at:  store.inventory_updated_at
+      }
+    }
+  end
+
+  def extract_products_inventories(stores)
     return unless params.key?(:product_ids)
 
     stores.reduce([]) { |ary, store|
@@ -45,14 +67,17 @@ class API::V2::StoresController < API::V2::APIController
 
       dates      = store.inventories_reported_on
       quantities = store.inventory_quantities
+      times      = store.inventories_updated_at
 
       product_ids.each_with_index do |product_id, i|
         ary << {
           id:          "#{product_id}-#{store.id}",
+          is_dead:     false,
           product_id:  product_id,
           store_id:    store.id,
           quantity:    quantities[i],
-          reported_on: dates[i]
+          reported_on: dates[i],
+          updated_at:  times[i]
         }
       end
 

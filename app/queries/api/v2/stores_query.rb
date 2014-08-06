@@ -6,6 +6,10 @@ class API::V2::StoresQuery < API::V2::APIQuery
 
   by :id
 
+  unqualified [
+    :distance_in_meters
+  ]
+
   sort [
     :id,
     :distance_in_meters,
@@ -32,10 +36,8 @@ class API::V2::StoresQuery < API::V2::APIQuery
   range :inventory_count,                 type: :whole
   range :inventory_price_in_cents,        type: :whole
 
-  param :product_id, type: :id do |product_id|
-    scope.joins(:inventories).
-      select('stores.*, inventories.quantity, inventories.reported_on').
-      where('inventories.product_id' => product.id)
+  param :product_id, type: :id do |id|
+    scope.with_product_id(id)
   end
 
   param :product_ids, type: :id, array: :always, limit: 10 do |ids|
