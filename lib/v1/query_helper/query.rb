@@ -157,7 +157,7 @@ module V1
       end
 
       def order
-        @order || self.class.order_expr(self.class.order)
+        @order || Array(self.class.order_expr(self.class.order))
       end
 
       def page=(value)

@@ -58,14 +58,16 @@ module V1
       end
 
       def scope
-        if has_fulltext?
+        s = if has_fulltext?
           model.search(q)
         else
           model
-        end.
+        end
 
-        where(filter_hash).
-        order(*order)
+        s = s.where(filter_hash)
+        s = s.reorder(nil) if has_fulltext? && order.any?
+        s = s.order(*order)
+        s
       end
 
       def as_json
