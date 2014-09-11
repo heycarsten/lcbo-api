@@ -2,28 +2,32 @@
   :slug: about
   :menu: About
   :body: |
-    The goal of LCBO API is to provide developers, hobbyists, and anyone who is
-    interested with a way to create applications that take advantage of the
-    unique benefits that come from having a single provider of alcoholic
-    beverages in a large geographical area.
+    ### Background
+
+    LCBO API launched in the summer of 2009 to act as a data source for mobile
+    phone apps, at that time there was no official iPhone application. Today
+    LCBO API is being utilized more than ever, as of September 2014 LCBO API
+    serves between 60,000 to 80,000 requests per day, a number that continues to
+    grow.
+
+    The primary goal of LCBO API is to provide developers, hobbyists, and anyone
+    who is interested with a way to take advantage of the unique benefits and
+    data that come from having a single provider of alcoholic beverages in a
+    large geographical area.
 
     The API is primarily designed to provide JSON data directly to mobile and
     web applications, but it is also capable of returning CSV data to be used
     directly in a spreadsheet application, just add `.csv` to the end of any
     LCBO API endpoint.
 
-    If you plan on performing hundreds of queries per second for uses such as
-    data analysis then you should download the latest [dataset](/docs/latest-dataset)
-    and perform these operations offline. The datasets contain CSV data, if
-    you need a different format please ask.
+    ### Use Cases
 
-    ### Users
-
-    Don&rsquo;t be shy, I'd love to hear how you or your company is using
-    LCBO API. Here is a small sampling of some companies and people using
-    LCBO API for web and mobile apps.
+    Here is a small sampling of some companies and people using LCBO API for
+    web and mobile apps. Don&rsquo;t be shy, I'd love to hear how you or your
+    company is using LCBO API.
 
      * [Collective Arts Beer Finder](http://collectiveartsbrewing.com/beer-finder) by Collective Arts Brewing
+     * [searC₂H₆O](http://j201.github.io/searc2h6o/) by Alex L
      * [LCBO Price Tracker](https://itunes.apple.com/us/app/lcbo-price-tracker/id851166645) by Mary Chen
      * [Liqbo](http://www.codebeard.io/#/work/liqbo) by Neil Fenton
      * [Dowser](http://theworkshed.com/projects/dowser) by Plank
@@ -32,16 +36,14 @@
      * [Booze Run](http://calvinwinter.ca/booze-run) by Calvin Winter
      * [LCBO Stores](https://itunes.apple.com/ca/app/lcbo-stores/id587694374) by Chang Jun Lee
      * [LCBO Finder](https://itunes.apple.com/ca/app/lcbo-finder/id353448944) by Brierwood Design Cooperative
+     * [DrinkVine](http://drinkvine.com) by Ralph Holm
      * [WineAlign](http://winealign.com) by Uncork Solutions
      * [LCBO Search](http://lcbosearch.com) by Carsten Nielsen
      * [Liquor, ON](http://hippofoundry.com/lcbo/) by Taylan Pince
 
     ### Contact
 
-    I would love to hear about how you are using the data or API. I would also
-    love to hear from you if you want to do something with the data but are not
-    sure how to get started. You can reach me through
-    [Twitter](http://twitter.com/heycarsten), and by
+    LCBO API is solely maintained by me, Carsten Nielsen, you can reach me via
     [email](mailto:heycarsten@gmail.com).
 
 - :title: Conventions
@@ -167,35 +169,28 @@
   :body: |
     ### Is it free?
 
-    Absolutely! There is no desire or intention to charge for the use of the
-    API. I only ask that you tell me about what you are making with it. It costs
-    roughly $50/month to host the project, donations are greatly appreciated!
+    Yes. However, if you're making money directly or indirectly with LCBO API,
+    be cool and send me a little bit of that sugar. I love working on LCBO API,
+    but it takes a lot of my time and costs roughly $80/month to host. Donations
+    help keep the wind in my sails and give me the freedom to make it even
+    better.
+
+    I'm also open to sponsored feature development, send me an
+    [email](mailto:heycarsten@gmail.com) if that's something you or your company
+    is interested in.
 
     ### Where does the data come from?
 
-    Why, from the LCBO of course! Their website is periodically crawled to get
+    From the LCBO of course! LCBO API periodically crawls their website to get
     up-to-date information. Search engines like Google and Bing use this same
     technique to index web pages.
 
-    ### Why did you do this?
-
-    I feel that publicly available information should be free and accessible in
-    as many ways as possible. I want to see what individuals will do with this
-    information when presented with it in an accessible format... and I wanted
-    an LCBO app for my iPhone. Read the [about section](/docs/about) for more
-    information.
-
-    ### Can you add barcode information products, please?
+    ### Can you add UPC information to products, please?
 
     I do not currently have access to barcode information for all products that
     the LCBO stocks. I understand how useful barcode data would be for products
     and if this ever changes it will certainly be announced on
     [@lcboapi](http://twitter.com/lcboapi)'s Twitter account.
-
-    ### Can you add XML as a response format?
-
-    No, because [JSON](http://www.json.org/xml.html) is a much better format for
-    the output of this API.
 
     ### I'm a geek, how does it work?
 
@@ -204,4 +199,4 @@
     * [Redis](http://redis.io)
     * [Postgres](http://postgresql.org)
 
-    You can also check me out on GitHub, I'm [@heycarsten](https://github.com/heycarsten).
+    You can also check out my GitHub profile, I'm [@heycarsten](https://github.com/heycarsten).

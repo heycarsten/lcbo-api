@@ -18,13 +18,13 @@ RSpec.describe 'V2 Stores API' do
     it 'allows JSONP for public keys' do
       prepare!
       api_get "/stores?access_key=#{@public_key}&callback=jsonpcb"
-      expect(response.body).to start_with 'jsonpcb({'
+      expect(response.body).to start_with '/**/jsonpcb({'
     end
 
     it 'disables JSONP for private keys' do
       prepare!
       api_get "/stores?access_key=#{@private_key}&callback=jsonpcb"
-      expect(response.body).to_not start_with 'jsonpcb({'
+      expect(response.body).to_not start_with '/**/jsonpcb({'
     end
 
     it 'disables CORS for private keys' do
