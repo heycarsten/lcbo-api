@@ -95,11 +95,11 @@ module LCBO
     when 200
       response.body
     when 404
-      raise NotFoundError, "unable to find: #{path}"
+      raise NotFoundError, "unable to find: #{url}"
     else
-      raise BadRequestError, "#{path} returned status #{response.status}"
+      raise BadRequestError, "#{url} returned status #{response.status}"
     end
   rescue Excon::Errors::Timeout => e
-    raise TimeoutError, "request timed out: #{path}"
+    raise TimeoutError, "request timed out: #{url}"
   end
 end

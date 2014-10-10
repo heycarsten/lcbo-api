@@ -353,7 +353,7 @@ module LCBO
     end
 
     def before_parse
-      nodes = @doc.css('.error_msg .error')
+      nodes = @doc.css('.error-container .message')
       return unless nodes.size > 0
       raise LCBO::NotFoundError, "product #{@id} does not exist"
     end
