@@ -1,9 +1,12 @@
 module V1
   module QueryHelper
     class ProductsQuery < Query
+      attr_accessor :store
+
       def initialize(request, params)
         super
         self.q = params[:q] if params[:q].present?
+        self.store = Store.find(params[:store_id]) if params[:store_id].present?
         validate
       end
 
@@ -64,7 +67,12 @@ module V1
           model
         end
 
-        s = s.where(filter_hash)
+        if store
+          s = s.joins(:inventories).
+            select('products.*, inventories.quantity, inventories.reported_on').
+            where('inventories.store_id' => store.id)
+        end
+
         s = s.reorder(nil) if has_fulltext? && order.any?
         s = s.order(*order)
         s
@@ -73,6 +81,8 @@ module V1
       def as_json
         h = super
         h[:result] = page_scope.all.map { |product| serialize(product) }
+
+        h[:store] = StoresQuery.serialize(store) if store
 
         h[:suggestion] = if 0 == h[:result].size
           has_fulltext? ? Fuzz[:products, q] : nil
