@@ -1,5 +1,6 @@
 require 'fuzz'
 
+Fuzz.redis = $redis
 Fuzz.keyspace = Rails.env
 Fuzz.add_dictionary(:products,
   source: -> {
