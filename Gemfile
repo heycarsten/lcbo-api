@@ -14,7 +14,7 @@ gem 'puma'
 gem 'sass-rails',   '~> 4.0.3'
 gem 'therubyracer', platforms: :ruby
 gem 'uglifier'
-gem 'skylight'
+gem 'skylight',     '~> 0.4.0.beta2'
 gem 'honeybadger'
 
 # Crawler Junk
@@ -30,7 +30,6 @@ group :development do
   gem 'capistrano-rails',   require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rvm',     require: false
-  gem 'propro',             require: false
   gem 'quiet_assets'
   gem 'pry-rails'
   gem 'spring'
