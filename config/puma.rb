@@ -1,5 +1,3 @@
-environment 'production'
-bind 'unix:///sites/lcboapi.com/shared/sockets/puma.sock'
 threads 16,32
 workers 2
 
