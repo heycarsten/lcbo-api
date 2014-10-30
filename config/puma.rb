@@ -1,7 +1,7 @@
 environment 'production'
 bind 'unix:///sites/lcboapi.com/shared/sockets/puma.sock'
-threads 8, 32
-workers 4
+threads 16,32
+workers 2
 
 preload_app!
 
