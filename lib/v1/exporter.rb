@@ -160,10 +160,11 @@ module V1
 
     def copy(table)
       db_name = ActiveRecord::Base.connection.current_database
+      db_host = ActiveRecord::Base.connection.instance_variable_get(:@config)[:host]
       cols    = DUMP_COLS[table].join(', ')
       sql     = "COPY #{table} (#{cols}) TO STDOUT DELIMITER ',' CSV HEADER"
 
-      `psql -d #{db_name} -o #{csv_file(table)} -c "#{sql}"`
+      `psql -U lcboapi -h #{db_host} -d #{db_name} -o #{csv_file(table)} -c "#{sql}"`
     end
   end
 end
