@@ -52,6 +52,10 @@ class API::V2::ProductSerializer < ApplicationSerializer
     :reported_on,
     :distance_in_meters
 
+  def id
+    object.id.to_s
+  end
+
   def quantity
     object.try(:quantity)
   end

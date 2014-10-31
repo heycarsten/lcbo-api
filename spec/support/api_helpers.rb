@@ -31,7 +31,7 @@ module APIHelpers
   end
 
   def json
-    @json ||= Oj.load(response.body, symbol_keys: true)
+    @json ||= MultiJson.load(response.body, symbolize_keys: true)
   end
 
   def last_delivery

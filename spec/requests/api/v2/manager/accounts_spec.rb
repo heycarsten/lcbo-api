@@ -59,11 +59,11 @@ RSpec.describe 'V2 Manager Accounts API' do
     end
   end
 
-  describe 'PATCH /manager/accounts' do
+  describe 'PUT /manager/accounts' do
     it 'updates password when current password matches' do
       log_in_user(u = create_verified_user!)
 
-      api_patch '/manager/account', account: {
+      api_put '/manager/account', account: {
         new_password: 'password2',
         current_password: 'password'
       }
@@ -77,7 +77,7 @@ RSpec.describe 'V2 Manager Accounts API' do
     it 'fails to update password when current password is wrong' do
       log_in_user(u = create_verified_user!)
 
-      api_patch '/manager/account', account: {
+      api_put '/manager/account', account: {
         new_password: 'password2',
         current_password: 'herp'
       }
@@ -90,7 +90,7 @@ RSpec.describe 'V2 Manager Accounts API' do
     it 'fails to update password when new password is invalid' do
       log_in_user(u = create_verified_user!)
 
-      api_patch '/manager/account', account: {
+      api_put '/manager/account', account: {
         new_password: 'boop',
         current_password: 'password'
       }
@@ -104,7 +104,7 @@ RSpec.describe 'V2 Manager Accounts API' do
     it 'updates name' do
       log_in_user(u = create_verified_user!)
 
-      api_patch '/manager/account', account: {
+      api_put '/manager/account', account: {
         name: 'Yoyo Sup'
       }
 
@@ -117,7 +117,7 @@ RSpec.describe 'V2 Manager Accounts API' do
     it 'fails to update name with invalid chars' do
       log_in_user(u = create_verified_user!)
 
-      api_patch '/manager/account', account: {
+      api_put '/manager/account', account: {
         name: "Yo\r\nLOL"
       }
 

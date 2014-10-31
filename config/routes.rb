@@ -1,3 +1,5 @@
+many_id_re = /([0-9]+\,[0-9]+\,{0,1})+/
+
 Rails.application.routes.draw do
   namespace :admin do
     root to: 'crawls#index'
@@ -23,7 +25,7 @@ Rails.application.routes.draw do
       namespace :manager do
         controller :accounts do
           get    '/account'  => :show,   as: :account
-          patch  '/account'  => :update
+          put    '/account'  => :update
           delete '/account'  => :destroy
           post   '/accounts' => :create, as: :accounts
         end
@@ -48,28 +50,34 @@ Rails.application.routes.draw do
           get    '/keys'     => :index,  as: :keys
           post   '/keys'     => :create
           get    '/keys/:id' => :show,   as: :key
-          patch  '/keys/:id' => :update
+          put    '/keys/:id' => :update
           delete '/keys/:id' => :destroy
         end
       end
 
       controller :datasets do
         get '/datasets'     => :index, as: :datasets
+        get '/datasets/:id' => :index, constraints: { id: many_id_re }
         get '/datasets/:id' => :show,  as: :dataset
       end
 
       controller :inventories do
-        get '/inventories' => :index, as: :inventories
-        get '/stores/:store_id/products/:product_id/inventory' => :show, as: :inventory
+        get '/inventories'     => :index, as: :inventories
+        get '/inventories/:id' => :index, constraints: { id: many_id_re }
+        get '/inventories/:id' => :show, as: :inventory
+        get '/products/:product_id/stores/:store_id' => redirect('/inventories/%{product_id}-%{store_id}')
+        get '/stores/:store_id/products/:product_id' => redirect('/inventories/%{product_id}-%{store_id}')
       end
 
       controller :products do
         get '/products'     => :index, as: :products
+        get '/products/:id' => :index, constraints: { id: many_id_re }
         get '/products/:id' => :show,  as: :product
       end
 
       controller :stores do
         get '/stores'     => :index, as: :stores
+        get '/stores/:id' => :index, constraints: { id: many_id_re }
         get '/stores/:id' => :show,  as: :store
       end
     end

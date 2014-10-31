@@ -122,10 +122,10 @@ module Magiq
         vals = raw_vals.is_a?(Array) ? raw_vals : raw_vals.split(',')
 
         vals.reduce(scope) do |scope, val|
-          direction = :ASC
+          direction = :asc
 
           col = if val.start_with?('-')
-            direction = :DESC
+            direction = :desc
             val.sub('-', '').to_sym
           else
             val.to_sym

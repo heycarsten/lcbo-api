@@ -59,12 +59,12 @@ class ActionDispatch::TestResponse
 
   def parse_json
     raise "Not a JSON response: #{content_type}" unless json?
-    Oj.load(body, symbol_keys: true)
+    MultiJson.load(body, symbolize_keys: true)
   end
 
   def parse_jsonp
     raise "Not a JSON-P response: #{content_type}" unless jsonp?
     json = body.scan(/\A[a-z0-9_]+\((.+)\)\;\Z/mi)[0][0]
-    Oj.load(json, symbol_keys: true)
+    MultiJson.load(json, symbolize_keys: true)
   end
 end

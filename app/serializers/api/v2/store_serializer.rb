@@ -41,9 +41,24 @@ class API::V2::StoreSerializer < ApplicationSerializer
     :saturday_open,
     :saturday_close,
     :updated_at,
-    :distance_in_meters,
-    :inventory_ids,
-    :inventory_id
+    :distance_in_meters
+
+  def attributes
+    h = super
+
+    h[:links] = {}.tap do |links|
+      links[:inventory]   = inventory_id if inventory_id
+      links[:inventories] = inventory_ids if inventory_ids
+    end
+
+    h.delete(:links) if h[:links].empty?
+
+    h
+  end
+
+  def id
+    object.id.to_s
+  end
 
   def distance_in_meters
     object.try(:distance_in_meters)
@@ -60,14 +75,6 @@ class API::V2::StoreSerializer < ApplicationSerializer
   end
 
   def filter(keys)
-    unless inventory_id
-      keys.delete(:inventory_id)
-    end
-
-    unless inventory_ids
-      keys.delete(:inventory_ids)
-    end
-
     unless object.respond_to?(:distance_in_meters)
       keys.delete(:distance_in_meters)
     end

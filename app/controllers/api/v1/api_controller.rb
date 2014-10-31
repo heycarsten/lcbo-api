@@ -1,6 +1,7 @@
 class API::V1::APIController < APIController
   CALLBACK_NAME_RE = /\A[a-z0-9_]+(\.{0,1}[a-z0-9_]+)*\z/i
   VERSION          = 1
+  HTTPS            = 'https'
 
   rescue_from \
     GCoder::NoResultsError,
@@ -9,12 +10,21 @@ class API::V1::APIController < APIController
     V1::QueryHelper::NotFoundError,
     V1::QueryHelper::BadQueryError, with: :render_exception
 
+  before_filter :reject_https!
   before_filter :set_api_format
 
   clear_respond_to
   respond_to :json, :js, :csv, :tsv
 
   protected
+
+  def reject_https!
+    return true unless scheme = request.headers['X-Forwarded-Proto']
+    return true unless scheme.downcase == HTTPS
+
+    render_error :not_implemented_error,
+      "This version of LCBO API does not support HTTPS.", 501
+  end
 
   def api_version
     VERSION
@@ -113,10 +123,11 @@ class API::V1::APIController < APIController
   end
 
   def encode_json(data, callback = nil)
-    json = Oj.dump({
+    json = MultiJson.dump({
       status: response.status,
       message: nil
     }.merge(data), mode: :compat)
+
     callback ? "#{callback}(#{json});" : json
   end
 end

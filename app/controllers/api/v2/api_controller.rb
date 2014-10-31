@@ -52,40 +52,11 @@ class API::V2::APIController < APIController
     end
   end
 
-  def self.resources_url_method
-    @resources_url ||= begin
-      to_s.
-        sub('Controller', '').
-        split('::').
-        map { |s| s.underscore }.
-        join('_') + '_url'
-    end
-  end
-
-  def self.serializer_name
-    @serializer_name ||= controller_name.singularize
-  end
-
-  def self.module_path
-    @module_path ||= to_s.sub(/::[^::]+\Z/, '')
-  end
-
-  def self.serializer
-    @serializer ||= begin
-      serializer_class_name = "#{serializer_name.to_s.classify}Serializer"
-      Object.const_get("#{module_path}::#{serializer_class_name}")
-    end
-  end
-
   def preflight_cors
     head :ok
   end
 
   protected
-
-  def serializer
-    self.class.serializer
-  end
 
   def rate_limit!
     max = case
@@ -182,13 +153,7 @@ class API::V2::APIController < APIController
         page_size:     scope.limit_value,
         current_page:  scope.current_page,
         prev_page:     scope.prev_page,
-        next_page:     scope.next_page,
-        prev_href:     resources_url(page: scope.prev_page, page_size: scope.max_per_page),
-        next_href:     resources_url(page: scope.next_page, page_size: scope.max_per_page)
+        next_page:     scope.next_page
     } }
-  end
-
-  def resources_url(*args)
-    send(self.class.resources_url_method, *args)
   end
 end

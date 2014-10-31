@@ -85,11 +85,11 @@ RSpec.describe 'V2 Stores API' do
     prepare!
     api_headers['X-Access-Key'] = @private_key
 
-    api_get "/stores?id[]=#{@stores[0].id}&id[]=#{@stores[1].id}"
+    api_get "/stores/#{@stores[0].id},#{@stores[1].id}"
 
     expect(response.status).to eq 200
     expect(json[:stores].size).to eq 2
-    expect(json[:stores].map { |s| s[:id] }).to include @stores[0].id, @stores[1].id
+    expect(json[:stores].map { |s| s[:id] }).to include @stores[0].id.to_s, @stores[1].id.to_s
     expect(json[:meta]).to eq nil
   end
 
@@ -100,7 +100,7 @@ RSpec.describe 'V2 Stores API' do
     api_get "/stores/#{@stores[2].id}"
 
     expect(response.status).to eq 200
-    expect(json[:store][:id]).to eq @stores[2].id
+    expect(json[:store][:id]).to eq @stores[2].id.to_s
     expect(json[:meta]).to eq nil
   end
 
@@ -149,13 +149,13 @@ RSpec.describe 'V2 Stores API' do
     prepare!
     api_headers['X-Access-Key'] = @private_key
 
-    api_get "/stores?order_id=desc"
+    api_get "/stores?sort=-id"
 
     expect(response.status).to eq 200
     expect(json[:stores].size).to eq 3
-    expect(json[:stores][0][:id]).to eq 4
-    expect(json[:stores][1][:id]).to eq 3
-    expect(json[:stores][2][:id]).to eq 2
+    expect(json[:stores][0][:id]).to eq '4'
+    expect(json[:stores][1][:id]).to eq '3'
+    expect(json[:stores][2][:id]).to eq '2'
   end
 
   it 'can constrain results' do
@@ -166,7 +166,7 @@ RSpec.describe 'V2 Stores API' do
 
     expect(response.status).to eq 200
     expect(json[:stores].size).to eq 2
-    expect(json[:stores].map { |s| s[:id] }).to include 3, 2
+    expect(json[:stores].map { |s| s[:id] }).to include '3', '2'
   end
 
   it 'returns stores that have a product' do
@@ -176,13 +176,15 @@ RSpec.describe 'V2 Stores API' do
     product   = Fabricate(:product, id: 1)
     inventory = Fabricate(:inventory, store_id: @stores[1].id, product_id: product.id)
 
-    api_get "/stores?product_id=1"
+    api_get "/stores?product=1"
 
     expect(response.status).to eq 200
-    expect(json[:product][:id]).to eq product.id
+    expect(json[:product][:id]).to eq product.id.to_s
     expect(json[:stores].size).to eq 1
-    expect(json[:stores][0][:id]).to eq @stores[1].id
-    expect(json[:stores][0][:inventory_quantity]).to eq inventory.quantity
+    expect(json[:stores][0][:id]).to eq @stores[1].id.to_s
+    expect(json[:stores][0][:links][:inventory]).to eq inventory.compound_id
+    expect(json[:inventories].size).to eq 1
+    expect(json[:inventories][0][:id]).to eq inventory.compound_id
   end
 
   it 'returns stores that have all products' do
@@ -201,13 +203,13 @@ RSpec.describe 'V2 Stores API' do
 
     api_headers['X-Access-Key'] = @private_key
 
-    api_get "/stores?product_ids[]=#{products[0].id}&product_ids=#{products[1].id}"
+    api_get "/stores?products=#{products[0].id},#{products[1].id}"
     expect(json[:stores].size).to eq 1
 
-    api_get "/stores?product_id=#{products[0].id}"
+    api_get "/stores?product=#{products[0].id}"
     expect(json[:stores].size).to eq 2
 
-    api_get "/stores?product_ids=#{products[0].id}"
+    api_get "/stores?products=#{products[0].id}"
     expect(json[:stores].size).to eq 2
   end
 end

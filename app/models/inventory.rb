@@ -3,6 +3,10 @@ class Inventory < ActiveRecord::Base
   belongs_to :product
   belongs_to :store
 
+  def compound_id
+    "#{product_id}-#{store_id}"
+  end
+
   def self.place(attrs)
     pid, sid = attrs.delete(:product_id), attrs.delete(:store_id)
 

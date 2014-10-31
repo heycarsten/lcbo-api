@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 gem 'rails',        '4.1.6'
 gem 'oj'
-gem 'oj_mimic_json'
 gem 'pg'
 gem 'pg_search'
 gem 'bcrypt'
@@ -15,7 +14,7 @@ gem 'sass-rails',   '~> 4.0.3'
 gem 'therubyracer', platforms: :ruby
 gem 'uglifier'
 gem 'skylight',     '~> 0.4.0.beta2'
-gem 'honeybadger'
+gem 'honeybadger',  groups: [:development, :production]
 
 # Crawler Junk
 gem 'excon',         require: false

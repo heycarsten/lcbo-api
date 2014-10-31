@@ -7,6 +7,11 @@ class APIController < ApplicationController
 
   protected
 
+  # This POS returns in any context and is a POS.
+  def default_serializer(resource)
+    nil
+  end
+
   def access_key
     @access_key ||= Token.parse(request.headers['X-Access-Key'] || params[:access_key])
   end
@@ -71,10 +76,13 @@ class APIController < ApplicationController
 
   def render_error(error)
     status = error.delete(:status) || raise(ArgumentError, 'must supply :status')
+
     error[:code]   || raise(ArgumentError, 'must supply :code')
     error[:detail] || raise(ArgumentError, 'must supply :detail')
 
-    render json: { error: error }, status: status, callback: params[:callback]
+    render json: {
+      error: error
+    }, status: status, callback: params[:callback]
 
     false
   end

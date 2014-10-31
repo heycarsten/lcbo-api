@@ -98,7 +98,7 @@ RSpec.describe 'V2 Manager Keys API' do
     end
   end
 
-  describe 'PATCH /manager/keys/:id' do
+  describe 'PUT /manager/keys/:id' do
     it 'updates the key owned by the authenticated user' do
       u1 = create_verified_user!
       u2 = create_verified_user!
@@ -107,7 +107,7 @@ RSpec.describe 'V2 Manager Keys API' do
 
       log_in_user(u1)
 
-      api_patch "/manager/keys/#{k1.id}", key: {
+      api_put "/manager/keys/#{k1.id}", key: {
         label: 'Nu Label',
         info: 'Nu Infos'
       }
@@ -119,7 +119,7 @@ RSpec.describe 'V2 Manager Keys API' do
       expect(k1.info).to eq 'Nu Infos'
 
       expect {
-        api_patch "/manager/keys/#{k2.id}", key: {
+        api_put "/manager/keys/#{k2.id}", key: {
           info: nil
         }
       }.to raise_error ActiveRecord::RecordNotFound
@@ -130,7 +130,7 @@ RSpec.describe 'V2 Manager Keys API' do
       u = create_verified_user!
       k = create_key!(user_id: u)
 
-      api_patch "/manager/keys/#{k.id}", key: { label: 'Derp' }
+      api_put "/manager/keys/#{k.id}", key: { label: 'Derp' }
 
       expect(response.status).to eq 401
     end

@@ -1,29 +1,39 @@
 class API::V2::Manager::KeysController < API::V2::Manager::ManagerController
   def index
     keys = current_user.keys.page(params[:page]).per(PER).order(id: :desc)
-    render json: serialize(keys)
+    data = {}
+
+    data[:keys] = keys.map { |k|
+      API::V2::Manager::KeySerializer.new(k).as_json(root: false)
+    }
+
+    if (pagination = pagination_for(keys))
+      data[:meta] = pagination
+    end
+
+    render json: data, serializer: nil
   end
 
   def show
     key = current_user.keys.find(params[:id])
-    respond_with :api, :v2, :manager, key, serializer: serializer
+    render json: key, serializer: API::V2::Manager::KeySerializer
   end
 
   def create
     key = current_user.keys.create(key_params)
-    respond_with :api, :v2, :manager, key, serializer: serializer
+    respond_with :api, :v2, :manager, key, serializer: API::V2::Manager::KeySerializer
   end
 
   def update
     key = current_user.keys.find(params[:id])
     key.update(key_params)
-    respond_with :api, :v2, :manager, key, serializer: serializer
+    respond_with :api, :v2, :manager, key, serializer: API::V2::Manager::KeySerializer
   end
 
   def destroy
     key = current_user.keys.find(params[:id])
     key.destroy
-    respond_with :api, :v2, :manager, key, serializer: serializer
+    respond_with :api, :v2, :manager, key, serializer: API::V2::Manager::KeySerializer
   end
 
   protected
@@ -35,9 +45,5 @@ class API::V2::Manager::KeysController < API::V2::Manager::ManagerController
       :label,
       :info
     )
-  end
-
-  def serializer
-    API::V2::Manager::KeySerializer
   end
 end

@@ -30,7 +30,7 @@ RSpec.describe 'V2 Datasets API' do
     api_get "/datasets/#{@crawls[0].id}"
 
     expect(response.status).to eq 200
-    expect(json[:dataset][:id]).to eq @crawls[0].id
+    expect(json[:dataset][:id]).to eq @crawls[0].id.to_s
   end
 
   it 'does not return hidden datasets' do

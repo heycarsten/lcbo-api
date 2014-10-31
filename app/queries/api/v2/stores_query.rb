@@ -36,19 +36,19 @@ class API::V2::StoresQuery < API::V2::APIQuery
   range :inventory_count,                 type: :whole
   range :inventory_price_in_cents,        type: :whole
 
-  param :product_id, type: :id do |id|
+  param :product, type: :id do |id|
     scope.with_product_id(id)
   end
 
-  param :product_ids, type: :id, array: :always, limit: 10 do |ids|
+  param :products, type: :id, array: :always, limit: 10 do |ids|
     scope.with_product_ids(ids)
   end
 
-  exclusive :product_id, :product_ids
+  exclusive :product, :products
 
   def product
     @product ||= begin
-      if (id = params[:product_id])
+      if (id = params[:product])
         Product.find(id)
       else
         nil
@@ -58,7 +58,7 @@ class API::V2::StoresQuery < API::V2::APIQuery
 
   def products
     @products ||= begin
-      if (ids = params[:product_ids])
+      if (ids = params[:products])
         Product.by_ids(ids)
       else
         nil

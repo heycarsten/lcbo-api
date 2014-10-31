@@ -10,32 +10,10 @@ class API::V2::Manager::ManagerController < API::V2::APIController
     @current_user = nil
   end
 
-  def serialize(stuff, opts = {})
-    root = opts.delete(:root)
-    data = {}
-
-    if stuff.respond_to?(:all)
-      root ||= self.class.controller_name.pluralize
-      resource = stuff.map { |i|
-        serializer.new(i, opts).as_json(root: false)
-      }
-
-      if (pagination = pagination_for(stuff))
-        data[:meta] = pagination
-      end
-    else
-      root ||= self.class.controller_name.singularize
-      resource = self.class.serializer.new(stuff, opts).as_json(root: false)
-    end
-
-    data[root] = resource
-    data
-  end
-
   def render_session(token, ttl = User::SESSION_TTL)
     render json: { session: {
       token:      token.to_s,
       expires_at: Time.now + ttl
-    } }, status: 200
+    } }, status: 200, serializer: nil
   end
 end

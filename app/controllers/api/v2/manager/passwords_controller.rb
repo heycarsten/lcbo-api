@@ -11,7 +11,7 @@ class API::V2::Manager::PasswordsController < API::V2::Manager::ManagerControlle
         code:   'invalid',
         path:   'email',
         detail: 'is not associated with an active account'
-      }] }, status: 422
+      }] }, status: 422, serializer: nil
     end
   end
 
@@ -21,7 +21,7 @@ class API::V2::Manager::PasswordsController < API::V2::Manager::ManagerControlle
       @user.save!
       render_session @user.generate_session_token
     else
-      respond_with @user
+      respond_with :api, :v2, :manager, @user
     end
   end
 
