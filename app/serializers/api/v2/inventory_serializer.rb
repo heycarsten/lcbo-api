@@ -14,7 +14,7 @@ class API::V2::InventorySerializer < ApplicationSerializer
     h = super
 
     h[:links] = {
-      store:   object.store_id.to_s
+      store:   object.store_id.to_s,
       product: object.product_id.to_s
     }
 
