@@ -71,7 +71,7 @@ GEM
     excon (0.40.0)
     execjs (2.2.2)
     fabrication (2.11.3)
-    gcoder (1.1.0)
+    gcoder (1.2.0)
       hashie
       multi_json
       ruby-hmac
