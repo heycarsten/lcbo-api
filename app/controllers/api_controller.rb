@@ -17,7 +17,7 @@ class APIController < ApplicationController
   end
 
   def auth_token
-    @auth_token ||= Token.parse(request.headers['X-Auth-Token'])
+    @auth_token ||= Token.parse(request.headers['Authorization'])
   end
 
   def current_user

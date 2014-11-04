@@ -13,7 +13,7 @@ RSpec.describe 'V2 Manager Sessions API' do
     end
 
     it 'fails to return the current session with an inactive auth token' do
-      api_headers['X-Auth-Token'] = Token.generate(:session, user_id: 'herp').to_s
+      api_headers['Authorization'] = 'Token ' + Token.generate(:session, user_id: 'herp').to_s
       api_get '/manager/session'
       expect(response.status).to eq 401
     end
@@ -70,7 +70,7 @@ RSpec.describe 'V2 Manager Sessions API' do
     end
 
     it 'fails to update with an invalid token' do
-      api_headers['X-Auth-Token'] = Token.generate(:session, user_id: 'herp').to_s
+      api_headers['Authorization'] = 'Token ' + Token.generate(:session, user_id: 'herp').to_s
       api_put '/manager/session'
       expect(response.status).to eq 401
     end
@@ -79,14 +79,14 @@ RSpec.describe 'V2 Manager Sessions API' do
   describe 'DELETE /manager/session' do
     it 'destroys the session token when given a valid token' do
       log_in_user(u = create_verified_user!)
-      token = api_headers['X-Auth-Token']
+      token = api_headers['Authorization']
       expect(User.lookup(token)).to be_a User
 
       api_delete '/manager/session'
       expect(response.status).to eq 204
       expect(User.lookup(token)).to be_nil
 
-      api_headers['X-Auth-Token'] = token
+      api_headers['Authorization'] = token
       api_delete '/manager/session'
       expect(response.status).to eq 401
     end

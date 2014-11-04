@@ -15,10 +15,9 @@ class API::V2::APIController < APIController
     'Access-Control-Allow-Headers' => %w[
       Accept
       X-Access-Key
-      X-Auth-Token
+      Authorization
     ].join(', '),
     'Access-Control-Expose-Headers' => %w[
-      X-API-Version
       X-Rate-Limit-Count
       X-Rate-Limit-Max
       X-Rate-Limit-Reset

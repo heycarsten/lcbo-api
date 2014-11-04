@@ -35,7 +35,7 @@ RSpec.describe 'V2 Manager Keys API' do
     end
 
     it 'fails if not authenticated' do
-      api_headers['X-Auth-Token'] = Token.generate(:session, user_id: 'herp')
+      api_headers['Authorization'] = 'Token ' + Token.generate(:session, user_id: 'herp').to_s
 
       api_get '/manager/keys'
 
@@ -90,7 +90,7 @@ RSpec.describe 'V2 Manager Keys API' do
     end
 
     it 'fails if not authenticated' do
-      api_headers['X-Auth-Token'] = Token.generate(:session, user_id: 'herp')
+      api_headers['Authorization'] = 'Token ' + Token.generate(:session, user_id: 'herp').to_s
 
       api_post '/manager/keys'
 
@@ -126,7 +126,7 @@ RSpec.describe 'V2 Manager Keys API' do
     end
 
     it 'fails if not authenticated' do
-      api_headers['X-Auth-Token'] = Token.generate(:session, user_id: 'herp')
+      api_headers['Authorization'] = 'Token ' + Token.generate(:session, user_id: 'herp').to_s
       u = create_verified_user!
       k = create_key!(user_id: u)
 
@@ -159,7 +159,7 @@ RSpec.describe 'V2 Manager Keys API' do
       u = create_verified_user!
       k = create_key!(user_id: u)
 
-      api_headers['X-Auth-Token'] = Token.generate(:session, user_id: u.id)
+      api_headers['Authorization'] = 'Token ' + Token.generate(:session, user_id: u.id).to_s
 
       api_delete "/manager/keys/#{k.id}"
 

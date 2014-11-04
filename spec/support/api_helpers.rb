@@ -1,16 +1,16 @@
 module APIHelpers
   def api_headers
-    @api_headers ||= { 'Accept' => 'application/vnd.lcboapi.v2+json' }
+    @api_headers ||= { 'Accept' => 'application/vnd.api+json' }
   end
 
   def log_in_user(user)
     token = user.generate_session_token.to_s
-    api_headers['X-Auth-Token'] = token
+    api_headers['Authorization'] = "Token #{token}"
     token
   end
 
   def auth_user(user)
-    api_headers['X-Auth-Token'] = user.auth_token.to_s
+    api_headers['Authorization'] = "Token #{user.auth_token}"
   end
 
   def auth_access_key(key)
@@ -22,7 +22,7 @@ module APIHelpers
   end
 
   def clear_auth_token
-    api_headers['X-Auth-Token'] = nil
+    api_headers['Authorization'] = nil
   end
 
   def clear_auth_headers

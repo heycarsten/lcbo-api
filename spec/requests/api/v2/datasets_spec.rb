@@ -9,6 +9,7 @@ RSpec.describe 'V2 Datasets API' do
       Fabricate(:crawl),
       Fabricate(:crawl, state: 'cancelled')
     ]
+
     api_headers['X-Access-Key'] = @key
   end
 
