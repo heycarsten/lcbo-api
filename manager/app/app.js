@@ -11,6 +11,13 @@ var App = Ember.Application.extend({
   Resolver: Resolver
 });
 
+Ember.$.ajaxSetup({
+  dataType: 'json',
+  headers: {
+    Accept: 'application/vnd.api+json'
+  }
+});
+
 loadInitializers(App, config.modulePrefix);
 
 export default App;

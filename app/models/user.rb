@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
   before_create :generate_auth_secret, :generate_verification_secret
   before_save   :set_password_digest, if: :password_changed?
 
-  after_create  :welcome_and_update_email, if: :email_changed?
+  after_create  :welcome_and_update_email
   after_update  :update_email,  if: :email_changed?
 
   validates :password,
@@ -209,21 +209,25 @@ class User < ActiveRecord::Base
   def validate_password_change
     return true unless new_password_given?
     return true if password_digest == @current_password.to_s
+
     errors.add :current_password, 'is not correct'
   end
 
   def validate_email_presence
     return true unless new_record?
     return true if @new_email
+
     errors.add :email, 'must be provided'
   end
 
   def validate_email
     return true unless @new_email
     return true if @new_email.valid?
+
     @new_email.errors[:address].each do |error|
       errors.add(:email, error)
     end
+
     true
   end
 

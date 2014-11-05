@@ -13,7 +13,6 @@ class Email < ActiveRecord::Base
   scope :verified,   -> { where(is_verified: true) }
 
   before_validation :generate_verification_secret, on: :create
-  after_create      :send_verification, if: :has_delivery?
 
   def email_contact
     "#{user.name} <#{address}>"
@@ -55,33 +54,19 @@ class Email < ActiveRecord::Base
     Token.new(:email, email_id: id, secret: verification_secret)
   end
 
-  def has_delivery?
-    @delivery ? true : false
-  end
-
   def save_with_verification_message
-    @delivery = :verification
-    save
+    return false unless save
+    EmailMailer.verification_message(id).deliver
+    true
   end
 
   def save_with_welcome_verification_message
-    @delivery = :welcome_verification
-    save
+    return false unless save
+    EmailMailer.welcome_verification_message(id).deliver
+    true
   end
 
   private
-
-  def send_verification
-    case @delviery
-    when :welcome_verification
-      EmailMailer.welcome_verification_message(id).deliver
-    when :verification
-      EmailMailer.verification_message(id).deliver
-    end
-
-    @delivery = nil
-    true
-  end
 
   def generate_verification_secret
     self.verification_secret = Token.generate_secret

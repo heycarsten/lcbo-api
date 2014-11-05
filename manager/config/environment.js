@@ -4,7 +4,7 @@ module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'manager',
     environment: environment,
-    baseURL: '/',
+    baseURL: '/manager/',
     locationType: 'auto',
     EmberENV: {
       FEATURES: {
@@ -45,7 +45,6 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
   }
 
   return ENV;

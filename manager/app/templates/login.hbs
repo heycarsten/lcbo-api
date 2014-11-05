@@ -1,10 +1,16 @@
 <form {{action "authenticate" on="submit"}}>
-  <label for="identification">Email</label>
-  {{input id="identification" placeholder="Email" value=identification}}
+  <label for="email">Email</label>
+
+  {{input name="email" placeholder="Email" value=identification autofocus=true}}
   <label for="password">Password</label>
-  {{input id="password" placeholder="Password" type="password" value=password}}
+
+  {{input name="password" placeholder="Password" type="password" value=password}}
   <button type="submit">Login</button>
 </form>
+
+<div class="no-account">
+  <p><em>Don&rsquo;t have an account?</em> {{#link-to "signup"}}Sign Up{{/link-to}}</p>
+</div>
 
 {{#if errorMessage}}
   <div class="alert alert-danger">

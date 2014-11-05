@@ -56,6 +56,7 @@ RSpec.describe 'V2 Manager Accounts API' do
       expect(response.status).to eq 201
       expect(json[:account][:email]).to be_blank
       expect(json[:account][:unverified_email]).to eq 'carsten@example.com'
+      expect(ActionMailer::Base.deliveries.first.subject).to match /welcome/i
     end
   end
 

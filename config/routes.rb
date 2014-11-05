@@ -1,23 +1,6 @@
 many_id_re = /([0-9]+\,[0-9]+\,{0,1})+/
 
 Rails.application.routes.draw do
-  namespace :admin do
-    root to: 'crawls#index'
-    resources :crawls
-    resources :crawl_events
-  end
-
-  controller :root, action: :ember do
-    get '/register'
-    get '/account'
-    get '/verify/:token',   as: :verification
-    get '/password/:token', as: :password
-    get '/manage'
-    get '/manage/keys/new'
-    get '/manage/keys/:key_id'
-    get '/log-in'
-  end
-
   namespace :api, path: '/', format: :json do
     namespace :v2, path: '(v2)', constraints: APIConstraint.new(2) do
       match '*path', to: 'api#preflight_cors', via: :options
@@ -115,5 +98,22 @@ Rails.application.routes.draw do
       get '/products/:id/history'                          => 'root#deprecated', name: :product_history
       get '/stores/:store_id/products/:product_id/history' => 'root#deprecated', name: :inventory_history
     end
+  end
+
+  controller :root, action: :ember, format: :html do
+    get '/manager'
+    get '/manager/sign-up'
+    get '/manager/account'
+    get '/manager/verify/:token',   as: :verify
+    get '/manager/password/:token', as: :password
+    get '/manager/keys/new'
+    get '/manager/keys/:key_id'
+    get '/manager/log-in'
+  end
+
+  namespace :admin do
+    root to: 'crawls#index'
+    resources :crawls
+    resources :crawl_events
   end
 end

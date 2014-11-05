@@ -2,12 +2,34 @@ import Authenticator from 'simple-auth/authenticators/base';
 import Ember from 'ember';
 
 export default Authenticator.extend({
-  sessionUrl: '/v2/manager/session',
-
   restore: function(data) {
+    var expiresAt = data.expiresAt;
+    var token     = data.token;
+
     return new Ember.RSVP.Promise(function(resolve, reject) {
-      if (!Ember.isEmpty(data.token)) {
-        resolve(data);
+      if (token && expiresAt && moment().isBefore(expiresAt)) {
+        Ember.$.ajax({
+          url: '/manager/session',
+          type: 'PUT',
+          headers: {
+            Authorization: 'Token ' + token
+          }
+        }).then(
+          function(response) {
+            Ember.run(function() {
+              resolve({
+                token:     response.session.token,
+                expiresAt: response.session.expires_at
+              });
+            });
+          },
+
+          function() {
+            Ember.run(function() {
+              reject();
+            });
+          }
+        );
       } else {
         reject();
       }
@@ -15,13 +37,23 @@ export default Authenticator.extend({
   },
 
   authenticate: function(credentials) {
-    var _this = this;
-
     return new Ember.RSVP.Promise(function(resolve, reject) {
+      if (credentials.session) {
+        resolve({
+          token: credentials.session.token,
+          expiresAt: credentials.session.expires_at
+        });
+
+        return;
+      }
+
       Ember.$.ajax({
-        url: _this.sessionUrl,
+        url: '/manager/sessions',
         type: 'POST',
-        contentType: 'application/vnd.api+json',
+        contentType: 'application/json',
+        headers: {
+          Accept: 'application/vnd.api+json'
+        },
         data: JSON.stringify({
           session: {
             email: credentials.identification,
@@ -31,15 +63,18 @@ export default Authenticator.extend({
       }).then(
         function(response) {
           Ember.run(function() {
-            resolve({ token: response.session.token });
+            resolve({
+              token: response.session.token,
+              expiresAt: response.session.expires_at
+            });
           });
         },
 
-        function(xhr, status, error) {
+        function(xhr) {
           var response = JSON.parse(xhr.responseText);
 
           Ember.run(function() {
-            reject(response.error);
+            reject(response.error.detail);
           });
         }
       );
@@ -47,11 +82,9 @@ export default Authenticator.extend({
   },
 
   invalidate: function() {
-    var _this = this;
-
     return new Ember.RSVP.Promise(function(resolve) {
       Ember.$.ajax({
-        url: _this.sessionUrl,
+        url: '/manager/session',
         type: 'DELETE'
       }).always(function() {
         resolve();

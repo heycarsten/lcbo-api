@@ -1,0 +1,6 @@
+#!/bin/sh
+./node_modules/ember-cli/bin/ember build --environment production &&
+rm -rf ../public/manager/ &&
+mkdir ../public/manager/ &&
+cp -r -f ./dist/* ../public/manager/ &&
+cp -r -f ../public/manager/assets ../public/

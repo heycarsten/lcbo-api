@@ -9,12 +9,17 @@
     <ol>
       {{#if session.isAuthenticated}}
         <li class="log-out">
-          <a {{action "invalidateSession"}}>Log Out</a>
+          <button {{action "invalidateSession"}}>Log Out</button>
         </li>
       {{else}}
         <li class="log-in">
           {{#link-to "login"}}
             Log In
+          {{/link-to}}
+        </li>
+        <li class="sign-up">
+          {{#link-to "signup"}}
+            Sign Up
           {{/link-to}}
         </li>
       {{/if}}

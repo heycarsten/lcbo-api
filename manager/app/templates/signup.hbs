@@ -1,0 +1,46 @@
+<form novalidate {{action "createAccount" on="submit"}}>
+  <div class="field" {{bind-attr class="errors.name:has-error"}} {{action "clearErrorsOn" "name"}}>
+    <label for="first-name"><span class="novis">First </span>Name</label>
+    {{input id="first-name" value=firstName placeholder="First" autofocus=true disabled=disabled}}
+    <label for="last-name" class="novis">Last Name</label>
+    {{input id="last-name" value=lastName placeholder="Last" disabled=disabled}}
+
+    {{#if errors.name}}
+      <em class="error-msg">{{errors.name}}</em>
+    {{/if}}
+  </div>
+
+  <div class="field" {{bind-attr class="errors.email:has-error"}} {{action "clearErrorsOn" "email"}}>
+    <label>Email</label>
+    {{input type="email" value=email placeholder="name@example.com" disabled=disabled}}
+
+    {{#if errors.email}}
+      <em class="error-msg">{{errors.email}}</em>
+    {{/if}}
+  </div>
+
+  <div class="field password" {{bind-attr class="errors.password:has-error"}}>
+    <label for="password">Password</label>
+    <span {{action "clearErrorsOn" "password"}}>
+      {{password-input value=password showPassword=showPassword disabled=disabled}}
+    </span>
+    <label>{{input type="checkbox" checked=showPassword disabled=disabled}} Show password</label>
+
+    {{#if errors.password}}
+      <em class="error-msg">{{errors.password}}</em>
+    {{/if}}
+  </div>
+
+  <div class="actions">
+    <button type="submit" {{bind-attr disabled=disabled}}>Sign Up</button>
+  </div>
+
+  <div {{bind-attr class=":next-step-msg isSent:appear"}}>
+    <p>A confirmation email has been sent to {{email}}. If it does not arrive
+    soon or you need assistance, send me an <a href="mailto:help@lcboapi.com">email</a>.</p>
+  </div>
+
+  <div class="wollow">
+    <p>Already have an account? {{#link-to "login"}}Log In{{/link-to}}</p>
+  </div>
+</form>
