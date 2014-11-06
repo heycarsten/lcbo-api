@@ -1,9 +1,35 @@
-.next-step-msg
-  opacity: 0
-  height: 0
-  overflow: hidden
-  +transition(opacity 0.3s ease-in)
+.app.signup
+  header
+    margin-bottom: 34px
 
-  &.appear
-    height: auto
-    opacity: 1
+  .next-step-msg
+    opacity: 0
+    height: 0
+    overflow: hidden
+    +transition(opacity 0.3s ease-in)
+
+    &.appear
+      height: auto
+      opacity: 1
+
+  button.toggle-mask
+    +font-awesome
+    position: absolute
+    top: 20px
+    right: 12px
+    background: transparent
+    font-size: 18px
+    border: none
+    padding: 0
+    margin: 0
+    outline: none
+    cursor: pointer
+    color: $blue-grey-300
+
+    &.masked:after
+      content: "\f070"
+
+    &.unmasked
+      color: $green-600
+      &:after
+        content: "\f06e"

@@ -1,1 +1,16 @@
 $roboto: 'Roboto', 'Helvetica Neue', 'Open Sans', sans-serif
+
+=font-smoothing($value)
+  @if $value == antialiased
+    -webkit-font-smoothing:   antialiased
+    -moz-osx-font-smoothing:  grayscale
+  @else if $value == none
+    -webkit-font-smoothing:   none
+    -moz-osx-font-smoothing:  none
+  @else if $value == subpixel-antialiased
+    -webkit-font-smoothing:   subpixel-antialiased
+    -moz-osx-font-smoothing:  auto
+
+=font-awesome
+  font-family: FontAwesome
+  +font-smoothing(antialiased)

@@ -13,6 +13,8 @@ Router.map(function() {
 
   this.route('account');
   this.route('keys');
+
+  this.route('credits');
 });
 
 export default Router;

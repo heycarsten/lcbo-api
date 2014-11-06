@@ -1,38 +1,52 @@
+<header>
+  <h1 class="logo">
+    {{#link-to "index"}}
+      <span>LCBO API</span>
+    {{/link-to}}
+  </h1>
+</header>
+
 <form novalidate {{action "createAccount" on="submit"}}>
-  <div class="field" {{bind-attr class="errors.name:has-error"}} {{action "clearErrorsOn" "name"}}>
-    <label for="first-name"><span class="novis">First </span>Name</label>
-    {{input id="first-name" value=firstName placeholder="First" autofocus=true disabled=disabled tabindex=1}}
-    <label for="last-name" class="novis">Last Name</label>
-    {{input id="last-name" value=lastName placeholder="Last" disabled=disabled tabindex=2}}
+  <div class="field name" {{bind-attr class="errors.name:has-error"}} {{action "clearErrorsOn" "name"}}>
+    {{input id="name" name="name" value=name placeholder="Your Name" autofocus=true disabled=disabled tabindex=1}}
+    <label for="name"><span class="novis">Full name</span></label>
 
     {{#if errors.name}}
-      <em class="error-msg">{{errors.name}}</em>
+      <div class="error-msg">{{errors.name}}</div>
     {{/if}}
   </div>
 
-  <div class="field" {{bind-attr class="errors.email:has-error"}} {{action "clearErrorsOn" "email"}}>
-    <label>Email</label>
-    {{input type="email" value=email placeholder="name@example.com" disabled=disabled tabindex=3}}
+  <div class="field email" {{bind-attr class="errors.email:has-error"}} {{action "clearErrorsOn" "email"}}>
+    {{input type="email" id="email" value=email placeholder="Email" disabled=disabled tabindex=2}}
+    <label for="email"><span class="novis">Email</span></label>
 
     {{#if errors.email}}
-      <em class="error-msg">{{errors.email}}</em>
+      <div class="error-msg">{{errors.email}}</div>
     {{/if}}
   </div>
 
-  <div class="field password" {{bind-attr class="errors.password:has-error"}}>
-    <label for="password">Password</label>
+  <div class="field password create" {{bind-attr class="errors.password:has-error"}}>
     <span {{action "clearErrorsOn" "password"}}>
-      {{password-input value=password showPassword=showPassword disabled=disabled tabindex=4}}
+      {{password-input id="password" name="password" placeholder=passwordPlaceholder value=password showPassword=showPassword disabled=disabled tabindex=3}}
+      <label for="password"><span class="novis">Password</span></label>
+      <button {{bind-attr class=":toggle-mask showPassword:unmasked:masked"}} {{action "togglePasswordMask"}}>
+        <span class="novis">
+          {{#if showPassword}}
+            Mask
+          {{else}}
+            Unmask
+          {{/if}}
+        </span>
+      </button>
     </span>
-    <label>{{input type="checkbox" checked=showPassword disabled=disabled}} Show password</label>
 
     {{#if errors.password}}
-      <em class="error-msg">{{errors.password}}</em>
+      <div class="error-msg">{{errors.password}}</div>
     {{/if}}
   </div>
 
   <div class="actions">
-    <button type="submit" {{bind-attr disabled=disabled}} tabindex="5">Sign Up</button>
+    <button class="sign-up" type="submit" {{bind-attr disabled=disabled}} tabindex="4">Sign Up</button>
   </div>
 
   <div {{bind-attr class=":next-step-msg isSent:appear"}}>

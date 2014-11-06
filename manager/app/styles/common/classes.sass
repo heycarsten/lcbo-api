@@ -9,6 +9,9 @@
   clip: rect(0,0,0,0)
   border: 0
 
+%glow
+  box-shadow: 0 0 4px rgba($purple-a200, 0.66)
+
 %button
   cursor: pointer
   display: inline-block
@@ -35,4 +38,4 @@
     background: $purple-a400
 
   &:focus
-    box-shadow: 0 0 4px rgba($purple-a200, 0.66)
+    @extend %glow

@@ -1,0 +1,79 @@
+form
+  text-align: left
+
+  .actions
+    text-align: center
+    margin: 40px
+
+    button[type="submit"]
+      @extend %button
+      font-weight: 500
+      font-family: $roboto
+      font-size: 22px
+      height: 54px
+      line-height: auto
+      padding: 0
+      padding-right: 26px
+
+      i
+        position: relative
+        bottom: -2px
+        font-size: 26px
+        padding-left: 23px
+        padding-right: 4px
+
+  .error-msg
+    color: $red-700
+
+  .field
+    padding: 8px 0
+    position: relative
+
+    &.password label:before
+      content: "\f023"
+
+    &.email label:before
+      content: "\f003"
+
+    &.name label:before
+      content: "\f007"
+
+
+  label[for]
+    position: absolute
+    top: 0
+    left: 0
+    color: $blue-grey-500
+    font-size: 18px
+    text-align: center
+    z-index: 2
+    +font-awesome
+
+    &:before
+      position: relative
+      top: 20px
+      left: 15px
+
+  input[type="text"], input[type="email"], input[type="password"]
+    width: 100%
+    display: block
+    +box-sizing(border-box)
+    z-index: 1
+    margin: 0
+    padding: 8px 12px
+    padding-left: 40px
+    padding-top: 7px
+    padding-bottom: 9px
+    font-family: $roboto
+    font-size: 18px
+    outline: none
+    background: white
+    border: 1px solid $blue-grey-200
+    border-radius: 3px
+
+    &:focus
+      border-color: $blue-grey-400
+      @extend %glow
+
+      + label
+        color: $purple-a400

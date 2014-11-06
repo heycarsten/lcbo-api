@@ -1,6 +1,7 @@
 .app.login > main
   height: 440px
   text-align: center
+
   header
     margin-bottom: 34px
 
@@ -11,7 +12,7 @@
       text-align: center
       margin: 40px
 
-      button
+      button[type="submit"]
         @extend %button
         font-weight: 500
         font-family: $roboto
@@ -20,6 +21,7 @@
         line-height: auto
         padding: 0
         padding-right: 26px
+
         i
           position: relative
           bottom: -2px
@@ -33,56 +35,60 @@
   .no-account
     color: $blue-grey-400
     margin-top: 54px
+
     a
       text-decoration: none
       color: $blue-grey-700
       font-weight: 600
+
       &:active
         color: $purple-a400
 
-
   .field
     padding: 8px 0
+    position: relative
 
-    > em
-      line-height: 2.5
-      font-style: normal
-      font-weight: 400
-      display: block
-      text-align: right
-      padding-right: 12px
-      font-size: 16px
-      a
-        color: $blue-grey-400
-        text-decoration: none
-        &:active
-          color: $purple-a400
+    &.password label:before
+      content: "\f069"
 
+    &.email label:before
+      content: "\f003"
 
-  .input-group
-    display: inline-block
+  label
+    position: absolute
+    top: 0
+    left: 0
+    color: $blue-grey-500
+    font-size: 18px
+    text-align: center
+    z-index: 2
+    +font-awesome
+
+    &:before
+      position: relative
+      top: 20px
+      left: 15px
+
+  input
+    width: 100%
+    display: block
+    +box-sizing(border-box)
+    z-index: 1
+    margin: 0
+    padding: 8px 12px
+    padding-left: 40px
+    padding-top: 7px
+    padding-bottom: 9px
+    font-family: $roboto
+    font-size: 18px
+    outline: none
     background: white
-    line-height: 40px
     border: 1px solid $blue-grey-200
     border-radius: 3px
 
-    label
-      display: inline-block
-      color: $blue-grey-500
-      width: 38px
-      font-size: 18px
-      text-align: center
-      i
-        position: relative
-        left: 3px
+    &:focus
+      border-color: $blue-grey-400
+      @extend %glow
 
-    input
-      width: 356px
-      font-family: $roboto
-      font-size: 18px
-      outline: none
-      display: inline-block
-      background: transparent
-      border: none
-      margin: 0
-      padding: 0
+      + label
+        color: $purple-a200

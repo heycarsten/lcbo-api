@@ -1,31 +1,14 @@
 import Em from 'ember';
 
 export default Em.Controller.extend({
-  firstName: null,
-  lastName:  null,
+  name:      null,
   email:     null,
+  password:  null,
   disabled:  false,
-
-  name: function() {
-    var parts = [];
-    var first = this.get('firstName');
-    var last  = this.get('lastName');
-
-    if (first) {
-      parts.push(first);
-    }
-
-    if (last) {
-      parts.push(last);
-    }
-
-    return parts.join(' ');
-  }.property('firstName', 'lastName'),
 
   reset: function() {
     this.setProperties({
-      firstName:    null,
-      lastName:     null,
+      name:         null,
       email:        null,
       password:     null,
       showPassword: false,
@@ -42,7 +25,15 @@ export default Em.Controller.extend({
     };
   },
 
+  passwordPlaceholder: function() {
+    return this.get('showPassword') ? 'Password' : '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022';
+  }.property('showPassword'),
+
   actions: {
+    togglePasswordMask: function() {
+      this.toggleProperty('showPassword');
+    },
+
     clearErrorsOn: function(property) {
       this.set('errors.' + property, null);
     },

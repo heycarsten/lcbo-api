@@ -6,21 +6,17 @@
   </h1>
 </header>
 
-<form {{action "authenticate" on="submit"}}>
+<form novalidate {{action "authenticate" on="submit"}}>
   <h2 class="novis">Log In</h2>
 
   <div class="field email">
-    <span class="input-group">
-      <label for="email"><i class="fa fa-envelope-o"></i><span class="novis"> Email</span></label>
-      {{input name="email" id="email" placeholder="Email" value=identification autofocus=true tabindex=1}}
-    </span>
+    {{input name="email" type="email" id="email" placeholder="Email" value=identification autofocus=true tabindex=1}}
+    <label for="email"><span class="novis">Email</span></label>
   </div>
 
   <div class="field password">
-    <span class="input-group">
-      <label for="password"><i class="fa fa-asterisk"></i><span class="novis"> Password</span></label>
-      {{input name="password" id="password" placeholder="Password" type="password" value=password tabindex=2}}
-    </span>
+    {{input name="password" id="password" placeholder="Password" type="password" value=password tabindex=2}}
+    <label for="password"><span class="novis">Password</span></label>
   </div>
 
   <div class="actions">
