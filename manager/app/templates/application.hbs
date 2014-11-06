@@ -8,10 +8,10 @@
   <nav>
     <ol>
       {{#if session.isAuthenticated}}
-        <li class="account-menu-container">
-          {{#link-to "account" class="account-name"}}
+        <li {{bind-attr class=":account-menu-container showAccountMenu:open"}}>
+          <a href="#" class="account-name" {{action "toggleAccountMenu"}}>
             {{session.account.name}} <i class="fa fa-chevron-down"></i>
-          {{/link-to}}
+          </a>
           <ul class="account-menu">
             <li class="settings">
               {{#link-to "account"}}
@@ -44,5 +44,25 @@
 </main>
 
 <footer>
-  <em>LCBO API</em> &copy; 2009&ndash;2014 Carsten Nielsen
+  <span class="banner">
+    LCBO API &copy; 2009&ndash;{{unbound year}} Carsten Nielsen
+  </span>
+  <nav>
+    <ol>
+      {{#unless session.isAuthenticated}}
+        <li>
+          {{#link-to "signup"}}Sign Up{{/link-to}}
+        </li>
+        <li>
+          {{#link-to "reset-password"}}Recover Password{{/link-to}}
+        </li>
+      {{/unless}}
+      <li>
+        <a href="/tos">Legal</a>
+      </li>
+      <li>
+        <a href="/privacy">Privacy</a>
+      </li>
+    </ol>
+  </nav>
 </footer>

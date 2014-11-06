@@ -52,6 +52,17 @@ header
 
     .account-menu-container
       position: relative
+      top: -8px
+      right: -14px
+      border-radius: 3px
+      padding: 12px 16px
+      text-align: right
+      font-weight: normal
+      &.open
+        background: white
+        box-shadow: 0px 1px 3px rgba($blue-grey-900, 0.45)
+        .account-menu
+          display: block
 
     .account-name
       position: relative
@@ -64,19 +75,10 @@ header
         color: $blue-grey-400
 
     .account-menu
-      position: absolute
-      top: -8px
-      right: -14px
-      background: white
-      width: 222px
-      border-radius: 3px
-      padding-top: 44px
-      padding-bottom: 16px
-      text-align: right
-      font-weight: normal
-      +box-shadow(0px 1px 3px rgba($blue-grey-900, 0.45))
+      display: none
+      padding-top: 16px
       li
-        padding: 8px 14px
+        line-height: 32px
 
     .log-out a
       color: $red-600
@@ -93,3 +95,30 @@ footer
     color: $grey-600
     font-style: normal
     font-weight: 500
+
+  nav
+    display: inline-block
+    margin-left: 32px
+
+    ol, li
+      margin: 0
+      padding: 0
+      display: inline-block
+
+    li
+      &:after
+        position: relative
+        font-family: FontAwesome
+        content: "\f111"
+        font-size: 5px
+        top: -3px
+        padding: 0 4px
+        color: $blue-grey-200
+
+      &:last-child:after
+        content: none
+
+    a
+      color: $blue-grey-600
+      font-weight: 400
+      text-decoration: none

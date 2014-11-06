@@ -10,7 +10,7 @@ export default Ember.Controller.extend(LoginControllerMixin, {
       var controller = this;
 
       this._super().then(null, function(msg) {
-        controller.set('errorMessage', msg);
+        controller.set('errorMessage', msg.capitalize() + '.');
       });
     }
   }

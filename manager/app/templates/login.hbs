@@ -1,19 +1,37 @@
+<header>
+  <h1 class="logo">
+    {{#link-to "index"}}
+      <span>LCBO API</span>
+    {{/link-to}}
+  </h1>
+</header>
+
 <form {{action "authenticate" on="submit"}}>
-  <label for="email">Email</label>
+  <h2 class="novis">Log In</h2>
 
-  {{input name="email" placeholder="Email" value=identification autofocus=true}}
-  <label for="password">Password</label>
+  <div class="field email">
+    <span class="input-group">
+      <label for="email"><i class="fa fa-envelope-o"></i><span class="novis"> Email</span></label>
+      {{input name="email" id="email" placeholder="Email" value=identification autofocus=true tabindex=1}}
+    </span>
+  </div>
 
-  {{input name="password" placeholder="Password" type="password" value=password}}
-  <button type="submit">Login</button>
+  <div class="field password">
+    <span class="input-group">
+      <label for="password"><i class="fa fa-asterisk"></i><span class="novis"> Password</span></label>
+      {{input name="password" id="password" placeholder="Password" type="password" value=password tabindex=2}}
+    </span>
+  </div>
+
+  <div class="actions">
+    <button type="submit" tabindex="3">
+      <i class="fa fa-sign-in"></i> Log In
+    </button>
+  </div>
 </form>
 
-<div class="no-account">
-  <p><em>Don&rsquo;t have an account?</em> {{#link-to "signup"}}Sign Up{{/link-to}}</p>
-</div>
-
 {{#if errorMessage}}
-  <div class="alert alert-danger">
-    <strong>Login failed:</strong> {{errorMessage}}
+  <div class="error-msg">
+    <i class="fa fa-exclamation-triangle"></i> {{errorMessage}}
   </div>
 {{/if}}

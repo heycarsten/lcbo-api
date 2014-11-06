@@ -1,9 +1,9 @@
 <form novalidate {{action "createAccount" on="submit"}}>
   <div class="field" {{bind-attr class="errors.name:has-error"}} {{action "clearErrorsOn" "name"}}>
     <label for="first-name"><span class="novis">First </span>Name</label>
-    {{input id="first-name" value=firstName placeholder="First" autofocus=true disabled=disabled}}
+    {{input id="first-name" value=firstName placeholder="First" autofocus=true disabled=disabled tabindex=1}}
     <label for="last-name" class="novis">Last Name</label>
-    {{input id="last-name" value=lastName placeholder="Last" disabled=disabled}}
+    {{input id="last-name" value=lastName placeholder="Last" disabled=disabled tabindex=2}}
 
     {{#if errors.name}}
       <em class="error-msg">{{errors.name}}</em>
@@ -12,7 +12,7 @@
 
   <div class="field" {{bind-attr class="errors.email:has-error"}} {{action "clearErrorsOn" "email"}}>
     <label>Email</label>
-    {{input type="email" value=email placeholder="name@example.com" disabled=disabled}}
+    {{input type="email" value=email placeholder="name@example.com" disabled=disabled tabindex=3}}
 
     {{#if errors.email}}
       <em class="error-msg">{{errors.email}}</em>
@@ -22,7 +22,7 @@
   <div class="field password" {{bind-attr class="errors.password:has-error"}}>
     <label for="password">Password</label>
     <span {{action "clearErrorsOn" "password"}}>
-      {{password-input value=password showPassword=showPassword disabled=disabled}}
+      {{password-input value=password showPassword=showPassword disabled=disabled tabindex=4}}
     </span>
     <label>{{input type="checkbox" checked=showPassword disabled=disabled}} Show password</label>
 
@@ -32,7 +32,7 @@
   </div>
 
   <div class="actions">
-    <button type="submit" {{bind-attr disabled=disabled}}>Sign Up</button>
+    <button type="submit" {{bind-attr disabled=disabled}} tabindex="5">Sign Up</button>
   </div>
 
   <div {{bind-attr class=":next-step-msg isSent:appear"}}>

@@ -105,6 +105,7 @@ Rails.application.routes.draw do
     get '/manager/sign-up'
     get '/manager/account'
     get '/manager/verify/:token',   as: :verify
+    get '/manager/recover'
     get '/manager/password/:token', as: :password
     get '/manager/keys/new'
     get '/manager/keys/:key_id'

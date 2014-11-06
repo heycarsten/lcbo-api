@@ -12,21 +12,27 @@
 %button
   cursor: pointer
   display: inline-block
+  outline: none
   background: transparent
   border: 2px solid $purple-a400
   color: $purple-a400
   border-radius: 3px
+  font-family: $roboto
   font-weight: 500
   text-decoration: none
   line-height: 33px
   height: 34px
   font-size: 18px
   padding: 0 13px
+  margin: 0
+
+  &:hover
+    color: $purple-a400
+    background: rgba(white, 0.5)
 
   &:active
     color: white
     background: $purple-a400
 
-  &:hover
-    color: $purple-a400
-    background: rgba(white, 0.33)
+  &:focus
+    box-shadow: 0 0 4px rgba($purple-a200, 0.66)

@@ -1,4 +1,6 @@
 class API::V2::Manager::ManagerController < API::V2::APIController
+  skip_before_action :rate_limit!
+
   protected
 
   def authenticate!

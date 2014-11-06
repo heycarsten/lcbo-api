@@ -1,8 +1,13 @@
 html, body
-  font-family: Roboto, 'Helvetica Neue', Sans
+  font-family: $roboto
   margin: 0
   padding: 0
   color: $grey-900
+
+a
+  color: $grey-900
+  &:active
+    color: $purple-a400
 
 .novis
   @extend %reader-only

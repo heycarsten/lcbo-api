@@ -1,0 +1,88 @@
+.app.login > main
+  height: 440px
+  text-align: center
+  header
+    margin-bottom: 34px
+
+  > form
+    text-align: left
+
+    .actions
+      text-align: center
+      margin: 40px
+
+      button
+        @extend %button
+        font-weight: 500
+        font-family: $roboto
+        font-size: 22px
+        height: 54px
+        line-height: auto
+        padding: 0
+        padding-right: 26px
+        i
+          position: relative
+          bottom: -2px
+          font-size: 26px
+          padding-left: 23px
+          padding-right: 4px
+
+  .error-msg
+    color: $red-700
+
+  .no-account
+    color: $blue-grey-400
+    margin-top: 54px
+    a
+      text-decoration: none
+      color: $blue-grey-700
+      font-weight: 600
+      &:active
+        color: $purple-a400
+
+
+  .field
+    padding: 8px 0
+
+    > em
+      line-height: 2.5
+      font-style: normal
+      font-weight: 400
+      display: block
+      text-align: right
+      padding-right: 12px
+      font-size: 16px
+      a
+        color: $blue-grey-400
+        text-decoration: none
+        &:active
+          color: $purple-a400
+
+
+  .input-group
+    display: inline-block
+    background: white
+    line-height: 40px
+    border: 1px solid $blue-grey-200
+    border-radius: 3px
+
+    label
+      display: inline-block
+      color: $blue-grey-500
+      width: 38px
+      font-size: 18px
+      text-align: center
+      i
+        position: relative
+        left: 3px
+
+    input
+      width: 356px
+      font-family: $roboto
+      font-size: 18px
+      outline: none
+      display: inline-block
+      background: transparent
+      border: none
+      margin: 0
+      padding: 0
