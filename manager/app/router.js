@@ -10,6 +10,7 @@ Router.map(function() {
   this.route('signup', { path: '/sign-up' });
   this.route('verify', { path: '/verify/:token' });
 
+  this.route('account');
   this.route('keys');
 });
 

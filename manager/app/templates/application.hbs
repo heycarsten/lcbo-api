@@ -9,11 +9,17 @@
     <ol>
       {{#if session.isAuthenticated}}
         <li class="account-menu-container">
-          {{log session}}
-          <span>{{session.account.name}}</span>
+          {{#link-to "account" class="account-name"}}
+            {{session.account.name}} <i class="fa fa-chevron-down"></i>
+          {{/link-to}}
           <ul class="account-menu">
+            <li class="settings">
+              {{#link-to "account"}}
+                Settings
+              {{/link-to}}
+            </li>
             <li class="log-out">
-              <button {{action "invalidateSession"}}>Log Out</button>
+              <a href="#" {{action "invalidateSession"}}>Log Out</a>
             </li>
           </ul>
         </li>
@@ -38,5 +44,5 @@
 </main>
 
 <footer>
-  LCBO API &copy; 2009&ndash;2014 Carsten Nielsen
+  <em>LCBO API</em> &copy; 2009&ndash;2014 Carsten Nielsen
 </footer>
