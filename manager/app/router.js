@@ -9,6 +9,8 @@ Router.map(function() {
   this.route('login', { path: '/log-in' });
   this.route('signup', { path: '/sign-up' });
   this.route('verify', { path: '/verify/:token' });
+
+  this.route('keys');
 });
 
 export default Router;

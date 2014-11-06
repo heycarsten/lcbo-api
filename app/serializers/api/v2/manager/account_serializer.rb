@@ -1,10 +1,15 @@
 class API::V2::Manager::AccountSerializer < ApplicationSerializer
   attributes \
+    :id,
     :name,
     :email,
     :auth_token,
     :gravatar_url,
     :unverified_email
+
+  def id
+    'current'
+  end
 
   def gravatar_url
     return unless email = (object.email || unverified_email)

@@ -1,6 +1,7 @@
 import Em from 'ember';
+import Unauthenticated from 'simple-auth/mixins/unauthenticated-route-mixin';
 
-export default Em.Route.extend({
+export default Em.Route.extend(Unauthenticated, {
   model: function(params) {
     return Em.$.ajax({
       url: '/manager/verifications/' + params.token,
@@ -17,7 +18,7 @@ export default Em.Route.extend({
   },
 
   actions: {
-    error: function(err) {
+    error: function() {
       if (this.session.get('isAuthenticated')) {
         this.replaceWith('index');
       } else {

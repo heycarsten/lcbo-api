@@ -8,8 +8,14 @@
   <nav>
     <ol>
       {{#if session.isAuthenticated}}
-        <li class="log-out">
-          <button {{action "invalidateSession"}}>Log Out</button>
+        <li class="account-menu-container">
+          {{log session}}
+          <span>{{session.account.name}}</span>
+          <ul class="account-menu">
+            <li class="log-out">
+              <button {{action "invalidateSession"}}>Log Out</button>
+            </li>
+          </ul>
         </li>
       {{else}}
         <li class="log-in">

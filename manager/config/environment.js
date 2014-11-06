@@ -19,6 +19,7 @@ module.exports = function(environment) {
     },
 
     'simple-auth': {
+      session: 'session:un-auth',
       authorizer: 'authorizer:un-auth',
       authenticator: 'authenticator:un-auth'
     }

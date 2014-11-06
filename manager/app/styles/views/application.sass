@@ -30,7 +30,21 @@ header
     .sign-up a
       @extend %button
 
-    ol
+    a
+      text-decoration: none
+      color: $blue-grey-600
+      &:hover
+        color: $blue-grey-900
+
+    ol, ul
+      top: -5px
+      position: relative
       list-style: none
       margin: 0
       padding: 0
+
+    > ol > li
+      margin: 0 12px
+      display: inline-block
+      &:last-child
+        margin-right: 0
