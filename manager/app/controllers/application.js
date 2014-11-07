@@ -7,7 +7,20 @@ export default Em.Controller.extend({
 
   actions: {
     toggleAccountMenu: function() {
-      this.toggleProperty('showAccountMenu');
+      var controller = this;
+
+      if (this.get('showAccountMenu')) {
+        return;
+      }
+
+      this.set('showAccountMenu', true);
+
+      Em.run.next(function() {
+        Em.$(document).one('click', function(event) {
+          controller.set('showAccountMenu', false);
+          return true;
+        });
+      });
     }
   },
 

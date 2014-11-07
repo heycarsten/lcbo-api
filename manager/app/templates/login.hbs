@@ -1,6 +1,6 @@
 <header>
-  <h1 class="logo">
-    {{#link-to "index"}}
+  <h1 class="lcboapi-wordmark">
+    {{#link-to "dashboard"}}
       <span>LCBO API</span>
     {{/link-to}}
   </h1>
@@ -19,6 +19,12 @@
     <label for="password"><span class="novis">Password</span></label>
   </div>
 
+  {{#if errorMessage}}
+    <div class="error-msg">
+      <i class="fa fa-exclamation-triangle"></i> {{errorMessage}}
+    </div>
+  {{/if}}
+
   <div class="actions">
     <button type="submit" tabindex="3">
       <i class="fa fa-sign-in"></i> Log In
@@ -29,9 +35,3 @@
     <p>Don&rsquo;t have an account? {{#link-to "signup"}}Sign Up{{/link-to}}</p>
   </div>
 </form>
-
-{{#if errorMessage}}
-  <div class="error-msg">
-    <i class="fa fa-exclamation-triangle"></i> {{errorMessage}}
-  </div>
-{{/if}}

@@ -11,8 +11,11 @@ Router.map(function() {
   this.route('verify', { path: '/verify/:token' });
   this.route('reset-password');
 
-  this.route('account');
-  this.route('keys');
+  this.resource('dashboard', { path: '/' }, function() {
+    this.route('account');
+    this.route('keys');
+    this.route('keys.new', { path: '/keys/new' });
+  });
 
   this.route('credits');
   this.route('terms');

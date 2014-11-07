@@ -1,0 +1,16 @@
+<section class="dashboard">
+  <nav>
+    <ol>
+      <li {{bind-attr class=":keys inKeys:active"}}>
+        {{link-to "Access Keys" "dashboard.keys"}}
+      </li>
+      <li {{bind-attr class=":account inAccount:active"}}>
+        {{link-to "Account" "dashboard.account"}}
+      </li>
+    </ol>
+  </nav>
+
+  <section class="content">
+    {{outlet}}
+  </section>
+</section>

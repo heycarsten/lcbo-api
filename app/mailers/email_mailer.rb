@@ -1,5 +1,5 @@
 class EmailMailer < ActionMailer::Base
-  default from: 'Carsten Nielsen <heycarsten@gmail.com>'
+  default from: 'LCBO API <help@lcboapi.com>'
 
   def welcome_verification_message(email_id)
     @email = Email.find(email_id)

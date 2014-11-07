@@ -1,0 +1,16 @@
+<header>
+  {{link-to "New Access Key" "dashboard.keys.new" class="button"}}
+</header>
+
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Type</th>
+  </tr>
+  {{#each key in this}}
+    <tr>
+      <td>{{key.token}}</td>
+      <th>{{key.type}}</td>
+    </tr>
+  {{/each}}
+</table>

@@ -1,0 +1,53 @@
+section.dashboard
+  position: relative
+  margin: 24px 10%
+
+  > nav
+    position: absolute
+    z-index: 1
+    left: 0
+    top: 0
+    bottom: 0
+    width: 194px
+    padding-top: 22px
+    border-right: 1px solid $blue-grey-200
+    font-size: 20px
+
+    ol
+      margin: 0
+      padding: 0
+      list-style: none
+
+    a
+      color: $blue-grey-300
+      text-decoration: none
+
+    li
+      line-height: 54px
+      position: relative
+      font-weight: 400
+
+      &.active
+        a
+          color: $blue-grey-900
+          font-weight: 500
+
+        &:before, &:after
+          position: absolute
+          right: -1px
+          content: ''
+          bottom: 0
+          margin: auto
+
+        &:before
+          top: 0
+          +triangle(22px 13px, $blue-grey-200, left)
+
+        &:after
+          top: 1px
+          +triangle(20px 12px, white, left)
+
+  > .content
+    min-height: 84vh
+    margin-left: 230px
+    padding: 1px

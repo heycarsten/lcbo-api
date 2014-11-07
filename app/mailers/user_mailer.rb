@@ -1,5 +1,5 @@
 class UserMailer < ActionMailer::Base
-  default from: 'Carsten Nielsen <heycarsten@gmail.com>'
+  default from: 'LCBO API <help@lcboapi.com>'
 
   def change_password_message(user_id)
     @user = User.find(user_id)

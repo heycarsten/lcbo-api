@@ -1,24 +1,24 @@
-header
+.lcboapi-wordmark
+  margin: 0
+  margin-left: 10%
+  padding: 0
+
+  a
+    margin-top: 10px
+    display: inline-block
+    width: 172px
+    height: 46px
+    background: url("https://dx5vpyka4lqst.cloudfront.net/assets/lcboapi-wordmark.png") no-repeat
+    background-size: cover
+
+  span
+    @extend %reader-only
+
+.app > header
   position: relative
   background: $blue-grey-50
   height: 68px
   width: 100%
-
-  .logo
-    margin: 0
-    margin-left: 10%
-    padding: 0
-
-    a
-      margin-top: 10px
-      display: inline-block
-      width: 172px
-      height: 46px
-      background: url("https://dx5vpyka4lqst.cloudfront.net/assets/lcboapi-wordmark.png") no-repeat
-      background-size: cover
-
-    span
-      @extend %reader-only
 
   nav
     position: absolute
@@ -29,7 +29,7 @@ header
     color: $blue-grey-700
 
     .sign-up a
-      @extend %button
+      @extend .button
 
     a
       text-decoration: none
@@ -52,6 +52,7 @@ header
 
     .account-menu-container
       position: relative
+      z-index: 998
       top: -8px
       right: -14px
       border-radius: 3px
@@ -66,7 +67,7 @@ header
 
     .account-name
       position: relative
-      z-index: 50
+      z-index: 999
       .fa
         position: relative
         font-size: 14px
@@ -84,9 +85,14 @@ header
       color: $red-600
 
 footer
+  position: fixed
+  bottom: 0
+  left: 0
+  right: 0
   font-weight: 300
   font-size: 14px
   color: $grey-500
+  background: rgba(white, 0.95)
   height: 44px
   line-height: 43px
   padding: 0 10%

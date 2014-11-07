@@ -1,6 +1,6 @@
 <header>
-  <h1 class="logo">
-    {{#link-to "index"}}
+  <h1 class="lcboapi-wordmark">
+    {{#link-to "dashboard"}}
       <span>LCBO API</span>
     {{/link-to}}
   </h1>
@@ -13,13 +13,18 @@
             {{session.account.name}} <i class="fa fa-chevron-down"></i>
           </a>
           <ul class="account-menu">
-            <li class="settings">
-              {{#link-to "account"}}
-                Settings
+            <li class="keys">
+              {{#link-to "dashboard.keys"}}
+                Access Keys
+              {{/link-to}}
+            </li>
+            <li class="account">
+              {{#link-to "dashboard.account"}}
+                Account
               {{/link-to}}
             </li>
             <li class="log-out">
-              <a href="#" {{action "invalidateSession"}}>Log Out</a>
+              <a href="#" {{action "logOut"}}>Log Out</a>
             </li>
           </ul>
         </li>
