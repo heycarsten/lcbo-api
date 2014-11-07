@@ -32,7 +32,8 @@ class API::V2::Manager::AccountsController < API::V2::Manager::ManagerController
     params.require(:account).permit(
       :name,
       :email,
-      :password
+      :password,
+      :does_agree_to_terms
     )
   end
 

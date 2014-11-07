@@ -3,7 +3,8 @@ module Factories
     User.new({
       name: 'Carsten Nielsen',
       email: "#{rand 99999}@example.com",
-      password: 'password'
+      password: 'password',
+      does_agree_to_terms: true
     }.merge(attrs))
   end
 

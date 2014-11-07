@@ -1,3 +1,6 @@
+.error-msg
+  color: $red-500
+
 form
   text-align: left
 
@@ -22,15 +25,64 @@ form
         padding-left: 23px
         padding-right: 4px
 
+  .alt-actions
+    font-weight: 300
+    font-style: italic
+    text-align: center
+    color: $blue-grey-400
+    margin-top: 54px
+
+    a
+      text-decoration: none
+      color: $blue-grey-700
+      font-weight: 400
+
+      &:active
+        color: $purple-a400
+
   .error-msg
-    color: $red-700
+    font-style: italtic
+    font-weight: 400
+    font-size: 14px
+    text-align: right
+    line-height: 2
+    padding: 0 8px
+
+  .checkbox .error-msg
+    text-align: center
 
   .field
     padding: 8px 0
     position: relative
 
-    &.password label:before
-      content: "\f023"
+    &.password
+      label
+        left: 3px
+
+        &:before
+          content: "\f023"
+
+      button.toggle-mask
+        +font-awesome
+        position: absolute
+        top: 17px
+        right: 12px
+        background: transparent
+        font-size: 22px
+        border: none
+        padding: 0
+        margin: 0
+        outline: none
+        cursor: pointer
+        color: $blue-grey-300
+
+        &.masked:after
+          content: "\f070"
+
+        &.unmasked
+          color: $green-600
+          &:after
+            content: "\f06e"
 
     &.email label:before
       content: "\f003"
@@ -38,8 +90,18 @@ form
     &.name label:before
       content: "\f007"
 
+    &.has-error
+      label, input
+        color: $red-500
+      input[type="checkbox"]
+        background: $red-500
+      input
+        border-color: $red-300
 
-  label[for]
+        +placeholder
+          color: $red-200
+
+  .field:not(.checkbox) label[for]
     position: absolute
     top: 0
     left: 0
@@ -53,6 +115,14 @@ form
       position: relative
       top: 20px
       left: 15px
+
+  .field.checkbox
+    label
+      cursor: pointer
+    input
+      position: relative
+      font-size: 16px
+      top: -1px
 
   input[type="text"], input[type="email"], input[type="password"]
     width: 100%

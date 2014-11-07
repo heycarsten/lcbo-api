@@ -51,9 +51,6 @@
     <ol>
       {{#unless session.isAuthenticated}}
         <li>
-          {{#link-to "signup"}}Sign Up{{/link-to}}
-        </li>
-        <li>
           {{#link-to "reset-password"}}Recover Password{{/link-to}}
         </li>
       {{/unless}}

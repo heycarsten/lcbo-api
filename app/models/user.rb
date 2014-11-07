@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
   SESSION_TTL = 3.weeks
   NAME_RE     = /\A[[:alpha:] '\-]+\Z/u
   MAX_RATE    = 1000
+  TRUTHS      = [1, true, '1', 't', 'true', 'yes']
 
   has_many :keys,   dependent: :destroy
   has_many :emails, dependent: :destroy
@@ -32,6 +33,7 @@ class User < ActiveRecord::Base
   validate :validate_password_change, if: :new_password_given?
   validate :validate_email_presence,  if: :new_record?
   validate :validate_email,           if: :email_changed?
+  validate :validate_terms_agreement, on: :create
 
   scope :verified, -> { where.not(email: nil) }
 
@@ -101,6 +103,10 @@ class User < ActiveRecord::Base
 
   def self.redis_session_key(token)
     "#{Rails.env}:sessions:#{token[:user_id]}"
+  end
+
+  def does_agree_to_terms=(val)
+    @does_agree_to_terms = TRUTHS.include?(val)
   end
 
   def max_rate
@@ -204,6 +210,13 @@ class User < ActiveRecord::Base
 
   def redis_session_key(token)
     self.class.redis_session_key(token)
+  end
+
+  def validate_terms_agreement
+    return true if persisted?
+    return true if @does_agree_to_terms
+
+    errors.add :does_agree_to_terms, 'sign up requires that you agree to the TOS'
   end
 
   def validate_password_change

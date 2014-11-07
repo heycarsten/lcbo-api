@@ -15,6 +15,8 @@ Router.map(function() {
   this.route('keys');
 
   this.route('credits');
+  this.route('terms');
+  this.route('privacy');
 });
 
 export default Router;

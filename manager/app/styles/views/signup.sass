@@ -1,35 +1,43 @@
 .app.signup
-  header
-    margin-bottom: 34px
-
-  .next-step-msg
-    opacity: 0
-    height: 0
-    overflow: hidden
-    +transition(opacity 0.3s ease-in)
-
-    &.appear
-      height: auto
-      opacity: 1
-
-  button.toggle-mask
-    +font-awesome
-    position: absolute
-    top: 20px
-    right: 12px
-    background: transparent
-    font-size: 18px
-    border: none
+  .actions button
+    width: 100%
     padding: 0
+
+  .terms
+    text-align: center
+    color: $blue-grey-700
+
+.signup-done
+  text-align: center
+
+  h1
+    position: relative
     margin: 0
-    outline: none
-    cursor: pointer
-    color: $blue-grey-300
+    margin-top: -8px
+    color: $blue-grey-500
+    text-align: center
+    font-weight: 700
+    font-size: 38px
 
-    &.masked:after
-      content: "\f070"
+    &:before
+      display: block
+      +font-awesome
+      font-size: 48px
+      content: "\f058"
+      color: $green-300
 
-    &.unmasked
-      color: $green-600
-      &:after
-        content: "\f06e"
+  p
+    color: $blue-grey-800
+    line-height: 1.75
+    margin: 32px 0
+
+  em
+    color: $blue-grey-500
+
+    i
+      color: $light-blue-400
+      position: relative
+      top: 2px
+      padding-right: 2px
+      +font-smoothing(antialias)
+      font-size: 22px

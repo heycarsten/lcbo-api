@@ -28,7 +28,8 @@ RSpec.describe 'V2 Manager Accounts API' do
       api_post '/manager/accounts', account: {
         name:     'Carsten',
         email:    u.new_email.address,
-        password: 'password'
+        password: 'password',
+        does_agree_to_terms: true
       }
 
       expect(response.status).to eq 422
@@ -39,18 +40,31 @@ RSpec.describe 'V2 Manager Accounts API' do
       api_post '/manager/accounts', account: {
         name: 'Carsten',
         email: 'test@example.com',
-        password: 'passwd'
+        password: 'passwd',
+        does_agree_to_terms: true
       }
 
       expect(response.status).to eq 422
       expect(has_errors_for(:password)).to eq true
     end
 
+    it 'returns errors when not agreeing to terms' do
+      api_post '/manager/accounts', account: {
+        name: 'Carsten',
+        email: 'test@example.com',
+        password: 'password',
+      }
+
+      expect(response.status).to eq 422
+      expect(has_errors_for(:does_agree_to_terms)).to eq true
+    end
+
     it 'returns a new unverified account' do
       api_post '/manager/accounts', account: {
         name: 'Carsten',
         email: 'carsten@example.com',
-        password: 'password'
+        password: 'password',
+        does_agree_to_terms: true
       }
 
       expect(response.status).to eq 201
