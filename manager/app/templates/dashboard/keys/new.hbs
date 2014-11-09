@@ -1,0 +1,75 @@
+<form>
+  <h1>New Access Key</h1>
+
+  {{!
+  <p class="warn">
+    Your free subscription allows 50,000 requests per month. Subscribe to the
+    supporter plan for 1,000,000 requests per month, HTTPS support, and UPC
+    lookups.
+  </p>
+  }}
+
+  <ol class="stacked-fields">
+    <li class="field">
+      <label for="label">Name / Label <i class="info"><span>
+        <p>
+          This is a short label that identifies the use-case of the Access Key,
+          this could be the name of your software product, or the name of your
+          company if you're using LCBO API for anaylisis and reporting.
+        </p>
+      </span></i></label>
+      {{input
+        type="text"
+        id="label"
+        maxlength=255
+        value=label
+        placeholder="Example: LCBO Search"}}
+    </li>
+    <li class="field">
+      <label for="key-kind">Integration Type <i class="info"><span>
+        <p>
+          <b>Web Browser Application</b> keys support CORS and JSONP, they are
+          tied to a domain and are rate-limited by IP address to 3600
+          requests/hour to prevent abuse from a single client.
+        </p>
+        <p>
+          <b>Native Client Application</b> keys are rate-limited by IP address
+          to 3600 requests/hour to prevent abuse from a single client, HTTPS is
+          required.
+        </p>
+        <p>
+          <b>Private / Backend Application</b> keys are not rate-limited, they are
+          intended to be used in backend integrations: web applications,
+          proxying setups, reporting scripts, business software, and are useful
+          for &ldquo;playing around&rdquo;.
+        </p>
+      </span></i></label>
+      <select id="key-kind">
+        <option>Web Browser Application</option>
+        <option>Native Client Application</option>
+        <option>Private / Backend Application</option></option>
+      </select>
+    </li>
+    <li class="field">
+      <label>Website Domain <i class="info"><span>
+        <p>
+          The root domain that your JavaScript application is served from. No
+          need to specify the URL scheme we&rsquo;ll allow HTTP and HTTPS.
+        </p>
+      </span></i></label>
+      {{input type="text" placeholder="mysite.com"}}
+    </li>
+    <li class="field">
+      <label>Description / Notes <span class="optional">Optional</span> <i class="info"><span>
+        <p>
+          A short description of your application or use-case, only visible to
+          LCBO API staff.
+        </p>
+      </span></i></label>
+      {{textarea type="text"}}
+    </li>
+  </div>
+  <div class="actions">
+    <button type="submit">Create Access Key</button>
+  </div>
+</form>

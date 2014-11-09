@@ -4,6 +4,55 @@
 form
   text-align: left
 
+  .optional
+    position: relative
+    display: inline-block
+    font-size: 13px
+    font-weight: 500
+    background: $blue-grey-200
+    color: white
+    line-height: 1
+    padding: 4px 6px
+    border-radius: 3px
+    top: -1px
+    left: 2px
+
+  .info
+    position: relative
+    left: 4px
+    font-size: 18px
+    color: $blue-grey-100
+
+    span
+      display: none
+      position: absolute
+      border-radius: 3px
+      background-color: rgba($blue-grey-900, 0.9)
+      color: white
+      z-index: 10000
+      font-size: 13px
+      font-weight: 300
+      font-style: normal
+      width: 384px
+      line-height: 1.5
+      padding: 1px 12px
+      left: 22px
+      top: -0.5em
+
+      p
+        margin: 8px 0
+
+    &:hover
+      color: $purple-a400
+
+      span
+        display: block
+
+    &:before
+      cursor: help
+      +font-awesome
+      content: "\f059"
+
   .actions
     text-align: center
     margin: 40px
@@ -14,16 +63,19 @@ form
       font-family: $roboto
       font-size: 22px
       height: 54px
-      line-height: auto
-      padding: 0
-      padding-right: 26px
+      line-height: 1
+      padding: 0 22px
 
-      i
+      &.log-in
         position: relative
-        bottom: -2px
-        font-size: 26px
-        padding-left: 23px
-        padding-right: 4px
+
+        &:before
+          +font-awesome
+          position: absolute
+          content: "\f090"
+          font-size: 26px
+          left: 16px
+          top: 12px
 
   .alt-actions
     font-weight: 300
@@ -55,56 +107,6 @@ form
     padding: 8px 0
     position: relative
 
-    &:not(.checkbox) label[for]
-      position: absolute
-      top: 0
-      left: 0
-      color: $blue-grey-500
-      font-size: 18px
-      text-align: center
-      z-index: 2
-      +font-awesome
-
-      &:before
-        position: relative
-        top: 20px
-        left: 15px
-
-    &.password
-      label
-        left: 3px !important
-
-        &:before
-          content: "\f023"
-
-      button.toggle-mask
-        +font-awesome
-        position: absolute
-        top: 17px
-        right: 12px
-        background: transparent
-        font-size: 22px
-        border: none
-        padding: 0
-        margin: 0
-        outline: none
-        cursor: pointer
-        color: $blue-grey-300
-
-        &.masked:after
-          content: "\f070"
-
-        &.unmasked
-          color: $green-600
-          &:after
-            content: "\f06e"
-
-    &.email label:before
-      content: "\f003"
-
-    &.name label:before
-      content: "\f007"
-
     &.has-error
       label, input
         color: $red-500
@@ -116,22 +118,26 @@ form
         +placeholder
           color: $red-200
 
+  label
+    font-weight: 500
+    color: $blue-grey-700
+
   .field.checkbox
     label
+      font-weight: 400
       cursor: pointer
     input
       position: relative
       font-size: 16px
       top: -1px
 
-  input[type="text"], input[type="email"], input[type="password"]
+  input[type="text"], input[type="email"], input[type="password"], select, textarea
     width: 100%
     display: block
     +box-sizing(border-box)
     z-index: 1
     margin: 0
     padding: 8px 12px
-    padding-left: 40px
     padding-top: 7px
     padding-bottom: 9px
     font-family: $roboto
@@ -145,5 +151,81 @@ form
       border-color: $blue-grey-400
       @extend %glow
 
-      + label
-        color: $purple-a400
+  select
+    padding: 0
+    height: 42px
+
+  label.checkbox
+    color: $blue-grey-700
+    font-weight: 400
+
+    input
+      position: relative
+      top: -1px
+      font-size: 16px
+
+  .stacked-fields
+    margin: 0
+    padding: 0
+    list-style: none
+
+  .minimal-fields
+    margin: 0
+    padding: 0
+    list-style: none
+
+    > li
+      input
+        padding-left: 40px
+
+        &:focus + label
+          color: $purple-a400
+
+      &:not(.checkbox) label[for]
+        position: absolute
+        top: 0
+        left: 0
+        font-size: 18px
+        text-align: center
+        z-index: 2
+        +font-awesome
+
+        &:before
+          position: relative
+          top: 20px
+          left: 15px
+
+      &.password
+        label
+          left: 3px !important
+
+          &:before
+            content: "\f023"
+
+        button.toggle-mask
+          +font-awesome
+          position: absolute
+          top: 17px
+          right: 12px
+          background: transparent
+          font-size: 22px
+          border: none
+          padding: 0
+          margin: 0
+          outline: none
+          cursor: pointer
+          color: $blue-grey-300
+
+          &.masked:after
+            content: "\f070"
+
+          &.unmasked
+            color: $green-600
+            &:after
+              content: "\f06e"
+
+      &.email label:before
+        content: "\f003"
+
+      &.name label:before
+        content: "\f007"

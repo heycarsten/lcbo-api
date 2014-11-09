@@ -10,7 +10,7 @@
   border: 0
 
 %glow
-  box-shadow: 0 0 4px rgba($purple-a200, 0.66)
+  box-shadow: 0 0 6px 1px rgba($purple-a200, 0.33)
 
 .button
   cursor: pointer
@@ -39,3 +39,21 @@
 
   &:focus
     @extend %glow
+
+  &:focus:active
+    box-shadow: none
+
+%in-context-box-shadow
+  box-shadow: 0 1px 3px 1px rgba($blue-grey-900, 0.33)
+
+p.warn
+  background: $orange-500
+  border-radius: 3px
+  padding: 8px 14px
+  line-height: 1.5
+  font-size: 14px
+  color: white
+  &:before
+    +font-awesome
+    color: $amber-200
+    content: "\f071"

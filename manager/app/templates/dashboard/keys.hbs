@@ -4,13 +4,19 @@
 
 <table>
   <tr>
-    <th>Description</th>
-    <th>Type</th>
+    <th>Integration</th>
+    <th>Kind</th>
+    <th>Token</th>
   </tr>
   {{#each key in this}}
     <tr>
+      <td>{{key.label}}</td>
       <td>{{key.token}}</td>
-      <th>{{key.type}}</td>
+      <td>{{key.type}}</td>
+    </tr>
+  {{else}}
+    <tr class="empty">
+      <td colspan="3"><em>You have not created any access keys.</em></td>
     </tr>
   {{/each}}
 </table>

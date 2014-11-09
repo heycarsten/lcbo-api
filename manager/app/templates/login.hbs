@@ -9,15 +9,17 @@
 <form novalidate {{action "authenticate" on="submit"}}>
   <h2 class="novis">Log In</h2>
 
-  <div class="field email">
-    {{input name="email" type="email" id="email" placeholder="Email" value=identification autofocus=true tabindex=1}}
-    <label for="email"><span class="novis">Email</span></label>
-  </div>
+  <ol class="minimal-fields">
+    <li class="field email">
+      {{input name="email" type="email" id="email" placeholder="Email" value=identification autofocus=true tabindex=1}}
+      <label for="email"><span class="novis">Email</span></label>
+    </li>
 
-  <div class="field password">
-    {{input name="password" id="password" placeholder="Password" type="password" value=password tabindex=2}}
-    <label for="password"><span class="novis">Password</span></label>
-  </div>
+    <li class="field password">
+      {{input name="password" id="password" placeholder="Password" type="password" value=password tabindex=2}}
+      <label for="password"><span class="novis">Password</span></label>
+    </li>
+  </ol>
 
   {{#if errorMessage}}
     <div class="error-msg">
@@ -26,8 +28,8 @@
   {{/if}}
 
   <div class="actions">
-    <button type="submit" tabindex="3">
-      <i class="fa fa-sign-in"></i> Log In
+    <button class="log-in" type="submit" tabindex="3">
+      Log In
     </button>
   </div>
 

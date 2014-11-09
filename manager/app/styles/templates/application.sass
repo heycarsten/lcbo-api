@@ -61,7 +61,7 @@
       font-weight: normal
       &.open
         background: white
-        box-shadow: 0px 1px 3px rgba($blue-grey-900, 0.45)
+        @extend %in-context-box-shadow
         .account-menu
           display: block
 
@@ -86,6 +86,7 @@
 
 footer
   position: fixed
+  z-index: 9999
   bottom: 0
   left: 0
   right: 0

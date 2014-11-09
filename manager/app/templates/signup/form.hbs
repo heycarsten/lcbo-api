@@ -1,50 +1,52 @@
 <form novalidate {{action "createAccount" on="submit"}}>
-  <div {{bind-attr class=":field :name errors.name:has-error"}} {{action "clearErrorsOn" "name"}}>
-    {{input id="name" name="name" value=name placeholder="Your Name" autofocus=true disabled=disabled tabindex=1}}
-    <label for="name"><span class="novis">Full name</span></label>
+  <ol class="minimal-fields">
+    <li {{bind-attr class=":field :name errors.name:has-error"}} {{action "clearErrorsOn" "name"}}>
+      {{input id="name" name="name" value=name placeholder="Your Name" autofocus=true disabled=disabled tabindex=1}}
+      <label for="name"><span class="novis">Full name</span></label>
 
-    {{#if errors.name}}
-      <div class="error-msg">{{errors.name}}</div>
-    {{/if}}
-  </div>
+      {{#if errors.name}}
+        <div class="error-msg">{{errors.name}}</div>
+      {{/if}}
+    </li>
 
-  <div {{bind-attr class=":field :email errors.email:has-error"}} {{action "clearErrorsOn" "email"}}>
-    {{input type="email" id="email" value=email placeholder="Email" disabled=disabled tabindex=2}}
-    <label for="email"><span class="novis">Email</span></label>
+    <li {{bind-attr class=":field :email errors.email:has-error"}} {{action "clearErrorsOn" "email"}}>
+      {{input type="email" id="email" value=email placeholder="Email" disabled=disabled tabindex=2}}
+      <label for="email"><span class="novis">Email</span></label>
 
-    {{#if errors.email}}
-      <div class="error-msg">{{errors.email}}</div>
-    {{/if}}
-  </div>
+      {{#if errors.email}}
+        <div class="error-msg">{{errors.email}}</div>
+      {{/if}}
+    </li>
 
-  <div {{bind-attr class=":field :password :create errors.password:has-error"}}>
-    <span {{action "clearErrorsOn" "password"}}>
-      {{password-input id="password" name="password" placeholder=passwordPlaceholder value=password showPassword=showPassword disabled=disabled tabindex=3}}
-      <label for="password"><span class="novis">Password</span></label>
-      <button {{bind-attr class=":toggle-mask showPassword:unmasked:masked"}} {{action "togglePasswordMask"}}>
-        <span class="novis">
-          {{#if showPassword}}
-            Mask
-          {{else}}
-            Unmask
-          {{/if}}
-        </span>
-      </button>
-    </span>
+    <li {{bind-attr class=":field :password :create errors.password:has-error"}}>
+      <span {{action "clearErrorsOn" "password"}}>
+        {{password-input id="password" name="password" placeholder=passwordPlaceholder value=password showPassword=showPassword disabled=disabled tabindex=3}}
+        <label for="password"><span class="novis">Password</span></label>
+        <button {{bind-attr class=":toggle-mask showPassword:unmasked:masked"}} {{action "togglePasswordMask"}}>
+          <span class="novis">
+            {{#if showPassword}}
+              Mask
+            {{else}}
+              Unmask
+            {{/if}}
+          </span>
+        </button>
+      </span>
 
-    {{#if errors.password}}
-      <div class="error-msg">{{errors.password}}</div>
-    {{/if}}
-  </div>
+      {{#if errors.password}}
+        <div class="error-msg">{{errors.password}}</div>
+      {{/if}}
+    </li>
 
-  <div {{bind-attr class=":field :checkbox :terms errors.doesAgreeToTerms:has-error"}}>
-    {{input id="does-agree-to-terms" type="checkbox" tabindex="4" checked=doesAgreeToTerms}}
-    <label for="does-agree-to-terms">I agree to LCBO API's {{link-to "Terms of Service" "terms" target="_blank"}}</label>
+    <li {{bind-attr class=":field :checkbox :terms errors.doesAgreeToTerms:has-error"}}>
+      {{input id="does-agree-to-terms" type="checkbox" tabindex="4" checked=doesAgreeToTerms}}
+      <label for="does-agree-to-terms">I agree to LCBO API's {{link-to "Terms of Service" "terms" target="_blank"}}</label>
 
-    {{#if errors.doesAgreeToTerms}}
-      <div class="error-msg">{{errors.doesAgreeToTerms}}</div>
-    {{/if}}
-  </div>
+      {{#if errors.doesAgreeToTerms}}
+        <div class="error-msg">{{errors.doesAgreeToTerms}}</div>
+      {{/if}}
+    </div>
+  </li>
 
   <div class="actions">
     <button class="sign-up" type="submit" {{bind-attr disabled=disabled}} tabindex="5">Sign Up</button>
