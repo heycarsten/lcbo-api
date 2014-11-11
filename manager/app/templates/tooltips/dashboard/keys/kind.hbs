@@ -1,0 +1,16 @@
+<p>
+  <b>Private / Backend Application</b> keys are not rate-limited, they are
+  intended to be used in backend integrations: web applications,
+  proxying setups, reporting scripts, business software, and are useful
+  for &ldquo;playing around&rdquo;.
+</p>
+<p>
+  <b>Web Browser Application</b> keys support CORS and JSONP, they are
+  tied to a domain and are rate-limited by IP address to 3600
+  requests/hour to prevent abuse from a single client.
+</p>
+<p>
+  <b>Native Client Application</b> keys are rate-limited by IP address
+  to 3600 requests/hour to prevent abuse from a single client, HTTPS is
+  required.
+</p>

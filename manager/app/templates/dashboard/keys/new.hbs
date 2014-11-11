@@ -1,89 +1,49 @@
-<form>
+{{#ui-form model=model action="createKey"}}
   <h1>New Access Key</h1>
 
-  {{!
-  <p class="warn">
-    Your free subscription allows 50,000 requests per month. Subscribe to the
-    supporter plan for 1,000,000 requests per month, HTTPS support, and UPC
-    lookups.
-  </p>
-  }}
-
   <ol class="stacked-fields">
-    <li class="field">
-      <label for="f-kind">Access Type <i class="info"><span>
-        <p>
-          <b>Private / Backend Application</b> keys are not rate-limited, they are
-          intended to be used in backend integrations: web applications,
-          proxying setups, reporting scripts, business software, and are useful
-          for &ldquo;playing around&rdquo;.
-        </p>
-        <p>
-          <b>Web Browser Application</b> keys support CORS and JSONP, they are
-          tied to a domain and are rate-limited by IP address to 3600
-          requests/hour to prevent abuse from a single client.
-        </p>
-        <p>
-          <b>Native Client Application</b> keys are rate-limited by IP address
-          to 3600 requests/hour to prevent abuse from a single client, HTTPS is
-          required.
-        </p>
-      </span></i></label>
-      {{fast-select
-        tabindex=1
-        items=kindOptions
-        id="f-kind"
-        selected=kind}}
-    </li>
-    <li class="field">
-      <label for="f-label">Name / Label <i class="info"><span>
-        <p>
-          This is a short label that identifies the use-case of the Access Key,
-          this could be the name of your software product, or the name of your
-          company if you're using LCBO API for anaylisis and reporting.
-        </p>
-      </span></i></label>
-      {{input
-        tabindex=2
-        type="text"
-        id="f-label"
-        maxlength=255
-        value=label
-        placeholder="MyApp"}}
-    </li>
+    {{ui-form-field
+      label="Access Type"
+      type="select"
+      for="kind"
+      tabindex=1
+      info="tooltips/dashboard/keys/kind"
+      items=kindOptions}}
+
+    {{ui-form-field
+      for="label"
+      label="Name / Label"
+      maxlength=100
+      tabindex=2
+      placeholder="MyApp"
+      info="tooltips/dashboard/keys/label"}}
+
     {{#if isClient}}
-      <li class="field tight">
-        <label class="checkbox">{{input type="checkbox" checked=inDevmode}} In Development Mode<i class="info"><span>
-          <p>
-            When your Access Key is in <b>Development Mode</b> there is no
-            hourly request rate-limit, however a maximum of 3 diffent IP
-            addresses can use the Access Key per hour.
-          </p>
-        </span></i></label>
-      </li>
+      {{ui-form-field
+        type="checkbox"
+        tabindex=3
+        for="inDevmode"
+        label="Development Mode"
+        info="tooltips/dashboard/keys/in-devmode"}}
     {{/if}}
+
     {{#if isWebClient}}
-      <li class="field">
-        <label for="f-domain">Website Domain <i class="info"><span>
-          <p>
-            The root domain that your JavaScript application is served from. No
-            need to specify the URL scheme we&rsquo;ll allow HTTP and HTTPS.
-          </p>
-        </span></i></label>
-        {{input id="f-domain" tabindex=3 type="text" placeholder="mysite.com" value=domain}}
-      </li>
+      {{ui-form-field
+        for="domain"
+        tabindex=4
+        placeholder="mysite.com"
+        info="tooltips/dashboard/keys/domain"}}
     {{/if}}
-    <li class="field">
-      <label for="f-info">Info / Notes <span class="optional">Optional</span> <i class="info"><span>
-        <p>
-          A short description of your application or use-case, only visible to
-          LCBO API staff.
-        </p>
-      </span></i></label>
-      {{textarea id="f-info" tabindex=4 value=notes type="text"}}
-    </li>
-  </div>
+
+    {{ui-form-field
+      for="info"
+      tabindex=5
+      type="textarea"
+      optional=true
+      label="Info / Notes"
+      info="tooltips/dashboard/keys/info"}}
+
   <div class="actions">
     <button type="submit" tabindex="5">Create Access Key</button>
   </div>
-</form>
+{{/ui-form}}

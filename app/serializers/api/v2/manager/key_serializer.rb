@@ -4,7 +4,12 @@ class API::V2::Manager::KeySerializer < ApplicationSerializer
     :label,
     :info,
     :kind,
+    :domain,
     :token,
     :created_at,
     :updated_at
+
+  def token
+    object.token.to_s
+  end
 end

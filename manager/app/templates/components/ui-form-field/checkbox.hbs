@@ -1,0 +1,11 @@
+<label type="checkbox">
+  {{input tabindex=tabindex type="checkbox" checked=value}}
+
+  {{#if labelTemplate}}
+    {{partial labelTemplate}}
+  {{else}}
+    {{label}}
+  {{/if}}
+
+  {{#if info}}<i class="info"><span>{{partial info}}</span></i>{{/if}}
+</label>

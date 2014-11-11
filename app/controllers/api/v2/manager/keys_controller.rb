@@ -42,9 +42,11 @@ class API::V2::Manager::KeysController < API::V2::Manager::ManagerController
     return {} unless params[:key]
 
     params.require(:key).permit(
+      :kind,
       :label,
-      :info,
-      :kind
+      :domain,
+      :is_devmode,
+      :info
     )
   end
 end

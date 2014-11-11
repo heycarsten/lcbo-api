@@ -21,6 +21,8 @@ class Key < ActiveRecord::Base
     format: { with: DOMAIN_RNG },
     if: :web_client?
 
+  validates :label, presence: true
+
   def self.lookup(raw_token)
     return unless token = Token.parse(raw_token)
     return unless token.is?(:access)

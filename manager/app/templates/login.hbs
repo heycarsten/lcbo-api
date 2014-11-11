@@ -6,23 +6,27 @@
   </h1>
 </header>
 
-<form novalidate {{action "authenticate" on="submit"}}>
+{{#ui-form model=this minimal=true action="authenticate"}}
   <h2 class="novis">Log In</h2>
 
   <ol class="minimal-fields">
-    <li class="field email">
-      {{input name="email" type="email" id="email" placeholder="Email" value=identification autofocus=true tabindex=1}}
-      <label for="email"><span class="novis">Email</span></label>
-    </li>
+    {{ui-form-field
+      type="email"
+      for="email"
+      placeholder="Email"
+      value=identification
+      tabindex=1
+      autofocus=true}}
 
-    <li class="field password">
-      {{input name="password" id="password" placeholder="Password" type="password" value=password tabindex=2}}
-      <label for="password"><span class="novis">Password</span></label>
-    </li>
+    {{ui-form-field
+      type="password"
+      for="password"
+      value=password
+      tabindex=2}}
   </ol>
 
   {{#if errorMessage}}
-    <div class="error-msg">
+    <div class="form-field-error">
       <i class="fa fa-exclamation-triangle"></i> {{errorMessage}}
     </div>
   {{/if}}
@@ -36,4 +40,4 @@
   <div class="alt-actions">
     <p>Don&rsquo;t have an account? {{#link-to "signup"}}Sign Up{{/link-to}}</p>
   </div>
-</form>
+{{/ui-form}}

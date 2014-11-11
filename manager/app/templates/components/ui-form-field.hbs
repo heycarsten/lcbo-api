@@ -1,0 +1,61 @@
+{{#if template}}
+  {{yield}}
+
+  {{#if isInvalid}}
+    <em class="form-field-error"><span>{{errors.firstObject.message}}</span></em>
+  {{/if}}
+{{else}}
+  {{#if isCheckbox}}
+    <span class="form-field-control">
+      {{partial controlPartialPath}}
+
+      {{#if isInvalid}}
+        <em class="form-field-error"><span>{{errors.firstObject.message}}</span></em>
+      {{/if}}
+    </span>
+  {{/if}}
+
+  {{#if isStacked}}
+    {{#if labelTemplate}}
+      {{partial labelTemplate}}
+    {{else}}
+      {{#unless isPassword}}
+        <label {{bind-attr for=fieldGuid}}>
+          {{label}}
+
+          {{#if optional}}
+            <span class="optional">Optional</span>
+          {{/if}}
+
+          {{#if info}}
+            <i class="info"><span>{{partial info}}</span></i>
+          {{/if}}
+        </label>
+      {{/unless}}
+    {{/if}}
+
+    <span class="form-field-control">
+      {{partial controlPartialPath}}
+
+      {{#if isInvalid}}
+        <em class="form-field-error"><span>{{errors.firstObject.message}}</span></em>
+      {{/if}}
+    </span>
+  {{/if}}
+
+  {{#if isMinimal}}
+    {{partial controlPartialPath}}
+
+    {{#if labelTemplate}}
+      {{partial labelTemplate}}
+    {{else}}
+      {{#unless isPassword}}
+        <label {{bind-attr for=fieldGuid}}><span class="novis">{{label}}</span></label>
+      {{/unless}}
+    {{/if}}
+
+    {{#if isInvalid}}
+      <em class="form-field-error"><span>{{errors.firstObject.message}}</span></em>
+    {{/if}}
+  {{/if}}
+{{/if}}

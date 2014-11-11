@@ -1,4 +1,4 @@
-.error-msg
+.form-field-error
   color: $red-500
 
 form
@@ -17,7 +17,7 @@ form
     top: -1px
     left: 2px
 
-  .info
+  label i.info
     position: relative
     left: 4px
     font-size: 18px
@@ -95,22 +95,23 @@ form
       &:active
         color: $purple-a400
 
-  .error-msg
-    font-style: italtic
+  .form-field-error
+    display: block
+    font-style: normal
     font-weight: 400
     font-size: 14px
     text-align: right
     line-height: 2
     padding: 0 8px
 
-  .checkbox .error-msg
+  .checkbox .form-field-error
     text-align: center
 
   .field
     padding: 8px 0
     position: relative
 
-    &.has-error
+    &.is-invalid
       label, input
         color: $red-500
       input[type="checkbox"]
@@ -180,7 +181,7 @@ form
         padding: 0
         line-height: 1.8
 
-      &.tight label
+      &.checkbox label
         line-height: 1
         margin-top: -4px
 
@@ -218,7 +219,7 @@ form
           &:before
             content: "\f023"
 
-        button.toggle-mask
+        .toggle-mask
           +font-awesome
           position: absolute
           top: 17px

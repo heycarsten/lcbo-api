@@ -141,7 +141,7 @@ class User < ActiveRecord::Base
   end
 
   def password_given?
-    @password_given ? true : false
+    new_record? || (@password_given ? true : false)
   end
 
   def password=(val)
