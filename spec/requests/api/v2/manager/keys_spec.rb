@@ -82,13 +82,13 @@ RSpec.describe 'V2 Manager Keys API' do
       expect(json[:key][:kind]).to eq 'private_server'
     end
 
-    it 'creates a new key for the authenticated user given no attributes' do
+    it 'fails to create a new key for the authenticated user given no attributes' do
       log_in_user(u = create_verified_user!)
 
-      api_post '/manager/keys'
+      api_post '/manager/keys', key: {}
 
-      expect(response.status).to eq 201
-      expect(json[:key][:token]).to be_present
+      expect(response.status).to eq 422
+      expect(json[:errors]).to be_present
     end
 
     it 'fails if not authenticated' do
