@@ -15,6 +15,7 @@ gem 'therubyracer', platforms: :ruby
 gem 'uglifier'
 gem 'skylight',     '~> 0.4.0.beta2'
 gem 'honeybadger',  groups: [:development, :production]
+gem 'stripe',       github: 'stripe/stripe-ruby'
 
 # Crawler Junk
 gem 'excon',         require: false

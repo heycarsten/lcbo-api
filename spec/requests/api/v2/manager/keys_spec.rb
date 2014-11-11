@@ -69,7 +69,8 @@ RSpec.describe 'V2 Manager Keys API' do
 
       api_post '/manager/keys', key: {
         label: 'HERP',
-        info: 'Yo Yo Yo'
+        info: 'Yo Yo Yo',
+        kind: 'private_server'
       }
 
       expect(response.status).to eq 201
@@ -78,6 +79,7 @@ RSpec.describe 'V2 Manager Keys API' do
       expect(json[:key][:token]).to be_present
       expect(json[:key][:label]).to eq 'HERP'
       expect(json[:key][:info]).to eq 'Yo Yo Yo'
+      expect(json[:key][:kind]).to eq 'private_server'
     end
 
     it 'creates a new key for the authenticated user given no attributes' do

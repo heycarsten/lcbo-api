@@ -43,7 +43,8 @@ class API::V2::Manager::KeysController < API::V2::Manager::ManagerController
 
     params.require(:key).permit(
       :label,
-      :info
+      :info,
+      :kind
     )
   end
 end

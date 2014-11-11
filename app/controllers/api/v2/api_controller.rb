@@ -1,7 +1,6 @@
 class API::V2::APIController < APIController
   VERSION  = 2
   PER      = 50
-  MAX_RATE = 100
 
   LOOPBACKS = %w[
     0.0.0.0
@@ -30,12 +29,12 @@ class API::V2::APIController < APIController
     GCoder::GeocoderError,
     Magiq::Error, with: :render_exception
 
-  before_filter \
-    :rate_limit!,
+  before_action \
     :verify_request!,
+    :enforce_access_key!,
     :authenticate!, except: :preflight_cors
 
-  after_filter :add_cors_headers
+  after_action :add_cors_headers
 
   self.responder = Class.new(responder) do
     def json_resource_errors
@@ -57,29 +56,10 @@ class API::V2::APIController < APIController
 
   protected
 
-  def rate_limit!
-    max = case
-    when current_key
-      current_key[:max_rate]
-    when current_user
-      current_user.max_rate
-    else
-      MAX_RATE
-    end
-
-    uniq = if current_key && !current_key[:is_public]
-      current_key[:id]
-    else
-      request.ip
-    end
-
-    rate_limit(max, uniq)
-  end
-
   def verify_request!
     return true unless current_key
 
-    if !current_key[:is_public] || current_key[:domain].blank?
+    if current_key[:kind] != 'web_client' || current_key[:domain].blank?
       params.delete(:callback)
       return true
     end

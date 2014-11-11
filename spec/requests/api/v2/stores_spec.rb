@@ -4,8 +4,8 @@ RSpec.describe 'V2 Stores API' do
   def prepare!
     @user        = create_verified_user!
     @private_key = @user.keys.create!
-    @public_key  = @user.keys.create!(is_public: true, domain: 'lcboapi.test')
-    @public_key_no_origin = @user.keys.create!(is_public: true)
+    @public_key  = @user.keys.create!(kind: Key.kinds[:web_client], domain: 'lcboapi.test')
+    @public_key_no_origin = @user.keys.create!(kind: Key.kinds[:web_client])
     @stores = [
       Fabricate(:store, id: 4, name: 'Store B', inventory_count: 10),
       Fabricate(:store, id: 3, name: 'Store C', inventory_count: 20),

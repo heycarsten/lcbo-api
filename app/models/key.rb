@@ -1,7 +1,11 @@
 class Key < ActiveRecord::Base
-  DOMAIN_RNG       = /\A([a-z0-9\-]+\.[a-z0-9\-]+)+\Z/
-  MAX_PUBLIC_RATE  = 360
-  MAX_PRIVATE_RATE = 3600
+  DOMAIN_RNG = /\A([a-z0-9\-]+\.[a-z0-9\-]+)+\Z/
+
+  enum kind: [
+    :web_client,
+    :native_client,
+    :private_server
+  ]
 
   belongs_to :user
 
@@ -15,7 +19,7 @@ class Key < ActiveRecord::Base
   validates :domain,
     allow_blank: true,
     format: { with: DOMAIN_RNG },
-    if: :is_public?
+    if: :web_client?
 
   def self.lookup(raw_token)
     return unless token = Token.parse(raw_token)
@@ -28,8 +32,8 @@ class Key < ActiveRecord::Base
   end
 
   def self.fetch(key_id)
-    if (json = $redis.get(keyspace_for(key_id)))
-      JSON.parse(json, symbolize_names: true)
+    if (json = $redis.get(redis_key(key_id)))
+      MultiJson.load(json, symbolize_keys: true)
     elsif (record = where(id: key_id).first)
       record.store
     else
@@ -37,42 +41,33 @@ class Key < ActiveRecord::Base
     end
   end
 
-  def self.keyspace_for(key_id)
+  def self.redis_key(key_id)
     "#{Rails.env}:keys:#{key_id}"
-  end
-
-  def is_private?
-    !is_public?
   end
 
   def store
     data = {
-      id:         id,
-      user_id:    user.id,
-      secret:     secret,
-      max_rate:   max_rate,
-      is_public:  is_public,
-      domain:     domain
+      id:          id,
+      kind:        kind,
+      user_id:     user.id,
+      secret:      secret,
+      domain:      domain,
+      is_disabled: is_disabled,
+      in_devmode:  in_devmode
     }
 
-    $redis.set(keyspace, data.to_json)
+    $redis.set(redis_key, MultiJson.dump(data))
 
     data
   end
 
   def unstore
-    $redis.del(keyspace)
+    $redis.del(redis_key)
     true
   end
 
-  def max_rate
-    self[:max_rate] || begin
-      is_public? ? MAX_PUBLIC_RATE : MAX_PRIVATE_RATE
-    end
-  end
-
-  def keyspace
-    self.class.keyspace_for(id)
+  def redis_key
+    self.class.redis_key(id)
   end
 
   def domain=(val)

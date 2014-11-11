@@ -22,6 +22,10 @@ RSpec.configure do |config|
   config.include Factories
   config.include APIHelpers, type: :request
 
+  config.before :suite do
+    Rails.application.load_seed
+  end
+
   config.after :suite do
     keys = $redis.keys('test*')
     $redis.del(*keys) if keys.any?

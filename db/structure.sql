@@ -298,9 +298,32 @@ CREATE TABLE keys (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     user_id uuid NOT NULL,
-    is_public boolean DEFAULT false NOT NULL,
     domain character varying(100),
-    max_rate integer
+    kind integer DEFAULT 0,
+    in_devmode boolean DEFAULT false NOT NULL,
+    is_disabled boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: plans; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE plans (
+    id uuid DEFAULT uuid_generate_v4() NOT NULL,
+    is_active boolean DEFAULT true NOT NULL,
+    stripe_uid character varying(45),
+    title character varying(60),
+    kind integer DEFAULT 0 NOT NULL,
+    has_cors boolean DEFAULT false NOT NULL,
+    has_ssl boolean DEFAULT false NOT NULL,
+    has_upc_lookup boolean DEFAULT false NOT NULL,
+    has_upc_value boolean DEFAULT false NOT NULL,
+    has_history boolean DEFAULT false NOT NULL,
+    request_pool_size integer DEFAULT 65000 NOT NULL,
+    fee_in_cents integer DEFAULT 0 NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -486,7 +509,9 @@ CREATE TABLE users (
     last_seen_ip character varying(255),
     last_seen_at timestamp without time zone,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    plan_id uuid,
+    is_disabled boolean DEFAULT false NOT NULL
 );
 
 
@@ -563,6 +588,14 @@ ALTER TABLE ONLY inventories
 
 ALTER TABLE ONLY keys
     ADD CONSTRAINT keys_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: plans_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY plans
+    ADD CONSTRAINT plans_pkey PRIMARY KEY (id);
 
 
 --
@@ -716,6 +749,13 @@ CREATE INDEX index_keys_on_user_id ON keys USING btree (user_id);
 
 
 --
+-- Name: index_plans_on_is_active; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_plans_on_is_active ON plans USING btree (is_active);
+
+
+--
 -- Name: index_products_on_is_dead_and_inventory_volume_in_milliliters; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -741,6 +781,13 @@ CREATE INDEX index_products_on_value_added_promotion_ends_on ON products USING b
 --
 
 CREATE INDEX index_stores_on_tag_vectors ON stores USING gin (tag_vectors);
+
+
+--
+-- Name: index_users_on_is_disabled; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_users_on_is_disabled ON users USING btree (is_disabled);
 
 
 --
@@ -1076,4 +1123,14 @@ INSERT INTO schema_migrations (version) VALUES ('20140714202224');
 INSERT INTO schema_migrations (version) VALUES ('20140717031508');
 
 INSERT INTO schema_migrations (version) VALUES ('20140801013002');
+
+INSERT INTO schema_migrations (version) VALUES ('20141110021113');
+
+INSERT INTO schema_migrations (version) VALUES ('20141110023249');
+
+INSERT INTO schema_migrations (version) VALUES ('20141110171340');
+
+INSERT INTO schema_migrations (version) VALUES ('20141111022512');
+
+INSERT INTO schema_migrations (version) VALUES ('20141111023631');
 

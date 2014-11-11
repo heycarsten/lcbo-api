@@ -7,11 +7,17 @@ class User < ActiveRecord::Base
   has_many :keys,   dependent: :destroy
   has_many :emails, dependent: :destroy
 
+  belongs_to :plan
+
   before_create :generate_auth_secret, :generate_verification_secret
   before_save   :set_password_digest, if: :password_changed?
 
+  before_validation :assign_default_plan
+
   after_create  :welcome_and_update_email
   after_update  :update_email,  if: :email_changed?
+
+  validates :plan_id, presence: true
 
   validates :password,
     presence: true,
@@ -103,6 +109,22 @@ class User < ActiveRecord::Base
 
   def self.redis_session_key(token)
     "#{Rails.env}:sessions:#{token[:user_id]}"
+  end
+
+  def self.redis_user_key(user_id)
+    "#{Rails.env}:users:#{user_id}"
+  end
+
+  def self.redis_load(user_id)
+    if (json = $redis.get(redis_user_key(user_id)))
+      MultiJson.load(json, symbolize_keys: true)
+    else
+      redis_cache(user_id)
+    end
+  end
+
+  def self.redis_cache(user_id)
+    User.find(user_id).redis_cache
   end
 
   def does_agree_to_terms=(val)
@@ -206,7 +228,27 @@ class User < ActiveRecord::Base
     save!
   end
 
+  def redis_cache
+    key  = self.class.redis_user_key(id)
+    $redis.set(key, MultiJson.dump(
+      has_cors:          plan.has_cors,
+      has_ssl:           plan.has_ssl,
+      has_upc_lookup:    plan.has_upc_lookup,
+      has_upc_value:     plan.has_upc_value,
+      has_history:       plan.has_history,
+      request_pool_size: plan.request_pool_size,
+      is_disabled:       is_disabled
+    ))
+    self.class.redis_load(id)
+  end
+
   private
+
+  def assign_default_plan
+    return true if plan_id
+    self.plan_id = Plan.free.first.id
+    true
+  end
 
   def redis_session_key(token)
     self.class.redis_session_key(token)
