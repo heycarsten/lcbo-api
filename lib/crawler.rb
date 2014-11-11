@@ -2,9 +2,7 @@ require 'boticus'
 
 class Crawler < Boticus::Bot
   def init(crawl = nil)
-    @model               = (crawl || Crawl.init)
-    @crawled_product_ids = []
-    @crawled_inventories_ids = []
+    @model = (crawl || Crawl.init)
   end
 
   def log(level, msg, payload = {})
@@ -19,33 +17,7 @@ class Crawler < Boticus::Bot
 
   desc 'Get products index via API'
   task :get_products_index_via_api do
-    @api_index = LCBO.products
-  end
-
-  desc 'Get products index via LCBO.com'
-  task :get_products_index_via_lcbo do
-    @lcbo_index = LCBO.catalog_products
-  end
-
-  desc 'Determining how to crawl products'
-  task :determine_how_to_crawl_products do
-    @lcbo_product_ids = @lcbo_index.map { |p| p[:id] }
-    @api_product_ids  = @api_index.map { |p| p[:id] }
-    @product_ids      = @api_product_ids & @lcbo_product_ids
-
-    # Choose to crawl/re-crawl product on LCBO.com if:
-    @lcbo_product_ids.select! do |id|
-      p = @lcbo_index.detect { |p| p[:id] == id }
-      # API didn't return the product
-      next true unless (ap = @api_index.detect { |a| a[:id] == p[:id] })
-      # API product has different prices
-      next true if ap[:price_in_cents] != p[:price_in_cents]
-      next true if ap[:regular_price_in_cents] != p[:regular_price_in_cents]
-      # API product has different Air Miles
-      next true if ap[:bonus_reward_miles] != p[:bonus_reward_miles]
-      # Otherwise the API source will be fine
-      false
-    end
+    @api_product_ids = LCBO.products.map { |p| p[:id] }
   end
 
   desc 'Crawling stores'
@@ -54,7 +26,7 @@ class Crawler < Boticus::Bot
       begin
         log :dot, "Placing store: #{store_id}"
 
-        attrs = LCBO.store(store_id)
+        attrs            = LCBO.store(store_id)
         attrs[:is_dead]  = false
         attrs[:crawl_id] = model.id
 
@@ -75,14 +47,7 @@ class Crawler < Boticus::Bot
     @api_product_ids.each do |id|
       crawl_product_id(id, :api) { LCBO.product(id) }
     end
-    puts
-  end
 
-  desc 'Crawling/re-crawling products from LCBO.com'
-  task :crawl_lcbo_dot_com_products do
-    @lcbo_product_ids.each do |id|
-      crawl_product_id(id, :lcbo) { LCBO.catalog_product(id) }
-    end
     puts
   end
 

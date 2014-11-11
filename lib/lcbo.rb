@@ -1,7 +1,7 @@
 require 'excon'
 
 Excon.defaults[:headers] = {
-  'User-Agent' => 'LCBO API - http://lcboapi.com [a44cdf]'
+  'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.52 Safari/537.36'
 }
 
 module LCBO
@@ -19,7 +19,6 @@ module LCBO
 
   autoload :ProductParser,             'lcbo/product_parser'
   autoload :CatalogProductCrawler,     'lcbo/catalog_product_crawler'
-  autoload :CatalogProductsCrawler,    'lcbo/catalog_products_crawler'
   autoload :StoreIdsParser,            'lcbo/store_ids_parser'
   autoload :StoreParser,               'lcbo/store_parser'
   autoload :ProductsParser,            'lcbo/products_parser'
@@ -62,10 +61,6 @@ module LCBO
   def products
     xml = api("productsearch.do?numProducts=#{NUM_PRODUCTS}")
     ProductsParser.parse(xml)[:products]
-  end
-
-  def catalog_products
-    CatalogProductsCrawler.crawl
   end
 
   def product_images(id)
