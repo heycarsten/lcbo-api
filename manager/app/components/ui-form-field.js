@@ -75,6 +75,12 @@ export default Em.Component.extend({
   }.property('for'),
 
   clearErrors: function() {
-    this.get('model.errors').remove(this.get('for'));
+    var errors = this.get('model.errors');
+
+    if (Em.isBlank(errors)) {
+      return;
+    }
+
+    errors.remove(this.get('for'));
   }.on('focusIn')
 });

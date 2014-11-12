@@ -71,10 +71,8 @@ export default Authenticator.extend({
         },
 
         function(xhr) {
-          var response = JSON.parse(xhr.responseText);
-
           Ember.run(function() {
-            reject(response.error.detail);
+            reject(xhr);
           });
         }
       );
