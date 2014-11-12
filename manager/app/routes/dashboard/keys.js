@@ -7,7 +7,6 @@ export default Em.Route.extend({
 
   afterModel: function() {
     var meta = this.store.metadataFor('key');
-
-    console.log(meta);
+    this.controllerFor('keys').set('page', meta.pagination.current_page);
   }
 });
