@@ -29,7 +29,8 @@ module Factories
   def build_key(attrs = {})
     Key.new({
       label: "Access Key ##{rand 99999}",
-      info: ('LOL ' * 30).chop
+      info: ('LOL ' * 30).chop,
+      kind: :private_server
     }.merge(attrs))
   end
 

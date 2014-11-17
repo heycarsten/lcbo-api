@@ -1,16 +1,20 @@
 <p>
-  <b>Private / Backend Application</b> keys are not rate-limited, they are
-  intended to be used in backend integrations: web applications,
-  proxying setups, reporting scripts, business software, and are useful
-  for &ldquo;playing around&rdquo;.
+  <b>Backend / Server</b> keys are for private use where you will not expose
+  your access key to the public. They are not rate-limited, and are intended to
+  be used for backend web apps (PHP, Ruby, Python, JSP), proxying setups, and
+  reporting scripts. This is the perfect Access Key for &ldquo;playing
+  around&rdquo;.
 </p>
 <p>
-  <b>Web Browser Application</b> keys support CORS and JSONP, they are
-  tied to a domain and are rate-limited by IP address to 3600
+  <b>Web Browser</b> keys are for JavaScript apps that run in the browser and
+  use XMLHttpRequest (Ajax) to access LCBO API. They support CORS and JSONP,
+  are tied to a domain and are rate-limited by IP address to 3600
   requests/hour to prevent abuse from a single client.
 </p>
 <p>
-  <b>Native Client Application</b> keys are rate-limited by IP address
-  to 3600 requests/hour to prevent abuse from a single client, HTTPS is
-  required.
+  <b>Desktop / Mobile</b> keys are to be used in native desktop and mobile
+  applications that will be shipped to users. Platforms such as iOS, Android,
+  Java, and Windows are all examples of these types of apps. Desktop / Mobile
+  keys are rate-limited by IP address to 3600 requests/hour to prevent abuse
+  from a single client, HTTPS is enforced.
 </p>

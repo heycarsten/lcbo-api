@@ -3,7 +3,9 @@
     "document",
     "window",
     "-Promise",
-    "moment"
+    "moment",
+    "d3",
+    "Rickshaw"
   ],
   "browser" : true,
   "boss" : true,

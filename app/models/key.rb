@@ -17,9 +17,9 @@ class Key < ActiveRecord::Base
   validates :user_id, presence: true
   validates :secret,  presence: true
   validates :domain,
-    allow_blank: true,
+    presence: true,
     format: { with: DOMAIN_RNG },
-    if: :web_client?
+    if: ->(key) { key.web_client? }
 
   validates :label, presence: true
 
@@ -45,6 +45,46 @@ class Key < ActiveRecord::Base
 
   def self.redis_key(key_id)
     "#{Rails.env}:keys:#{key_id}"
+  end
+
+  def self.redis_total_requests_key(key_id)
+    "#{redis_key(key_id)}:total_requests"
+  end
+
+  def self.redis_cycle_total_requests_key(key_id, cycle)
+    "#{redis_key(key_id)}:cycles:#{cycle}:total_requests"
+  end
+
+  def self.redis_cycle_daily_request_totals_key(key_id, cycle)
+    "#{redis_key(key_id)}:cycles:#{cycle}:daily_request_totals"
+  end
+
+  def self.redis_cycles_key(key_id)
+    "#{redis_key(key_id)}:cycles"
+  end
+
+  def self.redis_ip_requests_per_hour_key(key_id, ip)
+    "#{redis_key(key_id)}:ips:#{ip}:requests_per_hour"
+  end
+
+  def self.redis_hourly_ips_log_key(key_id)
+    "#{redis_key(key_id)}:hourly_ips_log"
+  end
+
+  def cycle_requests
+    now    = Time.now
+    first  = now.beginning_of_month.to_date
+    last   = now.end_of_month.to_date
+    rkey   = Key.redis_cycle_daily_request_totals_key(id, first.strftime('%Y-%m'))
+    scores = Hash[$redis.zrange(rkey, 0, -1, withscores: true)]
+    ret    = []
+
+    first.upto(last) do |date|
+      isodate = date.to_s
+      ret << [isodate, (scores[isodate] || 0).to_i]
+    end
+
+    ret
   end
 
   def store

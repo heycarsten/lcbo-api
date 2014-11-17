@@ -29,6 +29,8 @@ class API::V2::APIController < APIController
     GCoder::GeocoderError,
     Magiq::Error, with: :render_exception
 
+  rescue_from NotAuthorizedError, with: :not_authorized
+
   before_action \
     :verify_request!,
     :enforce_access_key!,

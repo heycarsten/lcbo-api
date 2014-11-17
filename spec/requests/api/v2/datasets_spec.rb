@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'V2 Datasets API' do
   def prepare!
     @user   = create_verified_user!
-    @key    = @user.keys.create!(label: 'Example App')
+    @key    = @user.keys.create!(label: 'Example App', kind: :private_server)
     @crawls = [
       Fabricate(:crawl),
       Fabricate(:crawl),

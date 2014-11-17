@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'V2 Products API' do
   def prepare!
     @user    = create_verified_user!
-    @key     = @user.keys.create!(label: 'Example App')
+    @key     = @user.keys.create!(label: 'Example App', kind: :private_server)
     @products = [
       Fabricate(:product, id: 4, name: 'Product B', inventory_count: 10),
       Fabricate(:product, id: 3, name: 'Product C', inventory_count: 20),

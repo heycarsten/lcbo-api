@@ -2,10 +2,10 @@ require 'rails_helper'
 
 RSpec.describe 'V2 Stores API' do
   def prepare!
-    @user        = create_verified_user!
-    @private_key = @user.keys.create!(label: 'Example App')
-    @public_key  = @user.keys.create!(label: 'Example App', kind: Key.kinds[:web_client], domain: 'lcboapi.test')
-    @public_key_no_origin = @user.keys.create!(label: 'Example', kind: Key.kinds[:web_client])
+    @user           = create_verified_user!
+    @private_key    = @user.keys.create!(label: 'Example', kind: :private_server)
+    @public_key     = @user.keys.create!(label: 'Example', kind: Key.kinds[:web_client], domain: 'lcboapi.test')
+    @public_key_dev = @user.keys.create!(label: 'Example', kind: Key.kinds[:web_client], domain: 'lcboapi.test', in_devmode: true)
     @stores = [
       Fabricate(:store, id: 4, name: 'Store B', inventory_count: 10),
       Fabricate(:store, id: 3, name: 'Store C', inventory_count: 20),
@@ -37,7 +37,7 @@ RSpec.describe 'V2 Stores API' do
     it 'enables CORS for public keys' do
       prepare!
       api_headers['Origin'] = 'null'
-      api_headers['X-Access-Key'] = @public_key
+      api_headers['X-Access-Key'] = @public_key.to_s
       api_get '/stores'
       expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
     end
@@ -45,20 +45,56 @@ RSpec.describe 'V2 Stores API' do
     it 'enforces origin for public keys with domains' do
       prepare!
       api_headers['Origin'] = nil
-      api_headers['X-Access-Key'] = @public_key
+      api_headers['X-Access-Key'] = @public_key.to_s
       api_get '/stores'
       expect(response.status).to eq 403
       expect(json[:error][:code]).to eq 'bad_origin'
     end
 
-    it 'does not enforce origin for public keys without domains' do
+    it 'allows requests for public keys with domains' do
       prepare!
-      api_headers['Origin'] = nil
-      api_headers['X-Access-Key'] = @public_key_no_origin
+      api_headers['Origin'] = 'http://lcboapi.test'
+      api_headers['X-Access-Key'] = @public_key.to_s
       api_get '/stores'
-      expect(response.headers['Access-Control-Allow-Origin']).to eq nil
       expect(response.status).to eq 200
       expect(json[:stores].size).to_not eq 0
+    end
+  end
+
+  describe 'rate limiting' do
+    it 'limits unique IP addresses per web client key when key is in devmode' do
+      prepare!
+      api_headers['Origin'] = 'http://lcboapi.test'
+      api_headers['X-Access-Key'] = @public_key_dev
+
+      api_headers['REMOTE_ADDR'] = '1.0.0.1'
+      api_get '/stores'
+      expect(response.status).to eq 200
+      expect(response.headers['X-Client-Limit-Max']).to eq 3
+      expect(response.headers['X-Client-Limit-Count']).to eq 1
+      expect(response.headers['X-Client-Limit-TTL']).to be_present
+      expect(response.headers['X-Rate-Limit-Count']).to be nil
+
+      api_headers['REMOTE_ADDR'] = '1.0.0.2'
+      api_get '/stores'
+      expect(response.status).to eq 200
+      expect(response.headers['X-Client-Limit-Count']).to eq 2
+
+      api_headers['REMOTE_ADDR'] = '1.0.0.3'
+      api_get '/stores'
+      expect(response.status).to eq 200
+      expect(response.headers['X-Client-Limit-Count']).to eq 3
+
+      api_headers['REMOTE_ADDR'] = '1.0.0.1'
+      api_get '/stores'
+      expect(response.status).to eq 200
+      expect(response.headers['X-Client-Limit-Count']).to eq 3
+
+      api_headers['REMOTE_ADDR'] = '1.0.0.4'
+      api_get '/stores'
+      expect(response.status).to eq 403
+      expect(response.headers['X-Client-Limit-Count']).to eq 4
+      expect(json[:error][:code]).to eq 'too_many_sessions'
     end
   end
 

@@ -51,7 +51,7 @@ export default Ember.Component.extend({
     }
   }.observes('items').on('didInsertElement'),
 
-  arrayWillChange: function (items, start, removeCount, addCount) {
+  arrayWillChange: function (items, start, removeCount) {
     var select = get(this, 'element');
     var options = select.childNodes;
 

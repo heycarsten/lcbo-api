@@ -2,18 +2,18 @@
   {{link-to "New Access Key" "dashboard.keys.new" class="button"}}
 </header>
 
-<table>
+<table class="keys-table">
   <tr>
     <th>Key</th>
     <th>Kind</th>
     <th>Token</th>
   </tr>
   {{#each key in this}}
-    <tr>
+    {{#link-to "dashboard.keys.show" key tagName="tr"}}
       <td>{{key.label}}</td>
-      <td>{{key.kind}}</td>
-      <td>{{key.token}}</td>
-    </tr>
+      <td>{{key.humanKind}}</td>
+      <td>{{key.totalDailyRequests}}</td>
+    {{/link-to}}
   {{else}}
     <tr class="empty">
       <td colspan="3"><em>You have not created any access keys.</em></td>

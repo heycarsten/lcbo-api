@@ -101,12 +101,15 @@ Rails.application.routes.draw do
   end
 
   controller :root, action: :ember, format: :html do
+    get '/manage'       => redirect('/manager')
+    get '/manage/*path' => redirect('/manager/%{path}')
     get '/manager'
     get '/manager/sign-up'
     get '/manager/account'
     get '/manager/verify/:token',   as: :verify
     get '/manager/recover'
     get '/manager/password/:token', as: :password
+    get '/manager/keys'
     get '/manager/keys/new'
     get '/manager/keys/:key_id'
     get '/manager/log-in'

@@ -115,6 +115,22 @@ class User < ActiveRecord::Base
     "#{Rails.env}:users:#{user_id}"
   end
 
+  def self.redis_total_requests_key(user_id)
+    "#{redis_user_key(user_id)}:total_requests"
+  end
+
+  def self.redis_cycle_total_requests_key(user_id, cycle)
+    "#{redis_user_key(user_id)}:cycles:#{cycle}:total_requests"
+  end
+
+  def self.redis_cycle_daily_request_totals_key(user_id, cycle)
+    "#{redis_user_key(user_id)}:cycles:#{cycle}:daily_request_totals"
+  end
+
+  def self.redis_cycles_key(user_id)
+    "#{redis_user_key(user_id)}:cycles"
+  end
+
   def self.redis_load(user_id)
     if (json = $redis.get(redis_user_key(user_id)))
       MultiJson.load(json, symbolize_keys: true)
@@ -228,6 +244,22 @@ class User < ActiveRecord::Base
     save!
   end
 
+  def cycle_requests
+    now    = Time.now
+    first  = now.beginning_of_month.to_date
+    last   = now.end_of_month.to_date
+    rkey   = User.redis_cycle_daily_request_totals_key(id, first.strftime('%Y-%m'))
+    scores = Hash[$redis.zrange(rkey, 0, -1, withscores: true)]
+    ret    = []
+
+    first.upto(last) do |date|
+      isodate = date.to_s
+      ret << [isodate, (scores[isodate] || 0).to_i]
+    end
+
+    ret
+  end
+
   def redis_cache
     key  = self.class.redis_user_key(id)
     $redis.set(key, MultiJson.dump(
@@ -240,6 +272,10 @@ class User < ActiveRecord::Base
       is_disabled:       is_disabled
     ))
     self.class.redis_load(id)
+  end
+
+  def cycle_ends_on
+    Time.now.end_of_month.to_date
   end
 
   private

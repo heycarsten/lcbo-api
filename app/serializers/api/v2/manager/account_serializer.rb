@@ -4,6 +4,8 @@ class API::V2::Manager::AccountSerializer < ApplicationSerializer
     :name,
     :email,
     :auth_token,
+    :cycle_requests,
+    :cycle_ends_on,
     :gravatar_url,
     :unverified_email
 

@@ -3,6 +3,8 @@ class APIController < ApplicationController
   RATE_LIMIT_WEB    = 2200
   RATE_LIMIT_NATIVE = 3600
 
+  class NotAuthorizedError < StandardError; end
+
   before_filter :set_api_headers
   after_filter :twerk_response_for_jsonp
 
@@ -40,7 +42,11 @@ class APIController < ApplicationController
         current_user.id
       end
 
-      User.redis_load(user_id)
+      begin
+        User.redis_load(user_id)
+      rescue ActiveRecord::RecordNotFound
+        raise NotAuthorizedError
+      end
     end
   end
 
@@ -70,20 +76,31 @@ class APIController < ApplicationController
     kind       = current_key[:kind]
     in_devmode = current_key[:in_devmode] ? true : false
     max        = account_info[:max_dev_ips] || MAX_DEV_IPS
-    rdbkey     = "#{Rails.env}:key:#{key_id}:ip_log"
+    redis_key  = Key.redis_hourly_ips_log_key(key_id)
 
     return true unless kind == 'web_client' && in_devmode
 
-    is_new  = $redis.pfadd(rdbkey, request.ip).to_i == 1
-    ttl     = $redis.ttl(rdbkey).to_i
-    count   = $redis.pfcount(rdbkey).to_i
+    result = $redis.multi do
+      $redis.pfadd(redis_key, request.remote_ip)
+      $redis.ttl(redis_key)
+      $redis.pfcount(redis_key)
+    end
+
+    is_new = result[0]
+    ttl    = result[1].to_i
+    count  = result[2].to_i
 
     if ttl == -1
-      $redis.expire(rdbkey, 1.hour)
+      $redis.expire(redis_key, 1.hour)
     end
+
+    response.headers['X-Client-Limit-Max']       = max
+    response.headers['X-Client-Limit-Count']     = count
+    response.headers['X-Client-Limit-TTL'] = ttl
 
     if (count > max) && is_new
       render_error \
+        status: 403,
         code: 'too_many_sessions',
         title: 'Maximum client sessions reached',
         detail: I18n.t('too_many_sessions', max: max, ttl: ttl)
@@ -98,23 +115,23 @@ class APIController < ApplicationController
     key_id     = current_key[:id]
     kind       = current_key[:kind]
     in_devmode = current_key[:in_devmode] ? true : false
-    rdbkey     = "#{Rails.env}:key:#{key_id}:rate_limit:#{request.ip}"
+    redis_key  = Key.redis_ip_requests_per_hour_key(key_id, request.remote_ip)
 
     return true unless (kind == 'web_client' && !in_devmode) || kind == 'native_client'
 
     # Enforce max requests per hour limit
-    count = $redis.incr(rdbkey).to_i
+    count = $redis.incr(redis_key).to_i
     max   = kind == 'web_client' ? RATE_LIMIT_WEB : RATE_LIMIT_NATIVE
 
     if count == 1
-      $redis.expire(rdbkey, 1.hour)
+      $redis.expire(redis_key, 1.hour)
     end
 
-    ttl = $redis.ttl(rdbkey).to_i + 1
+    ttl = $redis.ttl(redis_key).to_i + 1
 
-    response.headers['X-Rate-Limit-Max']       = max
-    response.headers['X-Rate-Limit-Count']     = count
-    response.headers['X-Rate-Limit-Reset-TTL'] = ttl
+    response.headers['X-Rate-Limit-Max']   = max
+    response.headers['X-Rate-Limit-Count'] = count
+    response.headers['X-Rate-Limit-TTL']   = ttl
 
     if count > max
       render_error \
@@ -130,14 +147,27 @@ class APIController < ApplicationController
   end
 
   def enforce_request_pool!
-    now     = Time.now
-    month   = "#{now.year}-#{now.month}"
+    now     = Time.now.utc
+    cycle   = now.strftime('%Y-%m')
+    member  = now.strftime('%Y-%m-%d')
     ttl     = now.end_of_month.to_i - now.to_i
+    key_id  = current_key[:id]
     user_id = current_key[:user_id]
     max     = account_info[:request_pool_size]
-    rdbkey  = "#{Rails.env}:users:#{user_id}:pool_count"
 
-    count = $redis.zincrby(rdbkey, 1, month).to_i
+    result = $redis.pipelined do
+      $redis.incr    User.redis_cycle_total_requests_key(user_id, cycle)
+      $redis.zincrby User.redis_cycle_daily_request_totals_key(user_id, cycle), 1, member
+      $redis.sadd    User.redis_cycles_key(user_id), cycle
+      $redis.incr    User.redis_total_requests_key(user_id)
+
+      $redis.incr    Key.redis_cycle_total_requests_key(key_id, cycle)
+      $redis.zincrby Key.redis_cycle_daily_request_totals_key(key_id, cycle), 1, member
+      $redis.sadd    Key.redis_cycles_key(key_id), cycle
+      $redis.incr    Key.redis_total_requests_key(key_id)
+    end
+
+    count = result[0].to_i
 
     response.headers['X-Request-Pool-Size']  = max
     response.headers['X-Request-Pool-Count'] = count

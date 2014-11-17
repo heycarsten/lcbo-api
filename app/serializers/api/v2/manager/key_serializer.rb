@@ -6,6 +6,7 @@ class API::V2::Manager::KeySerializer < ApplicationSerializer
     :kind,
     :domain,
     :token,
+    :cycle_requests,
     :created_at,
     :updated_at
 

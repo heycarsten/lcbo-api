@@ -16,6 +16,11 @@
     "normalize.css": "~3.0.2",
     "ember-simple-auth": "0.7.0",
     "moment": "~2.8.3",
-    "bourbon": "3.2.1"
+    "bourbon": "3.2.1",
+    "rickshaw": "~1.5.0",
+    "d3": "~3.4.13"
+  },
+  "resolutions": {
+    "handlebars": ">= 1.0.0 < 2.0.0"
   }
 }
