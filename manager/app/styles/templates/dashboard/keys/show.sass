@@ -1,0 +1,45 @@
+.access-key-data
+  background: $blue-grey-50
+  border-radius: 3px
+  padding: 14px 18px
+  line-height: 1.5
+
+  code
+    font-size: 20px
+    font-family: $source-code-pro
+    display: block
+    word-wrap: break-word
+
+.danger-zone
+  margin: 0
+  background-color: #fff
+  border: 1px solid $red-500
+  border-radius: 3px
+  padding: 24px
+
+  transition: background-color 0.3s ease-in
+
+  &:hover
+    background-color: $red-200
+
+  h1
+    margin: 0
+    font-weight: 500
+    font-size: 20px
+
+  button
+    @extend .button
+    line-height: 1
+    height: 42px
+    color: $red-500
+    border-color: $red-500
+
+    &:hover
+      color: $red-500
+
+    &:active
+      background-color: $red-500
+      color: white
+
+    &:focus
+      @extend .glow-red

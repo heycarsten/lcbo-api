@@ -1,12 +1,50 @@
 .app.dashboard-keys .content
   header
     text-align: right
+    margin-bottom: 24px
 
   table
     width: 100%
+    border-collapse: collapse
+    table-layout: fixed
+    white-space: nowrap
+
+  th, td
+    padding: 12px 10px
+    border-bottom: 1px solid $blue-grey-50
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
+
+    &:first-child
+      border-left: 1px solid $blue-grey-50
+
+    &:last-child
+      border-right: 1px solid $blue-grey-50
 
   th
+    background: $blue-grey-50
     text-align: left
 
   tr
-    line-height: 42px
+    line-height: 1.5
+
+    &:hover
+      td
+        background: lighten($purple-50, 5%)
+        cursor: pointer
+
+    &:nth-child(even)
+      background-color: $grey-50
+
+  .num
+    text-align: right
+
+  .col-label
+    width: 60%
+
+  .col-kind
+    width: 20%
+
+  .col-total-requests
+    width: 20%

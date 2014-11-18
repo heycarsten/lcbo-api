@@ -1,1 +1,108 @@
-show.hbs
+<header>
+  <h1>{{label}}</h1>
+</header>
+
+{{#if totalCycleRequests}}
+  <h2>Daily Requests This Month</h2>
+  {{bar-chart height=200 data=cycleRequests}}
+{{/if}}
+
+<h2>Access Key</h2>
+<div class="access-key-data">
+  <code>{{unbound token}}</code>
+</div>
+
+{{#if isWeb}}
+  <p>Tied to domain: <b>{{domain}}</b></p>
+{{/if}}
+
+<h2>Using Your Access Key</h2>
+<p>
+  In order to use your Access Key, you&rsquo;ll need to include it in your
+  requests. LCBO API allows two ways for you to do this:
+</p>
+<p>
+  <b>HTTP Header</b>: Include your key as an HTTP header, this approach is
+  recommended, set the <code>X-Access-Key</code> header to your Access Key.
+</p>
+<p>
+  <b>Query Param</b>: LCBO API will also accept your Access Key as a parameter
+  in the URL. Add a parameter named <code>access_key</code> to your request URL.
+</p>
+
+<h2>Examples</h2>
+
+{{#if isWeb}}
+  <h3>jQuery</h3>
+  <pre><code>jQuery.ajax({
+  url: 'https://lcboapi.com/stores',
+  headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
+}).then(function(data) {
+  console.log(data);
+});
+</code></pre>
+
+  <h3>WinJS (Web Context)</h3>
+  <pre><code>WinJS.xhr({
+  url: 'https://lcboapi.com/stores',
+  headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
+}).done(function(result) {
+  console.log(result);
+});
+</code></pre>
+
+  <h3>dojo</h3>
+  <pre><code>require(['dojo/request/xhr'], function(xhr) {
+  xhr('https://lcboapi.com/stores', {
+    handleAs: 'json',
+    headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
+  }).then(function(data) {
+    console.log(data);
+  });
+});
+</code></pre>
+{{/if}}
+
+{{#if isClient}}
+  <h3>iOS</h3>
+{{/if}}
+
+{{#if isServer}}
+  <h3>cURL</h3>
+<pre><code>curl -H 'X-Access-Key: <i>ACCESS_KEY</i>' https://lcboapi.com/stores
+</code></pre>
+
+  <h3>PowerShell</h3>
+<pre><code>Invoke-WebRequest https://lcboapi.com/stores `
+                  -Headers @{"X-Access-Key" = "<i>ACCESS_KEY</i>"}
+</code></pre>
+
+  <h3>Python</h3>
+<pre><code>import urllib2
+import json
+
+req = urllib2.Request('https://lcboapi.com/stores')
+req.add_header('X-Access-Key', '<i>ACCESS_KEY</i>')
+
+data = json.load(urllib2.urlopen(req))
+
+print data
+</code></pre>
+
+  <h3>Ruby</h3>
+<pre><code>require 'json'
+require 'open-uri'
+
+res = open('https://lcboapi.com/stores',
+  'X-Access-Key' => '<i>ACCESS_KEY</i>'
+)
+data = JSON.parse(res.read)
+
+puts data.inspect
+</code></pre>
+{{/if}}
+
+<section class="danger-zone">
+  <h1>Danger Zone</h1>
+  <button>Delete Access Key</button>
+</section>

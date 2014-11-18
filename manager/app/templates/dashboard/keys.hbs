@@ -3,20 +3,24 @@
 </header>
 
 <table class="keys-table">
-  <tr>
-    <th>Key</th>
-    <th>Kind</th>
-    <th>Token</th>
-  </tr>
-  {{#each key in this}}
-    {{#link-to "dashboard.keys.show" key tagName="tr"}}
-      <td>{{key.label}}</td>
-      <td>{{key.humanKind}}</td>
-      <td>{{key.totalDailyRequests}}</td>
-    {{/link-to}}
-  {{else}}
-    <tr class="empty">
-      <td colspan="3"><em>You have not created any access keys.</em></td>
+  <thead>
+    <tr>
+      <th class="col-label" scope="col">Key</th>
+      <th class="col-kind" scope="col">Kind</th>
+      <th class="col-total-requests num" scope="col">Requests</th>
     </tr>
-  {{/each}}
+  </thead>
+  <tbody>
+    {{#each key in this}}
+      {{#link-to "dashboard.keys.show" key tagName="tr"}}
+        <td>{{key.label}}</td>
+        <td>{{key.humanKind}}</td>
+        <td class="num">{{key.totalCycleRequests}}</td>
+      {{/link-to}}
+    {{else}}
+      <tr class="empty">
+        <td colspan="3"><em>You have not created any access keys.</em></td>
+      </tr>
+    {{/each}}
+  </tbody>
 </table>

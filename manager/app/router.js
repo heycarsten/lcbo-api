@@ -15,7 +15,7 @@ Router.map(function() {
     this.route('account');
     this.route('keys');
     this.route('keys.new', { path: '/keys/new' });
-    this.route('keys.show', { path: '/keys/:id' });
+    this.route('keys.show', { path: '/keys/:key_id' });
   });
 
   this.route('credits');
