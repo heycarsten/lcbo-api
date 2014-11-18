@@ -10,7 +10,7 @@
 
 {{#if totalCycleRequests}}
   <section class="activity-detail">
-    <h1>Daily Requests for {{currentMonth}}</h1>
+    <h1>Daily Activity in {{currentMonth}}</h1>
     {{bar-chart height=200 data=cycleRequests}}
   </section>
 {{/if}}
@@ -27,19 +27,19 @@
   <footer>
     {{#if isServer}}
       <span class="token">
-        <span class="label">Kind</span><span class="value">Private / Server</span>
+        <span class="label">Type</span><span class="value">Private / Server</span>
       </span>
     {{/if}}
 
     {{#if isClient}}
       <span class="token">
-        <span class="label">Kind</span><span class="value">Mobile / Desktop</span>
+        <span class="label">Type</span><span class="value">Mobile / Desktop</span>
       </span>
     {{/if}}
 
     {{#if isWeb}}
       <span class="token">
-        <span class="label">Kind</span><span class="value">Web Browser</span>
+        <span class="label">Type</span><span class="value">Web Browser</span>
       </span>
       <span class="token" title="You can make requests from this domain with CORS or JSONP.">
         <span class="label">Domain</span><span class="value">{{domain}}</span>
