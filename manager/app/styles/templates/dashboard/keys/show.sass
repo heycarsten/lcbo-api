@@ -1,45 +1,92 @@
-.access-key-data
-  background: $blue-grey-50
-  border-radius: 3px
-  padding: 14px 18px
-  line-height: 1.5
+.dashboard-keys-show
+  .key-detail
+    background: $purple-400
+    border-radius: 3px
+    line-height: 1.5
 
-  code
-    font-size: 20px
-    font-family: $source-code-pro
-    display: block
-    word-wrap: break-word
+    > header
+      border-bottom: 1px solid $purple-a100
+      padding: 12px 18px
 
-.danger-zone
-  margin: 0
-  background-color: #fff
-  border: 1px solid $red-500
-  border-radius: 3px
-  padding: 24px
+      h1
+        margin: 0
+        line-height: 1
+        font-size: 20px
+        text-align: center
 
-  transition: background-color 0.3s ease-in
+    .key-payload
+      padding: 12px 18px
 
-  &:hover
-    background-color: $red-200
+      code
+        background: transparent
+        padding: 0
+        color: white
+        font-size: 20px
+        font-family: $source-code-pro
+        display: block
+        word-wrap: break-word
 
-  h1
+    > footer
+      border-top: 1px solid $purple-a100
+      padding: 12px 18px
+
+      .token
+        cursor: help
+        display: inline-block
+        background: $purple-200
+        border-radius: 3px
+        margin-left: 10px
+
+        &:first-child
+          margin-left: 0
+
+        .label
+          font-weight: 600
+
+        .value
+          border-left: 1px solid $purple-300
+
+        > span
+          display: inline-block
+          padding: 2px 6px
+
+  .danger-zone
     margin: 0
-    font-weight: 500
-    font-size: 20px
+    margin-top: 48px
+    background-color: $red-100
+    border-radius: 3px
 
-  button
-    @extend .button
-    line-height: 1
-    height: 42px
-    color: $red-500
-    border-color: $red-500
+    header
+      padding: 12px 18px
 
-    &:hover
+    h1
+      margin: 0
+      line-height: 1
+      font-weight: 500
       color: $red-500
 
-    &:active
-      background-color: $red-500
-      color: white
+    > div
+      text-align: center
+      padding: 18px
+      padding-top: 0
 
-    &:focus
-      @extend .glow-red
+    button
+      @extend .button
+      line-height: 1
+      height: 42px
+      color: white
+      background-color: $red-500
+      border-color: $red-500
+
+      &:hover
+        background-color: $red-600
+        border-color: $red-600
+        color: white
+
+      &:active
+        background-color: $red-a200
+        border-color: $red-a200
+        color: white
+
+      &:focus
+        box-shadow: 0 0 2px 3px rgba($red-500, 0.2)

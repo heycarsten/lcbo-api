@@ -23,7 +23,7 @@ export default DS.Model.extend({
   }.property('kind'),
 
   totalCycleRequests: function() {
-    return this.get('cycleRequests').reduce(function(t, d) {
+    return (this.get('cycleRequests') || []).reduce(function(t, d) {
       return t + d[1];
     }, 0);
   }.property('cycleRequests')

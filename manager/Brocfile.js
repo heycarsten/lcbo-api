@@ -29,7 +29,9 @@ var app = new EmberApp({
 
 app.import('bower_components/moment/moment.js');
 app.import('bower_components/d3/d3.js');
+app.import('vendor/prism/prism.js');
 app.import('bower_components/rickshaw/rickshaw.css');
 app.import('bower_components/rickshaw/rickshaw.js');
+app.import('vendor/prism/prism.css');
 
 module.exports = app.toTree();

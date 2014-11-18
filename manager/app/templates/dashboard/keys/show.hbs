@@ -1,58 +1,99 @@
 <header>
-  <h1>{{label}}</h1>
+  <h1>
+    {{#link-to "dashboard.keys"~}}
+      Access Keys
+    {{~/link-to}}
+    <i class="fa fa-chevron-right"></i>
+    {{label}}
+  </h1>
 </header>
 
 {{#if totalCycleRequests}}
-  <h2>Daily Requests This Month</h2>
-  {{bar-chart height=200 data=cycleRequests}}
+  <section class="activity-detail">
+    <h1>Daily Requests for {{currentMonth}}</h1>
+    {{bar-chart height=200 data=cycleRequests}}
+  </section>
 {{/if}}
 
-<h2>Access Key</h2>
-<div class="access-key-data">
-  <code>{{unbound token}}</code>
-</div>
+<section class="key-detail">
+  <header>
+    <h1>LCBO API Access Key</h1>
+  </header>
 
-{{#if isWeb}}
-  <p>Tied to domain: <b>{{domain}}</b></p>
-{{/if}}
+  <div class="key-payload">
+    <code>{{unbound token}}</code>
+  </div>
 
-<h2>Using Your Access Key</h2>
-<p>
-  In order to use your Access Key, you&rsquo;ll need to include it in your
-  requests. LCBO API allows two ways for you to do this:
-</p>
-<p>
-  <b>HTTP Header</b>: Include your key as an HTTP header, this approach is
-  recommended, set the <code>X-Access-Key</code> header to your Access Key.
-</p>
-<p>
-  <b>Query Param</b>: LCBO API will also accept your Access Key as a parameter
-  in the URL. Add a parameter named <code>access_key</code> to your request URL.
-</p>
+  <footer>
+    {{#if isServer}}
+      <span class="token">
+        <span class="label">Kind</span><span class="value">Private / Server</span>
+      </span>
+    {{/if}}
 
-<h2>Examples</h2>
+    {{#if isClient}}
+      <span class="token">
+        <span class="label">Kind</span><span class="value">Mobile / Desktop</span>
+      </span>
+    {{/if}}
 
-{{#if isWeb}}
-  <h3>jQuery</h3>
-  <pre><code>jQuery.ajax({
+    {{#if isWeb}}
+      <span class="token">
+        <span class="label">Kind</span><span class="value">Web Browser</span>
+      </span>
+      <span class="token" title="You can make requests from this domain with CORS or JSONP.">
+        <span class="label">Domain</span><span class="value">{{domain}}</span>
+      </span>
+      <span class="token" title="Individual clients are limited to this many requests per hour.">
+        <span class="label">Rate Limit</span><span class="value">1200 / hour</span>
+      </span>
+    {{/if}}
+  </footer>
+</section>
+
+<section class="usage-detail">
+  <h1>Using Your Access Key</h1>
+  <p>
+    In order to use your Access Key, you&rsquo;ll need to include it in your
+    requests. LCBO API allows two ways for you to do this:
+  </p>
+  <p>
+    <b>HTTP Header</b>: Include your key as an HTTP header, this approach is
+    recommended, set the <code>X-Access-Key</code> header to your Access Key.
+  </p>
+  <p>
+    <b>Query Param</b>: LCBO API will also accept your Access Key as a parameter
+    in the URL. Add a parameter named <code>access_key</code> to your request URL.
+  </p>
+</section>
+
+<section class="examples-detail">
+  <h1>Examples</h1>
+
+  {{#if isWeb}}
+    <h2>jQuery</h2>
+{{#source-code lang="javascript"~}}
+jQuery.ajax({
   url: 'https://lcboapi.com/stores',
   headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
 }).then(function(data) {
   console.log(data);
 });
-</code></pre>
+{{~/source-code}}
 
-  <h3>WinJS (Web Context)</h3>
-  <pre><code>WinJS.xhr({
+    <h2>WinJS (Web Context)</h2>
+{{#source-code lang="javascript"~}}
+WinJS.xhr({
   url: 'https://lcboapi.com/stores',
   headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
 }).done(function(result) {
   console.log(result);
 });
-</code></pre>
+{{~/source-code}}
 
-  <h3>dojo</h3>
-  <pre><code>require(['dojo/request/xhr'], function(xhr) {
+    <h2>dojo</h2>
+{{#source-code lang="javascript"~}}
+require(['dojo/request/xhr'], function(xhr) {
   xhr('https://lcboapi.com/stores', {
     handleAs: 'json',
     headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
@@ -60,37 +101,51 @@
     console.log(data);
   });
 });
-</code></pre>
-{{/if}}
+{{~/source-code}}
+  {{/if}}
 
-{{#if isClient}}
-  <h3>iOS</h3>
-{{/if}}
+  {{#if isClient}}
+    <h2>iOS</h2>
+  {{/if}}
 
-{{#if isServer}}
-  <h3>cURL</h3>
-<pre><code>curl -H 'X-Access-Key: <i>ACCESS_KEY</i>' https://lcboapi.com/stores
-</code></pre>
+  {{#if isServer}}
+    <h2>cURL</h2>
+{{#source-code lang="bash"~}}
+curl -H 'X-Access-Key: ACCESS_KEY' https://lcboapi.com/stores
+{{~/source-code}}
 
-  <h3>PowerShell</h3>
-<pre><code>Invoke-WebRequest https://lcboapi.com/stores `
-                  -Headers @{"X-Access-Key" = "<i>ACCESS_KEY</i>"}
-</code></pre>
+    <h2>PowerShell</h2>
+{{#source-code lang="powershell"~}}
+Invoke-WebRequest https://lcboapi.com/stores -Headers @{"X-Access-Key" = "ACCESS_KEY"}
+{{~/source-code}}
 
-  <h3>Python</h3>
-<pre><code>import urllib2
+    <h2>PHP</h2>
+{{#source-code lang="php"~}}
+$opts = array(
+  headers => array('X-Access-Key' => 'ACCESS_KEY')
+);
+
+$body = http_get('https://lcboapi.com/stores', $opts);
+
+print $body;
+{{~/source-code}}
+
+    <h2>Python</h2>
+{{#source-code lang="python"~}}
+import urllib2
 import json
 
 req = urllib2.Request('https://lcboapi.com/stores')
-req.add_header('X-Access-Key', '<i>ACCESS_KEY</i>')
+req.add_header('X-Access-Key', 'ACCESS_KEY')
 
 data = json.load(urllib2.urlopen(req))
 
 print data
-</code></pre>
+{{~/source-code}}
 
-  <h3>Ruby</h3>
-<pre><code>require 'json'
+    <h2>Ruby</h2>
+{{#source-code lang="ruby"~}}
+require 'json'
 require 'open-uri'
 
 res = open('https://lcboapi.com/stores',
@@ -99,10 +154,23 @@ res = open('https://lcboapi.com/stores',
 data = JSON.parse(res.read)
 
 puts data.inspect
-</code></pre>
-{{/if}}
+{{~/source-code}}
+  {{/if}}
+
+  <p class="subnote">
+    <em>If you&rsquo;d like to see other examples, or have one you&rsquo;d like
+    to share, <a href="mailto:carsten@lcboapi.com">let me know</a></em>.
+  </p>
+</section>
 
 <section class="danger-zone">
-  <h1>Danger Zone</h1>
-  <button>Delete Access Key</button>
+  <header>
+    <h1>Danger Zone</h1>
+  </header>
+
+  <div>
+    <button {{action "deleteKey"}}>
+      Delete Access Key
+    </button>
+  </div>
 </section>

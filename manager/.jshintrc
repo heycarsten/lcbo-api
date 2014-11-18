@@ -5,7 +5,8 @@
     "-Promise",
     "moment",
     "d3",
-    "Rickshaw"
+    "Rickshaw",
+    "Prism"
   ],
   "browser" : true,
   "boss" : true,
