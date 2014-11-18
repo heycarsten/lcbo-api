@@ -1,7 +1,18 @@
 .dashboard-keys-show
+  .activity-detail
+    margin: 0 0 2em
+
+  .key-detail,
+  .usage-detail
+    @media only screen and (min-width: 960px)
+      float: left
+      width: 47.5%
+
   .key-detail
     border-radius: 3px
     line-height: 1.5
+    @media only screen and (min-width: 960px)
+      margin-right: 5%
 
     > header
       background: $purple-600

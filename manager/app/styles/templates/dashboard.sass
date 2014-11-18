@@ -3,7 +3,12 @@ section.dashboard
   margin: 24px 10%
 
   h1
-    font-size: 20px
+    font:
+      size: 1.5em
+      weight: 900
+    +font-smoothing(antialiased)
+    &:first-child
+      margin-top: 0
 
   h2
     font-size: 16px
@@ -60,12 +65,6 @@ section.dashboard
     margin-left: 224px
     padding: 1px
     padding-bottom: 60px
-
-    h1, h2, h3
-      font-weight: 500
-
-    p
-      margin-right: 200px
 
     form
       max-width: 600px
