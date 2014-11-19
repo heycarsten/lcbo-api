@@ -16,3 +16,9 @@
   lineinfile:
     dest: /home/{{vagrant_user}}/.profile
     line: source ~/.profile-helpers
+
+- name: 'Add hosts entry for chosen hostname'
+  tags: setup
+  lineinfile:
+    dest: /etc/hosts
+    line: "127.0.0.1 {{hostname}}"
