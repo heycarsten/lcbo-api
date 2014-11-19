@@ -16,6 +16,7 @@
 
   roles:
     - { role: 'essential_system', tags: 'essential_system' }
+    - { role: 'zip', tags: 'zip' }
     - { role: 'rvm', tags: 'rvm' }
     - { role: 'nodejs', tags: 'nodejs' }
     - { role: 'postgresql', tags: 'postgresql' }
