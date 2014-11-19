@@ -6,7 +6,8 @@
     "moment",
     "d3",
     "Rickshaw",
-    "Prism"
+    "Prism",
+    "$"
   ],
   "browser" : true,
   "boss" : true,

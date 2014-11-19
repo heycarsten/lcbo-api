@@ -4,6 +4,7 @@ export default Em.Component.extend({
   classNames: 'bar-chart',
   height: 340,
   color: '#9C27B0',
+  graph: null,
 
   draw: function() {
     var graph;
@@ -63,13 +64,29 @@ export default Em.Component.extend({
     });
 
     graph.render();
+    this.set('graph', graph);
+  }.on('didInsertElement'),
+
+  willInsertElement: function() {
+    this.updateWidth();
+    var barChartCommponent = this;
+    $(window).on('resize.' + this.get('elementId'), function() {
+      Em.run.debounce(barChartCommponent, 'updateWidth', 100);
+    });
   },
 
-  didInsertElement: function() {
-    if (!this.get('width')) {
-      this.set('width', this.$().parent().width());
-    }
+  widthDidChange: function() {
+    var graph = this.get('graph');
+    if (Em.isEmpty(graph) || this.get('isDestroyed')) {return;}
+    graph.configure({width: this.get('width')});
+    graph.render();
+  }.observes('width'),
 
-    this.draw();
+  updateWidth: function() {
+    this.set('width', this.$().parent().width());
+  },
+
+  willDestroyElement: function() {
+    $(window).off('resize.' + this.get('elementId'));
   }
 });
