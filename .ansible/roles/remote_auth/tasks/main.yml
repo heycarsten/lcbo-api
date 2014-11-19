@@ -1,0 +1,63 @@
+---
+- name: Verify admin password is provided
+  tags: setup
+  fail: msg="admin_password must be set"
+  when: not admin_password
+
+- name: Verify admin authorized keys are provided
+  tags: setup
+  fail: msg="admin_authorized_githubbers must contain at least one GitHub username"
+  when: not admin_authorized_githubbers
+
+- name: 'Add admin user'
+  tags: setup
+  user:
+    name: '{{admin_user}}'
+    shell: /bin/bash
+    state: present
+  register: add_admin_user_result
+
+- name: 'Set password for admin user'
+  tags: setup
+  shell: 'echo ''{{admin_user}}:{{admin_password}}'' | chpasswd'
+  when: add_admin_user_result.changed
+
+- name: 'Download authorized keys from GitHub for admin_user'
+  connection: local
+  tags: ['config_ssh_keys', 'config']
+  get_url:
+    url: https://github.com/{{item}}.keys
+    dest: /tmp/github.{{item}}.keys
+  with_items: admin_authorized_githubbers
+
+- name: 'Install authorized keys for admin user'
+  tags: ['config_ssh_keys', 'config']
+  authorized_key:
+    user: '{{admin_user}}'
+    key: "{{lookup('file', '/tmp/github.' + item + '.keys')}}"
+  with_items: admin_authorized_githubbers
+
+- name: 'Grant admin user sudo privileges'
+  tags: setup
+  lineinfile:
+    dest: /etc/sudoers
+    line: '{{admin_user}} ALL=(ALL) ALL'
+    state: present
+
+- name: 'Disable root login (log in using admin user)'
+  tags: setup
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: ^PermitRootLogin
+    line: PermitRootLogin no
+    state: present
+  notify: Restart SSH
+
+- name: Disable password auth
+  tags: setup
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: ^PasswordAuthentication
+    line: PasswordAuthentication no
+    state: present
+  notify: Restart SSH

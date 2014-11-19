@@ -1,0 +1,191 @@
+# http://askubuntu.com/a/148567
+# https://trac.ffmpeg.org/wiki/UbuntuCompilationGuide
+# http://juliensimon.blogspot.ca/2013/08/howto-compiling-ffmpeg-x264-mp3-aac.html
+---
+- name: Install dependent packages
+  tags: setup
+  apt: name={{item}} state=latest update_cache=yes
+  with_items:
+    - build-essential
+    - git-core
+    - libfaac-dev
+    - libgpac-dev
+    - libgsm1-dev
+    - libjack-jackd2-dev
+    - libmp3lame-dev
+    - libopencore-amrnb-dev
+    - libopencore-amrwb-dev
+    - libsdl1.2-dev
+    - libtheora-dev
+    - libva-dev
+    - libvdpau-dev
+    - libvorbis-dev
+    - libxext-dev
+    - libxfixes-dev
+    - zlib1g-dev
+
+- name: Yasm - Download
+  tags: setup
+  get_url:
+    url: http://www.tortall.net/projects/yasm/releases/yasm-{{ffmpeg_yasm_version}}.tar.gz
+    dest: /tmp/yasm-{{ffmpeg_yasm_version}}.tgz
+
+- name: Yasm - Extract
+  tags: setup
+  unarchive:
+    copy: no
+    src: /tmp/yasm-{{ffmpeg_yasm_version}}.tgz
+    dest: /tmp/
+
+- name: Yasm - Configure
+  tags: setup
+  command: ./configure chdir=/tmp/yasm-{{ffmpeg_yasm_version}}
+
+- name: Yasm - Compile
+  tags: setup
+  command: make chdir=/tmp/yasm-{{ffmpeg_yasm_version}}
+
+- name: Yasm - Install
+  tags: setup
+  command: '{{item}} chdir=/tmp/yasm-{{ffmpeg_yasm_version}}'
+  with_items:
+    - make install
+    - make distclean
+
+- name: X264 - Clone
+  tags: setup
+  git:
+    repo: git://git.videolan.org/x264
+    depth: 1
+    accept_hostkey: yes
+    version: '{{ffmpeg_x264_ref}}'
+    dest: /tmp/x264
+
+- name: X264 - Configure
+  tags: setup
+  command: ./configure --prefix=/usr/local --enable-shared chdir=/tmp/x264
+
+- name: X264 - Compile
+  tags: setup
+  command: make chdir=/tmp/x264
+
+- name: X264 - Install
+  tags: setup
+  command: '{{item}} chdir=/tmp/x264'
+  with_items:
+    - make install
+    - make distclean
+
+- name: Xvid - Download
+  tags: setup
+  get_url:
+    url: http://downloads.xvid.org/downloads/xvidcore-{{ffmpeg_xvid_version}}.tar.gz
+    dest: /tmp/xvid.tgz
+
+- name: Xvid - Extract
+  tags: setup
+  unarchive:
+    copy: no
+    src: /tmp/xvid.tgz
+    dest: /tmp/
+
+- name: Xvid - Configure
+  tags: setup
+  command: ./configure --prefix=/usr/local chdir=/tmp/xvidcore/build/generic
+
+- name: Xvid - Compile
+  tags: setup
+  command: make chdir=/tmp/xvidcore/build/generic
+
+- name: Xvid - Install
+  tags: setup
+  command: make install chdir=/tmp/xvidcore/build/generic
+
+- name: VPX - Download
+  tags: setup
+  get_url:
+    url: http://webm.googlecode.com/files/libvpx-v{{ffmpeg_vpx_version}}.tar.bz2
+    dest: /tmp/libvpx-v{{ffmpeg_vpx_version}}.tbz2
+
+- name: VPX - Extract
+  tags: setup
+  unarchive:
+    copy: no
+    src: /tmp/libvpx-v{{ffmpeg_vpx_version}}.tbz2
+    dest: /tmp/
+
+- name: VPX - Configure
+  tags: setup
+  command: >
+    ./configure
+    --disable-examples
+    --enable-shared
+    --prefix=/usr/local
+    chdir=/tmp/libvpx-v{{ffmpeg_vpx_version}}
+
+- name: VPX - Compile
+  tags: setup
+  command: make chdir=/tmp/libvpx-v{{ffmpeg_vpx_version}}
+
+- name: VPX - Install
+  tags: setup
+  command: '{{item}} chdir=/tmp/libvpx-v{{ffmpeg_vpx_version}}'
+  with_items:
+    - make install
+    - make clean
+
+- name: Clone
+  tags: setup
+  git:
+    repo: git://source.ffmpeg.org/ffmpeg.git
+    accept_hostkey: yes
+    depth: 1
+    version: '{{ffmpeg_ref}}'
+    dest: /tmp/ffmpeg
+
+- name: Configure
+  tags: setup
+  command: >
+    ./configure
+    --enable-gpl
+    --enable-libfaac
+    --enable-libgsm
+    --enable-libmp3lame
+    --enable-libopencore-amrnb
+    --enable-libopencore-amrwb
+    --enable-libtheora
+    --enable-libvorbis
+    --enable-libvpx
+    --enable-libx264
+    --enable-libxvid
+    --enable-nonfree
+    --enable-shared
+    --enable-version3
+    --prefix=/usr/local
+  args:
+    chdir: /tmp/ffmpeg
+
+- name: Compile
+  tags: setup
+  command: make chdir=/tmp/ffmpeg
+
+- name: Install
+  tags: setup
+  command: '{{item}} chdir=/tmp/ffmpeg'
+  with_items:
+    - make install
+    - make distclean
+    - ldconfig -v
+
+- name: Clean
+  tags: setup
+  file: 'path={{item}} state=absent'
+  with_items:
+    - /tmp/yasm-{{ffmpeg_yasm_version}}.tgz
+    - /tmp/yasm-{{ffmpeg_yasm_version}}
+    - /tmp/x264
+    - /tmp/xvid.tgz
+    - /tmp/xvidcore
+    - /tmp/libvpx-v{{ffmpeg_vpx_version}}.tbz2
+    - /tmp/libvpx-v{{ffmpeg_vpx_version}}
+    - /tmp/ffmpeg

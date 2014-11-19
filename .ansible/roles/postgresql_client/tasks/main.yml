@@ -1,0 +1,22 @@
+---
+- name: Add package repository
+  tags: setup
+  apt_repository:
+    repo: deb http://apt.postgresql.org/pub/repos/apt/ {{ansible_distribution_release}}-pgdg main
+
+- name: Add package repository key
+  tags: setup
+  apt_key:
+    id: ACCC4CF8
+    url: http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc
+
+- name: Update package sources
+  tags: setup
+  apt: update_cache=yes
+
+- name: Install packages
+  tags: setup
+  apt: name={{item}} state=latest
+  with_items:
+    - libpq-dev
+    - postgresql-client-{{postgresql_version}}

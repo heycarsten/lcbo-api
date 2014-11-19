@@ -1,0 +1,5 @@
+---
+firewall_allow_public_ports: []
+firewall_allow_private_ports: []
+firewall_allow_private_ips: []
+firewall_allow_db_clients: '{{groups.db_clients|default([])}}'

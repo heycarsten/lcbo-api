@@ -1,0 +1,8 @@
+---
+- name: Add Node.js package source
+  tags: setup
+  apt_repository: repo=ppa:chris-lea/node.js state=present update_cache=yes
+
+- name: Install Node.js
+  tags: setup
+  apt: name=nodejs state=latest

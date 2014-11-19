@@ -1,0 +1,7 @@
+---
+- name: Install packages
+  tags: setup
+  apt: name={{item}} state=latest update_cache=yes install_recommends=no
+  with_items:
+    - libvips-dev
+    - libvips-tools

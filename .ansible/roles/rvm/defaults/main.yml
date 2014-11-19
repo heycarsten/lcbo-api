@@ -1,0 +1,4 @@
+---
+rvm_channel: stable
+rvm_ruby_version: 2.1.2
+rvm_install_user: '{{mandatory}}'

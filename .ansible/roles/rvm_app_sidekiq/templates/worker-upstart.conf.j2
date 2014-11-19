@@ -1,0 +1,30 @@
+# {{ansible_managed}}
+
+description "Sidekiq Worker ({{app_domain}})"
+
+# Start is handled by /etc/init/{{sidekiq_init_worker_cluster_ident}}.conf
+stop on (stopping {{sidekiq_init_worker_cluster_ident}} or runlevel [06])
+
+normal exit 0 TERM # Term is sent by sidekiqctl when stopping
+
+setuid {{app_user}}
+{% if app_group %}
+setgid {{app_group}}
+{% endif %}
+
+instance {{sidekiq_init_worker_ident}}-$index
+
+env PATH=/home/{{app_user}}/.rvm/wrappers/default
+
+chdir {{app_current_directory}}
+
+exec bundle exec sidekiq \
+  -i ${index} \
+  -e {{app_env}} \
+  -P tmp/pids/{{sidekiq_init_worker_ident}}-$index.pid
+
+pre-stop exec bundle exec sidekiqctl stop \
+  tmp/pids/{{sidekiq_init_worker_ident}}-$index.pid
+
+respawn
+respawn limit 3 30

@@ -1,5 +1,6 @@
 Vagrant.configure('2') do |config|
-  # Provision with Ansible
+  # Assume that the propro repo is copied into the .ansible folder of the
+  # project
   config.vm.provision 'ansible' do |conf|
     conf.playbook = '.ansible/vagrant.yml'
     conf.sudo     = true
@@ -17,8 +18,8 @@ Vagrant.configure('2') do |config|
   end
 
   # Give your VM a name and hostname
-  config.vm.define :lcboapi do |conf|
-    conf.vm.hostname = 'lcboapi.dev'
+  config.vm.define :myapp do |conf|
+    conf.vm.hostname = 'myapp.dev'
   end
 
   config.vm.network :private_network, ip: '192.168.???.???'

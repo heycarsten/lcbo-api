@@ -1,0 +1,62 @@
+# {{ansible_managed}}
+
+upstream {{app_ident}} {
+  server unix:{{puma_socket_path}} fail_timeout=0;
+}
+
+{% if puma_nginx_redirect_www %}
+# Redirect www.{{app_domain}} => {{app_domain}}
+server {
+  listen 80;
+  listen 443 ssl;
+  server_name www.{{app_domain}};
+  return 301 $scheme://{{app_domain}}$request_uri;
+}
+{% endif %}
+
+server {
+  server_name
+    {{app_domain}}
+    {% if not puma_nginx_redirect_www %}www.{{app_domain}}{% endif %}
+    {% for name in puma_nginx_additional_server_names %}
+    {{name}}
+    {% endfor %};
+
+  root {{app_current_directory}}/public;
+
+  {% if puma_nginx_fonts_origin %}
+  location ~* \.(eot|ttf|woff)$ {
+    {% if puma_nginx_fonts_origin == 'enforce' %}
+    if ($http_origin ~ "{{app_domain}}$") {
+        add_header "Access-Control-Allow-Origin" $http_origin;
+    }
+    {% else %}
+    add_header Access-Control-Allow-Origin {{puma_nginx_fonts_origin}};
+    {% endif %}
+  }
+  {% endif %}
+
+  {% if puma_nginx_enable_gzip_static_assets %}
+  location ~ ^/({{puma_nginx_assets_directory_name}})/ {
+    root {{app_current_directory}}/public;
+    expires max;
+    add_header Cache-Control public;
+    gzip_static on;
+  }
+  {% endif %}
+
+  try_files $uri/index.html $uri.html $uri @upstream_app;
+
+  location @upstream_app {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+    proxy_pass http://{{app_ident}};
+  }
+
+  error_page 500 502 503 504 /500.html;
+
+  location = /500.html {
+    root {{app_current_directory}}/public;
+  }
+}

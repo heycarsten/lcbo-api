@@ -1,0 +1,50 @@
+---
+- name: Update sources and upgrade packages
+  tags: setup
+  apt: upgrade=safe update_cache=yes cache_valid_time={{system_apt_cache_ttl}}
+
+- name: Install base packages
+  tags: setup
+  apt: name={{item}} state=latest
+  with_items: essential_packages
+
+- name: Set hostname
+  tags: setup
+  hostname: name={{hostname}}
+
+- name: Generate locale {{locale}}
+  tags: setup
+  locale_gen: name={{locale}} state=present
+
+- name: Set locale to {{locale}}
+  tags: setup
+  shell: |
+    update-locale \
+      LANG={{locale}} \
+      LC_MESSAGES={{locale}} \
+      LC_ALL={{locale}} \
+      LC_COLLATE={{locale}} \
+      LC_CTYPE={{locale}}
+
+- name: Install NTP
+  tags: setup
+  apt: name=ntp state=latest
+
+- name: Enable NTP
+  tags: setup
+  service: name=ntp state=started enabled=yes
+
+- name: Setting timezone in /etc/localtime to {{timezone}}
+  tags: setup
+  copy:
+    src: /usr/share/zoneinfo/{{timezone}}
+    dest: /etc/localtime
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+
+- name: Setting timezone in /etc/timezone to {{timezone}}
+  tags: setup
+  template: dest=/etc/timezone src=timezone.j2
+  notify: Update tzdata

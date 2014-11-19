@@ -1,0 +1,5 @@
+---
+dependencies:
+  - { role: 'essential_system', tags: 'essential_system' }
+  - { role: 'networking', tags: 'networking' }
+  - { role: 'firewall', tags: 'firewall' }

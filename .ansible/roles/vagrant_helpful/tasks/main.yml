@@ -1,0 +1,18 @@
+---
+- name: Install manpages
+  tags: setup
+  apt: name=man state=latest
+
+- name: Add profile helpers to home directory
+  tags: setup
+  template:
+    src: aliases.j2
+    dest: /home/{{vagrant_user}}/.profile-helpers
+    owner: '{{vagrant_user}}'
+    group: '{{vagrant_user}}'
+
+- name: Add source to .profile for helpers
+  tags: setup
+  lineinfile:
+    dest: /home/{{vagrant_user}}/.profile
+    line: source ~/.profile-helpers

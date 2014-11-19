@@ -1,0 +1,54 @@
+---
+- name: 'Create database user'
+  tags: ['db_setup', 'setup']
+  postgresql_user:
+    name: '{{database_user}}'
+    password: '{{database_password}}'
+    state: present
+  sudo: yes
+  sudo_user: postgres
+
+- name: 'Create database'
+  tags: ['db_setup', 'setup']
+  postgresql_db:
+    name: '{{database_name}}'
+    encoding: '{{database_encoding}}'
+    owner: '{{database_user}}'
+    state: present
+  sudo: yes
+  sudo_user: postgres
+
+- name: 'Install extensions for database'
+  tags: ['db_config', 'config']
+  command: 'psql {{database_name}} -c ''create extension if not exists "{{item}}";'''
+  sudo: yes
+  sudo_user: postgres
+  ignore_errors: yes
+  with_items: database_extensions
+  when: database_extensions is iterable
+
+- name: Clear existing auth entries
+  tags: ['db_config', 'config']
+  replace:
+    dest: '{{postgresql_hba_path}}'
+    regexp: '^host {{database_name}} {{database_user}} [0-9\.]+/32 trust$'
+  sudo: yes
+  sudo_user: postgres
+
+- name: Add auth entries for trusted IPs
+  tags: ['db_config', 'config']
+  lineinfile:
+    dest: '{{postgresql_hba_path}}'
+    line: 'host {{database_name}} {{database_user}} {{item}}/32 trust'
+  with_items: firewall_allow_private_ips
+  sudo: yes
+  sudo_user: postgres
+
+- name: Add auth entries for db_clients group
+  tags: ['db_config', 'config']
+  lineinfile:
+    dest: '{{postgresql_hba_path}}'
+    line: 'host {{database_name}} {{database_user}} {{hostvars[item].private_ip}}/32 trust'
+  with_items: firewall_allow_db_clients
+  sudo: yes
+  sudo_user: postgres

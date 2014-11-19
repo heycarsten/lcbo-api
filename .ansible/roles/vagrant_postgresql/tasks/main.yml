@@ -1,0 +1,6 @@
+---
+- name: Add PostgreSQL user for {{vagrant_user}}
+  tags: setup
+  postgresql_user: name={{vagrant_user}} role_attr_flags=SUPERUSER state=present
+  sudo: yes
+  sudo_user: postgres

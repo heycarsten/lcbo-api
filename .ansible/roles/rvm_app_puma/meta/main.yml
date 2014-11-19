@@ -1,0 +1,4 @@
+---
+dependencies:
+  - { role: 'rvm_app', tags: 'rvm_app' }
+  - { role: 'nginx', tags: 'nginx' }

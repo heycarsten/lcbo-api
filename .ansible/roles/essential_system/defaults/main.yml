@@ -1,0 +1,14 @@
+---
+hostname: '{{inventory_hostname_short}}'
+system_apt_cache_ttl: 3600
+locale: en_US.UTF-8
+timezone: UTC
+essential_packages:
+  - curl
+  - vim-nox
+  - less
+  - htop
+  - git-core
+  - tree
+  - openssl
+  - python-software-properties

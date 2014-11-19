@@ -1,0 +1,4 @@
+---
+dependencies:
+  - { role: 'app', tags: 'app' }
+  - { role: 'rvm', rvm_install_user: '{{app_user}}', tags: 'rvm' }

@@ -1,0 +1,10 @@
+{{app_shared_log_directory}}/*.log {
+  {{puma_logrotate_event}}
+  missingok
+  rotate {{puma_logrotate_maxrotations}}
+  compress
+  delaycompress
+  notifempty
+  dateext
+  create 0640 {{app_user}} {{app_group}}
+}
