@@ -1,160 +1,176 @@
-<header>
-  <h1>
-    {{#link-to "dashboard.keys"~}}
-      Access Keys
-    {{~/link-to}}
-    <i class="fa fa-chevron-right"></i>
-    {{label}}
-  </h1>
-</header>
+<h1>{{label}}</h1>
 
 {{#if totalCycleRequests}}
   <section class="activity-detail">
-    <h1>Daily Activity in {{currentMonth}}</h1>
-    {{bar-chart height=200 data=cycleRequests}}
+    <header>
+      <h1>{{currentMonth}}</h1>
+      <h2>Daily Activity</h2>
+    </header>
+    {{line-area-chart height=150 data=cycleRequests}}
   </section>
 {{/if}}
 
-<section class="key-detail">
-  <header>
-    <h1>API Access Key</h1>
-  </header>
+<div class='key-and-usage-wrapper'>
+  <section class="key-detail">
+    <h1>API Key</h1>
 
-  <div class="key-payload">
-    <code>{{unbound token}}</code>
-  </div>
+    <code class='key-payload'>{{unbound token}}</code>
 
-  <footer>
-    {{#if isServer}}
-      <span class="token">
-        <span class="label">Type</span><span class="value">Private / Server</span>
-      </span>
-    {{/if}}
+    <ul class='meta'>
+      {{#if isServer}}
+        <li>
+          <h2>Type</h2>
+          <p>Private / Server</p>
+        </li>
+      {{/if}}
 
-    {{#if isClient}}
-      <span class="token">
-        <span class="label">Type</span><span class="value">Mobile / Desktop</span>
-      </span>
-    {{/if}}
+      {{#if isClient}}
+        <li>
+          <h2>Type</h2>
+          <p>Mobile / Desktop</p>
+        </li>
+      {{/if}}
 
-    {{#if isWeb}}
-      <span class="token">
-        <span class="label">Type</span><span class="value">Web Browser</span>
-      </span>
-      <span class="token" title="You can make requests from this domain with CORS or JSONP.">
-        <span class="label">Domain</span><span class="value">{{domain}}</span>
-      </span>
-      <span class="token" title="Individual clients are limited to this many requests per hour.">
-        <span class="label">Rate Limit</span><span class="value">1200 / hour</span>
-      </span>
-    {{/if}}
-  </footer>
-</section>
+      {{#if isWeb}}
+        <li>
+          <h2>Type</h2>
+          <p>Web Browser</p>
+        </li>
+        <li title="You can make requests from this domain with CORS or JSONP.">
+          <h2>Domain</h2>
+          <p>Some Domain{{domain}}</p>
+        </li>
+        <li title="Individual clients are limited to this many requests per hour.">
+          <h2>Rate Limit</h2>
+          <p>1200 / hour</p>
+        </li>
+      {{/if}}
+    </ul>
+  </section>
 
-<section class="usage-detail">
-  <h1>Using Your Access Key</h1>
-  <p>
-    In order to use your Access Key, you&rsquo;ll need to include it in your
-    requests. LCBO API allows two ways for you to do this:
-  </p>
-  <p>
-    <b>HTTP Header</b>: Include your key as an HTTP header, this approach is
-    recommended, set the <code>X-Access-Key</code> header to your Access Key.
-  </p>
-  <p>
-    <b>Query Param</b>: LCBO API will also accept your Access Key as a parameter
-    in the URL. Add a parameter named <code>access_key</code> to your request URL.
-  </p>
-</section>
+  <section class="usage-detail">
+    <h1>Using Your Access Key</h1>
+    <p>
+      In order to use your Access Key, you&rsquo;ll need to include it in your
+      requests. LCBO API allows two ways for you to do this:
+    </p>
+    <p>
+      <b>HTTP Header</b>: Include your key as an HTTP header, this approach is
+      recommended, set the <code>X-Access-Key</code> header to your Access Key.
+    </p>
+    <p>
+      <b>Query Param</b>: LCBO API will also accept your Access Key as a parameter
+      in the URL. Add a parameter named <code>access_key</code> to your request URL.
+    </p>
+  </section>
+</div>
 
 <section class="examples-detail">
   <h1>Examples</h1>
 
   {{#if isWeb}}
-    <h2>jQuery</h2>
-{{#source-code lang="javascript"~}}
-jQuery.ajax({
-  url: 'https://lcboapi.com/stores',
-  headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
-}).then(function(data) {
-  console.log(data);
-});
-{{~/source-code}}
+    <article class='code-example'>
+      <h2>jQuery</h2>
+      {{#source-code lang="javascript"~}}
+      jQuery.ajax({
+        url: 'https://lcboapi.com/stores',
+        headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
+      }).then(function(data) {
+        console.log(data);
+      });
+      {{~/source-code}}
+    </article>
 
-    <h2>WinJS (Web Context)</h2>
-{{#source-code lang="javascript"~}}
-WinJS.xhr({
-  url: 'https://lcboapi.com/stores',
-  headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
-}).done(function(result) {
-  console.log(result);
-});
-{{~/source-code}}
+    <article class='code-example'>
+      <h2>WinJS (Web Context)</h2>
+      {{#source-code lang="javascript"~}}
+        WinJS.xhr({
+          url: 'https://lcboapi.com/stores',
+          headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
+        }).done(function(result) {
+          console.log(result);
+        });
+      {{~/source-code}}
+    </article>
 
-    <h2>dojo</h2>
-{{#source-code lang="javascript"~}}
-require(['dojo/request/xhr'], function(xhr) {
-  xhr('https://lcboapi.com/stores', {
-    handleAs: 'json',
-    headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
-  }).then(function(data) {
-    console.log(data);
-  });
-});
-{{~/source-code}}
+    <article class='code-example'>
+      <h2>dojo</h2>
+      {{#source-code lang="javascript"~}}
+        require(['dojo/request/xhr'], function(xhr) {
+          xhr('https://lcboapi.com/stores', {
+            handleAs: 'json',
+            headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
+          }).then(function(data) {
+            console.log(data);
+          });
+        });
+      {{~/source-code}}
+    </article>
   {{/if}}
 
   {{#if isClient}}
-    <h2>iOS</h2>
+    <article class='code-example'>
+      <h2>iOS</h2>
+    </article>
   {{/if}}
 
   {{#if isServer}}
-    <h2>cURL</h2>
-{{#source-code lang="bash"~}}
-curl -H 'X-Access-Key: ACCESS_KEY' https://lcboapi.com/stores
-{{~/source-code}}
+    <article class="code-example">
+      <h2>cURL</h2>
+      {{#source-code lang="bash"~}}
+        curl -H 'X-Access-Key: ACCESS_KEY' https://lcboapi.com/stores
+      {{~/source-code}}
+    </article>
 
-    <h2>PowerShell</h2>
-{{#source-code lang="powershell"~}}
-Invoke-WebRequest https://lcboapi.com/stores -Headers @{"X-Access-Key" = "ACCESS_KEY"}
-{{~/source-code}}
+    <article class='code-example'>
+      <h2>PowerShell</h2>
+      {{#source-code lang="powershell"~}}
+        Invoke-WebRequest https://lcboapi.com/stores -Headers @{"X-Access-Key" = "ACCESS_KEY"}
+      {{~/source-code}}
+    </article>
 
-    <h2>PHP</h2>
-{{#source-code lang="php"~}}
-$opts = array(
-  headers => array('X-Access-Key' => 'ACCESS_KEY')
-);
+    <article class='code-example'>
+      <h2>PHP</h2>
+      {{#source-code lang="php"~}}
+        $opts = array(
+          headers => array('X-Access-Key' => 'ACCESS_KEY')
+        );
 
-$body = http_get('https://lcboapi.com/stores', $opts);
+        $body = http_get('https://lcboapi.com/stores', $opts);
 
-print $body;
-{{~/source-code}}
+        print $body;
+      {{~/source-code}}
+    </article>
 
-    <h2>Python</h2>
-{{#source-code lang="python"~}}
-import urllib2
-import json
+    <article class='code-example'>
+      <h2>Python</h2>
+      {{#source-code lang="python"~}}
+        import urllib2
+        import json
 
-req = urllib2.Request('https://lcboapi.com/stores')
-req.add_header('X-Access-Key', 'ACCESS_KEY')
+        req = urllib2.Request('https://lcboapi.com/stores')
+        req.add_header('X-Access-Key', 'ACCESS_KEY')
 
-data = json.load(urllib2.urlopen(req))
+        data = json.load(urllib2.urlopen(req))
 
-print data
-{{~/source-code}}
+        print data
+      {{~/source-code}}
+    </article>
 
-    <h2>Ruby</h2>
-{{#source-code lang="ruby"~}}
-require 'json'
-require 'open-uri'
+    <article class='code-example'>
+      <h2>Ruby</h2>
+      {{#source-code lang="ruby"~}}
+        require 'json'
+        require 'open-uri'
 
-res = open('https://lcboapi.com/stores',
-  'X-Access-Key' => '<i>ACCESS_KEY</i>'
-)
-data = JSON.parse(res.read)
+        res = open('https://lcboapi.com/stores',
+          'X-Access-Key' => '<i>ACCESS_KEY</i>'
+        )
+        data = JSON.parse(res.read)
 
-puts data.inspect
-{{~/source-code}}
+        puts data.inspect
+      {{~/source-code}}
+    </article>
   {{/if}}
 
   <p class="subnote">

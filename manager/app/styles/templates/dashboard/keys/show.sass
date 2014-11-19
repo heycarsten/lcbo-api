@@ -1,68 +1,119 @@
 .dashboard-keys-show
+  .activity-detail,
+  .key-detail,
+  .usage-detail,
+  .examples-detail
+    margin: 0 0 4em
+
   .activity-detail
-    margin: 0 0 2em
+    header
+      margin: 0
+      padding: .5em 0
+      text:
+        align: center
+        transform: uppercase
+      background: desaturate($purple-800, 20%)
+
+    h1,
+    h2
+      margin: 0
+      display: inline-block
+      font-size: 1.25em
+      line-height: 1
+
+    h1
+      font-weight: 900
+      color: white
+
+    h2
+      font-weight: 300
+      color: $purple-100
+      margin-left: .25em
+
+  .key-and-usage-wrapper
+    +clearfix
 
   .key-detail,
   .usage-detail
-    @media only screen and (min-width: 960px)
+    @media only screen and (min-width: 1281px)
       float: left
       width: 47.5%
 
   .key-detail
-    border-radius: 3px
     line-height: 1.5
-    @media only screen and (min-width: 960px)
+    background: $purple-400
+    @media only screen and (min-width: 1281px)
       margin-right: 5%
 
-    > header
-      background: $purple-600
-      padding: 16px 18px
-
-      h1
-        color: white
-        margin: 0
-        line-height: 1
-        font-size: 20px
-        text-align: center
-
-    .key-payload
-      background: $purple-400
-      padding: 36px 42px
-
-      code
-        line-height: 1.6
-        background: transparent
-        padding: 0
-        color: $purple-50
-        font-size: 22px
-        font-family: $source-code-pro
-        display: block
-        word-wrap: break-word
-
-    > footer
-      background: $purple-200
-      padding: 16px 18px
+    > h1
+      margin: 0
+      padding: 1.5em 0 1em
+      color: $purple-200
+      font-size: 1.25em
+      line-height: 1
       text-align: center
 
-      .token
+    .key-payload
+      line-height: 1.6
+      background: transparent
+      padding: 0 2em 2em
+      color: white
+      font:
+        size: 1.25em
+        family: $source-code-pro
+        weight: bold
+      display: block
+      word-wrap: break-word
+
+    .meta
+      margin: 0
+      padding: 0
+      font-size: .875em
+      list-style: none
+      background: $purple-500
+
+      li
+        position: relative
+        margin: 1px 0 0
         cursor: help
-        display: inline-block
-        background: $purple-200
-        border-radius: 3px
-        margin-left: 10px
+        +clearfix
 
-        &:first-child
-          margin-left: 0
+      h2,
+      p
+        float: left
+        padding: 1em
+        margin: 0
+        line-height: 1
+        +box-sizing(border-box)
 
-        .label
-          font-weight: 600
+      h2
+        position: absolute
+        top: 0
+        left: 0
+        bottom: 0
+        width: 8em
+        font:
+          size: 1em
+          weight: 500
+        text-align: right
+        color: $purple-200
+        background: $purple-600
 
-        .value
-          border-left: 1px solid $purple-300
+      p
+        margin-left: 8em
+        font-weight: 500
+        color: lighten($purple-100, 5%)
 
-        > span
-          display: inline-block
-          padding: 2px 6px
+  .examples-detail
+    > h1:first-child
+      text-align: center
+      font-size: 3em
+
+    .code-example
+      margin: 0 0 3em
+      h2
+        font-weight: 400
+        color: $blue-grey-400
 
   .danger-zone
     margin: 0

@@ -2,10 +2,10 @@ html, body
   font-family: $roboto
   margin: 0
   padding: 0
-  color: $grey-900
+  color: $blue-grey-800
 
 a
-  color: $grey-900
+  color: $blue-grey-900
   &:active
     color: $purple-a400
 
@@ -14,6 +14,23 @@ a
 
 p
   line-height: 1.5
+  margin: 0 0 1.5em
+
+h1, h2, h3, h4, h5, h6
+  color: $blue-grey-900
+  font-weight: 900
+  +font-smoothing(antialiased)
+
+h1
+  font:
+    size: 1.5em
+    weight: 900
+  margin: 1em 0
+  &:first-child
+    margin-top: 0
+
+h2
+  font-size: 1.25em
 
 code
   position: relative

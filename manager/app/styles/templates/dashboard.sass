@@ -2,19 +2,6 @@ section.dashboard
   position: relative
   margin: 24px 10%
 
-  h1
-    font:
-      size: 1.5em
-      weight: 900
-    +font-smoothing(antialiased)
-    &:first-child
-      margin-top: 0
-
-  h2
-    font-size: 16px
-    color: $blue-grey-400
-    font-weight: 400
-
   > nav
     position: absolute
     z-index: 1
@@ -65,6 +52,11 @@ section.dashboard
     margin-left: 224px
     padding: 1px
     padding-bottom: 60px
+
+    > h1:first-child
+      font-size: 3em
+      text-align: center
+      margin: .75em 0 1em
 
     form
       max-width: 600px

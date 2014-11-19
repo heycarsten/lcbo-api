@@ -1,9 +1,8 @@
 import Em from 'ember';
 
 export default Em.Component.extend({
-  classNames: 'bar-chart',
+  classNames: 'line-area-chart',
   height: 340,
-  color: '#9C27B0',
   graph: null,
 
   draw: function() {
@@ -24,20 +23,20 @@ export default Em.Component.extend({
       element: this.get('element'),
       width:   this.get('width'),
       height:  this.get('height'),
-      renderer: 'bar',
+      renderer: 'area',
       xScale: d3.time.scale(),
       stroke: true,
+      interpolation: 'linear',
 
       padding: {
-        top: 0.01,
-        left: 0.03,
+        top: 0.25,
+        left: 0,
         right: 0,
-        bottom: 0
+        bottom: 0.01
       },
 
       series: [{
         name: 'Requests',
-        color: this.get('color'),
         data: data.sortBy('x')
       }]
     });
