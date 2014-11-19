@@ -30,7 +30,8 @@ Next, copy the file `config/secrets.yml.example` to `config/secrets.yml`. You
 will need to modify this file to include S3 credentials (ask @heycarsten to use
 his) and to create a unique secret token.
 
-Okay, now lets bootstrap this thing, ask @heycarsten for a DB dump and copy it
+Okay, now lets bootstrap this thing, ask @heycarsten for a recent DB dump (or
+use [this one](http://heycarsten.s3.amazonaws.com/lcboapi.sql.tbz2)) and copy it
 into the `tmp` directory, then `vagrant ssh` and:
 
 ```
