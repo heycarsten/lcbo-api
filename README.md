@@ -1,23 +1,46 @@
-# Creating A PostGIS-enabled database
+# LCBO API
 
-[Full Information](http://postgis.refractions.net/documentation/manual-1.5/ch02.html#id2630392)
+## Gettin goin'
 
-The first step in creating a PostGIS database is to create a simple PostgreSQL database.
+```
+$ vagrant up --provider vmware_fusion
+```
 
-    createdb [yourdatabase]
+_OR_
 
-Many of the PostGIS functions are written in the PL/pgSQL procedural language. As such, the next step to create a PostGIS database is to enable the PL/pgSQL language in your new database. This is accomplish by the command
+```
+$ vagrant up # (the default is vbox)
+```
 
-    createlang plpgsql [yourdatabase]
+This will provision the VM via Ansible and set up a bunch of junk, after it's
+done, it's a good idea to reload the VM:
 
-Now load the PostGIS object and function definitions into your database by loading the postgis.sql definitions file (located in [prefix]/share/contrib as specified during the configuration step).
+```
+$ vagrant reload
+```
 
-    psql -d [yourdatabase] -f postgis.sql
+| At this point (if you're using VMware) the initialization might fail at
+| "Waiting for HGFS kernel module to load...", this just means that you need to
+| [update the guest additions](http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=1022525).
 
-For a complete set of EPSG coordinate system definition identifiers, you can also load the spatial_ref_sys.sql definitions file and populate the spatial_ref_sys table. This will permit you to perform ST_Transform() operations on geometries.
+Now copy the file `config/database.yml.example` to `config/database.yml`. If you
+wish you can change it to your liking, otherwise the default should be fine.
 
-    psql -d [yourdatabase] -f spatial_ref_sys.sql
+Next, copy the file `config/secrets.yml.example` to `config/secrets.yml`. You
+will need to modify this file to include S3 credentials (ask @heycarsten to use
+his) and to create a unique secret token.
 
-If you wish to add comments to the PostGIS functions, the final step is to load the postgis_comments.sql into your spatial database. The comments can be viewed by simply typing \dd [function_name] from a psql terminal window.
+Okay, now lets bootstrap this thing, ask @heycarsten for a DB dump and copy it
+into the `tmp` directory, then `vagrant ssh` and:
 
-    psql -d [yourdatabase] -f postgis_comments.sql
+```
+$ bundle
+$ rake db:create
+$ psql lcboapi_development < tmp/lcboapi.sql
+```
+
+Now you can run the app:
+
+```
+$ rails s
+```
