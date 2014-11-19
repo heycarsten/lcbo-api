@@ -16,10 +16,8 @@ Vagrant.configure('2') do |config|
     vbox.vm.box_url = 'http://files.vagrantup.com/precise64.box'
   end
 
-  # Give your VM a name and hostname
-  config.vm.define :lcboapi do |conf|
-    conf.vm.hostname = 'lcboapi.dev'
-  end
+  # Give your VM a hostname
+  config.vm.hostname = 'lcboapi.dev'
 
   config.vm.network :private_network, ip: '192.168.???.???'
   config.ssh.forward_agent = true
