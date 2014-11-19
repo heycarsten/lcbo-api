@@ -34,6 +34,9 @@ Okay, now lets bootstrap this thing, ask @heycarsten for a DB dump and copy it
 into the `tmp` directory, then `vagrant ssh` and:
 
 ```
+$ cd tmp
+$ tar xf lcboapi.sql.tbz2
+$ cd ..
 $ bundle
 $ rake db:create
 $ psql lcboapi_development < tmp/lcboapi.sql
