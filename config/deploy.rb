@@ -21,21 +21,21 @@ namespace :deploy do
   desc 'Restart application'
   task :restart do
     on roles(:web), in: :sequence, wait: 5 do
-      sudo "initctl restart lcboapi-com-puma"
+      sudo "initctl restart #{fetch :app_slug}-puma"
     end
   end
 
   desc 'Stop application'
   task :stop do
     on roles(:web), in: :sequence, wait: 1 do
-      sudo "initctl stop lcboapi-com-puma"
+      sudo "initctl stop #{fetch :app_slug}-puma"
     end
   end
 
   desc 'Start application'
   task :start do
     on roles(:web), in: :sequence, wait: 1 do
-      sudo "initctl start lcboapi-com-puma"
+      sudo "initctl start #{fetch :app_slug}-puma"
     end
   end
 
