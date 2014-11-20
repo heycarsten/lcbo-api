@@ -2,26 +2,6 @@ class API::V2::APIController < APIController
   VERSION  = 2
   PER      = 50
 
-  LOOPBACKS = %w[
-    0.0.0.0
-    127.0.0.1
-    localhost
-  ]
-
-  CORS_HEADERS = {
-    'Access-Control-Allow-Origin'  => '*',
-    'Access-Control-Allow-Methods' => 'GET',
-    'Access-Control-Allow-Headers' => %w[
-      Accept
-      Authorization
-    ].join(', '),
-    'Access-Control-Expose-Headers' => %w[
-      X-Rate-Limit-Count
-      X-Rate-Limit-Max
-      X-Rate-Limit-Reset
-    ].join(', ')
-  }
-
   rescue_from \
     GCoder::NoResultsError,
     GCoder::OverLimitError,
@@ -34,8 +14,6 @@ class API::V2::APIController < APIController
     :verify_request!,
     :enforce_access_key!,
     :authenticate!, except: :preflight_cors
-
-  after_action :add_cors_headers
 
   self.responder = Class.new(responder) do
     def json_resource_errors
@@ -51,40 +29,10 @@ class API::V2::APIController < APIController
     end
   end
 
-  def preflight_cors
-    head :ok
-  end
-
   protected
-
-  def verify_request!
-    return true unless current_key
-
-    if current_key[:kind] != 'web_client' || current_key[:domain].blank?
-      params.delete(:callback)
-      return true
-    end
-
-    @enable_cors = true
-
-    if origin && (LOOPBACKS.include?(origin) || origin.include?(current_key[:domain]))
-      true
-    else
-      render_error \
-        status: 403,
-        code: 'bad_origin',
-        detail: I18n.t('bad_origin')
-    end
-  end
 
   def authenticate!
     current_key ? true : not_authorized
-  end
-
-  def add_cors_headers(allow_origin = '*')
-    return true unless @enable_cors
-    headers.merge!(CORS_HEADERS)
-    headers['Access-Control-Allow-Origin'] = allow_origin
   end
 
   def render_exception(error)
@@ -97,31 +45,6 @@ class API::V2::APIController < APIController
 
   def api_version
     VERSION
-  end
-
-  def origin
-    @origin ||= begin
-      origin = (request.headers['Origin'] || request.headers['Referer'])
-
-      return if origin.blank?
-
-      origin.downcase!
-
-      if origin == 'null'
-        origin = 'http://localhost'
-      end
-
-      uri = URI.parse(origin)
-
-      case uri.scheme
-      when 'http', 'https'
-        uri.host
-      else
-        nil
-      end
-    rescue URI::InvalidURIError
-      nil
-    end
   end
 
   def pagination_for(scope)

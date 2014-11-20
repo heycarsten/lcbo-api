@@ -10,20 +10,36 @@ class API::V1::APIController < APIController
     V1::QueryHelper::NotFoundError,
     V1::QueryHelper::BadQueryError, with: :render_exception
 
-  before_filter :reject_https!
-  before_filter :set_api_format
+  before_action \
+    :restrict_https!,
+    :restrict_cors!,
+    :verify_request!,
+    :set_api_format
 
   clear_respond_to
+
   respond_to :json, :js, :csv, :tsv
 
   protected
 
-  def reject_https!
+  def restrict_https!
+    return true if current_key
+
     return true unless scheme = request.headers['X-Forwarded-Proto']
     return true unless scheme.downcase == HTTPS
 
-    render_error :not_implemented_error,
-      "This version of LCBO API does not support HTTPS.", 501
+    render_error :not_authorized,
+      "You need an Access Key to use HTTPS on LCBO API, sign up for one " \
+      "at https://lcboapi.com/sign-up", 401
+  end
+
+  def restrict_cors!
+    return true if current_key
+    return true if request.headers['Origin'].blank?
+
+    render_error :not_authorized,
+      "You need an Access Key to use CORS on LCBO API, sign up for one " \
+      "at https://lcboapi.com/sign-up", 401
   end
 
   def api_version
@@ -81,7 +97,17 @@ class API::V1::APIController < APIController
     V1::QueryHelper.query(type, request, params)
   end
 
-  def render_error(error, message, status = 400)
+  def render_error(*args)
+    if args.first.is_a?(Hash)
+      error   = args[:code]
+      message = args[:detail]
+      status  = args[:status]
+    else
+      error   = args[0]
+      message = args[1]
+      status  = args[2] || 400
+    end
+
     unless jsonp?
       response.content_type = 'application/json'
       response.status = status

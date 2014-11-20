@@ -3,8 +3,6 @@ many_id_re = /([0-9]+\,[0-9]+\,{0,1})+/
 Rails.application.routes.draw do
   namespace :api, path: '/', format: :json do
     namespace :v2, path: '(v2)', constraints: APIConstraint.new(2) do
-      match '*path', to: 'api#preflight_cors', via: :options
-
       namespace :manager do
         controller :accounts do
           get    '/account'  => :show,   as: :account
@@ -38,6 +36,8 @@ Rails.application.routes.draw do
         end
       end
 
+      match '*path', to: 'api#preflight_cors', via: :options
+
       controller :datasets do
         get '/datasets'     => :index, as: :datasets
         get '/datasets/:id' => :index, constraints: { id: many_id_re }
@@ -66,6 +66,8 @@ Rails.application.routes.draw do
     end
 
     scope module: :v1, path: '(v1)', constraints: APIConstraint.new(1, true) do
+      match '*path', to: 'api#preflight_cors', via: :options
+
       # Legacy V1
       scope constraints: { lat: GeoScope::LATLON_RE, lon: GeoScope::LATLON_RE } do
         get '/download/:year-:month-:day'               => 'root#deprecated', name: :dataset_by_date
@@ -101,18 +103,23 @@ Rails.application.routes.draw do
   end
 
   controller :root, action: :ember, format: :html do
+    get '/sign-up'      => redirect('/manager/sign-up')
+    get '/log-in'       => redirect('/manager/log-in')
     get '/manage'       => redirect('/manager')
     get '/manage/*path' => redirect('/manager/%{path}')
     get '/manager'
+    get '/manager/log-in'
     get '/manager/sign-up'
-    get '/manager/account'
     get '/manager/verify/:token',   as: :verify
-    get '/manager/recover'
+    get '/manager/password/recover'
     get '/manager/password/:token', as: :password
+    get '/manager/account'
     get '/manager/keys'
     get '/manager/keys/new'
     get '/manager/keys/:key_id'
-    get '/manager/log-in'
+    get '/manager/credits'
+    get '/manager/terms'
+    get '/manager/privacy'
   end
 
   namespace :admin do

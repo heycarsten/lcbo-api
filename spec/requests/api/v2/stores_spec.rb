@@ -106,9 +106,21 @@ RSpec.describe 'V2 Stores API' do
     expect(response.status).to eq 401
   end
 
-  it 'returns all stores' do
+  it 'returns all stores with Authorization: Token' do
     prepare!
     api_headers['Authorization'] = "Token #{@private_key}"
+
+    api_get '/stores'
+
+    expect(response.status).to eq 200
+    expect(json[:stores].size).to eq 3
+    expect(json[:meta][:pagination][:total_records]).to eq 3
+  end
+
+  it 'returns all stores with Authorization: Basic' do
+    prepare!
+
+    api_headers['Authorization'] = ActionController::HttpAuthentication::Basic.encode_credentials('x-access-key', @private_key)
 
     api_get '/stores'
 
