@@ -24,6 +24,7 @@ module LCBOAPI
     require 'v1/exporter'
     require 'boticus'
     require 'crawler'
+    require 'image_cacher'
 
     config.generators do |g|
       g.assets false
