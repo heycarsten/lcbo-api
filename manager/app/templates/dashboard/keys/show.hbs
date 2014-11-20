@@ -51,17 +51,36 @@
   <section class="usage-detail">
     <h1>Using Your Access Key</h1>
     <p>
-      In order to use your Access Key, you&rsquo;ll need to include it in your
-      requests. LCBO API allows two ways for you to do this:
+      In order to use your Access Key, you&rsquo;ll need to include it in the
+      requests you make to LCBO API. You&rsquo;ll want to peplace
+      <code>ACCESS_KEY</code> in the examples below with your actual Access Key
+      shown in the purple box. You can do this in a few ways:
     </p>
+    <h2>HTTP Authorization Header</h2>
     <p>
-      <b>HTTP Header</b>: Include your key as an HTTP header, this approach is
-      recommended, set the <code>X-Access-Key</code> header to your Access Key.
+      This approach is recommended, set the <code>Authorization</code> header
+      like this:
     </p>
+{{#source-code lang="text"~}}
+Authorization: Token ACCESS_KEY
+{{~/source-code}}
+    <h2>URL Query Parameter</h2>
     <p>
-      <b>Query Param</b>: LCBO API will also accept your Access Key as a parameter
-      in the URL. Add a parameter named <code>access_key</code> to your request URL.
+      LCBO API will also accept your Access Key as a parameter in URLs named
+      <code>access_key</code>, add it like this:
     </p>
+{{#source-code lang="text"~}}
+https://lcboapi.com/products?access_key=ACCESS_KEY
+{{~/source-code}}
+    <h2>Basic Authentication</h2>
+    <p>
+      As a last resort, if you tooling only allows you to specify a username
+      and password for HTTP Basic Auth, you can use your Access Key as the
+      password, and <code>x-access-key</code> as the username:
+    </p>
+{{#source-code lang="text"~}}
+https://ACCESS_KEY:x-access-key@lcboapi.com/products
+{{~/source-code}}
   </section>
 </div>
 
@@ -74,7 +93,7 @@
 {{#source-code lang="javascript"~}}
 jQuery.ajax({
   url: 'https://lcboapi.com/stores',
-  headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
+  headers: { 'Authorization': 'Token ACCESS_KEY' }
 }).then(function(data) {
   console.log(data);
 });
@@ -86,7 +105,7 @@ jQuery.ajax({
 {{#source-code lang="javascript"~}}
 WinJS.xhr({
   url: 'https://lcboapi.com/stores',
-  headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
+  headers: { 'Authorization': 'Token ACCESS_KEY' }
 }).done(function(result) {
   console.log(result);
 });
@@ -99,7 +118,7 @@ WinJS.xhr({
 require(['dojo/request/xhr'], function(xhr) {
   xhr('https://lcboapi.com/stores', {
     handleAs: 'json',
-    headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
+    headers: { 'Authorization': 'Token ACCESS_KEY' }
   }).then(function(data) {
     console.log(data);
   });
@@ -118,14 +137,14 @@ require(['dojo/request/xhr'], function(xhr) {
     <article class="code-example">
       <h2>cURL</h2>
 {{#source-code lang="bash"~}}
-curl -H 'X-Access-Key: ACCESS_KEY' https://lcboapi.com/stores
+curl -H 'Authorization: Token ACCESS_KEY' https://lcboapi.com/stores
 {{~/source-code}}
     </article>
 
     <article class='code-example'>
       <h2>PowerShell</h2>
 {{#source-code lang="powershell"~}}
-Invoke-WebRequest https://lcboapi.com/stores -Headers @{"X-Access-Key" = "ACCESS_KEY"}
+Invoke-WebRequest https://lcboapi.com/stores -Headers @{"Authorization" = "Token ACCESS_KEY"}
 {{~/source-code}}
     </article>
 
@@ -133,7 +152,7 @@ Invoke-WebRequest https://lcboapi.com/stores -Headers @{"X-Access-Key" = "ACCESS
       <h2>PHP</h2>
 {{#source-code lang="php"~}}
 $opts = array(
-  headers => array('X-Access-Key' => 'ACCESS_KEY')
+  headers => array('Authorization' => 'Token ACCESS_KEY')
 );
 
 $body = http_get('https://lcboapi.com/stores', $opts);
@@ -149,7 +168,7 @@ import urllib2
 import json
 
 req = urllib2.Request('https://lcboapi.com/stores')
-req.add_header('X-Access-Key', 'ACCESS_KEY')
+req.add_header('Authorization', 'Token ACCESS_KEY')
 
 data = json.load(urllib2.urlopen(req))
 
@@ -164,7 +183,7 @@ require 'json'
 require 'open-uri'
 
 res = open('https://lcboapi.com/stores',
-  'X-Access-Key' => '<i>ACCESS_KEY</i>'
+  'Authorization' => 'Token ACCESS_KEY'
 )
 data = JSON.parse(res.read)
 

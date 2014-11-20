@@ -10,6 +10,6 @@ RSpec.describe 'V2 Products API' do
       Fabricate(:product, id: 2, name: 'Product A', inventory_count: 30),
       Fabricate(:product, id: 1, name: 'Product D', is_dead: true)
     ]
-    api_headers['X-Access-Key'] = @key
+    api_headers['Authorization'] = "Token #{@key}"
   end
 end

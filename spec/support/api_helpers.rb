@@ -13,23 +13,6 @@ module APIHelpers
     api_headers['Authorization'] = "Token #{user.auth_token}"
   end
 
-  def auth_access_key(key)
-    api_headers['X-Access-Key'] = key.token.to_s
-  end
-
-  def clear_access_key
-    api_headers['X-Access-Key'] = nil
-  end
-
-  def clear_auth_token
-    api_headers['Authorization'] = nil
-  end
-
-  def clear_auth_headers
-    clear_access_key
-    clear_auth_token
-  end
-
   def json
     @json ||= MultiJson.load(response.body, symbolize_keys: true)
   end

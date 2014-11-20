@@ -13,7 +13,6 @@ class API::V2::APIController < APIController
     'Access-Control-Allow-Methods' => 'GET',
     'Access-Control-Allow-Headers' => %w[
       Accept
-      X-Access-Key
       Authorization
     ].join(', '),
     'Access-Control-Expose-Headers' => %w[

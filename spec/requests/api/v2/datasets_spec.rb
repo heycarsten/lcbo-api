@@ -10,7 +10,7 @@ RSpec.describe 'V2 Datasets API' do
       Fabricate(:crawl, state: 'cancelled')
     ]
 
-    api_headers['X-Access-Key'] = @key
+    api_headers['Authorization'] = "Token #{@key}"
   end
 
   it 'returns datasets (GET /datasets)' do

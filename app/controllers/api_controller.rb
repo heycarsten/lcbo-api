@@ -2,6 +2,7 @@ class APIController < ApplicationController
   MAX_DEV_IPS       = 3
   RATE_LIMIT_WEB    = 1200
   RATE_LIMIT_NATIVE = 2400
+  BASIC_AUTH        = ActionController::HttpAuthentication::Basic
 
   class NotAuthorizedError < StandardError; end
 
@@ -18,12 +19,22 @@ class APIController < ApplicationController
     nil
   end
 
-  def access_key
-    @access_key ||= Token.parse(request.headers['X-Access-Key'] || params[:access_key])
+  def get_auth_token
+    header = request.headers['Authorization']
+
+    case header
+    when /\AToken /i
+      return header
+    when /\ABasic /i
+      _, token = BASIC_AUTH.user_name_and_password(request)
+      return token
+    else
+      params[:access_key]
+    end
   end
 
   def auth_token
-    @auth_token ||= Token.parse(request.headers['Authorization'])
+    @auth_token ||= Token.parse(get_auth_token)
   end
 
   def current_user
@@ -31,7 +42,7 @@ class APIController < ApplicationController
   end
 
   def current_key
-    @current_key ||= Key.lookup(access_key)
+    @current_key ||= Key.lookup(auth_token)
   end
 
   def account_info
@@ -94,9 +105,9 @@ class APIController < ApplicationController
       $redis.expire(redis_key, 1.hour)
     end
 
-    response.headers['X-Client-Limit-Max']       = max
-    response.headers['X-Client-Limit-Count']     = count
-    response.headers['X-Client-Limit-TTL'] = ttl
+    response.headers['X-Client-Limit-Max']   = max
+    response.headers['X-Client-Limit-Count'] = count
+    response.headers['X-Client-Limit-TTL']   = ttl
 
     if (count > max) && is_new
       render_error \

@@ -29,7 +29,7 @@ RSpec.describe 'V2 Stores API' do
 
     it 'disables CORS for private keys' do
       prepare!
-      api_headers['X-Access-Key'] = @private_key
+      api_headers['Authorization'] = "Token #{@private_key}"
       api_get '/stores'
       expect(response.headers['Access-Control-Allow-Origin']).to eq nil
     end
@@ -37,7 +37,7 @@ RSpec.describe 'V2 Stores API' do
     it 'enables CORS for public keys' do
       prepare!
       api_headers['Origin'] = 'null'
-      api_headers['X-Access-Key'] = @public_key.to_s
+      api_headers['Authorization'] = "Token #{@public_key}"
       api_get '/stores'
       expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
     end
@@ -45,7 +45,7 @@ RSpec.describe 'V2 Stores API' do
     it 'enforces origin for public keys with domains' do
       prepare!
       api_headers['Origin'] = nil
-      api_headers['X-Access-Key'] = @public_key.to_s
+      api_headers['Authorization'] = "Token #{@public_key}"
       api_get '/stores'
       expect(response.status).to eq 403
       expect(json[:error][:code]).to eq 'bad_origin'
@@ -54,7 +54,7 @@ RSpec.describe 'V2 Stores API' do
     it 'allows requests for public keys with domains' do
       prepare!
       api_headers['Origin'] = 'http://lcboapi.test'
-      api_headers['X-Access-Key'] = @public_key.to_s
+      api_headers['Authorization'] = "Token #{@public_key}"
       api_get '/stores'
       expect(response.status).to eq 200
       expect(json[:stores].size).to_not eq 0
@@ -65,7 +65,7 @@ RSpec.describe 'V2 Stores API' do
     it 'limits unique IP addresses per web client key when key is in devmode' do
       prepare!
       api_headers['Origin'] = 'http://lcboapi.test'
-      api_headers['X-Access-Key'] = @public_key_dev
+      api_headers['Authorization'] = "Token #{@public_key_dev}"
 
       api_headers['REMOTE_ADDR'] = '1.0.0.1'
       api_get '/stores'
@@ -108,7 +108,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'returns all stores' do
     prepare!
-    api_headers['X-Access-Key'] = @private_key
+    api_headers['Authorization'] = "Token #{@private_key}"
 
     api_get '/stores'
 
@@ -119,7 +119,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'returns stores by an array of ids (index)' do
     prepare!
-    api_headers['X-Access-Key'] = @private_key
+    api_headers['Authorization'] = "Token #{@private_key}"
 
     api_get "/stores/#{@stores[0].id},#{@stores[1].id}"
 
@@ -131,7 +131,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'returns stores by id (show)' do
     prepare!
-    api_headers['X-Access-Key'] = @private_key
+    api_headers['Authorization'] = "Token #{@private_key}"
 
     api_get "/stores/#{@stores[2].id}"
 
@@ -142,7 +142,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'fails to return stores by id and query' do
     prepare!
-    api_headers['X-Access-Key'] = @private_key
+    api_headers['Authorization'] = "Token #{@private_key}"
 
     api_get "/stores?id=1&q=fail"
 
@@ -152,7 +152,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'returns stores by query' do
     prepare!
-    api_headers['X-Access-Key'] = @private_key
+    api_headers['Authorization'] = "Token #{@private_key}"
 
     api_get '/stores?q=store+b'
 
@@ -162,7 +162,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'returns stores by lat/lon' do
     prepare!
-    api_headers['X-Access-Key'] = @private_key
+    api_headers['Authorization'] = "Token #{@private_key}"
 
     api_get "/stores?lat=#{@stores[2].latitude}&lon=#{@stores[2].longitude}"
 
@@ -173,7 +173,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'can include dead stores' do
     prepare!
-    api_headers['X-Access-Key'] = @private_key
+    api_headers['Authorization'] = "Token #{@private_key}"
 
     api_get "/stores?include_dead=yes"
 
@@ -183,7 +183,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'can order results' do
     prepare!
-    api_headers['X-Access-Key'] = @private_key
+    api_headers['Authorization'] = "Token #{@private_key}"
 
     api_get "/stores?sort=-id"
 
@@ -196,7 +196,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'can constrain results' do
     prepare!
-    api_headers['X-Access-Key'] = @private_key
+    api_headers['Authorization'] = "Token #{@private_key}"
 
     api_get "/stores?inventory_count_gt=10"
 
@@ -207,7 +207,7 @@ RSpec.describe 'V2 Stores API' do
 
   it 'returns stores that have a product' do
     prepare!
-    api_headers['X-Access-Key'] = @private_key
+    api_headers['Authorization'] = "Token #{@private_key}"
 
     product   = Fabricate(:product, id: 1)
     inventory = Fabricate(:inventory, store_id: @stores[1].id, product_id: product.id)
@@ -237,7 +237,7 @@ RSpec.describe 'V2 Stores API' do
       Fabricate(:inventory, store_id: @stores[1].id, product_id: products[1].id, quantity: 15)
     ]
 
-    api_headers['X-Access-Key'] = @private_key
+    api_headers['Authorization'] = "Token #{@private_key}"
 
     api_get "/stores?products=#{products[0].id},#{products[1].id}"
     expect(json[:stores].size).to eq 1
