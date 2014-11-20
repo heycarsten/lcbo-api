@@ -12,10 +12,13 @@ class APIController < ApplicationController
 
   CORS_HEADERS = {
     'Access-Control-Allow-Origin'  => '*',
-    'Access-Control-Allow-Methods' => 'GET',
+    'Access-Control-Allow-Methods' => 'GET, HEAD, OPTIONS',
     'Access-Control-Allow-Headers' => %w[
+      Origin
       Accept
       Authorization
+      User-Agent
+      X-Requested-With
     ].join(', '),
     'Access-Control-Expose-Headers' => %w[
       X-Rate-Limit-Count
@@ -63,10 +66,10 @@ class APIController < ApplicationController
     end
   end
 
-  def add_cors_headers(allow_origin = '*')
+  def add_cors_headers
     return true unless @enable_cors
     headers.merge!(CORS_HEADERS)
-    headers['Access-Control-Allow-Origin'] = allow_origin
+    true
   end
 
   def origin

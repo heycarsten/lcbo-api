@@ -1,7 +1,6 @@
 class API::V1::APIController < APIController
   CALLBACK_NAME_RE = /\A[a-z0-9_]+(\.{0,1}[a-z0-9_]+)*\z/i
   VERSION          = 1
-  HTTPS            = 'https'
 
   rescue_from \
     GCoder::NoResultsError,
@@ -24,9 +23,7 @@ class API::V1::APIController < APIController
 
   def restrict_https!
     return true if current_key
-
-    return true unless scheme = request.headers['X-Forwarded-Proto']
-    return true unless scheme.downcase == HTTPS
+    return true unless https?
 
     render_error :not_authorized,
       "You need an Access Key to use HTTPS on LCBO API, sign up for one " \
