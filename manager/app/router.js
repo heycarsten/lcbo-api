@@ -9,7 +9,8 @@ Router.map(function() {
   this.route('login', { path: '/log-in' });
   this.route('signup', { path: '/sign-up' });
   this.route('verify', { path: '/verify/:token' });
-  this.route('reset-password');
+  this.route('password.recover', { path: '/password/recover' });
+  this.route('password.change', { path: '/password/:token' });
 
   this.resource('dashboard', { path: '/' }, function() {
     this.route('account');

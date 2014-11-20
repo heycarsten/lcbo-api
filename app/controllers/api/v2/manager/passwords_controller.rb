@@ -3,16 +3,14 @@ class API::V2::Manager::PasswordsController < API::V2::Manager::ManagerControlle
   before_filter :find_user, only: :update
 
   def create
-    if (user = User.verified.where(email: params[:email].to_s.downcase).first)
+    email = params[:email].to_s.downcase
+
+    if (email.present? && user = User.verified.where(email: email).first)
       UserMailer.change_password_message(user.id).deliver
-      render text: '', status: 204
-    else
-      render json: { errors: [{
-        code:   'invalid',
-        path:   'email',
-        detail: 'is not associated with an active account'
-      }] }, status: 422, serializer: nil
     end
+
+    # Always return success to avoid attack vector
+    render text: '', status: 204
   end
 
   def update
@@ -34,7 +32,7 @@ class API::V2::Manager::PasswordsController < API::V2::Manager::ManagerControlle
       render_error \
         code:   'not_found',
         title:  'Not found',
-        detail: 'new password link is invalid or was already used',
+        detail: 'change password URL is invalid or was already used',
         status: 404
     end
   end

@@ -1,7 +1,7 @@
 class APIController < ApplicationController
   MAX_DEV_IPS       = 3
-  RATE_LIMIT_WEB    = 2200
-  RATE_LIMIT_NATIVE = 3600
+  RATE_LIMIT_WEB    = 1200
+  RATE_LIMIT_NATIVE = 2400
 
   class NotAuthorizedError < StandardError; end
 

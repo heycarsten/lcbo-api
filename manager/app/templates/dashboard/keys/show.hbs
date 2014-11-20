@@ -38,9 +38,9 @@
         </li>
         <li title="You can make requests from this domain with CORS or JSONP.">
           <h2>Domain</h2>
-          <p>Some Domain{{domain}}</p>
+          <p>{{domain}}</p>
         </li>
-        <li title="Individual clients are limited to this many requests per hour.">
+        <li title="Individual clients are limited to 1200 requests per hour.">
           <h2>Rate Limit</h2>
           <p>1200 / hour</p>
         </li>
@@ -71,40 +71,40 @@
   {{#if isWeb}}
     <article class='code-example'>
       <h2>jQuery</h2>
-      {{#source-code lang="javascript"~}}
-      jQuery.ajax({
-        url: 'https://lcboapi.com/stores',
-        headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
-      }).then(function(data) {
-        console.log(data);
-      });
-      {{~/source-code}}
+{{#source-code lang="javascript"~}}
+jQuery.ajax({
+  url: 'https://lcboapi.com/stores',
+  headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
+}).then(function(data) {
+  console.log(data);
+});
+{{~/source-code}}
     </article>
 
     <article class='code-example'>
       <h2>WinJS (Web Context)</h2>
-      {{#source-code lang="javascript"~}}
-        WinJS.xhr({
-          url: 'https://lcboapi.com/stores',
-          headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
-        }).done(function(result) {
-          console.log(result);
-        });
-      {{~/source-code}}
+{{#source-code lang="javascript"~}}
+WinJS.xhr({
+  url: 'https://lcboapi.com/stores',
+  headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
+}).done(function(result) {
+  console.log(result);
+});
+{{~/source-code}}
     </article>
 
     <article class='code-example'>
       <h2>dojo</h2>
-      {{#source-code lang="javascript"~}}
-        require(['dojo/request/xhr'], function(xhr) {
-          xhr('https://lcboapi.com/stores', {
-            handleAs: 'json',
-            headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
-          }).then(function(data) {
-            console.log(data);
-          });
-        });
-      {{~/source-code}}
+{{#source-code lang="javascript"~}}
+require(['dojo/request/xhr'], function(xhr) {
+  xhr('https://lcboapi.com/stores', {
+    handleAs: 'json',
+    headers: { 'X-Access-Key': '<i>ACCESS_KEY</i>' }
+  }).then(function(data) {
+    console.log(data);
+  });
+});
+{{~/source-code}}
     </article>
   {{/if}}
 
@@ -117,59 +117,59 @@
   {{#if isServer}}
     <article class="code-example">
       <h2>cURL</h2>
-      {{#source-code lang="bash"~}}
-        curl -H 'X-Access-Key: ACCESS_KEY' https://lcboapi.com/stores
-      {{~/source-code}}
+{{#source-code lang="bash"~}}
+curl -H 'X-Access-Key: ACCESS_KEY' https://lcboapi.com/stores
+{{~/source-code}}
     </article>
 
     <article class='code-example'>
       <h2>PowerShell</h2>
-      {{#source-code lang="powershell"~}}
-        Invoke-WebRequest https://lcboapi.com/stores -Headers @{"X-Access-Key" = "ACCESS_KEY"}
-      {{~/source-code}}
+{{#source-code lang="powershell"~}}
+Invoke-WebRequest https://lcboapi.com/stores -Headers @{"X-Access-Key" = "ACCESS_KEY"}
+{{~/source-code}}
     </article>
 
     <article class='code-example'>
       <h2>PHP</h2>
-      {{#source-code lang="php"~}}
-        $opts = array(
-          headers => array('X-Access-Key' => 'ACCESS_KEY')
-        );
+{{#source-code lang="php"~}}
+$opts = array(
+  headers => array('X-Access-Key' => 'ACCESS_KEY')
+);
 
-        $body = http_get('https://lcboapi.com/stores', $opts);
+$body = http_get('https://lcboapi.com/stores', $opts);
 
-        print $body;
-      {{~/source-code}}
+print $body;
+{{~/source-code}}
     </article>
 
     <article class='code-example'>
       <h2>Python</h2>
-      {{#source-code lang="python"~}}
-        import urllib2
-        import json
+{{#source-code lang="python"~}}
+import urllib2
+import json
 
-        req = urllib2.Request('https://lcboapi.com/stores')
-        req.add_header('X-Access-Key', 'ACCESS_KEY')
+req = urllib2.Request('https://lcboapi.com/stores')
+req.add_header('X-Access-Key', 'ACCESS_KEY')
 
-        data = json.load(urllib2.urlopen(req))
+data = json.load(urllib2.urlopen(req))
 
-        print data
-      {{~/source-code}}
+print data
+{{~/source-code}}
     </article>
 
     <article class='code-example'>
       <h2>Ruby</h2>
-      {{#source-code lang="ruby"~}}
-        require 'json'
-        require 'open-uri'
+{{#source-code lang="ruby"~}}
+require 'json'
+require 'open-uri'
 
-        res = open('https://lcboapi.com/stores',
-          'X-Access-Key' => '<i>ACCESS_KEY</i>'
-        )
-        data = JSON.parse(res.read)
+res = open('https://lcboapi.com/stores',
+  'X-Access-Key' => '<i>ACCESS_KEY</i>'
+)
+data = JSON.parse(res.read)
 
-        puts data.inspect
-      {{~/source-code}}
+puts data.inspect
+{{~/source-code}}
     </article>
   {{/if}}
 

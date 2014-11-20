@@ -13,14 +13,14 @@ export default Em.Route.extend(Unauthenticated, {
     var route = this;
 
     return this.session.authenticate('authenticator:un-auth', data).then(function() {
-      route.transitionTo('index');
+      route.transitionTo('dashboard.keys');
     });
   },
 
   actions: {
     error: function() {
       if (this.session.get('isAuthenticated')) {
-        this.replaceWith('index');
+        this.replaceWith('dashboard.keys');
       } else {
         this.replaceWith('login');
       }

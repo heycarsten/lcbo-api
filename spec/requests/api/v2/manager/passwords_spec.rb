@@ -12,20 +12,18 @@ RSpec.describe 'V2 Manager Passwords API' do
       expect(last_delivery.subject).to match /password/i
     end
 
-    it 'fails to send message to email that does not exist' do
+    it 'pretends to send email for address that does not exist' do
       api_post '/manager/passwords', email: 'herp@example.com'
 
-      expect(response.status).to eq 422
-      expect(has_errors_for(:email)).to eq true
+      expect(response.status).to eq 204
     end
 
-    it 'fails to send message to unverified email' do
+    it 'pretends to send message to unverified email' do
       u = create_user!
 
       api_post '/manager/passwords', email: u.new_email.address
 
-      expect(response.status).to eq 422
-      expect(has_errors_for(:email)).to eq true
+      expect(response.status).to eq 204
     end
   end
 

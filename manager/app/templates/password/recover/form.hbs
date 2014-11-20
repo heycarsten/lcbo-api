@@ -1,0 +1,30 @@
+{{#ui-form model=this minimal=true action="submit"}}
+  <h2>Recover Your Password</h2>
+
+  <p>
+    Enter the email address that you use for LCBO API and we&rsquo;ll send you
+    instructions for setting a new password.
+  </p>
+
+  <ol class="minimal-fields">
+    {{ui-form-field
+      type="email"
+      for="email"
+      placeholder="Email"
+      value=email
+      tabindex=1
+      autofocus=true}}
+  </ol>
+
+  {{#if errorMessage}}
+    <div class="form-field-error">
+      <i class="fa fa-exclamation-triangle"></i> {{errorMessage}}
+    </div>
+  {{/if}}
+
+  <div class="actions">
+    <button type="submit" tabindex="2">
+      Get Instructions
+    </button>
+  </div>
+{{/ui-form}}
