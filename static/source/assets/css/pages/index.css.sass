@@ -1,0 +1,67 @@
+body.index
+  .hero
+    position: relative
+    height: 520px
+
+    .black
+      color: $green-grey-800
+
+    .pink
+      color: $pink-500
+
+    .purple
+      color: $purple-500
+
+    .piglet
+      color: $purple-a100
+
+    .blue
+      color: $light-blue-500
+
+    .green
+      color: $green-a700
+
+    .gold
+      color: $lime-500 // #d5cf2a <- PSD color
+
+  .hero-intro
+    position: absolute
+    left: $homepage-gutter
+    top: 56px
+    width: 450px
+
+    h1
+      font-weight: 900
+      font-size: 3.5em
+      text-transform: uppercase
+      letter-spacing: -0.03em
+      line-height: 1.025
+      color: $green-grey-300
+
+      em
+        font-style: normal
+
+      span
+        display: block
+
+  .hero-try-it
+    position: absolute
+    right: 0
+    background: red
+    width: 50%
+
+    h1
+      margin-top: 8px
+      width: 186px
+      height: 84px
+      background: transparent image-url("give-it-a-try.png") no-repeat
+      background-size: cover
+
+      span
+        @extend %reader-only
+
+  #try-it-widget
+    background: $green-grey-300
+    padding: 4px
+    padding-right: 0
+    
