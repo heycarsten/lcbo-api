@@ -1,6 +1,5 @@
 .lcboapi-wordmark
   margin: 0
-  margin-left: 10%
   padding: 0
 
   a
@@ -14,17 +13,98 @@
   span
     @extend %reader-only
 
-.app > header
+html, body
+  font-size: 16px
+  background: $green-grey-900
+
+body > main
+  margin: 0
+  padding: 1px 0
+  background: $green-grey-50
+  min-height: 80vh
+
+body > footer
   position: relative
-  background: $blue-grey-50
-  height: 68px
-  width: 100%
+  background: $green-grey-900
+  color: $green-grey-700
+  font-size: 0.93em
+
+  nav, p
+    line-height: 3em
 
   nav
     position: absolute
-    right: 10%
+    left: $homepage-gutter
+
+    ol
+      list-style: none
+      margin: 0
+      padding: 0
+
+    li
+      margin: 0
+      padding: 0
+      display: inline-block
+
+      &:before
+        position: relative
+        +font-awesome
+        font-size: 5px
+        top: -4px
+        content: "\f111"
+        margin: 0 4px
+
+      &:first-child:before
+        content: none
+
+  a
+    color: $green-grey-600
+    text-decoration: none
+
+    &:active
+      color: $purple-a400
+
+    &:hover
+      color: $green-grey-500
+
+  .copyright
+    margin: 0
+    padding: 0
+    position: absolute
+    right: $homepage-gutter
+
+    a
+      color: $green-grey-700
+
+  .disclaimer
+    position: absolute
+    width: 100%
+    text-align: center
+    color: $pink-900
+    margin: 0
+    padding: 0
+
+    span
+      padding-left: 18px
+
+      &:before
+        +font-awesome
+        content: "\f071"
+
+body > header
+  position: relative
+  background: white
+  height: 68px
+  width: 100%
+
+  h1
+    position: absolute
+    left: $homepage-gutter
+
+  nav
+    position: absolute
+    right: $homepage-gutter + 1%
     top: 20px
-    font-size: 18px
     font-weight: 400
     color: $blue-grey-700
 
@@ -83,49 +163,3 @@
 
     .log-out a
       color: $red-600
-
-.app > footer
-  position: fixed
-  z-index: 9999
-  bottom: 0
-  left: 0
-  right: 0
-  font-weight: 300
-  font-size: 14px
-  color: $grey-500
-  background: rgba(white, 0.95)
-  height: 44px
-  line-height: 43px
-  padding: 0 10%
-
-  em
-    color: $grey-600
-    font-style: normal
-    font-weight: 500
-
-  nav
-    display: inline-block
-    margin-left: 32px
-
-    ol, li
-      margin: 0
-      padding: 0
-      display: inline-block
-
-    li
-      &:after
-        position: relative
-        +font-awesome
-        content: "\f111"
-        font-size: 5px
-        top: -3px
-        padding: 0 4px
-        color: $blue-grey-200
-
-      &:last-child:after
-        content: none
-
-    a
-      color: $blue-grey-600
-      font-weight: 400
-      text-decoration: none

@@ -1,28 +1,4 @@
-###
-# Compass
-###
-
-# Change Compass configuration
-# compass_config do |config|
-#   config.output_style = :compact
-# end
-
-###
-# Page options, layouts, aliases and proxies
-###
-
-# Per-page layout changes:
-#
-# With no layout
-# page "/path/to/file.html", :layout => false
-#
-# With alternative layout
-page '/', layout: :homepage
-
-# A path which all have the same layout
-# with_layout :admin do
-#   page "/admin/*"
-# end
+activate :bower
 
 ignore '/docs/template.html.erb'
 
@@ -34,14 +10,6 @@ data.documents.each do |doc|
   proxy "/docs/#{doc[:slug]}/index.html", '/docs/template.html', locals: { doc: doc }
 end
 
-###
-# Helpers
-###
-
-# Automatic image dimensions on image_tag helper
-# activate :automatic_image_sizes
-
-# Methods defined in the helpers block are available in templates
 helpers do
   def format_route(route)
     spec = route.gsub(/:[a-z\_]+/) { |part| "<span>#{part}</span>" }
@@ -53,11 +21,13 @@ helpers do
   end
 end
 
-set :css_dir, 'stylesheets'
-set :js_dir, 'javascripts'
-set :images_dir, 'images'
+Sass.load_paths << File.expand_path(File.dirname(__FILE__) + '/../manager')
+puts Sass.load_paths.inspect
 
-# Build-specific configuration
+set :css_dir,    'assets/css'
+set :js_dir,     'assets/js'
+set :images_dir, 'assets/images'
+
 configure :build do
   # For example, change the Compass output style for deployment
   # activate :minify_css
