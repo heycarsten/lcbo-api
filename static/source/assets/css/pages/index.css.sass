@@ -24,6 +24,12 @@ body.index
     .gold
       color: $lime-500 // #d5cf2a <- PSD color
 
+  .hero-button
+    a
+      @extend .button
+      font-size: 1.7em
+      padding: 12px 28px
+
   .hero-intro
     position: absolute
     left: $homepage-gutter
@@ -34,8 +40,8 @@ body.index
       font-weight: 900
       font-size: 3.5em
       text-transform: uppercase
-      letter-spacing: -0.03em
-      line-height: 1.025
+      letter-spacing: -0.02em
+      line-height: 1.05
       color: $green-grey-300
 
       em
@@ -47,11 +53,11 @@ body.index
   .hero-try-it
     position: absolute
     right: 0
-    background: red
     width: 50%
 
     h1
-      margin-top: 8px
+      margin-top: 26px
+      margin-bottom: 8px
       width: 186px
       height: 84px
       background: transparent image-url("give-it-a-try.png") no-repeat
@@ -61,7 +67,64 @@ body.index
         @extend %reader-only
 
   #try-it-widget
-    background: $green-grey-300
-    padding: 4px
+    position: relative
+    background: $green-grey-100
+    padding: 6px
     padding-right: 0
-    
+
+    .menubar
+      position: absolute
+      background: white
+      height: 36px
+      width: 100%
+      line-height: 33px
+
+    .selector
+      position: absolute
+      width: 30%
+      background: $purple-a400
+      color: white
+      font-weight: 500
+      height: 36px
+      left: 0
+      padding: 0 12px
+      +box-sizing(border-box)
+
+      &:after
+        position: absolute
+        +font-awesome
+        color: rgba(white, 0.66)
+        content: "\f0d7"
+        right: 12px
+        top: 1px
+        font-size: 19px
+
+    .path
+      position: absolute
+      width: 70%
+      height: 36px
+      right: 0
+
+      .readonly
+        margin-left: 8px
+        color: $grey-500
+
+      input
+        width: 100%
+        position: absolute
+        padding: 0
+        margin-left: 107px
+        border: 0
+        background: transparent
+        left: -4px
+        +box-sizing(border-box)
+        height: 33px
+        outline: none
+
+    .console
+      margin-top: 36px
+      background: $green-grey-900
+      width: 100%
+      height: 460px
+      overflow-x: hidden
+      overflow-y: scroll
