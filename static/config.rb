@@ -1,4 +1,5 @@
 activate :bower
+activate :react
 
 ignore '/docs/template.html.erb'
 
@@ -21,12 +22,18 @@ helpers do
   end
 end
 
-Sass.load_paths << File.expand_path(File.dirname(__FILE__) + '/../manager')
-puts Sass.load_paths.inspect
+set :sass_assets_paths, [
+  File.expand_path(File.dirname(__FILE__) + '/../manager/app/styles')
+]
 
 set :css_dir,    'assets/css'
 set :js_dir,     'assets/js'
 set :images_dir, 'assets/images'
+
+ready do
+  sprockets.append_path File.expand_path(File.dirname(__FILE__) + '/../manager/vendor')
+  sprockets.append_path File.dirname(::React::Source.bundled_path_for('react.js'))
+end
 
 configure :build do
   # For example, change the Compass output style for deployment

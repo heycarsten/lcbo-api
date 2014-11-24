@@ -1,7 +1,20 @@
 body.index
   .hero
     position: relative
-    height: 520px
+    height: 680px
+    overflow: hidden
+
+    > .left, > .right
+      position: absolute
+
+    > .left
+      left: $homepage-gutter
+      z-index: 100
+      width: 500px
+
+    > .right
+      z-index: 99
+      width: 100%
 
     .black
       color: $green-grey-800
@@ -31,10 +44,7 @@ body.index
       padding: 12px 28px
 
   .hero-intro
-    position: absolute
-    left: $homepage-gutter
-    top: 56px
-    width: 450px
+    margin-top: 56px
 
     h1
       font-weight: 900
@@ -51,9 +61,9 @@ body.index
         display: block
 
   .hero-try-it
-    position: absolute
-    right: 0
-    width: 50%
+    position: relative
+    margin-left: 522px
+    left: $homepage-gutter
 
     h1
       margin-top: 26px
@@ -66,20 +76,20 @@ body.index
       span
         @extend %reader-only
 
-  #try-it-widget
+  .try-it-component
     position: relative
     background: $green-grey-100
     padding: 6px
     padding-right: 0
 
-    .menubar
+    .control-bar
       position: absolute
       background: white
       height: 36px
       width: 100%
       line-height: 33px
 
-    .selector
+    .endpoint-selector
       position: absolute
       width: 30%
       background: $purple-a400
@@ -99,7 +109,7 @@ body.index
         top: 1px
         font-size: 19px
 
-    .path
+    .endpoint-path-input
       position: absolute
       width: 70%
       height: 36px
@@ -108,6 +118,9 @@ body.index
       .readonly
         margin-left: 8px
         color: $grey-500
+
+      input[type="submit"]
+        @extend %reader-only
 
       input
         width: 100%
@@ -126,5 +139,36 @@ body.index
       background: $green-grey-900
       width: 100%
       height: 460px
-      overflow-x: hidden
+      overflow-x: scroll
       overflow-y: scroll
+
+      pre
+        margin: 0
+        padding: 0
+
+      code
+        font-size: 14px
+        font-weight: 400
+        color: $green-grey-100
+        display: block
+        margin-right: $homepage-gutter + 5.5%
+        padding: 4px 6px
+
+        .property
+          color: $pink-400
+          .quote
+            color: $pink-300
+          .colon
+            color: $green-grey-100
+
+        .string
+          color: $purple-300
+
+        .boolean
+          color: $cyan-a400
+
+        .null
+          color: $blue-grey-300
+
+        .number
+          color: $blue-400

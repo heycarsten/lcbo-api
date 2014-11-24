@@ -1,3 +1,13 @@
+GIT
+  remote: git://github.com/aldogroup/middleman-react.git
+  revision: 3689c9477bd22b07fc40d54d0ec6238a16cefcc2
+  ref: 3689c947
+  specs:
+    middleman-react (0.12.0)
+      execjs
+      middleman-core (>= 3.0)
+      react-source (~> 0.12.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -89,6 +99,7 @@ GEM
     rb-fsevent (0.9.4)
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
+    react-source (0.12.0)
     sass (3.4.8)
     sprockets (2.12.3)
       hike (~> 1.2)
@@ -121,3 +132,5 @@ DEPENDENCIES
   kramdown
   middleman (~> 3.3.6)
   middleman-bower
+  middleman-react!
+  react-source (= 0.12.0)
