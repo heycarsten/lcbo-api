@@ -1,7 +1,7 @@
 body.index
   .hero
     position: relative
-    height: 680px
+    height: 660px
     overflow: hidden
 
     > .left, > .right
@@ -62,7 +62,7 @@ body.index
 
   .hero-try-it
     position: relative
-    margin-left: 522px
+    margin-left: 514px
     left: $homepage-gutter
 
     h1
@@ -81,6 +81,7 @@ body.index
     background: $green-grey-100
     padding: 6px
     padding-right: 0
+    padding-bottom: 0
 
     .control-bar
       position: absolute
@@ -138,7 +139,7 @@ body.index
       margin-top: 36px
       background: $green-grey-900
       width: 100%
-      height: 460px
+      height: 500px
       overflow-x: scroll
       overflow-y: scroll
 
@@ -172,3 +173,40 @@ body.index
 
         .number
           color: $blue-400
+
+  .meticulous-data
+    color: $grey-500
+    background: $green-grey-800
+    padding: 164px 0
+    position: relative
+
+    &:before
+      content: " "
+      display: block
+      width: 512px
+      height: 138px
+      position: absolute
+      background: transparent image-url("meticulous-data.png") no-repeat
+      background-size: cover
+      left: 0
+      top: 33%
+
+    h1, p
+      margin: 0
+      margin-right: $homepage-gutter
+      margin-left: 50%
+
+    h1
+      color: white
+      text-transform: uppercase
+      font-size: 2.375em
+      font-weight: 700
+      letter-spacing: -0.01em
+
+      &:after
+        content: "."
+
+    p
+      font-weight: 400
+      font-size: 1.6875em
+      line-height: 1.5
