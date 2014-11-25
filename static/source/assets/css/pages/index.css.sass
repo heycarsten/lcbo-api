@@ -148,7 +148,7 @@ body.index
         padding: 0
 
       code
-        font-size: 14px
+        font-size: 0.9375em
         font-weight: 400
         color: $green-grey-100
         display: block
@@ -158,7 +158,7 @@ body.index
         .property
           color: $pink-400
           .quote
-            color: $pink-300
+            color: darken($pink-200, 5%)
           .colon
             color: $green-grey-100
 
@@ -167,18 +167,46 @@ body.index
 
         .boolean
           color: $cyan-a400
+          background: rgba($cyan-a200, 0.05)
 
         .null
-          color: $blue-grey-300
+          color: $light-green-300
+          background: rgba($green-a400, 0.05)
 
         .number
           color: $blue-400
 
+  .sub
+    position: relative
+    padding: 164px 0
+
+    h1, p
+      margin: 0
+
+    h1
+      text-transform: uppercase
+      font-size: 2.375em
+      font-weight: 700
+      letter-spacing: -0.01em
+
+    p
+      font-weight: 400
+      font-size: 1.6875em
+      line-height: 1.5
+
+    .left
+      h1, p
+        margin-left: $homepage-gutter
+        margin-right: 50%
+
+    .right
+      h1, p
+        margin-right: $homepage-gutter
+        margin-left: 50%
+
   .meticulous-data
     color: $grey-500
     background: $green-grey-800
-    padding: 164px 0
-    position: relative
 
     &:before
       content: " "
@@ -191,27 +219,39 @@ body.index
       left: 0
       top: 33%
 
-    h1, p
-      margin: 0
-      margin-right: $homepage-gutter
-      margin-left: 50%
-
     h1
       color: white
-      text-transform: uppercase
-      font-size: 2.375em
-      font-weight: 700
-      letter-spacing: -0.01em
 
-      &:after
-        content: "."
+  .powerful-features
+    background: white
+
+    h1
+      color: $green-grey-900
 
     p
-      font-weight: 400
-      font-size: 1.6875em
-      line-height: 1.5
+      color: $green-grey-600
+
+  .proven-reliability
+    p
+      color: $green-grey-600
 
   .get-started
     background: $green-grey-800
     color: $grey-200
     padding: 84px 0
+
+    p
+      margin: 0
+      text-align: center
+      font-size: 1.6875em
+      line-height: 52px
+
+      a
+        margin-left: 16px
+        font-size: 27px
+        color: white
+        background: $purple-a400
+        padding-left: 22px
+        padding-right: 22px
+        line-height: 52px
+        height: 52px
