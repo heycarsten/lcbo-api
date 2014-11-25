@@ -96,9 +96,9 @@ class API::V1::APIController < APIController
 
   def render_error(*args)
     if args.first.is_a?(Hash)
-      error   = args[:code]
-      message = args[:detail]
-      status  = args[:status]
+      error   = args[0][:code]
+      message = args[0][:detail]
+      status  = args[0][:status]
     else
       error   = args[0]
       message = args[1]
