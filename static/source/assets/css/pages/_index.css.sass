@@ -91,6 +91,7 @@ body.index
       line-height: 33px
 
     .endpoint-selector
+      +user-select(none)
       position: absolute
       width: 30%
       background: $purple-a400
@@ -100,6 +101,7 @@ body.index
       left: 0
       padding: 0 12px
       +box-sizing(border-box)
+      cursor: pointer
 
       &:after
         position: absolute
@@ -109,6 +111,18 @@ body.index
         right: 12px
         top: 1px
         font-size: 19px
+
+      &:hover
+        background: lighten($purple-a400, 10%)
+
+        &:after
+          color: rgba(white, 0.8)
+
+        &:active
+          background: white
+          color: $purple-a400
+          &:after
+            color: $purple-a400
 
     .endpoint-path-input
       position: absolute
@@ -188,6 +202,7 @@ body.index
       font-size: 2.375em
       font-weight: 700
       letter-spacing: -0.01em
+      line-height: 1.75
 
     p
       font-weight: 400
@@ -207,6 +222,7 @@ body.index
   .meticulous-data
     color: $grey-500
     background: $green-grey-800
+    padding: 180px 0
 
     &:before
       content: " "
@@ -217,13 +233,25 @@ body.index
       background: transparent image-url("meticulous-data.png") no-repeat
       background-size: cover
       left: 0
-      top: 33%
+      top: 34%
 
     h1
       color: white
 
   .powerful-features
     background: white
+    padding: 152px 0
+
+    &:before
+      content: " "
+      position: absolute
+      display: block
+      width: 530px
+      height: 148px
+      background: transparent image-url("powerful-features.png") no-repeat
+      background-size: cover
+      right: 0
+      top: 35%
 
     h1
       color: $green-grey-900
@@ -232,8 +260,25 @@ body.index
       color: $green-grey-600
 
   .proven-reliability
+    background: $purple-400
+    padding: 132px 0
+
+    &:before
+      content: " "
+      position: absolute
+      display: block
+      width: 478px
+      height: 172px
+      background: transparent image-url("proven-reliability.png") no-repeat
+      background-size: cover
+      left: 22px
+      top: 34%
+
+    h1
+      color: white
+
     p
-      color: $green-grey-600
+      color: $purple-100
 
   .get-started
     background: $green-grey-800

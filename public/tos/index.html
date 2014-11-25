@@ -1,33 +1,50 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="description" content="A REST service for LCBO store, product, and inventory data.">
-  <title>LCBO API</title>
-  <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
-  <script src="/javascripts/all.js" type="text/javascript"></script>
-</head>
+    <meta name="description" content="A fast, cloud-based API for LCBO store, product, and inventory data.">
+    <title>LCBO API</title>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:500,900,400italic,400,300,300italic,700,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400' rel='stylesheet' type='text/css'>
+    <link href="/assets/css/lcboapi.css" rel="stylesheet" type="text/css" />
+    <script src="/assets/js/lcboapi.js" type="text/javascript"></script>
+  </head>
 
-  <body id="lcboapi_body" class="gs960">
-    <div class="grid-header">
-  <div class="constraint">
-    <h1>
-      <a href="/">
-        <span>LCBO API</span>
-      </a>
-    </h1>
-    <p>
-      <a href="http://twitter.com/lcboapi">
-        <span>Follow on Twitter</span>
-      </a>
-    </p>
-  </div>
-</div>
+  <body class="lcboapi tos tos_index">
+    <header>
+      <h1 class="lcboapi-wordmark">
+        <a href="/">
+          <span>LCBO API</span>
+        </a>
+      </h1>
+      <nav>
+        <ol>
+          <li>
+            <a href="/docs/v1">
+              Documentation
+            </a>
+          </li>
+          <li>
+            <a href="/news">
+              News
+            </a>
+          </li>
+          <li>
+            <a href="/log-in">
+              Log In
+            </a>
+          </li>
+          <li class="sign-up">
+            <a href="/sign-up" class="button">
+              Get A Key
+            </a>
+          </li>
+        </ol>
+      </nav>
+    </header>
 
-    <div class="grid-body">
-      <div class="constraint">
-        <h1 id="acceptance-of-the-terms-of-service">1. Acceptance of the Terms of Service</h1>
+    <main>
+      <h1 id="acceptance-of-the-terms-of-service">1. Acceptance of the Terms of Service</h1>
 
 <p>Welcome to LCBO API! (a.k.a. "we" or "us" or the "Company"). We are excited to
 have you as user and member of the community. The following terms and conditions
@@ -268,36 +285,53 @@ of the Terms of Service will continue in full force and effect.</p>
 
 <p>We welcome any comment, question and communication at help@lcboapi.com</p>
 
-      </div>
-    </div>
-    <div class="grid-footer">
-  <div class="constraint clear">
-    <p class="footer-copyright">
-      &copy; 2009&ndash;2014
-      <a href="http://heycarsten.com">Carsten Nielsen</a>
-      <br>
-      <span>
-        <span class="heart">&hearts;</span>
-        Supported by
-        <a href="http://unspace.ca">Unspace</a>
-        <span class="heart">&hearts;</span>
-      </span>
-    </p>
-    <p class="footer-disclaimer">
-      LCBO API is <em>not</em> endorsed or supported by the
-      <acronym title="Liquor Control Board of Ontario">LCBO</acronym>
-    </p>
-  </div>
-</div>
+    </main>
+
+    <footer>
+      <nav>
+        <ol>
+          <li>
+            <a href="mailto:info@lcboapi.com">
+              Contact
+            </a>
+          </li>
+          <li>
+            <a href="/terms">
+              Legal
+            </a>
+          </li>
+          <li>
+            <a href="/privacy">
+              Privacy
+            </a>
+          </li>
+          <li>
+            <a href="/credits">
+              Credits
+            </a>
+          </li>
+        </ol>
+      </nav>
+
+      <p class="disclaimer">
+        <span>
+          LCBO API is not funded or endorsed by the LCBO
+        </span>
+      </p>
+
+      <p class="copyright">
+        &copy; 2009&ndash;2014
+        <a href="http://heycarsten.com">Carsten Nielsen</a>
+      </p>
+    </footer>
 
     <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-8617929-2', 'auto');
-  ga('send', 'pageview');
-</script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-8617929-2', 'auto');
+      ga('send', 'pageview');
+    </script>
   </body>
 </html>
