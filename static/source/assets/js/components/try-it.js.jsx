@@ -37,7 +37,7 @@ var TryItEndpointOption = React.createClass({
 
   render: function() {
     var classes = React.addons.classSet({
-      'selected': this.props.selectedKey === this.data.key
+      'selected': this.props.selectedKey === this.props.data.key
     });
 
     return (
@@ -69,7 +69,7 @@ var TryItEndpointSelectList = React.createClass({
           return <TryItEndpointOption
             onSelected={this.handleSelected.bind(this, endpoint)}
             key={endpoint.key}
-            selectedKey={}
+            selectedKey={this.props.selectedKey}
             data={endpoint} />;
         }, this)}
       </ol>
@@ -103,8 +103,17 @@ var TryItEndpointSelector = React.createClass({
 
     var selector;
 
+    var label = ENDPOINTS.filter(function(endpoint) {
+      return endpoint.key === this.props.selectedKey;
+    }, this)[0].label;
+
     if (this.state.isOpen) {
-      selector = <TryItEndpointSelectList parent={this} onSelected={this.handleSelect} />;
+      selector = (
+        <TryItEndpointSelectList
+          selectedKey={this.props.selectedKey}
+          parent={this}
+          onSelected={this.handleSelect} />
+      );
     } else {
       selector = <div />;
     }
@@ -112,7 +121,7 @@ var TryItEndpointSelector = React.createClass({
     return (
       <div className={classes}>
         <div onClick={this.openSelector} className="endpoint-selector-label">
-          {this.state.label}
+          {label}
         </div>
         {selector}
       </div>
@@ -170,7 +179,7 @@ var TryItComponent = React.createClass({
   getInitialState: function() {
     return {
       endpoints: ENDPOINTS,
-      selectedEndpoint: ENDPOINTS[0],
+      key: ENDPOINTS[0].key,
       path: ENDPOINTS[0].path,
       json: '{}'
     }
@@ -213,7 +222,7 @@ var TryItComponent = React.createClass({
     return (
       <div className="try-it-component">
         <div className="control-bar">
-          <TryItEndpointSelector onSelected={this.handleSelected} />
+          <TryItEndpointSelector selectedKey={this.state.key} onSelected={this.handleSelected} />
           <TryItEndpointPathInput path={this.state.path} onPathChange={this.handlePathChange} />
         </div>
         <TryItConsole json={this.state.json} />
