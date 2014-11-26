@@ -1,4 +1,6 @@
 ---
+layout: content
+header: 'Terms of Service'
 title: LCBO API Terms of Service
 ---
 

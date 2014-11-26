@@ -1,6 +1,16 @@
 activate :bower
 activate :react
 
+activate :blog do |blog|
+  blog.prefix    = 'news'
+  blog.permalink = '{title}'
+  blog.sources   = '{year}-{month}-{day}-{title}'
+end
+
+activate :directory_indexes
+
+page '/news/*', layout: :news_post
+
 ignore '/docs/template.html.erb'
 
 data.endpoints.each do |doc|

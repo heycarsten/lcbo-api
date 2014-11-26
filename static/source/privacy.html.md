@@ -1,11 +1,13 @@
 ---
+layout: content
+header: 'Privacy Policy'
 title: 'LCBO API Privacy Policy'
 ---
 
 LCBO API collects and manages user data according to the following Privacy
 Policy, with the goal of incorporating the values of transparency,
 accessibility, sanity, and usability. This document is part of LCBO API's
-Terms of Service, and by using lcboapi.com (the “Website”), you agree to the
+[Terms of Service](/tos), and by using lcboapi.com (the “Website”), you agree to the
 terms of this Privacy Policy and the Terms of Service. Please read the Terms
 of Service in their entirety, and refer to those for definitions and contacts.
 

@@ -1,0 +1,13 @@
+<% wrap_layout :layout do %>
+  <section class="content-page">
+    <% if header = current_page.data.header %>
+      <header class="page-header">
+        <h1><%= header %></h1>
+      </header>
+    <% end %>
+
+    <article class="document">
+      <%= yield %>
+    </article>
+  </section>
+<% end %>

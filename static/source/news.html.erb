@@ -1,0 +1,28 @@
+<section class="content-page">
+  <header class="page-header">
+    <h1>News &amp; Updates</h1>
+  </header>
+
+  <% blog.articles.each do |article| %>
+    <article class="document">
+      <header>
+        <h1>
+          <a class="link" href="<%= article.url %>"><%= article.title %></a>
+        </h1>
+        <div class="meta">
+          <span class="date">
+            <%= article.date.strftime('%B %e, %Y') %>
+          </span>
+          <span class="sep">
+            &mdash;
+          </span>
+          <span class="author">
+            <%= article.data.author || raise('please set an author') %>
+          </span>
+        </div>
+      </header>
+
+      <%= article.body %>
+    </article>
+  <% end %>
+</section>

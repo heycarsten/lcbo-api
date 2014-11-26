@@ -2,15 +2,15 @@
 <html lang="en">
   <head>
     <meta name="description" content="A fast, cloud-based API for LCBO store, product, and inventory data.">
-    <title><%= yield_content(:title) || current_page.data.title || 'LCBO API' %></title>
+    <title>LCBO API</title>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Roboto:500,900,400italic,400,300,300italic,700,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400' rel='stylesheet' type='text/css'>
-    <%= stylesheet_link_tag 'lcboapi' %>
-    <%= javascript_include_tag 'lcboapi' %>
+    <link href="/assets/css/lcboapi.css" rel="stylesheet" type="text/css" />
+    <script src="/assets/js/lcboapi.js" type="text/javascript"></script>
   </head>
 
-  <body class="lcboapi <%= page_classes %>">
+  <body class="lcboapi news news_index">
     <header>
       <h1 class="lcboapi-wordmark">
         <a href="/">
@@ -44,7 +44,34 @@
     </header>
 
     <main>
-      <%= yield %>
+      <section class="content-page">
+  <header class="page-header">
+    <h1>News &amp; Updates</h1>
+  </header>
+
+    <article class="document">
+      <header>
+        <h1>
+          <a class="link" href="/news/whats-next-for-lcbo-api/">What&rsquo;s next for LCBO API</a>
+        </h1>
+        <div class="meta">
+          <span class="date">
+            November 26, 2014
+          </span>
+          <span class="sep">
+            &mdash;
+          </span>
+          <span class="author">
+            Carsten
+          </span>
+        </div>
+      </header>
+
+      <p>Let's talk about LCBO API.</p>
+
+    </article>
+</section>
+
     </main>
 
     <footer>
@@ -80,7 +107,7 @@
       </p>
 
       <p class="copyright">
-        &copy; 2009&ndash;<%= Time.now.year %>
+        &copy; 2009&ndash;2014
         <a href="http://heycarsten.com">Carsten Nielsen</a>
       </p>
     </footer>

@@ -17,6 +17,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    addressable (2.3.6)
     bourbon (4.0.2)
       sass (~> 3.3)
       thor
@@ -51,7 +52,7 @@ GEM
     i18n (0.6.11)
     json (1.8.1)
     kramdown (1.5.0)
-    listen (2.8.0)
+    listen (2.8.2)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
@@ -66,6 +67,10 @@ GEM
       middleman-sprockets (>= 3.1.2)
       sass (>= 3.4.0, < 4.0)
       uglifier (~> 2.5)
+    middleman-blog (3.5.3)
+      addressable (~> 2.3.5)
+      middleman-core (~> 3.2)
+      tzinfo (>= 0.3.0)
     middleman-bower (1.0.2)
       sprockets-bower (>= 0.0.2)
     middleman-core (3.3.7)
@@ -100,7 +105,7 @@ GEM
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
     react-source (0.12.0)
-    sass (3.4.8)
+    sass (3.4.9)
     sprockets (2.12.3)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -130,7 +135,8 @@ PLATFORMS
 DEPENDENCIES
   bourbon
   kramdown
-  middleman (~> 3.3.6)
+  middleman (~> 3.3.7)
+  middleman-blog
   middleman-bower
   middleman-react!
   react-source (= 0.12.0)

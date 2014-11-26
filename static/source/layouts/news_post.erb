@@ -1,0 +1,26 @@
+<% wrap_layout :layout do %>
+  <section class="content-page">
+    <header class="page-header">
+      <h1>News &amp; Updates</h1>
+    </header>
+    <article class="document">
+      <header>
+        <h1><%= current_article.title %></h1>
+
+        <div class="meta">
+          <span class="date">
+            <%= current_article.date.strftime('%B %e, %Y') %>
+          </span>
+          <span class="sep">
+            &mdash;
+          </span>
+          <span class="author">
+            <%= current_article.data.author || raise('please set an author') %>
+          </span>
+        </div>
+      </header>
+
+      <%= yield %>
+    </article>
+  </article>
+<% end %>
