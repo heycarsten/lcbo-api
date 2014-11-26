@@ -66,6 +66,7 @@ body.index
     left: $homepage-gutter
 
     h1
+      +user-select(none)
       margin-top: 26px
       margin-bottom: 8px
       width: 186px
@@ -91,38 +92,89 @@ body.index
       line-height: 33px
 
     .endpoint-selector
-      +user-select(none)
-      position: absolute
-      width: 30%
-      background: $purple-a400
-      color: white
-      font-weight: 500
-      height: 36px
-      left: 0
-      padding: 0 12px
-      +box-sizing(border-box)
-      cursor: pointer
+      position: relative
+      &.open
+        .endpoint-selector-list
+          display: block
+          opacity: 1.0
 
-      &:after
+      .endpoint-selector-list
+        display: none
+        opacity: 0
         position: absolute
-        +font-awesome
-        color: rgba(white, 0.66)
-        content: "\f0d7"
-        right: 12px
-        top: 1px
-        font-size: 19px
+        z-index: 1000
+        background: white
+        list-style: none
+        border-radius: 3px
+        top: -14px
+        left: -14px
+        margin: 0
+        padding: 6px 0
+        @extend %in-context-box-shadow
 
-      &:hover
-        background: lighten($purple-a400, 10%)
+        > li
+          position: relative
+          padding: 8px 48px
+          padding-right: 28px
+          min-width: 222px
+          font-weight: 500
+          cursor: pointer
+          +user-select(none)
+
+          &:before
+            position: absolute
+            left: 20px
+            +font-awesome
+
+          &.selected
+            color: $purple-a400
+
+            &:before
+              content: "\f00c"
+
+          &:hover
+            background: lighten($purple-a400, 48%)
+
+          &:active
+            background: $purple-a400
+            color: white
+
+            &:before
+              content: "\f00c"
+
+      .endpoint-selector-label
+        +user-select(none)
+        position: absolute
+        width: 30%
+        background: $purple-a400
+        color: white
+        font-weight: 500
+        height: 36px
+        left: 0
+        padding: 0 12px
+        +box-sizing(border-box)
+        cursor: pointer
 
         &:after
-          color: rgba(white, 0.8)
+          position: absolute
+          +font-awesome
+          color: rgba(white, 0.66)
+          content: "\f0d7"
+          right: 12px
+          top: 1px
+          font-size: 19px
 
-        &:active
-          background: white
-          color: $purple-a400
+        &:hover
+          background: lighten($purple-a400, 10%)
+
           &:after
+            color: rgba(white, 0.8)
+
+          &:active
+            background: lighten($purple-a400, 48%)
             color: $purple-a400
+            &:after
+              color: $purple-a400
 
     .endpoint-path-input
       position: absolute
