@@ -57,7 +57,7 @@ var TryItEndpointSelectList = React.createClass({
     var component = this;
 
     $(document).one('click', function() {
-      component.props.parent.setState({ isOpen: false });
+      component.props.onDismiss();
       return true;
     });
   },
@@ -86,13 +86,16 @@ var TryItEndpointSelector = React.createClass({
   },
 
   handleSelect: function(endpoint) {
+    this.closeSelector();
     this.props.onSelected(endpoint);
   },
 
   openSelector: function() {
-    this.setState({
-      isOpen: true
-    });
+    this.setState({ isOpen: true });
+  },
+
+  closeSelector: function() {
+    this.setState({ isOpen: false });
   },
 
   render: function() {
@@ -111,8 +114,8 @@ var TryItEndpointSelector = React.createClass({
       selector = (
         <TryItEndpointSelectList
           selectedKey={this.props.selectedKey}
-          parent={this}
-          onSelected={this.handleSelect} />
+          onSelected={this.handleSelect}
+          onDismiss={this.closeSelector} />
       );
     } else {
       selector = <div />;
@@ -130,29 +133,22 @@ var TryItEndpointSelector = React.createClass({
 });
 
 var TryItEndpointPathInput = React.createClass({
-  getInitialState: function() {
-    return {
-      path: this.props.path
-    };
-  },
-
   handleSubmit: function(event) {
     event.preventDefault();
-
-    this.props.onPathChange({
-      path: this.state.path
-    });
+    this.props.onSubmit();
   },
 
   handlePathChange: function(event) {
-    this.state.path = event.target.value.trim();
+    this.props.onPathChange(
+      event.target.value.trim()
+    );
   },
 
   render: function() {
     return (
       <form className="endpoint-path-input" onSubmit={this.handleSubmit}>
         <span className="readonly">lcboapi.com/</span>
-        <input type="text" value={this.state.path} onChange={this.handlePathChange} />
+        <input type="text" value={this.props.path} onChange={this.handlePathChange} />
         <input type="submit" value="Submit" />
       </form>
     );
@@ -206,12 +202,12 @@ var TryItComponent = React.createClass({
     }.bind(this));
   },
 
-  handlePathChange: function(data) {
-    this.setState({
-      path: data.path
-    }, function() {
-      this.loadJSON();
-    }.bind(this));
+  handleSubmit: function(data) {
+    this.loadJSON();
+  },
+
+  handlePathChange: function(path) {
+    this.setState({ path: path });
   },
 
   componentDidMount: function() {
@@ -223,7 +219,7 @@ var TryItComponent = React.createClass({
       <div className="try-it-component">
         <div className="control-bar">
           <TryItEndpointSelector selectedKey={this.state.key} onSelected={this.handleSelected} />
-          <TryItEndpointPathInput path={this.state.path} onPathChange={this.handlePathChange} />
+          <TryItEndpointPathInput path={this.state.path} onPathChange={this.handlePathChange} onSubmit={this.handleSubmit} />
         </div>
         <TryItConsole json={this.state.json} />
       </div>
