@@ -90,6 +90,9 @@ GEM
       sprockets (~> 2.12.1)
       sprockets-helpers (~> 1.1.0)
       sprockets-sass (~> 1.2.0)
+    middleman-syntax (2.0.0)
+      middleman-core (~> 3.2)
+      rouge (~> 1.0)
     minitest (5.4.3)
     multi_json (1.10.1)
     padrino-helpers (0.12.4)
@@ -106,6 +109,7 @@ GEM
       ffi (>= 0.5.0)
     react-source (0.12.0)
     redcarpet (3.2.1)
+    rouge (1.7.4)
     sass (3.4.9)
     sprockets (2.12.3)
       hike (~> 1.2)
@@ -139,5 +143,6 @@ DEPENDENCIES
   middleman-blog
   middleman-bower
   middleman-react!
+  middleman-syntax
   react-source (= 0.12.0)
   redcarpet

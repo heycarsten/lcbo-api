@@ -1,5 +1,6 @@
 activate :bower
 activate :react
+activate :syntax
 
 activate :blog do |blog|
   blog.prefix    = 'news'

@@ -1,20 +1,41 @@
 <% wrap_layout :layout do %>
   <section class="docs-content">
     <header>
-      <h1>LCBO API V1</h1>
-      <nav>
+      <nav class="tabs">
         <ol>
-          <li>Overview</li>
+          <li class="active">
+            <a href="/docs/v1">V1</a>
+          </li>
+          <li>
+            <a href="/docs/v2">V2</a>
+          </li>
+        </ol>
+      </nav>
+      <nav>
+        <h1>V1 API Reference</h1>
+        <ol>
+          <li>Introduction</li>
+          <li>Media Types</li>
+          <li>Authorization</li>
+          <li>CORS &amp; JSONP</li>
+          <li>Errors</li>
+        </ol>
+        <h1>Endpoints</h1>
+        <ol>
+          <li>/stores</li>
+          <li>/products</li>
+          <li>/stores/:id/products</li>
+          <li>/stores/:id/products/:id</li>
+          <li>/inventories</li>
+          <li>/datasets</li>
         </ol>
       </nav>
     </header>
 
     <article>
-      <% if header = current_page.data.header %>
-        <header>
-          <h1><%= header %></h1>
-        </header>
-      <% end %>
+      <header>
+        <h1>LCBO API Version 1</h1>
+      </header>
 
       <div class="document">
         <%= yield %>

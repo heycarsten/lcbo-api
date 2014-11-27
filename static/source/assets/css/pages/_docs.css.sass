@@ -20,16 +20,51 @@ section.docs-content
     left: 0
     bottom: 0
     width: 318px
-    background: $green-grey-800
+    background: $blue-grey-100 //$green-grey-800
     +box-sizing(border-box)
-    color: white
+    color: $blue-grey-900 //white
+
+    nav.tabs
+      width: 100%
+      background: $blue-grey-50 //$green-grey-700
+      ol
+        position: relative
+        margin: 0
+        padding: 0
+        list-style: none
+        height: 52px
+
+        li a
+          position: absolute
+          text-align: center
+          &:hover
+            background: $blue-grey-100 //$green-grey-600
+
+        li.active a
+          color: $blue-grey-900
+          background: $blue-grey-100 //$green-grey-800
+
+        li:first-child a
+          left: 0
+
+        li:last-child a
+          right: 0
+
+        a
+          font-weight: 500
+          font-size: 20px
+          text-decoration: none
+          display: block
+          color: $blue-grey-300 //white
+          width: 50%
+          line-height: 52px
 
     h1
-      color: white
+      color: $blue-grey-900 //white
       padding: 0 32px
       font-weight: 700
 
-    nav
+    nav.sections
       padding: 0 32px
 
       ol
@@ -46,14 +81,16 @@ section.docs-content
       padding: 0 32px
       //background: $green-grey-700
       background: $purple-400
+      height: 52px
 
 
       h1
+        display: none
         font-weight: 700
         font-size: 2.255em
         //letter-spacing: -0.02em
-        line-height: 126px
-        height: 132px
+        //line-height: 100px
+        //height: 104px
         //text-transform: uppercase
         margin: 0
         text-align: center
@@ -66,5 +103,16 @@ section.docs-content
       padding: 0 32px
       padding-top: 1px
       padding-bottom: 122px
-      //font-size: 18px
 
+      h1, h2, h3, h4
+        text-align: left
+        margin: 44px 0
+
+      h1
+        font-size: 2em
+
+      h2
+        font-size: 1.75em
+
+      pre code
+        font-size: 16px

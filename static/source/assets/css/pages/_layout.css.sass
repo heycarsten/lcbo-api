@@ -185,3 +185,33 @@ header.page-header
     margin: 0
     text-align: center
     color: white
+
+pre code
+  background: $green-grey-900
+  font-size: 0.75em
+  font-weight: 400
+  color: $green-grey-100
+  display: block
+  padding: 4px 6px
+  border-radius: 3px
+
+  .property
+    color: $pink-400
+    .quote
+      color: darken($pink-200, 5%)
+    .colon
+      color: $green-grey-100
+
+  .string, .s2
+    color: $purple-300
+
+  .boolean
+    color: $cyan-a400
+    background: rgba($cyan-a200, 0.05)
+
+  .null, .kc
+    color: $light-green-300
+    background: rgba($green-a400, 0.05)
+
+  .number, .mi
+    color: $blue-400
