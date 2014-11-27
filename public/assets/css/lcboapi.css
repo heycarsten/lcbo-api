@@ -678,7 +678,7 @@ body > footer {
   body > footer nav {
     position: absolute;
     left: 8%;
-    z-index: 1001; }
+    z-index: 1003; }
     /* line 42, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
     body > footer nav ol {
       list-style: none;
@@ -731,7 +731,7 @@ body > footer {
     width: 100%;
     text-align: center;
     color: #880e4f;
-    z-index: 1003;
+    z-index: 1001;
     margin: 0;
     padding: 0; }
     /* line 92, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
