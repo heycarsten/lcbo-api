@@ -7,18 +7,17 @@ activate :blog do |blog|
   blog.sources   = '{year}-{month}-{day}-{title}'
 end
 
+set :markdown_engine, :redcarpet
+set :markdown, fenced_code_blocks: true, smartypants: true
+
 activate :directory_indexes
 
 page '/news/*', layout: :news_post
 
 ignore '/docs/template.html.erb'
 
-data.endpoints.each do |doc|
-  proxy "/docs/#{doc[:slug]}/index.html", '/docs/template.html', locals: { doc: doc }
-end
-
-data.documents.each do |doc|
-  proxy "/docs/#{doc[:slug]}/index.html", '/docs/template.html', locals: { doc: doc }
+data.v1.endpoints.each do |doc|
+  proxy "/docs/v1/#{doc[:slug]}/index.html", '/docs/template.html', locals: { doc: doc }
 end
 
 helpers do

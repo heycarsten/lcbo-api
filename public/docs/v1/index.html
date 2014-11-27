@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta encoding="utf-8">
+    <meta name="description" content="A fast, cloud-based API for LCBO store, product, and inventory data.">
+    <title>LCBO API V1 Documentation</title>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:500,900,400italic,400,300,300italic,700,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400' rel='stylesheet' type='text/css'>
+    <link href="/assets/css/lcboapi.css" rel="stylesheet" type="text/css" />
+    <script src="/assets/js/lcboapi.js" type="text/javascript"></script>
+  </head>
+
+  <body class="lcboapi docs docs_v1 docs_v1_index">
+    <header>
+      <h1 class="lcboapi-wordmark">
+        <a href="/">
+          <span>LCBO API</span>
+        </a>
+      </h1>
+      <nav>
+        <ol>
+          <li>
+            <a href="/about">
+              Story
+            </a>
+          </li>
+          <li>
+            <a href="/docs/v1">
+              Documentation
+            </a>
+          </li>
+          <li>
+            <a href="/news">
+              News
+            </a>
+          </li>
+          <li>
+            <a href="/log-in">
+              Log In
+            </a>
+          </li>
+          <li class="sign-up">
+            <a href="/sign-up" class="button">
+              Get A Key
+            </a>
+          </li>
+        </ol>
+      </nav>
+    </header>
+
+    <main>
+        <section class="docs-content">
+    <header>
+      <h1>LCBO API V1</h1>
+      <nav>
+        <ol>
+          <li>Overview</li>
+        </ol>
+      </nav>
+    </header>
+
+    <article>
+        <header>
+          <h1>API Version 1</h1>
+        </header>
+
+      <div class="document">
+        <h3>Responses</h3>
+
+<p>The default response format for the API is JSON. This means that you don&rsquo;t
+need to specify JSON in an <code>Accept</code> header or as an extension (.json) if
+that is the format you intend to request. Every response from the API is
+wrapped in a &ldquo;container&rdquo; that in its most basic form looks like this:</p>
+
+<pre><code class="json">{
+  &quot;status&quot;: 200,
+  &quot;message&quot;: null,
+  &quot;result&quot;: ...
+}
+</code></pre>
+
+<p>This allows the API to return meta information along with the data you are
+requesting. For example, in the case of a
+<a href="/docs/stores-with-product">Stores with Product</a> request the product object
+is returned with list of stores so that your application does not need to
+perform an additional request to obtain store information.</p>
+
+<h3>JSON-P</h3>
+
+<p>JSON-P stands for &ldquo;JSON with padding&rdquo; which is a very confusing way of
+saying JSON wrapped in a Javascript function call; I like to think of it as
+JSON-JS. It is used to circumvent browser security limitations when trying
+to access resources via Javascript from a different host than the containing
+page. That means you can use it to load LCBO API resources on a page that is
+not hosted on lcboapi.com, such as your website!</p>
+
+<p>One of the limitations to JSON-P is that the HTTP status can not be properly
+set to an error level because the <code>&lt;script&gt;</code> element that is dynamically
+written to the page will fail to load. Because of this all JSON-P requests
+return a 200 HTTP status code, regardless of the actual status. However, the
+<code>&quot;status&quot;</code> node in the response container always indicates the real status.</p>
+
+<p>To use JSON-P simply provide a <code>callback</code> parameter to your query. For
+example, to search products and return JSON-P you would request:</p>
+
+<pre><code>/products?q=cider&<em>callback=</em>setJSON
+</code></pre>
+
+<p>This will return the normal JSON response but wrap it in a function call:</p>
+
+<pre><code><em>setJSON(</em>{"status":200, "message":null, "response": ...}<em>);</em>
+</code></pre>
+
+<p>You can optionally specify a <code>.js</code> file extension for the resource, but the
+<code>Content-Type</code> header will always be set to <code>text/javascript</code> when returning
+JSON-P. For example the following request URI is the same as the one above.</p>
+
+<pre><code>/products<em>.js</em>?q=cider&callback=setJSON
+</code></pre>
+
+<h3>Pagination</h3>
+
+<p>When the API returns collections of items (stores, products, or inventories)
+it will paginate the results. You can control the number of items per page
+through the <code>per_page</code> parameter.</p>
+
+<p>A typical pager object looks like this:</p>
+
+<pre><code>{
+  &quot;records_per_page&quot;: 20,
+  &quot;total_record_count&quot;: 608,
+  &quot;current_page_record_count&quot;: 20,
+  &quot;is_first_page&quot;: false,
+  &quot;is_final_page&quot;: false,
+  &quot;current_page&quot;: 5,
+  &quot;current_page_path&quot;: &quot;/stores?page=5&quot;,
+  &quot;next_page&quot;: 6,
+  &quot;next_page_path&quot;: &quot;/stores?page=6&quot;,
+  &quot;previous_page&quot;: 4,
+  &quot;previous_page_path&quot;: &quot;/stores?page=4&quot;,
+  &quot;final_page&quot;: 31,
+  &quot;final_page_path&quot;: &quot;/stores?page=31&quot;
+}
+</code></pre>
+
+<p>It contains all of the information you need (and more) to navigate through
+the pages in the result set.</p>
+
+<h3>CSV and TSV Responses</h3>
+
+<p>Many resources can be returned as CSV (comma separated values) or TSV
+(tab separated values). These results can then be easily imported into
+spreadsheet software such as Apple Numbers or Microsoft Excel. To return
+a resource in CSV or TSV format simply append the <code>.csv</code> or <code>.tsv</code>
+extension to the resource URI:</p>
+
+<pre><code>/products<em>.csv</em>?order=price_in_cents.desc
+</code></pre>
+
+<h3>Errors</h3>
+
+<p>When an error occurs the response will look something like this:</p>
+
+<pre><code>{
+  &quot;error&quot;: &quot;bad_query_error&quot;,
+  &quot;message&quot;: &quot;A value supplied for the order parameter (id.desk) is not valid. It contains an invalid sort order (desk) for (id) try using: id.desc or id.asc instead.&quot;,
+  &quot;result&quot;: null,
+  &quot;status&quot;: 400
+}
+</code></pre>
+
+<p>Error messages are always as descriptive as possible; one of the design
+goals for LCBO API is to make experiential learning (learning by trial and
+error) as easy as possible. There are a few different types of errors:</p>
+
+<ul>
+<li><code>no_results_error</code>: The geocoder returned no geometry for the geo query.</li>
+<li><code>over_limit_error</code>: The geocoder has reached its daily limit of requests.</li>
+<li><code>geocoder_error</code>: The geocoder can&rsquo;t geocode the query it was provided.</li>
+<li><code>not_found_error</code>: A resource was not found (404)</li>
+<li><code>bad_query_error</code>: One (or more) of the supplied query parameters is
+wrong.</li>
+<li><code>jsonp_error</code>: Supplied callback is not a valid format, or JSON-P is not
+being used correctly.</li>
+</ul>
+
+      </div>
+    </article>
+  </section>
+
+    </main>
+
+    <footer>
+      <nav>
+        <ol>
+          <li>
+            <a href="mailto:info@lcboapi.com">
+              Contact
+            </a>
+          </li>
+          <li>
+            <a href="/tos">
+              Legal
+            </a>
+          </li>
+          <li>
+            <a href="/privacy">
+              Privacy
+            </a>
+          </li>
+          <li>
+            <a href="/credits">
+              Credits
+            </a>
+          </li>
+        </ol>
+      </nav>
+
+      <p class="disclaimer">
+        <span>
+          LCBO API is not funded or endorsed by the LCBO
+        </span>
+      </p>
+
+      <p class="copyright">
+        &copy; 2009&ndash;2014
+        <a href="http://heycarsten.com">Carsten Nielsen</a>
+      </p>
+    </footer>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-8617929-2', 'auto');
+      ga('send', 'pageview');
+    </script>
+  </body>
+</html>

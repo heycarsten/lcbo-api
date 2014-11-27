@@ -1,0 +1,24 @@
+<% wrap_layout :layout do %>
+  <section class="docs-content">
+    <header>
+      <h1>LCBO API V1</h1>
+      <nav>
+        <ol>
+          <li>Overview</li>
+        </ol>
+      </nav>
+    </header>
+
+    <article>
+      <% if header = current_page.data.header %>
+        <header>
+          <h1><%= header %></h1>
+        </header>
+      <% end %>
+
+      <div class="document">
+        <%= yield %>
+      </div>
+    </article>
+  </section>
+<% end %>

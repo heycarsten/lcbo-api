@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'kramdown'
+gem 'redcarpet'
 gem 'middleman',       '~> 3.3.7'
 gem 'middleman-bower'
 gem 'middleman-blog'

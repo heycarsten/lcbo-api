@@ -1,0 +1,70 @@
+body.docs
+  > header > h1
+    left: 58px
+  > header > nav
+    right: 32px
+
+  > footer .copyright
+    right: 32px
+
+  > footer nav
+    left: 32px
+
+section.docs-content
+  position: relative
+  background: white
+
+  > header
+    position: absolute
+    top: 0
+    left: 0
+    bottom: 0
+    width: 318px
+    background: $green-grey-800
+    +box-sizing(border-box)
+    color: white
+
+    h1
+      color: white
+      padding: 0 32px
+      font-weight: 700
+
+    nav
+      padding: 0 32px
+
+      ol
+        list-style: none
+        margin: 0
+        padding: 0
+
+  > article
+    margin-left: 318px
+
+    header
+      +box-sizing(border-box)
+      width: 100%
+      padding: 0 32px
+      //background: $green-grey-700
+      background: $purple-400
+
+
+      h1
+        font-weight: 700
+        font-size: 2.255em
+        //letter-spacing: -0.02em
+        line-height: 126px
+        height: 132px
+        //text-transform: uppercase
+        margin: 0
+        text-align: center
+        color: white
+
+    .document
+      width: auto
+      max-width: 640px
+      margin: 0 auto
+      padding: 0 32px
+      padding-top: 1px
+      padding-bottom: 122px
+      //font-size: 18px
+

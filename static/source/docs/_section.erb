@@ -4,13 +4,4 @@
       <%= section %>
     </div>
   <% end %>
-  <ul class="side-menu-list">
-    <% documents.each do |document| %>
-      <li class="side-menu-item">
-        <a href="/docs/<%= document[:slug] %>">
-          <%= document[:menu] || document[:title] %>
-        </a>
-      </li>
-    <% end %>
-  </ul>
 </li>
