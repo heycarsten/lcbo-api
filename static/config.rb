@@ -17,8 +17,15 @@ page '/news/*', layout: :news_post
 
 ignore '/docs/template.html.erb'
 
-data.v1.endpoints.each do |doc|
-  proxy "/docs/v1/#{doc[:slug]}/index.html", '/docs/template.html', locals: { doc: doc }
+proxy '/docs/v1/index.html', '/docs/template.html', locals: {
+  api: data.v1
+}
+
+data.v1.resources.each do |resource|
+  proxy "/docs/v1/#{resource.slug}/index.html", '/docs/template.html', locals: {
+    api: data.v1,
+    api_resource: resource
+  }
 end
 
 helpers do
@@ -28,7 +35,10 @@ helpers do
   end
 
   def markdown(source)
-    Tilt::KramdownTemplate.new { source }.render
+    Tilt::RedcarpetTemplate.new(
+      smarty_pants: true,
+      fenced_code_blocks: true
+    ) { source }.render
   end
 end
 

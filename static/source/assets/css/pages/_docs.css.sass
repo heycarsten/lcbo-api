@@ -19,14 +19,15 @@ section.docs-content
     top: 0
     left: 0
     bottom: 0
-    width: 318px
-    background: $blue-grey-100 //$green-grey-800
+    width: 386px
+    background: $blue-grey-50
     +box-sizing(border-box)
     color: $blue-grey-900 //white
 
     nav.tabs
       width: 100%
-      background: $blue-grey-50 //$green-grey-700
+      background: $blue-grey-100
+
       ol
         position: relative
         margin: 0
@@ -38,11 +39,12 @@ section.docs-content
           position: absolute
           text-align: center
           &:hover
-            background: $blue-grey-100 //$green-grey-600
+            background: lighten($blue-grey-100, 3%)
+            color: $blue-grey-700
 
         li.active a
           color: $blue-grey-900
-          background: $blue-grey-100 //$green-grey-800
+          background: $blue-grey-50
 
         li:first-child a
           left: 0
@@ -51,11 +53,11 @@ section.docs-content
           right: 0
 
         a
-          font-weight: 500
+          font-weight: 700
           font-size: 20px
           text-decoration: none
           display: block
-          color: $blue-grey-300 //white
+          color: $blue-grey-400
           width: 50%
           line-height: 52px
 
@@ -65,21 +67,61 @@ section.docs-content
       font-weight: 700
 
     nav.sections
-      padding: 0 32px
+      h1
+        margin: 0
+        padding: 0
+        font-size: 1.5em
+        font-weight: 600
+
+        em
+          color: $blue-grey-400
+          font-size: 0.875em
+          font-style: normal
+          font-weight: 400
+
+        span
+          color: $blue-grey-200
+
+        &:first-child
+          // margin: 0
+          // margin-top: 12px
+          // margin-right: 12px
+          margin: 12px 10px
+          padding: 22px 28px
+          // border-top-right-radius: 3px
+          // border-bottom-right-radius: 3px
+          //border-radius: 3px
+          font-size: 2em
+          font-weight: 500
+          background: $purple-500
+          color: white
+          line-height: 1.1
+          em
+            color: $purple-100
+            font-size: 0.55em
+          span
+            color: $purple-200
+
+      ol.manuals
+        font-size: 1.35em
 
       ol
+        font-size: 1.2em
         list-style: none
         margin: 0
         padding: 0
+        line-height: 1.65
+
+      h1, ol
+        margin: 22px 28px
 
   > article
-    margin-left: 318px
+    margin-left: 386px
 
     header
       +box-sizing(border-box)
       width: 100%
       padding: 0 32px
-      //background: $green-grey-700
       background: $purple-400
       height: 52px
 
@@ -99,6 +141,7 @@ section.docs-content
     .document
       width: auto
       max-width: 640px
+      line-height: 1.85
       margin: 0 auto
       padding: 0 32px
       padding-top: 1px
@@ -115,4 +158,7 @@ section.docs-content
         font-size: 1.75em
 
       pre code
+        +box-sizing(border-box)
+        padding: 12px 14px
+        line-height: 1.3
         font-size: 16px

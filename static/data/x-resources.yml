@@ -31,7 +31,7 @@
 - :title: Dataset
   :slug: dataset
   :heading: Dataset Endpoints
-  :route: /datasets/:dataset_id
+  :route: /datasets/:id
   :formats:
     <<: *all_formats
     :zip: ZIP archive of all data (redirects to actual file)
@@ -128,7 +128,7 @@
 - :title: Product
   :slug: product
   :heading: Product Endpoints
-  :route: /products/:product_id
+  :route: /products/:id
   :formats:
     <<: *all_formats
   :examples:
@@ -190,7 +190,7 @@
 - :title: Products at Store
   :slug: products-at-store
   :heading: Product Endpoints
-  :route: /stores/:store_id/products
+  :route: /stores/:id/products
   :query: ProductsQuery
   :per_page: 20
   :max_per_page: 100
@@ -241,7 +241,7 @@
 - :title: Stores with Product
   :slug: stores-with-product
   :heading: Store Endpoints
-  :route: /products/:product_id/stores
+  :route: /products/:id/stores
   :query: StoresQuery
   :per_page: 20
   :max_per_page: 100
@@ -322,7 +322,7 @@
 - :title: Store
   :slug: store
   :heading: Store Endpoints
-  :route: /stores/:store_id
+  :route: /stores/:id
   :formats:
     <<: *all_formats
   :examples:
@@ -370,23 +370,27 @@
     Here is some example JavaScript that demonstrates how to perform the
     calculation:
 
-        function msmTo24time(msm) {
-          var hour = msm / 60;
-          var mins = msm % 60;
-          return [hour, mins];
-        }
+    ```javascript
+    function msmTo24time(msm) {
+      var hour = msm / 60;
+      var mins = msm % 60;
+      return [hour, mins];
+    }
+    ```
 
     You will probably want to convert the minutes since midnight to 12 hour time
     since that's what most folks from Ontario will be familiar with, you can do
     that with a few extra steps:
 
-        function msmTo12time(msm) {
-          var time = msmTo24time(msm),
-              h24  = time[0],
-              h12  = (0 == h24 ? 12 : (h24 > 12 ? (h24 - 10) - 2 : h24)),
-              ampm = (h24 >= 12 ? 'PM' : 'AM');
-          return [h12, time[1], ampm];
-        }
+    ```javascript
+    function msmTo12time(msm) {
+      var time = msmTo24time(msm),
+          h24  = time[0],
+          h12  = (0 == h24 ? 12 : (h24 > 12 ? (h24 - 10) - 2 : h24)),
+          ampm = (h24 >= 12 ? 'PM' : 'AM');
+      return [h12, time[1], ampm];
+    }
+    ```
 
 - :title: Inventories
   :slug: inventories
@@ -415,7 +419,7 @@
 - :title: Inventory
   :slug: inventory
   :heading: Inventory Endpoints
-  :route: /stores/:store_id/products/:product_id/inventory
+  :route: /stores/:id/products/:id/inventory
   :formats:
     <<: *all_formats
   :examples:
@@ -439,7 +443,7 @@
 - :title: Product Inventories
   :slug: product-inventories
   :heading: Inventory Endpoints
-  :route: /products/:product_id/inventories
+  :route: /products/:id/inventories
   :query: InventoriesQuery
   :per_page: 50
   :max_per_page: 100
