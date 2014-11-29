@@ -79,7 +79,7 @@ RSpec.describe 'V2 Manager Sessions API' do
   describe 'DELETE /manager/session' do
     it 'destroys the session token when given a valid token' do
       log_in_user(u = create_verified_user!)
-      token = api_headers['Authorization']
+      token = api_headers['Authorization'].sub('Token token="', '').sub('"', '')
       expect(User.lookup(token)).to be_a User
 
       api_delete '/manager/session'
