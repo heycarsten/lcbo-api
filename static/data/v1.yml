@@ -2,12 +2,34 @@
 version: 1
 released: 'April 2009'
 manuals:
+- body: |
+    <p class="warning">
+      Unlimited, anonymous API access will end on <b>March 1<sup>st</sup>,
+      2015</b>. Starting on that date Access Keys will be required for
+      unlimited access to LCBO API V1. <a href="/news/whats-next-for-lcbo-api">Read more</a>
+    </p>
+
+    # Welcome to LCBO API
+
+    This is the documentation for Version 1 (V1) of LCBO API. It was originally
+    released **April 2009**.
+
+- anchor: 'overview'
+  title: 'Overview'
+  body: |
+    # Overview
+
+    * [Responses & Formats](#responses)
+    * [Authentication](#authentication)
+    * [JSONP & CORS](#jsonp-and-cors)
+    * [HTTPS](#https)
+
 - anchor: 'responses'
   title: 'Responses'
   body: |
     # Responses
 
-    The default response format for the API is JSON. This means that you don't
+    The default response format for the API is JSON `application/json`. This means that you don't
     need to specify JSON in an `Accept` header or as an extension (.json) if
     that is the format you intend to request. Every response from the API is
     wrapped in a "container" that in its most basic form looks like this:
@@ -25,42 +47,172 @@ manuals:
     [Stores with Product](/docs/stores-with-product) request the product object
     is returned with list of stores so that your application does not need to
     perform an additional request to obtain store information.
+
+- anchor: 'authentication'
+  title: 'Authentication'
+  body: |
+    # Authentication
+
+    **LCBO API V1 does not require authentication for access.** Starting on
+    <b>March 1<sup>st</sup>, 2015</b>, LCBO API V1 **will** require Access Keys
+    for **unlimited** use. New features in LCBO API V1 such as HTTPS and CORS
+    **require authentication** with an Access Key.
+
+    <p class="info">
+      You can provision an unlimited number of Access Keys for free by
+      <a href="/sign-up">creating</a> an LCBO API account.
+    </p>
+
+    There are three different types of access keys, they have specific
+    use-cases in mind:
+
+    <table class="auth-keys-table">
+      <thead>
+        <tr>
+          <th width="22%">Key Type</th>
+          <th width="78%">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td width="22%">
+            <b>Web Browser</b>
+          </td>
+          <td width="78%">
+            Use when LCBO API is accessed from a web browser through
+            <code>XMLHttpRequest</code> (Ajax/XHR)
+            using CORS or through dynamically inserted <code>&lt;script&gt;</code>
+            tags (JSONP). These keys are rate-limited per client IP address and
+            are paired to a domain. For example, a Web Browser Access Key with
+            the domain <b>momsandhops.ca</b> would fail to work if used
+            on a page served from <b>thebeerstore.ca</b>.
+          </td>
+        </tr>
+        <tr>
+          <td width="22%">
+            <b>Native Client</b>
+          </td>
+          <td width="78%">
+            In native mobile and desktop applications, these keys are rate-limited per
+            client but do not support CORS or JSONP.
+          </td>
+        </tr>
+        <tr>
+          <td width="22%">
+            <b>Private</b>
+          </td>
+          <td width="78%">
+            When LCBO API is accessed from a web server or private script, these keys are not rate-limited, and they do not support CORS or JSONP.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
 - anchor: 'jsonp-and-cors'
   title: 'JSONP &amp; CORS'
   body: |
     # JSONP & CORS
 
-    JSON-P stands for "JSON with padding" which is a very confusing way of
-    saying JSON wrapped in a Javascript function call; I like to think of it as
-    JSON-JS. It is used to circumvent browser security limitations when trying
-    to access resources via Javascript from a different host than the containing
-    page. That means you can use it to load LCBO API resources on a page that is
-    not hosted on lcboapi.com, such as your website!
+    LCBO API provides support for cross-origin requests so that you can access
+    LCBO API data directly from a web page. Classically, due to the
+    Single Origin Policy there were only two ways to do this, either by
+    proxying all requests through an endpoint on your origin server. For
+    example, by providing an endpoint like this:
 
-    One of the limitations to JSON-P is that the HTTP status can not be properly
-    set to an error level because the `<script>` element that is dynamically
-    written to the page will fail to load. Because of this all JSON-P requests
-    return a 200 HTTP status code, regardless of the actual status. However, the
-    `"status"` node in the response container always indicates the real status.
-
-    To use JSON-P simply provide a `callback` parameter to your query. For
-    example, to search products and return JSON-P you would request:
-
-    <pre><code>/products?q=cider&amp;<em>callback=</em>setJSON
-    </code></pre>
-
-    This will return the normal JSON response but wrap it in a function call:
-
-    ```javascript
-    setJSON({"status":200, "message":null, "response": ...});
+    ```
+    mysite.com/lcboapi/*
     ```
 
-    You can optionally specify a `.js` file extension for the resource, but the
-    `Content-Type` header will always be set to `text/javascript` when returning
-    JSON-P. For example the following request URI is the same as the one above.
+    That would then proxy anything after lcboapi/ to lcboapi.com:
 
-    <pre><code>/products<em>.js</em>?q=cider&callback=setJSON
-    </code></pre>
+    ```
+    mysite.com/lcboapi/products -> lcboapi.com/products
+    ```
+
+    The proxying approach is actually pretty good, the browser allows these
+    requests because they happen on the same domain that the page was served
+    from. It does, however, require infrastructure to work, and is pretty
+    redundant. This leads us to the first (and until recently, only) way to
+    request data from cross-origin servers, JSONP.
+
+    ## JSONP
+
+    JSONP stands for JSON with Padding and works by appending a `<script>` tag
+    to the page which points to an LCBO API endpoint with a query parameter
+    named `callback`. When LCBO API sees this parameter, it wraps the response
+    payload in a JavaScript function call with the name provided
+    in the `callback` parameter.
+
+    <p class="orly">
+      If it feels like a hack&hellip; that's because it is. JSONP only
+      works because the client (you) and the server (LCBO API) agree
+      to exploit the browser together.
+    </p>
+
+    To use JSONP with LCBO API, simply add a <code>callback</code> parameter
+    to LCBO API URLs.
+
+    When using JSONP LCBO API also sets `Content-Type` to
+    `application/javascript` since the response is now, actually, executable
+    JavaScript.
+
+    For example, this URL `lcboapi.com/products?callback=loadJSON` would return
+    a response that looks like:
+
+    ```javascript
+    loadJSON({
+      status: 200,
+      message: null,
+      result: [ ... ]
+    });
+    ```
+
+    It's important to note that most popular JavaScript libraries have built-in
+    support for JSONP. For example, the following jQuery can be used to perform
+    a JSONP request against LCBO API:
+
+    ```javascript
+    $.ajax({
+      url: 'http://lcboapi.com/products/371906',
+      dataType: 'jsonp'
+    }).then(function(data) {
+      console.log(data);
+    });
+    ```
+
+    ## CORS
+
+    Cross Origin Resource Sharing (CORS) is a robust W3C specification for
+    allowing browsers to access resources from different domains. LCBO API uses
+    it to give access to web browser JavaScript applications.
+
+    If you need to support outdated bowsers,
+    [specifically IE 6 and 7](http://caniuse.com/#feat=cors), you'll either have
+    to use a proxy or JSONP. Hilariously, with the advent of async script tags
+    `<script async>` JSONP can be about as effective in modern browsers as
+    using XMLHttpRequest with CORS. If you have to support older browsers that
+    don't understand CORS, there is no shame in using JSONP.
+
+    If you don't have to support IE 6 and 7, _welcome to the future!_ To use CORS
+    with LCBO API you need to provide an Web Browser Access Key with your
+    requests. You'll need an LCBO API account to create Access Keys,
+    [sign up](/sign-up) for one and get started. You can also
+    [read more](#authentication) about LCBO API authentication.
+
+    Once you have a Web Browser Access Key, using LCBO API with CORS from jQuery
+    is as simple as:
+
+    ```javascript
+    $.ajax({
+      url: 'http://lcboapi.com/products/346197',
+      headers: {
+        Authorization: 'Token YOUR_ACCESS_KEY'
+      }
+    }).then(function(data) {
+      console.log(data);
+    });
+    ```
+
 - anchor: 'pagination'
   title: 'Pagination'
   body: |
@@ -72,21 +224,23 @@ manuals:
 
     A typical pager object looks like this:
 
-        {
-          "records_per_page": 20,
-          "total_record_count": 608,
-          "current_page_record_count": 20,
-          "is_first_page": false,
-          "is_final_page": false,
-          "current_page": 5,
-          "current_page_path": "/stores?page=5",
-          "next_page": 6,
-          "next_page_path": "/stores?page=6",
-          "previous_page": 4,
-          "previous_page_path": "/stores?page=4",
-          "final_page": 31,
-          "final_page_path": "/stores?page=31"
-        }
+    ```json
+    {
+      "records_per_page": 20,
+      "total_record_count": 608,
+      "current_page_record_count": 20,
+      "is_first_page": false,
+      "is_final_page": false,
+      "current_page": 5,
+      "current_page_path": "/stores?page=5",
+      "next_page": 6,
+      "next_page_path": "/stores?page=6",
+      "previous_page": 4,
+      "previous_page_path": "/stores?page=4",
+      "final_page": 31,
+      "final_page_path": "/stores?page=31"
+    }
+    ```
 
     It contains all of the information you need (and more) to navigate through
     the pages in the result set.
@@ -110,25 +264,27 @@ manuals:
 
     When an error occurs the response will look something like this:
 
-        {
-          "error": "bad_query_error",
-          "message": "A value supplied for the order parameter (id.desk) is not valid. It contains an invalid sort order (desk) for (id) try using: id.desc or id.asc instead.",
-          "result": null,
-          "status": 400
-        }
+    ```json
+    {
+      "error": "bad_query_error",
+      "message": "A value supplied for the order parameter (id.desk) is not valid. It contains an invalid sort order (desk) for (id) try using: id.desc or id.asc instead.",
+      "result": null,
+      "status": 400
+    }
+    ```
 
-    Error messages are always as descriptive as possible; one of the design
-    goals for LCBO API is to make experiential learning (learning by trial and
-    error) as easy as possible. There are a few different types of errors:
+    Error messages are always as descriptive as possible and they fall into one
+    of the below categories:
 
-     * `no_results_error`: The geocoder returned no geometry for the geo query.
-     * `over_limit_error`: The geocoder has reached its daily limit of requests.
-     * `geocoder_error`: The geocoder can't geocode the query it was provided.
-     * `not_found_error`: A resource was not found (404)
-     * `bad_query_error`: One (or more) of the supplied query parameters is
-       wrong.
-     * `jsonp_error`: Supplied callback is not a valid format, or JSON-P is not
-       being used correctly.
+    | Code               | Description                                         |
+    | ------------------ | --------------------------------------------------- |
+    | `no_results_error` | The geocoder returned no geometry for the geo query. |
+    | `over_limit_error` | The geocoder has reached its daily limit of requests. |
+    | `geocoder_error`   | The geocoder can't geocode the query it was provided. |
+    | `not_found_error`  | A resource was not found (404) |
+    | `bad_query_error`  | One (or more) of the supplied query parameters is wrong. |
+    | `jsonp_error`      | Supplied callback is not a valid format, or JSONP is not being used correctly. |
+    | `unauthorized`     | The feature you're trying to use requires an Access Key |
 
 resources:
 - title: 'LCBO API V1 Stores Resource'
@@ -136,10 +292,35 @@ resources:
   slug: 'stores'
 
   fields:
-    id: The LCBO store number
-    name: The official name of the store
     address_line_1: Street address
-    address_line_2: Street address auxilary information
+    address_line_2: Secondary address information (Not all stores)
+    city: City the store is in
+    fax: Fax number (not all stores have one)
+    has_beer_cold_room: True if the store has a walk-in beer fridge
+    has_bilingual_services: True if the store has bilingual services
+    has_parking: True if the store has a parking lot
+    has_product_consultant: True if the store has a product consultant on staff
+    has_special_occasion_permits: True if the store can issue special occasion permits
+    has_tasting_bar: True if the store has a tasting bar
+    has_transit_access: True if the store is accessible by public transit
+    has_vintages_corner: True if the store has a Vintages area
+    has_wheelchair_accessability: True if the store can be entered via wheelchair
+    id: LCBO store number
+    inventory_count: Total inventory units at the store
+    inventory_price_in_cents: Total retail value of all products at the store
+    inventory_volume_in_milliliters: Total volume of all products at the store
+    is_dead: When a store is removed it is marked as "dead"
+    latitude: Reported latitude
+    longitude: Reported longitude
+    name: Official LCBO store name
+    postal_code: Postal code
+    products_count: Total unique products at the store
+    store_no: "LCBO store number [Deprecated: Use id instead]"
+    "[sunday..monday]_close": Minutes since midnight that the store closes
+    "[sunday..monday]_open": Minutes since midnight that the store opens
+    tags: A string of tags that reflect the store
+    telephone: Telephone number
+    updated_at: Time that the store information was updated
 
   endpoints:
   - route: '/stores'

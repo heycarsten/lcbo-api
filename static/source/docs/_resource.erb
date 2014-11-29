@@ -1,0 +1,20 @@
+<h1><%= resource.name %></h1>
+
+<%= markdown resource.body %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% resource.fields.each_pair do |key, desc| %>
+      <tr>
+        <td><code><%= key %></code></td>
+        <td><%= markdown desc %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -195,14 +195,21 @@ pre code
   padding: 4px 6px
   border-radius: 3px
 
-  .property
+  .keyword, .kd
+    color: white
+    font-weight: 800
+
+  .comment, .c1
+    color: $green-grey-600
+
+  .property, .na
     color: $pink-400
     .quote
       color: darken($pink-200, 5%)
     .colon
       color: $green-grey-100
 
-  .string, .s2
+  .string, .s2, .s1
     color: $purple-300
 
   .boolean
@@ -221,3 +228,8 @@ body.about header nav .about,
 body.news header nav .news
   color: $purple-a400
   border-bottom: 1px solid lighten($purple-a400, 40%)
+
+.document
+  ol, ul
+    li
+      margin: 0.2em 0

@@ -52,7 +52,10 @@
 
     <div class="document">
       <% if defined? api_resource %>
+        <% content_for :title, api_resource.title %>
+        <%= partial 'docs/resource', locals: { resource: api_resource } %>
       <% else %>
+        <% content_for :title, "LCBO API V#{api.version} Reference" %>
         <% api.manuals.each do |section| %>
           <% if section.anchor %>
             <span id="<%= section.anchor %>"></span>

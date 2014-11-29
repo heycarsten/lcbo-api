@@ -35,9 +35,10 @@ helpers do
   end
 
   def markdown(source)
-    Tilt::RedcarpetTemplate.new(
+    Middleman::Renderers::RedcarpetTemplate.new(
       smarty_pants: true,
-      fenced_code_blocks: true
+      fenced_code_blocks: true,
+      tables: true
     ) { source }.render
   end
 end
