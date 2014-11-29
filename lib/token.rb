@@ -6,7 +6,6 @@ class Token
 
   SECRET_SIZE = 36
   DELIMITER   = ':'
-  PADDING_RE  = /\AToken[ ]+/i
 
   SIGNATURES = {
     access:       [:key_id,   :secret],
@@ -42,7 +41,7 @@ class Token
   end
 
   def self.parse!(raw_payload)
-    payload = raw_payload.to_s.strip.sub(PADDING_RE, '')
+    payload = raw_payload.to_s.strip
 
     raise InvalidError, "payload is empty" if payload.blank?
 

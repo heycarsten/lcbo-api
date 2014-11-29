@@ -2,7 +2,10 @@ class APIController < ApplicationController
   MAX_DEV_IPS       = 3
   RATE_LIMIT_WEB    = 1200
   RATE_LIMIT_NATIVE = 2400
+  TOKEN_RE          = /\AToken[ ]+/i
+  BASIC_RE          = /\ABasic[ ]+/i
   BASIC_AUTH        = ActionController::HttpAuthentication::Basic
+  TOKEN_AUTH        = ActionController::HttpAuthentication::Token
 
   LOOPBACKS = %w[
     0.0.0.0
@@ -31,7 +34,8 @@ class APIController < ApplicationController
 
   before_action \
     :set_api_headers,
-    :record_api_hit
+    :record_api_hit,
+    except: [:preflight_cors]
 
   after_action \
     :twerk_response_for_jsonp,
@@ -41,6 +45,9 @@ class APIController < ApplicationController
   respond_to :json, :js
 
   def preflight_cors
+    @enable_cors = true
+    headers['Access-Control-Max-Age'] = 1.hour
+    expires_in 1.hour, public: true
     head :ok
   end
 
@@ -81,7 +88,7 @@ class APIController < ApplicationController
       origin.downcase!
 
       if origin == 'null'
-        origin = 'http://localhost'
+        origin = 'http://127.0.0.1'
       end
 
       uri = URI.parse(origin)
@@ -103,14 +110,15 @@ class APIController < ApplicationController
   end
 
   def get_auth_token
-    header = request.headers['Authorization']
+    header = request.authorization
 
     case header
-    when /\AToken /i
-      return header
-    when /\ABasic /i
+    when TOKEN_RE
+      token, _ = TOKEN_AUTH.token_and_options(request)
+      token || header.sub(TOKEN_RE, '')
+    when BASIC_RE
       _, token = BASIC_AUTH.user_name_and_password(request)
-      return token
+      token
     else
       params[:access_key]
     end
@@ -312,7 +320,7 @@ class APIController < ApplicationController
   end
 
   def set_api_headers
-    response.headers['X-API-Version'] = api_version
+    response.headers['X-LCBO-API-Version'] = api_version
     true
   end
 
@@ -329,11 +337,22 @@ class APIController < ApplicationController
     false
   end
 
+  def add_www_authenticate_header(message = nil)
+    parts = ['Token realm="LCBO API"']
+    parts << "message=\"#{message.gsub('"', '""')}\"" if message
+
+    headers['WWW-Authenticate'] = parts.join(' ')
+  end
+
   def not_authorized
+    message = I18n.t('unauthorized')
+
+    add_www_authenticate_header(message)
+
     render_error \
       code:   'unauthorized',
       title:  'Unauthorized',
-      detail: I18n.t('unauthorized'),
+      detail: message,
       status: 401
   end
 end

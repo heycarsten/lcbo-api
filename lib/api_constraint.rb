@@ -25,7 +25,7 @@ class APIConstraint
       return true
     end
 
-    if req.headers['X-API-Version'].to_s == @verstr
+    if req.headers['X-LCBO-API-Version'].to_s == @verstr
       return true
     end
 

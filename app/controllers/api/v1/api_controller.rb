@@ -13,7 +13,8 @@ class API::V1::APIController < APIController
     :restrict_https!,
     :restrict_cors!,
     :verify_request!,
-    :set_api_format
+    :set_api_format,
+    except: [:preflight_cors]
 
   clear_respond_to
 
@@ -25,18 +26,28 @@ class API::V1::APIController < APIController
     return true if current_key
     return true unless https?
 
-    render_error :not_authorized,
-      "You need an Access Key to use HTTPS on LCBO API, sign up for one " \
-      "at https://lcboapi.com/sign-up", 401
+    message = "You need an Access Key to use HTTPS on LCBO API, sign up for " \
+      "one at https://lcboapi.com/sign-up"
+
+    add_www_authenticate_header(message)
+
+    render_error :unauthorized, message, 401
   end
 
   def restrict_cors!
-    return true if current_key
     return true if request.headers['Origin'].blank?
+    return true if current_key && current_key[:kind] == 'web_client'
 
-    render_error :not_authorized,
-      "You need an Access Key to use CORS on LCBO API, sign up for one " \
-      "at https://lcboapi.com/sign-up", 401
+    if current_key && !current_key[:kind] == 'web_client'
+      message = "You need to use a Web Browser Access Key to use CORS on " \
+      "LCBO API, learn more at https://lcboapi.com/docs/v1#authentication"
+    else
+      message = "You need an Access Key to use CORS on LCBO API, sign up for " \
+        "one at https://lcboapi.com/sign-up"
+    end
+
+    add_www_authenticate_header(message)
+    render_error :unauthorized, message, 401
   end
 
   def api_version
