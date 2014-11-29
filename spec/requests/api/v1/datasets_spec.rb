@@ -55,7 +55,7 @@ RSpec.describe 'Datasets API (V1)', type: :request do
     get '/datasets', nil, 'X-Forwarded-Proto' => 'https'
 
     expect(response.status).to eq 401
-    expect(response.payload[:error]).to eq 'not_authorized'
+    expect(response.payload[:error]).to eq 'unauthorized'
   end
 
   it 'disallows CORS for unauthenticated requests' do
@@ -64,7 +64,7 @@ RSpec.describe 'Datasets API (V1)', type: :request do
     get '/datasets', nil, 'Origin' => 'http://lcboapi.test'
 
     expect(response.status).to eq 401
-    expect(response.payload[:error]).to eq 'not_authorized'
+    expect(response.payload[:error]).to eq 'unauthorized'
   end
 
   it 'allows CORS for authenticated requests' do

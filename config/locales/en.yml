@@ -20,9 +20,9 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  unauthorized: "A valid Access Key must be provided to use LCBO API. To learn more visit: https://lcboapi.com/v2/#authentication."
-  rate_limited: "The maximum requests per hour of %{max} has been reached, this limit will be reset in %{ttl} second(s). To learn more visit: https://lcboapi.com/v2/#rate-limiting."
-  bad_origin: "The provided Access Key does not support requests from the originating domain. Visit https://lcboapi.com to generate a public Access Key for your domain."
+  unauthorized: "A valid Access Key must be provided to use LCBO API. To learn more visit: https://lcboapi.com/docs/v2/#authentication."
+  rate_limited: "The maximum requests per hour of %{max} has been reached, this limit will be reset in %{ttl} second(s). To learn more visit: https://lcboapi.com/docs/v2/#rate-limiting."
+  bad_origin: "The provided Access Key does not support requests from the originating domain. Visit https://lcboapi.com/manager to generate an Access Key for your domain."
   too_many_sessions: "The maximum client sessions per hour of %{max} has been reached, this limit will be reset in %{ttl} second(s)."
   plan_limited_feature: "Your LCBO API subscription does not support %{feature}."
   too_many_requests: "You have exceeded the maximum number of requests (%{max}) allowed by your LCBO API subscription, please upgrade your subscription."
