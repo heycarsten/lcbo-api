@@ -12,7 +12,7 @@
       text:
         align: center
         transform: uppercase
-      background: desaturate($purple-800, 20%)
+      background: desaturate(material-color('purple', '800'), 20%)
 
     h1,
     h2
@@ -27,7 +27,7 @@
 
     h2
       font-weight: 300
-      color: $purple-100
+      color: material-color('purple', '100')
       margin-left: .25em
 
   .key-and-usage-wrapper
@@ -41,14 +41,14 @@
 
   .key-detail
     line-height: 1.5
-    background: $purple-400
+    background: material-color('purple', '400')
     @media only screen and (min-width: 1281px)
       margin-right: 5%
 
     > h1
       margin: 0
       padding: 1.5em 0 1em
-      color: $purple-200
+      color: material-color('purple', '200')
       font-size: 1.25em
       line-height: 1
       text-align: center
@@ -69,7 +69,7 @@
       padding: 0
       font-size: .875em
       list-style: none
-      background: $purple-500
+      background: material-color('purple')
 
       li
         position: relative
@@ -95,13 +95,13 @@
           size: 1em
           weight: 500
         text-align: right
-        color: $purple-200
-        background: $purple-600
+        color: material-color('purple', '200')
+        background: material-color('purple', '600')
 
       p
         margin-left: 8em
         font-weight: 500
-        color: lighten($purple-100, 5%)
+        color: lighten(material-color('purple', '100'), 5%)
 
   .examples-detail
     > h1:first-child
@@ -112,12 +112,12 @@
       margin: 0 0 3em
       h2
         font-weight: 400
-        color: $blue-grey-400
+        color: material-color('blue-grey', '400')
 
   .danger-zone
     margin: 0
     margin-top: 48px
-    background-color: $red-100
+    background-color: material-color('red', '100')
     border-radius: 3px
 
     header
@@ -127,7 +127,7 @@
       margin: 0
       line-height: 1
       font-weight: 500
-      color: $red-500
+      color: material-color('red')
 
     > div
       text-align: center
@@ -139,18 +139,18 @@
       line-height: 1
       height: 42px
       color: white
-      background-color: $red-500
-      border-color: $red-500
+      background-color: material-color('red')
+      border-color: material-color('red')
 
       &:hover
-        background-color: $red-600
-        border-color: $red-600
+        background-color: material-color('red', '600')
+        border-color: material-color('red', '600')
         color: white
 
       &:active
-        background-color: $red-a200
-        border-color: $red-a200
+        background-color: material-color('red', 'a200')
+        border-color: material-color('red', 'a200')
         color: white
 
       &:focus
-        box-shadow: 0 0 2px 3px rgba($red-500, 0.2)
+        box-shadow: 0 0 2px 3px rgba(material-color('red'), 0.2)
