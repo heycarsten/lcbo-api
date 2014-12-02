@@ -16,7 +16,7 @@
 
 .app > header
   position: relative
-  background: $blue-grey-50
+  background: material-color('blue-grey', '50')
   height: 68px
   width: 100%
 
@@ -26,16 +26,16 @@
     top: 20px
     font-size: 18px
     font-weight: 400
-    color: $blue-grey-700
+    color: material-color('blue-grey', '700')
 
     .sign-up a
       @extend .button
 
     a
       text-decoration: none
-      color: $blue-grey-700
+      color: material-color('blue-grey', '700')
       &:hover
-        color: $blue-grey-900
+        color: material-color('blue-grey', '900')
 
     ol, ul
       top: -5px
@@ -73,7 +73,7 @@
         font-size: 14px
         top: -2px
         left: 3px
-        color: $blue-grey-400
+        color: material-color('blue-grey', '400')
 
     .account-menu
       display: none
@@ -82,7 +82,7 @@
         line-height: 32px
 
     .log-out a
-      color: $red-600
+      color: material-color('red', '600')
 
 .app > footer
   position: fixed
@@ -92,14 +92,14 @@
   right: 0
   font-weight: 300
   font-size: 14px
-  color: $grey-500
+  color: material-color('grey')
   background: rgba(white, 0.95)
   height: 44px
   line-height: 43px
   padding: 0 10%
 
   em
-    color: $grey-600
+    color: material-color('grey', '600')
     font-style: normal
     font-weight: 500
 
@@ -120,12 +120,12 @@
         font-size: 5px
         top: -3px
         padding: 0 4px
-        color: $blue-grey-200
+        color: material-color('blue-grey', '200')
 
       &:last-child:after
         content: none
 
     a
-      color: $blue-grey-600
+      color: material-color('blue-grey', '600')
       font-weight: 400
       text-decoration: none

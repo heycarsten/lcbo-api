@@ -10,7 +10,7 @@ section.dashboard
     bottom: 0
     width: 194px
     padding-top: 22px
-    border-right: 1px solid $blue-grey-200
+    border-right: 1px solid material-color('blue-grey', '200')
     font-size: 20px
 
     ol
@@ -19,7 +19,7 @@ section.dashboard
       list-style: none
 
     a
-      color: $blue-grey-300
+      color: material-color('blue-grey', '300')
       text-decoration: none
 
     li
@@ -29,7 +29,7 @@ section.dashboard
 
       &.active
         a
-          color: $blue-grey-900
+          color: material-color('blue-grey', '900')
           font-weight: 500
 
         &:before, &:after
@@ -41,7 +41,7 @@ section.dashboard
 
         &:before
           top: 0
-          +triangle(22px 13px, $blue-grey-200, left)
+          +triangle(22px 13px, material-color('blue-grey', '200'), left)
 
         &:after
           top: 1px
@@ -68,11 +68,11 @@ section.dashboard
         line-height: 56px
 
       i.fa
-        color: $blue-grey-100
+        color: material-color('blue-grey', '100')
         margin: 0 8px
 
     .subnote
-      color: $blue-grey-400
+      color: material-color('blue-grey', '400')
 
   form
     > h1

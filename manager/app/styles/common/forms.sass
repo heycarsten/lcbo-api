@@ -1,5 +1,5 @@
 .form-field-error
-  color: $red-500
+  color: material-color('red')
 
 form
   text-align: left
@@ -13,7 +13,7 @@ form
     display: inline-block
     font-size: 13px
     font-weight: 500
-    background: $blue-grey-200
+    background: material-color('blue-grey', '200')
     color: white
     line-height: 1
     padding: 4px 6px
@@ -25,13 +25,13 @@ form
     position: relative
     left: 4px
     font-size: 18px
-    color: $blue-grey-100
+    color: material-color('blue-grey', '100')
 
     span
       display: none
       position: absolute
       border-radius: 3px
-      background-color: rgba($blue-grey-900, 0.9)
+      background-color: rgba(material-color('blue-grey', '900'), 0.9)
       color: white
       z-index: 10000
       font-size: 13px
@@ -50,7 +50,7 @@ form
         display: block
 
     &:hover
-      color: $purple-a400
+      color: material-color('purple', 'a400')
 
       span
         display: block
@@ -88,16 +88,16 @@ form
     font-weight: 300
     font-style: italic
     text-align: center
-    color: $blue-grey-400
+    color: material-color('blue-grey', '400')
     margin-top: 54px
 
     a
       text-decoration: none
-      color: $blue-grey-700
+      color: material-color('blue-grey', '700')
       font-weight: 400
 
       &:active
-        color: $purple-a400
+        color: material-color('purple', 'a400')
 
   .form-field-error
     display: block
@@ -117,18 +117,18 @@ form
 
     &.is-invalid
       label, input
-        color: $red-500
+        color: material-color('red')
       input[type="checkbox"]
-        background: $red-500
+        background: material-color('red')
       input
-        border-color: $red-300
+        border-color: material-color('red', '300')
 
         +placeholder
-          color: $red-200
+          color: material-color('red', '200')
 
   label
     font-weight: 500
-    color: $blue-grey-700
+    color: material-color('blue-grey', '700')
 
   .field.checkbox
     label
@@ -152,11 +152,11 @@ form
     font-size: 18px
     outline: none
     background: white
-    border: 1px solid $blue-grey-200
+    border: 1px solid material-color('blue-grey', '200')
     border-radius: 3px
 
     &:focus
-      border-color: $blue-grey-400
+      border-color: material-color('blue-grey', '400')
       @extend %glow
 
   select
@@ -164,7 +164,7 @@ form
     height: 42px
 
   label.checkbox
-    color: $blue-grey-700
+    color: material-color('blue-grey', '700')
     font-weight: 400
 
     input
@@ -200,7 +200,7 @@ form
         padding-left: 40px
 
         &:focus + label
-          color: $purple-a400
+          color: material-color('purple', 'a400')
 
       &:not(.checkbox) label[for]
         position: absolute
@@ -235,13 +235,13 @@ form
           margin: 0
           outline: none
           cursor: pointer
-          color: $blue-grey-300
+          color: material-color('blue-grey', '300')
 
           &.masked:after
             content: "\f070"
 
           &.unmasked
-            color: $green-600
+            color: material-color('green', '600')
             &:after
               content: "\f06e"
 

@@ -5,12 +5,12 @@ module APIHelpers
 
   def log_in_user(user)
     token = user.generate_session_token.to_s
-    api_headers['Authorization'] = "Token #{token}"
+    api_headers['Authorization'] = "Token token=\"#{token}\""
     token
   end
 
   def auth_user(user)
-    api_headers['Authorization'] = "Token #{user.auth_token}"
+    api_headers['Authorization'] = "Token token=\"#{user.auth_token}\""
   end
 
   def json

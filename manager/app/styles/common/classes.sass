@@ -10,18 +10,18 @@
   border: 0
 
 %glow
-  box-shadow: 0 0 6px 1px rgba($purple-a200, 0.33)
+  box-shadow: 0 0 6px 1px rgba(material-color('purple', 'a200'), 0.33)
 
 %glow-red
-  box-shadow: 0 0 6px 1px rgba($red-200, 0.33)
+  box-shadow: 0 0 6px 1px rgba(material-color('red', '200'), 0.33)
 
 .button
   cursor: pointer
   display: inline-block
   outline: none
   background: transparent
-  border: 2px solid $purple-a400
-  color: $purple-a400
+  border: 2px solid material-color('purple', 'a400')
+  color: material-color('purple', 'a400')
   border-radius: 3px
   font-family: $roboto
   font-weight: 500
@@ -33,12 +33,12 @@
   margin: 0
 
   &:hover
-    color: $purple-a400
+    color: material-color('purple', 'a400')
     background: rgba(white, 0.5)
 
   &:active
     color: white
-    background: $purple-a400
+    background: material-color('purple', 'a400')
 
   &:focus
     @extend %glow
@@ -47,10 +47,10 @@
     box-shadow: none
 
 %in-context-box-shadow
-  box-shadow: 0 1px 3px 1px rgba($blue-grey-900, 0.33)
+  box-shadow: 0 1px 3px 1px rgba(material-color('blue-grey', '900'), 0.33)
 
 p.warn
-  background: $orange-500
+  background: material-color('orange')
   border-radius: 3px
   padding: 8px 14px
   line-height: 1.5
@@ -58,5 +58,5 @@ p.warn
   color: white
   &:before
     +font-awesome
-    color: $amber-200
+    color: material-color('amber', '200')
     content: "\f071"

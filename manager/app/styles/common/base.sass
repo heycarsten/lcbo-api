@@ -2,12 +2,12 @@ html, body
   font-family: $roboto
   margin: 0
   padding: 0
-  color: $blue-grey-800
+  color: material-color('blue-grey', '800')
 
 a
-  color: $blue-grey-900
+  color: material-color('blue-grey', '900')
   &:active
-    color: $purple-a400
+    color: material-color('purple', 'a400')
 
 .novis
   @extend %reader-only
@@ -17,7 +17,7 @@ p
   margin: 0 0 1.5em
 
 h1, h2, h3, h4, h5, h6
-  color: $blue-grey-900
+  color: material-color('blue-grey', '900')
   font-weight: 900
   +font-smoothing(antialiased)
 
@@ -35,7 +35,7 @@ h2
 code
   position: relative
   font-family: $source-code-pro
-  background: $blue-grey-50
+  background: material-color('blue-grey', '50')
   border-radius: 3px
   padding: 2px 6px
   padding-top: 1px
