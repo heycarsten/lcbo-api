@@ -12,14 +12,15 @@ manuals:
     # Welcome to LCBO API
 
     This is the documentation for Version 1 (V1) of LCBO API. It was originally
-    released **April 2009**.
+    released in **April of 2009**.
 
 - anchor: 'overview'
   title: 'Overview'
   body: |
     # Overview
 
-    * [Responses & Formats](#responses)
+    * [Requests & Responses](#responses)
+    * [Pagination](#pagination)
     * [Authentication](#authentication)
     * [JSONP & CORS](#jsonp-and-cors)
     * [HTTPS](#https)
@@ -29,10 +30,12 @@ manuals:
   body: |
     # Responses
 
-    The default response format for the API is JSON `application/json`. This means that you don't
-    need to specify JSON in an `Accept` header or as an extension (.json) if
-    that is the format you intend to request. Every response from the API is
-    wrapped in a "container" that in its most basic form looks like this:
+    The default response format for the API V1 is JSON `application/json`.
+    This means that you don't need to specify JSON in an `Accept` header or as
+    an extension (`.json`) if that is the format you intend to request.
+
+    All responses are wrapped in a container object, in its most basic form
+    it looks like this:
 
     ```json
     {
@@ -43,10 +46,42 @@ manuals:
     ```
 
     This allows the API to return meta information along with the data you are
-    requesting. For example, in the case of a
-    [Stores with Product](/docs/stores-with-product) request the product object
-    is returned with list of stores so that your application does not need to
-    perform an additional request to obtain store information.
+    requesting. For example, in the case of the
+    [Stores with Product](/docs/v1/stores-with-product) endpoint, the product
+    object is returned with the list of stores so that your application does
+    not have to perform an additional request to obtain the store information.
+
+- anchor: 'pagination'
+  title: 'Pagination'
+  body: |
+    # Pagination
+
+    When the API returns collections of items (stores, products, or inventories)
+    it will paginate the results instead of returning all of them at once. You
+    can control the number of items per page through the `per_page` parameter.
+
+    A typical pager object looks like this:
+
+    ```json
+    {
+      "records_per_page": 20,
+      "total_record_count": 608,
+      "current_page_record_count": 20,
+      "is_first_page": false,
+      "is_final_page": false,
+      "current_page": 5,
+      "current_page_path": "/stores?page=5",
+      "next_page": 6,
+      "next_page_path": "/stores?page=6",
+      "previous_page": 4,
+      "previous_page_path": "/stores?page=4",
+      "final_page": 31,
+      "final_page_path": "/stores?page=31"
+    }
+    ```
+
+    It contains all of the information you need (and more) to navigate through
+    the pages in the result set.
 
 - anchor: 'authentication'
   title: 'Authentication'
@@ -83,9 +118,9 @@ manuals:
             <code>XMLHttpRequest</code> (Ajax/XHR)
             using CORS or through dynamically inserted <code>&lt;script&gt;</code>
             tags (JSONP). These keys are rate-limited per client IP address and
-            are paired to a domain. For example, a Web Browser Access Key with
-            the domain <b>momsandhops.ca</b> would fail to work if used
-            on a page served from <b>thebeerstore.ca</b>.
+            are paired to a domain. For example, a Web Browser Access Key
+            associated with the domain <b>momsandhops.ca</b> would fail to work
+            if used on a page served from <b>thebeerstore.ca</b>.
           </td>
         </tr>
         <tr>
@@ -109,63 +144,115 @@ manuals:
     </table>
 
 - anchor: 'jsonp-and-cors'
-  title: 'JSONP &amp; CORS'
+  title: 'Browser Integration'
   body: |
-    # JSONP & CORS
+    # Browser Integration
 
-    LCBO API provides support for cross-origin requests so that you can access
-    LCBO API data directly from a web page. Classically, due to the
-    Single Origin Policy there were only two ways to do this, either by
-    proxying all requests through an endpoint on your origin server. For
-    example, by providing an endpoint like this:
+    LCBO API provides support for cross-origin requests so that it can be used
+    from a web page. In the past, due to the Single Origin Policy implemented
+    in all web browsers, there were only two ways to do this. Either by
+    proxying all requests through the origin server, or by using a technique
+    called JSONP. Today, all modern browsers implement Cross Origin Resource
+    Sharing (CORS). LCBO API supports all of these techniques.
+
+    ## HTTP Proxy
+
+    In a proxy setup, the API consumer implements an endpoint on their web
+    server that proxies all requests to and responses from LCBO API. For
+    example, the following endpoint on your web server:
 
     ```
     mysite.com/lcboapi/*
     ```
 
-    That would then proxy anything after lcboapi/ to lcboapi.com:
+    Would then proxy anything after lcboapi/ to lcboapi.com, as if it were a
+    part of your site, even though those requests are actually being delegated
+    to lcboapi.com. So a request to your server like this:
 
     ```
-    mysite.com/lcboapi/products -> lcboapi.com/products
+    mysite.com/lcboapi/products
     ```
 
-    The proxying approach is actually pretty good, the browser allows these
-    requests because they happen on the same domain that the page was served
-    from. It does, however, require infrastructure to work, and is pretty
-    redundant. This leads us to the first (and until recently, only) way to
-    request data from cross-origin servers, JSONP.
+    Would actually request this page on LCBO API:
+
+    ```
+    lcboapi.com/products
+    ```
+
+    And your site would then return the result of that LCBO API response.
+
+    This approach is not bad, the browser doesn't care because all of the
+    requests are to the same domain, and given the performance of modern web
+    servers like Nginx and Apache the overhead is quite low. The downside is
+    that it requires infrastructure and configuration to work properly and
+    ultimately becomes another thing to maintain. This leads us to the first
+    way to truly request 3<sup>rd</sup> party data from a web page:
 
     ## JSONP
 
-    JSONP stands for JSON with Padding and works by appending a `<script>` tag
-    to the page which points to an LCBO API endpoint with a query parameter
-    named `callback`. When LCBO API sees this parameter, it wraps the response
-    payload in a JavaScript function call with the name provided
-    in the `callback` parameter.
-
-    <p class="orly">
-      If it feels like a hack&hellip; that's because it is. JSONP only
-      works because the client (you) and the server (LCBO API) agree
-      to exploit the browser together.
-    </p>
+    JSONP stands for JSON with Padding and works by dynamically attaching
+    `<script>` elements to a web page, that call a previously defined function
+    in order to load data.
 
     To use JSONP with LCBO API, simply add a <code>callback</code> parameter
-    to LCBO API URLs.
+    to LCBO API URLs. When using JSONP LCBO API also sets the response
+    `Content-Type` to `application/javascript` since the response is now
+    executable JavaScript, and not just data (JSON) anymore.
 
-    When using JSONP LCBO API also sets `Content-Type` to
-    `application/javascript` since the response is now, actually, executable
-    JavaScript.
+    Here's how the whole process works, say you have a globally defined
+    function named `loadStore` on your page, like this:
 
-    For example, this URL `lcboapi.com/products?callback=loadJSON` would return
-    a response that looks like:
+    ```html
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>LCBO Learnin'</title>
+        <script>
+          function loadStore(response) {
+            var el = document.getElementById('store_name');
+            el.innerHTML = response.result.name;
+          }
+        </script>
+      </head>
+      <body>
+        <h1 id="store_name"></h1>
+      </body>
+    </html>
+    ```
+
+    And you dynamically insert a `<script>` tag on the page using a function
+    like this:
 
     ```javascript
-    loadJSON({
+    function loadStore(id) {
+      var script = document.createElement('script');
+
+      script.src = 'http://lcboapi.com/stores/ + id + '?callback=loadStore';
+      script.async = true;
+
+      document.head.appendChild(script);
+    }
+
+    loadStore(511);
+    ```
+
+    LCBO API retuns a JavaScript file that looks like this:
+
+    ```javascript
+    loadStore({
       status: 200,
       message: null,
-      result: [ ... ]
+      result: {
+        "id": 511,
+        "name": "King & Spadina",
+        ...
+      }
     });
     ```
+
+    Which effectively calls our prevously defined `loadStore` function with the
+    response data as its sole argument, so our `<h1>` tag is filled with the
+    name of the store.
 
     It's important to note that most popular JavaScript libraries have built-in
     support for JSONP. For example, the following jQuery can be used to perform
@@ -179,6 +266,9 @@ manuals:
       console.log(data);
     });
     ```
+
+    I **highly** recommend using a library like jQuery to manage the JSONP
+    orchistration, please don't use my trivialized example in real software.
 
     ## CORS
 
@@ -213,37 +303,6 @@ manuals:
     });
     ```
 
-- anchor: 'pagination'
-  title: 'Pagination'
-  body: |
-    # Pagination
-
-    When the API returns collections of items (stores, products, or inventories)
-    it will paginate the results. You can control the number of items per page
-    through the `per_page` parameter.
-
-    A typical pager object looks like this:
-
-    ```json
-    {
-      "records_per_page": 20,
-      "total_record_count": 608,
-      "current_page_record_count": 20,
-      "is_first_page": false,
-      "is_final_page": false,
-      "current_page": 5,
-      "current_page_path": "/stores?page=5",
-      "next_page": 6,
-      "next_page_path": "/stores?page=6",
-      "previous_page": 4,
-      "previous_page_path": "/stores?page=4",
-      "final_page": 31,
-      "final_page_path": "/stores?page=31"
-    }
-    ```
-
-    It contains all of the information you need (and more) to navigate through
-    the pages in the result set.
 - anchor: 'csv'
   title: 'CSV Data'
   body: |
@@ -257,6 +316,7 @@ manuals:
 
     <pre><code>/products<em>.csv</em>?order=price_in_cents.desc
     </code></pre>
+
 - anchor: 'errors'
   title: 'Errors'
   body: |
