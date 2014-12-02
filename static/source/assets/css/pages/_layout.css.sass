@@ -65,7 +65,7 @@ body > footer
     text-decoration: none
 
     &:active
-      color: $purple-a400
+      color: material-color('purple', 'a400')
 
     &:hover
       color: $green-grey-500
@@ -84,7 +84,7 @@ body > footer
     position: absolute
     width: 100%
     text-align: center
-    color: $pink-900
+    color: material-color('pink', '900')
     z-index: 1001
     margin: 0
     padding: 0
@@ -112,16 +112,16 @@ body > header
     right: $homepage-gutter + 1%
     top: 20px
     font-weight: 400
-    color: $blue-grey-700
+    color: material-color('blue-grey', '700')
 
     .sign-up a
       @extend .button
 
     a
       text-decoration: none
-      color: $blue-grey-700
+      color: material-color('blue-grey', '700')
       &:hover
-        color: $blue-grey-900
+        color: material-color('blue-grey', '900')
 
     ol, ul
       top: -5px
@@ -160,7 +160,7 @@ body > header
         font-size: 14px
         top: -2px
         left: 3px
-        color: $blue-grey-400
+        color: material-color('blue-grey', '400')
 
     .account-menu
       display: none
@@ -169,11 +169,11 @@ body > header
         line-height: 32px
 
     .log-out a
-      color: $red-600
+      color: material-color('red', '600')
 
 header.page-header
   width: 100%
-  background: $purple-400
+  background: material-color('purple', '400')
   margin: 0
 
   h1
@@ -203,31 +203,31 @@ pre code
     color: $green-grey-600
 
   .property, .na
-    color: $pink-400
+    color: material-color('pink', '400')
     .quote
-      color: darken($pink-200, 5%)
+      color: darken(material-color('pink', '200'), 5%)
     .colon
       color: $green-grey-100
 
   .string, .s2, .s1
-    color: $purple-300
+    color: material-color('purple', '300')
 
   .boolean
-    color: $cyan-a400
-    background: rgba($cyan-a200, 0.05)
+    color: material-color('cyan', 'a400')
+    background: rgba(material-color('cyan', 'a200'), 0.05)
 
   .null, .kc
-    color: $light-green-300
-    background: rgba($green-a400, 0.05)
+    color: material-color('light-green', '300')
+    background: rgba(material-color('green', 'a400'), 0.05)
 
   .number, .mi
-    color: $blue-400
+    color: material-color('blue', '400')
 
 body.docs header nav .docs,
 body.about header nav .about,
 body.news header nav .news
-  color: $purple-a400
-  border-bottom: 1px solid lighten($purple-a400, 40%)
+  color: material-color('purple', 'a400')
+  border-bottom: 1px solid lighten(material-color('purple', 'a400'), 40%)
 
 .document
   ol, ul

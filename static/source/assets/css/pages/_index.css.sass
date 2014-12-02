@@ -20,22 +20,22 @@ body.index
       color: $green-grey-800
 
     .pink
-      color: $pink-500
+      color: material-color('pink', '500')
 
     .purple
-      color: $purple-500
+      color: material-color('purple', '500')
 
     .piglet
-      color: $purple-a100
+      color: material-color('purple', 'a100')
 
     .blue
-      color: $light-blue-500
+      color: material-color('light-blue', '500')
 
     .green
-      color: $green-a700
+      color: material-color('green', 'a700')
 
     .gold
-      color: $lime-500 // #d5cf2a <- PSD color
+      color: material-color('lime', '500') // #d5cf2a <- PSD color
 
   .hero-button
     a
@@ -127,16 +127,16 @@ body.index
             +font-awesome
 
           &.selected
-            color: $purple-a400
+            color: material-color('purple', 'a400')
 
             &:before
               content: "\f00c"
 
           &:hover
-            background: lighten($purple-a400, 48%)
+            background: lighten(material-color('purple', 'a400'), 48%)
 
           &:active
-            background: $purple-a400
+            background: material-color('purple', 'a400')
             color: white
 
             &:before
@@ -146,7 +146,7 @@ body.index
         +user-select(none)
         position: absolute
         width: 30%
-        background: $purple-a400
+        background: material-color('purple', 'a400')
         color: white
         font-weight: 500
         height: 36px
@@ -165,16 +165,16 @@ body.index
           font-size: 19px
 
         &:hover
-          background: lighten($purple-a400, 10%)
+          background: lighten(material-color('purple', 'a400'), 10%)
 
           &:after
             color: rgba(white, 0.8)
 
           &:active
-            background: lighten($purple-a400, 48%)
-            color: $purple-a400
+            background: lighten(material-color('purple', 'a400'), 48%)
+            color: material-color('purple', 'a400')
             &:after
-              color: $purple-a400
+              color: material-color('purple', 'a400')
 
     .endpoint-path-input
       position: absolute
@@ -184,7 +184,7 @@ body.index
 
       .readonly
         margin-left: 8px
-        color: $grey-500
+        color: material-color('grey', '500')
 
       input[type="submit"]
         @extend %reader-only
@@ -249,7 +249,7 @@ body.index
         margin-left: 50%
 
   .meticulous-data
-    color: $grey-500
+    color: material-color('grey', '500')
     background: $green-grey-800
     padding: 180px 0
 
@@ -289,7 +289,7 @@ body.index
       color: $green-grey-600
 
   .proven-reliability
-    background: $purple-400
+    background: material-color('purple', '400')
     padding: 132px 0
 
     &:before
@@ -307,11 +307,11 @@ body.index
       color: white
 
     p
-      color: $purple-100
+      color: material-color('purple', '100')
 
   .get-started
     background: $green-grey-800
-    color: $grey-200
+    color: material-color('grey', '200')
     padding: 84px 0
 
     p
@@ -324,7 +324,7 @@ body.index
         margin-left: 16px
         font-size: 27px
         color: white
-        background: $purple-a400
+        background: material-color('purple', 'a400')
         padding-left: 22px
         padding-right: 22px
         line-height: 52px
