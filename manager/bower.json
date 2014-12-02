@@ -21,7 +21,7 @@
     "d3": "~3.4.13"
   },
   "devDependencies": {
-    "sass-material-colors": "minusfive/sass-material-colors#42d06356fb"
+    "sass-material-colors": "^0.0.4"
   },
   "resolutions": {
     "handlebars": ">= 1.0.0 < 2.0.0"
