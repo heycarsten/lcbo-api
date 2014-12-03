@@ -53,7 +53,7 @@ class Crawler < Boticus::Bot
 
   desc 'Updating product images'
   task :update_product_images do
-    Product.where(is_dead: false).find_each do |product|
+    Product.where(is_dead: false, image_url: nil).find_each do |product|
       if (attrs = LCBO.product_images(product.id))
         product.update!(attrs)
         log :dot, "Adding image for product: #{product.id}"
