@@ -311,8 +311,8 @@ manuals:
     });
     ```
 
-    I **highly** recommend using a library like jQuery to manage the JSONP
-    orchistration, please don't use my trivialized example in real software.
+    _I **highly** recommend using a library like jQuery to manage the JSONP
+    orchistration._
 
 - anchor: 'cors'
   title: 'CORS'
