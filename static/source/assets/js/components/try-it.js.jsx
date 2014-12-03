@@ -183,8 +183,10 @@ var TryItComponent = React.createClass({
 
   loadJSON: function() {
     $.ajax({
-      url: 'http://lcboapi.com/' + this.state.path,
-      dataType: 'jsonp'
+      url: 'https://lcboapi.com/' + this.state.path,
+      headers: {
+        Authorization: 'Token token="MDpmOWYzMDk3Yy03YjEyLTExZTQtOTRlYy1kZmVhMmEzMTM5NjU6TWFVZE44Zkd5QzRGNEFaOGVBYzh0eE5GVnVPcEljZlc0aXBa"'
+      }
     }).then(function(data) {
       this.setState({
         json: JSON.stringify(data, null, 2)
