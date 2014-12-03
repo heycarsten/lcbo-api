@@ -10,10 +10,10 @@ gem 'active_model_serializers', github: 'rails-api/active_model_serializers', re
 gem 'redis'
 gem 'gcoder'
 gem 'puma'
-gem 'sass-rails',   '~> 4.0.3'
+gem 'sass-rails',   '~> 4.0.5'
 gem 'therubyracer', platforms: :ruby
 gem 'uglifier'
-gem 'skylight',     '~> 0.4.0.beta2'
+gem 'skylight',     '~> 0.5.0.beta1'
 gem 'honeybadger'
 gem 'stripe',       github: 'stripe/stripe-ruby'
 
@@ -26,7 +26,7 @@ gem 'unicode_utils', require: false
 gem 'aws-s3',        require: false, github: 'fnando/aws-s3', ref: 'fef95c2d'
 
 group :development do
-  gem 'capistrano',         '~> 3.2.1', require: false
+  gem 'capistrano',         '~> 3.3.3', require: false
   gem 'capistrano-rails',   require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rvm',     require: false
