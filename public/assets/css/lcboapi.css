@@ -427,6 +427,16 @@ th {
   padding: 0;
 }
 
+/**
+ * Retrieves a color value from the $material-colors Sass map
+ * Inspired by https://github.com/nilskaspersson/Google-Material-UI-Color-Palette/
+ *
+ * @function
+ * @param {string} color-name             - quoted, lower-case, dasherized color
+ *                                          name (e.g. 'pink', 'amber')
+ * @param {string} [color-variant='500']  - quoted, lowercase color variant (e.g.
+ *                                          '200', 'a100')
+ */
 /* line 2, /Users/carsten/Projects/lcbo-api/manager/app/styles/common/classes.sass */
 .novis, .lcboapi-wordmark span, body.index .hero-try-it h1 span, body.index .try-it-component .endpoint-path-input input[type="submit"] {
   position: absolute;
@@ -833,7 +843,7 @@ body > header {
         line-height: 32px; }
     /* line 171, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
     body > header nav .log-out a {
-      color: #dd191d; }
+      color: #e53935; }
 
 /* line 174, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
 header.page-header {
@@ -861,44 +871,57 @@ pre code {
   padding: 4px 6px;
   border-radius: 3px; }
   /* line 198, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
+  pre code .nx {
+    color: #eceff1; }
+  /* line 201, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
   pre code .keyword, pre code .kd {
     color: white;
     font-weight: 800; }
-  /* line 202, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
+  /* line 205, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
+  pre code .tag, pre code .nt {
+    color: #42a5f5; }
+  /* line 208, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
+  pre code .doctype, pre code .cp {
+    color: #1e88e5;
+    background: rgba(21, 101, 192, 0.15); }
+  /* line 212, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
   pre code .comment, pre code .c1 {
     color: #8c9389; }
-  /* line 205, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
+  /* line 215, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
   pre code .property, pre code .na {
     color: #ec407a; }
-    /* line 207, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
+    /* line 217, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
     pre code .property .quote, pre code .na .quote {
       color: #f278a1; }
-    /* line 209, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
+    /* line 219, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
     pre code .property .colon, pre code .na .colon {
       color: #d7ddd1; }
-  /* line 212, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
-  pre code .string, pre code .s2, pre code .s1 {
+  /* line 222, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
+  pre code .nb {
+    color: #4dd0e1; }
+  /* line 225, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
+  pre code .string, pre code .s2, pre code .s1, pre code .s {
     color: #ba68c8; }
-  /* line 215, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
+  /* line 228, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
   pre code .boolean {
     color: #00e5ff;
     background: rgba(24, 255, 255, 0.05); }
-  /* line 219, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
+  /* line 232, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
   pre code .null, pre code .kc {
     color: #aed581;
-    background: rgba(20, 231, 21, 0.05); }
-  /* line 223, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
+    background: rgba(0, 230, 118, 0.05); }
+  /* line 236, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
   pre code .number, pre code .mi {
-    color: #738ffe; }
+    color: #42a5f5; }
 
-/* line 226, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
+/* line 239, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
 body.docs header nav .docs,
 body.about header nav .about,
 body.news header nav .news {
   color: #d500f9;
   border-bottom: 1px solid #f7c6ff; }
 
-/* line 234, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
+/* line 247, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
 .document ol li, .document ul li {
   margin: 0.2em 0; }
 
@@ -973,7 +996,7 @@ body.index .hero {
     color: #03a9f4; }
   /* line 34, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_index.css.sass */
   body.index .hero .green {
-    color: #12c700; }
+    color: #00c853; }
   /* line 37, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_index.css.sass */
   body.index .hero .gold {
     color: #cddc39; }
@@ -1307,7 +1330,7 @@ section.docs-content {
     top: 0;
     left: 0;
     bottom: 0;
-    width: 386px;
+    width: 322px;
     background: #eceff1;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -1328,21 +1351,21 @@ section.docs-content {
         section.docs-content > header nav.tabs ol li a {
           position: absolute;
           text-align: center; }
-          /* line 41, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+          /* line 42, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
           section.docs-content > header nav.tabs ol li a:hover {
             background: #d8dfe2;
             color: #455a64; }
-        /* line 45, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        /* line 46, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
         section.docs-content > header nav.tabs ol li.active a {
           color: #263238;
           background: #eceff1; }
-        /* line 49, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        /* line 50, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
         section.docs-content > header nav.tabs ol li:first-child a {
           left: 0; }
-        /* line 52, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        /* line 53, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
         section.docs-content > header nav.tabs ol li:last-child a {
           right: 0; }
-        /* line 55, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        /* line 56, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
         section.docs-content > header nav.tabs ol a {
           font-weight: 700;
           font-size: 20px;
@@ -1351,59 +1374,64 @@ section.docs-content {
           color: #78909c;
           width: 50%;
           line-height: 52px; }
-    /* line 64, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+    /* line 65, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
     section.docs-content > header h1 {
       color: #263238;
       padding: 0 32px;
       font-weight: 700; }
     /* line 70, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
-    section.docs-content > header nav.sections h1 {
-      margin: 0;
-      padding: 0;
-      font-size: 1.5em;
-      font-weight: 600; }
-      /* line 76, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
-      section.docs-content > header nav.sections h1 em {
-        color: #78909c;
-        font-size: 0.875em;
-        font-style: normal;
-        font-weight: 400; }
-      /* line 82, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
-      section.docs-content > header nav.sections h1 span {
-        color: #b0bec5; }
-      /* line 85, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
-      section.docs-content > header nav.sections h1:first-child {
-        margin: 12px 10px;
-        padding: 22px 28px;
-        font-size: 2em;
+    section.docs-content > header nav.sections {
+      margin: 0 32px;
+      margin-top: 38px; }
+      /* line 74, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      section.docs-content > header nav.sections a {
+        text-decoration: none;
+        color: #9c27b0; }
+        /* line 78, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        section.docs-content > header nav.sections a:active {
+          color: #d500f9; }
+      /* line 81, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      section.docs-content > header nav.sections h2, section.docs-content > header nav.sections h3, section.docs-content > header nav.sections ol {
         font-weight: 500;
-        background: #9c27b0;
-        color: white;
-        line-height: 1.1; }
-        /* line 99, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
-        section.docs-content > header nav.sections h1:first-child em {
-          color: #e1bee7;
-          font-size: 0.55em; }
-        /* line 102, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
-        section.docs-content > header nav.sections h1:first-child span {
-          color: #ce93d8; }
-    /* line 105, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
-    section.docs-content > header nav.sections ol.manuals {
-      font-size: 1.35em; }
-    /* line 108, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
-    section.docs-content > header nav.sections ol {
-      font-size: 1.2em;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      line-height: 1.65; }
-    /* line 115, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
-    section.docs-content > header nav.sections h1, section.docs-content > header nav.sections ol {
-      margin: 22px 28px; }
-  /* line 118, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        font-size: 18px;
+        margin: 0;
+        padding: 0;
+        color: #546e7a; }
+      /* line 88, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      section.docs-content > header nav.sections h2 {
+        text-transform: uppercase;
+        margin: 0;
+        line-height: 1;
+        margin-bottom: 12px; }
+      /* line 94, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      section.docs-content > header nav.sections ol {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        line-height: 1.65; }
+      /* line 100, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      section.docs-content > header nav.sections div.manuals, section.docs-content > header nav.sections div.endpoints {
+        margin: 32px 0; }
+      /* line 103, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      section.docs-content > header nav.sections .endpoints h3 {
+        margin-bottom: 3px; }
+      /* line 106, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      section.docs-content > header nav.sections ol.manuals li.sub, section.docs-content > header nav.sections ol.endpoints li {
+        padding-left: 18px; }
+      /* line 109, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      section.docs-content > header nav.sections ol.endpoints li a {
+        padding: 0;
+        margin-top: 0;
+        line-height: 1;
+        display: inline-block;
+        max-width: 260px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap; }
+  /* line 115, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
   section.docs-content > article {
-    margin-left: 386px; }
-    /* line 121, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+    margin-left: 322px; }
+    /* line 118, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
     section.docs-content > article header {
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box;
@@ -1412,7 +1440,7 @@ section.docs-content {
       padding: 0 32px;
       background: #ab47bc;
       height: 52px; }
-      /* line 128, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      /* line 125, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
       section.docs-content > article header h1 {
         display: none;
         font-weight: 700;
@@ -1420,72 +1448,86 @@ section.docs-content {
         margin: 0;
         text-align: center;
         color: white; }
-    /* line 140, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+    /* line 133, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
     section.docs-content > article .document {
       width: auto;
       max-width: 680px;
       min-height: 70vh;
-      line-height: 1.85;
+      line-height: 2;
       margin: 0 auto;
       padding: 32px;
       padding-top: 16px;
       padding-bottom: 122px; }
-      /* line 150, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      /* line 143, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
       section.docs-content > article .document a {
         color: #9c27b0;
         text-decoration: none; }
-        /* line 153, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        /* line 147, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
         section.docs-content > article .document a:active {
           color: #d500f9; }
-      /* line 157, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      /* line 150, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
       section.docs-content > article .document h1, section.docs-content > article .document h2, section.docs-content > article .document h3, section.docs-content > article .document h4, section.docs-content > article .document h5, section.docs-content > article .document h6, section.docs-content > article .document p, section.docs-content > article .document ol, section.docs-content > article .document ul, section.docs-content > article .document pre {
         text-align: left;
         margin: 1.25em 0; }
-      /* line 161, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      /* line 154, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
       section.docs-content > article .document h1, section.docs-content > article .document h2, section.docs-content > article .document h3, section.docs-content > article .document h4, section.docs-content > article .document h5, section.docs-content > article .document h6 {
         margin: 0.65em 0; }
-      /* line 164, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      /* line 157, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
       section.docs-content > article .document h1 {
         font-size: 2em; }
-      /* line 167, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      /* line 160, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
       section.docs-content > article .document h2 {
         font-size: 1.5em; }
-      /* line 170, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      /* line 163, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
       section.docs-content > article .document h3 {
-        font-size: 1em; }
-      /* line 173, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        font-size: 1.25em;
+        font-weight: 600; }
+      /* line 167, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      section.docs-content > article .document code {
+        position: relative;
+        font-size: 0.85em;
+        padding: 3px 4px;
+        top: -1px;
+        color: #222; }
+      /* line 174, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
       section.docs-content > article .document pre code {
         -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
         box-sizing: border-box;
         padding: 12px 14px;
         line-height: 1.3;
-        font-size: 16px; }
-      /* line 179, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        font-size: 15px;
+        font-weight: 400;
+        top: 0;
+        color: #cfd8dc; }
+      /* line 183, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
       section.docs-content > article .document thead th {
         background: #cfd8dc; }
-      /* line 183, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
-      section.docs-content > article .document table th, section.docs-content > article .document table td {
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-        padding: 8px 10px;
-        line-height: 1.5; }
-      /* line 188, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
-      section.docs-content > article .document table td {
-        border-bottom: 1px solid #eceff1; }
-      /* line 191, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      /* line 186, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      section.docs-content > article .document table {
+        font-size: 0.8em; }
+        /* line 189, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        section.docs-content > article .document table th, section.docs-content > article .document table td {
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+          padding: 8px 10px;
+          line-height: 1.5; }
+        /* line 194, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        section.docs-content > article .document table td {
+          border-bottom: 1px solid #eceff1; }
+      /* line 197, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
       section.docs-content > article .document td {
         vertical-align: top; }
-        /* line 194, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        /* line 200, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
         section.docs-content > article .document td p, section.docs-content > article .document td pre {
           margin: 0; }
-        /* line 197, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        /* line 203, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
         section.docs-content > article .document td code {
           background: transparent;
           padding: 0;
           font-weight: 600; }
-      /* line 202, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      /* line 208, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
       section.docs-content > article .document .warning, section.docs-content > article .document .info, section.docs-content > article .document .orly {
         position: relative;
         line-height: 1.3;
@@ -1494,17 +1536,17 @@ section.docs-content {
         padding-left: 80px;
         border-radius: 3px;
         z-index: 100; }
-        /* line 211, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        /* line 217, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
         section.docs-content > article .document .warning code, section.docs-content > article .document .info code, section.docs-content > article .document .orly code {
           padding: 0;
           background: transparent; }
-        /* line 215, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        /* line 221, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
         section.docs-content > article .document .warning a, section.docs-content > article .document .info a, section.docs-content > article .document .orly a {
           position: relative;
           z-index: 150;
           color: white;
           border-bottom: 2px solid rgba(255, 255, 255, 0.8); }
-        /* line 221, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        /* line 227, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
         section.docs-content > article .document .warning:before, section.docs-content > article .document .info:before, section.docs-content > article .document .orly:before {
           position: absolute;
           top: 0;
@@ -1522,21 +1564,23 @@ section.docs-content {
           font-weight: 100;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale; }
-      /* line 234, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      /* line 240, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
       section.docs-content > article .document .warning {
         background: #e91e63; }
-        /* line 237, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        /* line 243, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
         section.docs-content > article .document .warning:before {
           content: ""; }
-      /* line 240, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      /* line 246, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
       section.docs-content > article .document .info {
         background: #03a9f4; }
-        /* line 243, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        /* line 249, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
         section.docs-content > article .document .info:before {
           content: ""; }
-      /* line 246, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+      /* line 252, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
       section.docs-content > article .document .orly {
         background: #00bcd4; }
-        /* line 249, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
+        /* line 255, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
         section.docs-content > article .document .orly:before {
-          content: ""; }
+          font-size: 40px;
+          height: 40px;
+          content: ""; }

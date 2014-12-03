@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="description" content="A fast, cloud-based API for LCBO store, product, and inventory data.">
-    <title>LCBO API V1 Stores Resource</title>
+    <title>LCBO API V1 Stores</title>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Roboto:500,900,400italic,400,300,300italic,700,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400' rel='stylesheet' type='text/css'>
@@ -27,7 +27,7 @@
           </li>
           <li>
             <a class="docs" href="/docs/v1">
-              Reference
+              Documentation
             </a>
           </li>
           <li>
@@ -63,53 +63,54 @@
       </ol>
     </nav>
     <nav class="sections">
-      <h1>
-        API V1 Reference<br>
-        <em>API Version 1 <span>&mdash;</span> April 2009</em>
-      </h1>
-      <ol class="manuals">
-          <li>
-            <a href="/docs/v1#overview">
-              Overview
-            </a>
-          </li>
-          <li>
-            <a href="/docs/v1#responses">
-              Responses
-            </a>
-          </li>
-          <li>
-            <a href="/docs/v1#authentication">
-              Authentication
-            </a>
-          </li>
-          <li>
-            <a href="/docs/v1#jsonp-and-cors">
-              JSONP &amp; CORS
-            </a>
-          </li>
-          <li>
-            <a href="/docs/v1#pagination">
-              Pagination
-            </a>
-          </li>
-          <li>
-            <a href="/docs/v1#csv">
-              CSV Data
-            </a>
-          </li>
-          <li>
-            <a href="/docs/v1#errors">
-              Errors
-            </a>
-          </li>
-      </ol>
-      <h1>HTTP Endpoints</h1>
-          <h2>
+      <div class="manuals">
+        <h2>API V1 Guide</h2>
+        <ol class="manuals">
+            <li>
+              <a href="/docs/v1#index">
+                Getting Started
+              </a>
+            </li>
+            <li class="sub">
+              <a href="/docs/v1#responses-and-formats">
+                Responses &amp; Formats
+              </a>
+            </li>
+            <li class="sub">
+              <a href="/docs/v1#authentication">
+                Authentication
+              </a>
+            </li>
+            <li class="sub">
+              <a href="/docs/v1#errors">
+                Errors
+              </a>
+            </li>
+            <li>
+              <a href="/docs/v1#cross-origin-access">
+                Cross Origin Access
+              </a>
+            </li>
+            <li class="sub">
+              <a href="/docs/v1#jsonp">
+                JSONP
+              </a>
+            </li>
+            <li class="sub">
+              <a href="/docs/v1#cors">
+                CORS
+              </a>
+            </li>
+        </ol>
+      </div>
+
+      <div class="endpoints">
+        <h2>Endpoints</h2>
+          <h3 class="endpoint-name">
             <a href="/docs/v1/stores">
               Stores
             </a>
-          </h2>
+          </h3>
           <ol class="endpoints">
               <li>
                 <a href="/docs/v1/stores#many">
@@ -121,7 +122,52 @@
                   /stores/:id
                 </a>
               </li>
+              <li>
+                <a href="/docs/v1/stores#stores-with-product">
+                  /products/:id/stores
+                </a>
+              </li>
           </ol>
+          <h3 class="endpoint-name">
+            <a href="/docs/v1/products">
+              Products
+            </a>
+          </h3>
+          <ol class="endpoints">
+              <li>
+                <a href="/docs/v1/products#many">
+                  /products
+                </a>
+              </li>
+              <li>
+                <a href="/docs/v1/products#one">
+                  /products/:id
+                </a>
+              </li>
+              <li>
+                <a href="/docs/v1/products#products-at-store">
+                  /stores/:id/products
+                </a>
+              </li>
+          </ol>
+          <h3 class="endpoint-name">
+            <a href="/docs/v1/inventories">
+              Inventories
+            </a>
+          </h3>
+          <ol class="endpoints">
+              <li>
+                <a href="/docs/v1/inventories#many">
+                  /inventories
+                </a>
+              </li>
+              <li>
+                <a href="/docs/v1/inventories#one">
+                  /stores/:id/products/:id/inventory
+                </a>
+              </li>
+          </ol>
+      </div>
     </nav>
   </header>
 

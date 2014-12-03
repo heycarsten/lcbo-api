@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="description" content="A fast, cloud-based API for LCBO store, product, and inventory data.">
-    <title>LCBO API V1 Reference</title>
+    <title>LCBO API V1 Documentation</title>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Roboto:500,900,400italic,400,300,300italic,700,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400' rel='stylesheet' type='text/css'>
@@ -27,7 +27,7 @@
           </li>
           <li>
             <a class="docs" href="/docs/v1">
-              Reference
+              Documentation
             </a>
           </li>
           <li>
@@ -63,53 +63,54 @@
       </ol>
     </nav>
     <nav class="sections">
-      <h1>
-        API V1 Reference<br>
-        <em>API Version 1 <span>&mdash;</span> April 2009</em>
-      </h1>
-      <ol class="manuals">
-          <li>
-            <a href="/docs/v1#overview">
-              Overview
-            </a>
-          </li>
-          <li>
-            <a href="/docs/v1#responses">
-              Responses
-            </a>
-          </li>
-          <li>
-            <a href="/docs/v1#authentication">
-              Authentication
-            </a>
-          </li>
-          <li>
-            <a href="/docs/v1#jsonp-and-cors">
-              JSONP &amp; CORS
-            </a>
-          </li>
-          <li>
-            <a href="/docs/v1#pagination">
-              Pagination
-            </a>
-          </li>
-          <li>
-            <a href="/docs/v1#csv">
-              CSV Data
-            </a>
-          </li>
-          <li>
-            <a href="/docs/v1#errors">
-              Errors
-            </a>
-          </li>
-      </ol>
-      <h1>HTTP Endpoints</h1>
-          <h2>
+      <div class="manuals">
+        <h2>API V1 Guide</h2>
+        <ol class="manuals">
+            <li>
+              <a href="/docs/v1#index">
+                Getting Started
+              </a>
+            </li>
+            <li class="sub">
+              <a href="/docs/v1#responses-and-formats">
+                Responses &amp; Formats
+              </a>
+            </li>
+            <li class="sub">
+              <a href="/docs/v1#authentication">
+                Authentication
+              </a>
+            </li>
+            <li class="sub">
+              <a href="/docs/v1#errors">
+                Errors
+              </a>
+            </li>
+            <li>
+              <a href="/docs/v1#cross-origin-access">
+                Cross Origin Access
+              </a>
+            </li>
+            <li class="sub">
+              <a href="/docs/v1#jsonp">
+                JSONP
+              </a>
+            </li>
+            <li class="sub">
+              <a href="/docs/v1#cors">
+                CORS
+              </a>
+            </li>
+        </ol>
+      </div>
+
+      <div class="endpoints">
+        <h2>Endpoints</h2>
+          <h3 class="endpoint-name">
             <a href="/docs/v1/stores">
               Stores
             </a>
-          </h2>
+          </h3>
           <ol class="endpoints">
               <li>
                 <a href="/docs/v1/stores#many">
@@ -121,7 +122,52 @@
                   /stores/:id
                 </a>
               </li>
+              <li>
+                <a href="/docs/v1/stores#stores-with-product">
+                  /products/:id/stores
+                </a>
+              </li>
           </ol>
+          <h3 class="endpoint-name">
+            <a href="/docs/v1/products">
+              Products
+            </a>
+          </h3>
+          <ol class="endpoints">
+              <li>
+                <a href="/docs/v1/products#many">
+                  /products
+                </a>
+              </li>
+              <li>
+                <a href="/docs/v1/products#one">
+                  /products/:id
+                </a>
+              </li>
+              <li>
+                <a href="/docs/v1/products#products-at-store">
+                  /stores/:id/products
+                </a>
+              </li>
+          </ol>
+          <h3 class="endpoint-name">
+            <a href="/docs/v1/inventories">
+              Inventories
+            </a>
+          </h3>
+          <ol class="endpoints">
+              <li>
+                <a href="/docs/v1/inventories#many">
+                  /inventories
+                </a>
+              </li>
+              <li>
+                <a href="/docs/v1/inventories#one">
+                  /stores/:id/products/:id/inventory
+                </a>
+              </li>
+          </ol>
+      </div>
     </nav>
   </header>
 
@@ -137,28 +183,31 @@
   unlimited access to LCBO API V1. <a href="/news/whats-next-for-lcbo-api">Read more</a>
 </p>
 
-<h1>Welcome to LCBO API</h1>
+<h1>Welcome to LCBO API V1</h1>
 
 <p>This is the documentation for Version 1 (V1) of LCBO API. It was originally
 released <strong>April 2009</strong>.</p>
 
-            <span id="overview"></span>
-          <h1>Overview</h1>
-
-<ul>
-<li><a href="#responses">Responses &amp; Formats</a></li>
+            <span id="index"></span>
+          <ul>
+<li><a href="#responses-and-formats">Requests &amp; Responses</a></li>
+<li><a href="#pagin">Pagination</a></li>
 <li><a href="#authentication">Authentication</a></li>
 <li><a href="#jsonp-and-cors">JSONP &amp; CORS</a></li>
 <li><a href="#https">HTTPS</a></li>
 </ul>
 
-            <span id="responses"></span>
-          <h1>Responses</h1>
+            <span id="responses-and-formats"></span>
+          <h2>Responses &amp; Formats</h2>
 
-<p>The default response format for the API is JSON <code>application/json</code>. This means that you don&#39;t
-need to specify JSON in an <code>Accept</code> header or as an extension (.json) if
-that is the format you intend to request. Every response from the API is
-wrapped in a &quot;container&quot; that in its most basic form looks like this:</p>
+<p>The default response format for the API V1 is JSON <code>application/json</code>.
+This means that you don&#39;t need to specify JSON in an <code>Accept</code> header or as
+an extension (<code>.json</code>) if that is the format you intend to request.</p>
+
+<h3>JSON</h3>
+
+<p>All responses are wrapped in a container object, in its most basic form
+it looks like this:</p>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w">
   </span><span class="s2">"message"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
@@ -167,10 +216,48 @@ wrapped in a &quot;container&quot; that in its most basic form looks like this:<
 </span></code></pre>
 
 <p>This allows the API to return meta information along with the data you are
-requesting. For example, in the case of a
-<a href="/docs/stores-with-product">Stores with Product</a> request the product object
-is returned with list of stores so that your application does not need to
-perform an additional request to obtain store information.</p>
+requesting. For example, in the case of the
+<a href="/docs/v1/stores-with-product">Stores with Product</a> endpoint, the product
+object is returned with the list of stores so that your application does
+not have to perform an additional request to obtain the store information.</p>
+
+<h3>CSV</h3>
+
+<p>Many resources can be returned as CSV (comma separated values) or TSV
+(tab separated values). These results can then be easily imported into
+spreadsheet software such as Apple Numbers or Microsoft Excel. To return
+a resource in CSV or TSV format simply append the <code>.csv</code> or <code>.tsv</code>
+extension to the resource URI:</p>
+
+<pre><code>/products<em>.csv</em>?order=price_in_cents.desc
+</code></pre>
+
+<h3>Pagination</h3>
+
+<p>When the API returns collections of items (stores, products, or inventories)
+it will paginate the results instead of returning all of them at once. You
+can control the number of items per page through the <code>per_page</code> parameter.</p>
+
+<p>A typical pager object looks like this:</p>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"records_per_page"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"total_record_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">608</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"current_page_record_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"is_first_page"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"is_final_page"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"current_page"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"current_page_path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/stores?page=5"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"next_page"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"next_page_path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/stores?page=6"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"previous_page"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"previous_page_path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/stores?page=4"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"final_page"</span><span class="p">:</span><span class="w"> </span><span class="mi">31</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"final_page_path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/stores?page=31"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>It contains all of the information you need (and more) to navigate through
+the pages in the result set.</p>
 
             <span id="authentication"></span>
           <h1>Authentication</h1>
@@ -205,9 +292,9 @@ use-cases in mind:</p>
         <code>XMLHttpRequest</code> (Ajax/XHR)
         using CORS or through dynamically inserted <code>&lt;script&gt;</code>
         tags (JSONP). These keys are rate-limited per client IP address and
-        are paired to a domain. For example, a Web Browser Access Key with
-        the domain <b>momsandhops.ca</b> would fail to work if used
-        on a page served from <b>thebeerstore.ca</b>.
+        are paired to a domain. For example, a Web Browser Access Key
+        associated with the domain <b>momsandhops.ca</b> would fail to work
+        if used on a page served from <b>thebeerstore.ca</b>.
       </td>
     </tr>
     <tr>
@@ -230,141 +317,8 @@ use-cases in mind:</p>
   </tbody>
 </table>
 
-            <span id="jsonp-and-cors"></span>
-          <h1>JSONP &amp; CORS</h1>
-
-<p>LCBO API provides support for cross-origin requests so that you can access
-LCBO API data directly from a web page. Classically, due to the
-Single Origin Policy there were only two ways to do this, either by
-proxying all requests through an endpoint on your origin server. For
-example, by providing an endpoint like this:</p>
-<pre class="highlight plaintext"><code>mysite.com/lcboapi/*
-</code></pre>
-
-<p>That would then proxy anything after lcboapi/ to lcboapi.com:</p>
-<pre class="highlight plaintext"><code>mysite.com/lcboapi/products -&gt; lcboapi.com/products
-</code></pre>
-
-<p>The proxying approach is actually pretty good, the browser allows these
-requests because they happen on the same domain that the page was served
-from. It does, however, require infrastructure to work, and is pretty
-redundant. This leads us to the first (and until recently, only) way to
-request data from cross-origin servers, JSONP.</p>
-
-<h2>JSONP</h2>
-
-<p>JSONP stands for JSON with Padding and works by appending a <code>&lt;script&gt;</code> tag
-to the page which points to an LCBO API endpoint with a query parameter
-named <code>callback</code>. When LCBO API sees this parameter, it wraps the response
-payload in a JavaScript function call with the name provided
-in the <code>callback</code> parameter.</p>
-
-<p class="orly">
-  If it feels like a hack&hellip; that's because it is. JSONP only
-  works because the client (you) and the server (LCBO API) agree
-  to exploit the browser together.
-</p>
-
-<p>To use JSONP with LCBO API, simply add a <code>callback</code> parameter
-to LCBO API URLs.</p>
-
-<p>When using JSONP LCBO API also sets <code>Content-Type</code> to
-<code>application/javascript</code> since the response is now, actually, executable
-JavaScript.</p>
-
-<p>For example, this URL <code>lcboapi.com/products?callback=loadJSON</code> would return
-a response that looks like:</p>
-<pre class="highlight javascript"><code><span class="nx">loadJSON</span><span class="p">({</span>
-  <span class="na">status</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-  <span class="na">message</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
-  <span class="na">result</span><span class="p">:</span> <span class="p">[</span> <span class="p">...</span> <span class="p">]</span>
-<span class="p">});</span>
-</code></pre>
-
-<p>It&#39;s important to note that most popular JavaScript libraries have built-in
-support for JSONP. For example, the following jQuery can be used to perform
-a JSONP request against LCBO API:</p>
-<pre class="highlight javascript"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-  <span class="na">url</span><span class="p">:</span> <span class="s1">'http://lcboapi.com/products/371906'</span><span class="p">,</span>
-  <span class="na">dataType</span><span class="p">:</span> <span class="s1">'jsonp'</span>
-<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
-<span class="p">});</span>
-</code></pre>
-
-<h2>CORS</h2>
-
-<p>Cross Origin Resource Sharing (CORS) is a robust W3C specification for
-allowing browsers to access resources from different domains. LCBO API uses
-it to give access to web browser JavaScript applications.</p>
-
-<p>If you need to support outdated bowsers,
-<a href="http://caniuse.com/#feat=cors">specifically IE 6 and 7</a>, you&#39;ll either have
-to use a proxy or JSONP. Hilariously, with the advent of async script tags
-<code>&lt;script async&gt;</code> JSONP can be about as effective in modern browsers as
-using XMLHttpRequest with CORS. If you have to support older browsers that
-don&#39;t understand CORS, there is no shame in using JSONP.</p>
-
-<p>If you don&#39;t have to support IE 6 and 7, <em>welcome to the future!</em> To use CORS
-with LCBO API you need to provide an Web Browser Access Key with your
-requests. You&#39;ll need an LCBO API account to create Access Keys,
-<a href="/sign-up">sign up</a> for one and get started. You can also
-<a href="#authentication">read more</a> about LCBO API authentication.</p>
-
-<p>Once you have a Web Browser Access Key, using LCBO API with CORS from jQuery
-is as simple as:</p>
-<pre class="highlight javascript"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-  <span class="na">url</span><span class="p">:</span> <span class="s1">'http://lcboapi.com/products/346197'</span><span class="p">,</span>
-  <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">Authorization</span><span class="p">:</span> <span class="s1">'Token YOUR_ACCESS_KEY'</span>
-  <span class="p">}</span>
-<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
-<span class="p">});</span>
-</code></pre>
-
-            <span id="pagination"></span>
-          <h1>Pagination</h1>
-
-<p>When the API returns collections of items (stores, products, or inventories)
-it will paginate the results. You can control the number of items per page
-through the <code>per_page</code> parameter.</p>
-
-<p>A typical pager object looks like this:</p>
-<pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"records_per_page"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"total_record_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">608</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"current_page_record_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"is_first_page"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"is_final_page"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"current_page"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"current_page_path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/stores?page=5"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"next_page"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"next_page_path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/stores?page=6"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"previous_page"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"previous_page_path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/stores?page=4"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"final_page"</span><span class="p">:</span><span class="w"> </span><span class="mi">31</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"final_page_path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/stores?page=31"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-
-<p>It contains all of the information you need (and more) to navigate through
-the pages in the result set.</p>
-
-            <span id="csv"></span>
-          <h1>CSV and TSV Responses</h1>
-
-<p>Many resources can be returned as CSV (comma separated values) or TSV
-(tab separated values). These results can then be easily imported into
-spreadsheet software such as Apple Numbers or Microsoft Excel. To return
-a resource in CSV or TSV format simply append the <code>.csv</code> or <code>.tsv</code>
-extension to the resource URI:</p>
-
-<pre><code>/products<em>.csv</em>?order=price_in_cents.desc
-</code></pre>
-
             <span id="errors"></span>
-          <h1>Errors</h1>
+          <h2>Errors</h2>
 
 <p>When an error occurs the response will look something like this:</p>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
@@ -413,6 +367,150 @@ of the below categories:</p>
 <td>The feature you&#39;re trying to use requires an Access Key</td>
 </tr>
 </tbody></table>
+
+            <span id="cross-origin-access"></span>
+          <h1>Cross Origin Access</h1>
+
+<p>LCBO API provides support for cross-origin requests so that it can be used
+from a web page. In the past, due to the Single Origin Policy implemented
+in all web browsers, there were only two ways to do this. Either by
+proxying all requests through the origin server, or by using a technique
+called JSONP. Today, all modern browsers implement Cross Origin Resource
+Sharing (CORS). LCBO API supports all of these techniques.</p>
+
+<h2>HTTP Proxy</h2>
+
+<p>In a proxy setup, the API consumer implements an endpoint on their web
+server that proxies all requests to and responses from LCBO API. For
+example, the following endpoint on your web server:</p>
+<pre class="highlight plaintext"><code>mysite.com/lcboapi/*
+</code></pre>
+
+<p>Would then proxy anything after lcboapi/ to lcboapi.com, as if it were a
+part of your site, even though those requests are actually being delegated
+to lcboapi.com. So a request to your server like this:</p>
+<pre class="highlight plaintext"><code>mysite.com/lcboapi/products
+</code></pre>
+
+<p>Would actually request this page on LCBO API:</p>
+<pre class="highlight plaintext"><code>lcboapi.com/products
+</code></pre>
+
+<p>And your site would then return the result of that LCBO API response.</p>
+
+<p>This approach is not bad, the browser doesn&#39;t care because all of the
+requests are to the same domain, and given the performance of modern web
+servers like Nginx and Apache the overhead is quite low. The downside is
+that it requires infrastructure and configuration to work properly and
+ultimately becomes another thing to maintain. This leads us to the first
+way to truly request 3<sup>rd</sup> party data from a web page: JSONP.</p>
+
+            <span id="jsonp"></span>
+          <h2>JSONP</h2>
+
+<p>JSONP stands for JSON with Padding and works by dynamically attaching
+<code>&lt;script&gt;</code> elements to a web page, that call a previously defined function
+in order to load data.</p>
+
+<p>To use JSONP with LCBO API, simply add a <code>callback</code> parameter
+to LCBO API URLs. When using JSONP LCBO API also sets the response
+<code>Content-Type</code> to <code>application/javascript</code> since the response is now
+executable JavaScript, and not just data (JSON) anymore.</p>
+
+<p>Here&#39;s how the whole process works, say you have a globally defined
+function named <code>loadStore</code> on your page, like this:</p>
+<pre class="highlight html"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span>LCBO Learnin'<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;script&gt;</span>
+      <span class="kd">function</span> <span class="nx">loadStore</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">el</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'store_name'</span><span class="p">);</span>
+        <span class="nx">el</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="nt">&lt;/script&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;h1</span> <span class="na">id=</span><span class="s">"store_name"</span><span class="nt">&gt;&lt;/h1&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre>
+
+<p>And you dynamically insert a <code>&lt;script&gt;</code> tag on the page using a function
+like this:</p>
+<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">loadStore</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">script</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'script'</span><span class="p">);</span>
+
+  <span class="nx">script</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">'http://lcboapi.com/stores/'</span><span class="o">+</span><span class="nx">id</span><span class="o">+</span><span class="s1">'?callback=loadStore'</span><span class="p">;</span>
+  <span class="nx">script</span><span class="p">.</span><span class="nx">async</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+  <span class="nb">document</span><span class="p">.</span><span class="nx">head</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">script</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">loadStore</span><span class="p">(</span><span class="mi">511</span><span class="p">);</span>
+</code></pre>
+
+<p>LCBO API retuns a JavaScript file that looks like this:</p>
+<pre class="highlight javascript"><code><span class="nx">loadStore</span><span class="p">({</span>
+  <span class="na">status</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="na">message</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+  <span class="na">result</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"id"</span><span class="p">:</span> <span class="mi">511</span><span class="p">,</span>
+    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"King &amp; Spadina"</span><span class="p">,</span>
+    <span class="p">...</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+
+<p>Which effectively calls our prevously defined <code>loadStore</code> function with the
+response data as its sole argument, so our <code>&lt;h1&gt;</code> tag is filled with the
+name of the store.</p>
+
+<p>It&#39;s important to note that most popular JavaScript libraries have built-in
+support for JSONP. For example, the following jQuery can be used to perform
+a JSONP request against LCBO API:</p>
+<pre class="highlight javascript"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s1">'http://lcboapi.com/products/371906'</span><span class="p">,</span>
+  <span class="na">dataType</span><span class="p">:</span> <span class="s1">'jsonp'</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre>
+
+<p>I <strong>highly</strong> recommend using a library like jQuery to manage the JSONP
+orchistration, please don&#39;t use my trivialized example in real software.</p>
+
+            <span id="cors"></span>
+          <h2>CORS</h2>
+
+<p>Cross Origin Resource Sharing (CORS) is a robust W3C specification for
+allowing browsers to access resources from different domains. LCBO API uses
+it to give access to web browser JavaScript applications.</p>
+
+<p>If you need to support outdated bowsers,
+<a href="http://caniuse.com/#feat=cors">specifically IE 6 and 7</a>, you&#39;ll either have
+to use a proxy or JSONP. Hilariously, with the advent of async script tags
+<code>&lt;script async&gt;</code> JSONP can be about as effective in modern browsers as
+using XMLHttpRequest with CORS. If you have to support older browsers that
+don&#39;t understand CORS, there is no shame in using JSONP.</p>
+
+<p>If you don&#39;t have to support IE 6 and 7, <em>welcome to the future!</em> To use CORS
+with LCBO API you need to provide an Web Browser Access Key with your
+requests. You&#39;ll need an LCBO API account to create Access Keys,
+<a href="/sign-up">sign up</a> for one and get started. You can also
+<a href="#authentication">read more</a> about LCBO API authentication.</p>
+
+<p>Once you have a Web Browser Access Key, using LCBO API with CORS from jQuery
+is as simple as:</p>
+<pre class="highlight javascript"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s1">'http://lcboapi.com/products/346197'</span><span class="p">,</span>
+  <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">Authorization</span><span class="p">:</span> <span class="s1">'Token YOUR_ACCESS_KEY'</span>
+  <span class="p">}</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre>
 
     </div>
   </article>

@@ -271,7 +271,7 @@ manuals:
     function loadStore(id) {
       var script = document.createElement('script');
 
-      script.src = 'http://lcboapi.com/stores/' + id + '?callback=loadStore';
+      script.src = 'http://lcboapi.com/stores/'+id+'?callback=loadStore';
       script.async = true;
 
       document.head.appendChild(script);
@@ -413,7 +413,7 @@ resources:
   name: 'Products'
   slug: 'products'
 
-  fields:
+  fields: {}
 
   endpoints:
   - route: '/products'
@@ -439,3 +439,28 @@ resources:
 
   body: |
     Products for one and all.
+
+- title: 'LCBO API V1 Inventories'
+  name: 'Inventories'
+  slug: 'inventories'
+
+  fields: {}
+
+  endpoints:
+  - route: '/inventories'
+    name: 'Inventories'
+    anchor: 'many'
+    many: true
+    body: |
+      Returns many inventories.
+
+  - route: '/stores/:id/products/:id/inventory'
+    anchor: 'one'
+    name: 'Inventory'
+    many: true
+    body: |
+      Returns an inventory for the specified store `id` and product `id`
+      combination.
+
+  body: |
+    Inventories in the house.

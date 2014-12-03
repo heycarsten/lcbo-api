@@ -195,9 +195,19 @@ pre code
   padding: 4px 6px
   border-radius: 3px
 
+  .nx
+    color: material-color('blue-grey', '50')
+
   .keyword, .kd
     color: white
     font-weight: 800
+
+  .tag, .nt
+    color: material-color('blue', '400')
+
+  .doctype, .cp
+    color: material-color('blue', '600')
+    background: rgba(material-color('blue', '800'), 0.15)
 
   .comment, .c1
     color: $green-grey-600
@@ -209,7 +219,10 @@ pre code
     .colon
       color: $green-grey-100
 
-  .string, .s2, .s1
+  .nb
+    color: material-color('cyan', '300')
+
+  .string, .s2, .s1, .s
     color: material-color('purple', '300')
 
   .boolean
