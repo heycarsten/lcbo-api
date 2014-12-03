@@ -1,4 +1,4 @@
-lock '3.2.1'
+lock '3.3.3'
 
 set :application, 'lcboapi'
 set :repo_url, 'git@github.com:heycarsten/lcbo-api.git'
