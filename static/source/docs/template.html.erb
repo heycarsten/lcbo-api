@@ -11,37 +11,39 @@
       </ol>
     </nav>
     <nav class="sections">
-      <h1>
-        API V<%= api.version %> Reference<br>
-        <em>API Version <%= api.version %> <span>&mdash;</span> <%= api.released %></em>
-      </h1>
-      <ol class="manuals">
-        <% data["v#{api.version}"].manuals.each do |section| %>
-          <% next unless section.anchor %>
-          <li<% if section.is_sub %> class="sub"<% end %>>
-            <a href="/docs/v1#<%= section.anchor %>">
-              <%= section.title %>
-            </a>
-          </li>
-        <% end %>
-      </ol>
-      <h2>HTTP Endpoints</h2>
-      <% data["v#{api.version}"].resources.each do |resource| %>
-        <h3 class="endpoint-name">
-          <a href="/docs/v<%= api.version %>/<%= resource.slug %>">
-            <%= resource.name %>
-          </a>
-        </h3>
-        <ol class="endpoints">
-          <% resource.endpoints.each do |endpoint| %>
-            <li>
-              <a href="/docs/v<%= api.version %>/<%= resource.slug %>#<%= endpoint.anchor %>">
-                <%= endpoint.route %>
+      <div class="manuals">
+        <h2>API V<%= api.version %> Guide</h2>
+        <ol class="manuals">
+          <% data["v#{api.version}"].manuals.each do |section| %>
+            <% next unless section.anchor %>
+            <li<% if section.is_sub %> class="sub"<% end %>>
+              <a href="/docs/v1#<%= section.anchor %>">
+                <%= section.title %>
               </a>
             </li>
           <% end %>
         </ol>
-      <% end %>
+      </div>
+
+      <div class="endpoints">
+        <h2>Endpoints</h2>
+        <% data["v#{api.version}"].resources.each do |resource| %>
+          <h3 class="endpoint-name">
+            <a href="/docs/v<%= api.version %>/<%= resource.slug %>">
+              <%= resource.name %>
+            </a>
+          </h3>
+          <ol class="endpoints">
+            <% resource.endpoints.each do |endpoint| %>
+              <li>
+                <a href="/docs/v<%= api.version %>/<%= resource.slug %>#<%= endpoint.anchor %>">
+                  <%= endpoint.route %>
+                </a>
+              </li>
+            <% end %>
+          </ol>
+        <% end %>
+      </div>
     </nav>
   </header>
 

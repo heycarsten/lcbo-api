@@ -19,7 +19,7 @@ section.docs-content
     top: 0
     left: 0
     bottom: 0
-    width: 386px
+    width: 322px
     background: material-color('blue-grey', '50')
     +box-sizing(border-box)
     color: material-color('blue-grey', '900')
@@ -68,103 +68,43 @@ section.docs-content
       font-weight: 700
 
     nav.sections
+      margin: 0 32px
+      margin-top: 38px
+
       a
         text-decoration: none
+        color: material-color('purple', '500')
 
-      h1, h2, h3, ol, ul
-        margin: 22px 28px
+        &:active
+          color: material-color('purple', 'a400')
 
-      h1
+      h2, h3, ol
+        font-weight: 500
+        font-size: 18px
         margin: 0
         padding: 0
-        font-size: 1.25em
-        font-weight: 600
-
-        em
-          color: material-color('blue-grey', '400')
-          font-size: 0.875em
-          font-style: normal
-          font-weight: 400
-
-        span
-          color: material-color('blue-grey', '200')
-
-        &:first-child
-          margin: 12px 10px
-          padding: 20px 22px
-          margin-bottom: 24px
-          font-size: 1.73em
-          font-weight: 500
-          background: material-color('blue-grey', '600')
-          color: white
-          line-height: 1
-
-          em
-            color: material-color('blue-grey', '100')
-            font-size: 0.65em
-
-          span
-            color: material-color('blue-grey', '200')
-
-      h2, ol.manuals li:not(.sub) a, h3 a
-        display: block
-        margin: 12px 10px
-        padding: 8px 20px
-        padding-top: 7px
-        padding-bottom: 10px
-        font-weight: 500
-        font-size: 20px
-        background: material-color('blue-grey', '500')
-        color: white
-        line-height: 1
-
-      ol.manuals li:not(.sub) a, h3 a
-        background: material-color('purple', '100')
-        color: material-color('purple', '600')
-        font-weight: 400
-
-        &:hover
-          background: material-color('purple', '200')
+        color: material-color('blue-grey', '600')
 
       h2
-        margin: 24px 10px
-        padding: 16px 20px
-
-      h3
+        text-transform: uppercase
         margin: 0
+        line-height: 1
+        margin-bottom: 12px
 
       ol
         list-style: none
         padding: 0
+        margin: 0
         line-height: 1.65
 
-      ol.manuals, ol.endpoints
-        font-size: 1.15em
-        margin: 0
+      div.manuals, div.endpoints
+        margin: 32px 0
 
       ol.manuals li.sub, ol.endpoints li
-        font-weight: 400
-        position: relative
-        padding-left: 22px
-        margin-left: 26px
-
-        a
-          color: material-color('purple', '500')
-
-        &:before
-          position: absolute
-          margin: auto
-          top: 0
-          left: 4px
-          bottom: 0
-          content: ' '
-          display: block
-          width: 6px
-          height: 6px
-          background: material-color('blue-grey', '200')
+        padding-left: 18px
 
   > article
-    margin-left: 386px
+    margin-left: 322px
 
     header
       +box-sizing(border-box)
@@ -225,6 +165,8 @@ section.docs-content
         background: material-color('blue-grey', '100')
 
       table
+        font-size: 0.8em
+
         th, td
           +box-sizing(border-box)
           padding: 8px 10px

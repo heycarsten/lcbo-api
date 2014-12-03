@@ -9,18 +9,16 @@ manuals:
       unlimited access to LCBO API V1. <a href="/news/whats-next-for-lcbo-api">Read more</a>
     </p>
 
-    # Welcome to LCBO API
+    # Welcome to LCBO API V1
 
     This is the documentation for Version 1 (V1) of LCBO API. It was originally
-    released in **April of 2009**.
+    released **April 2009**.
 
-- anchor: 'overview'
+- anchor: 'index'
   title: 'Getting Started'
   body: |
-    # API V1 Overview
-
-    * [Requests & Responses](#responses)
-    * [Pagination](#pagination)
+    * [Requests & Responses](#responses-and-formats)
+    * [Pagination](#pagin)
     * [Authentication](#authentication)
     * [JSONP & CORS](#jsonp-and-cors)
     * [HTTPS](#https)
@@ -54,6 +52,17 @@ manuals:
     object is returned with the list of stores so that your application does
     not have to perform an additional request to obtain the store information.
 
+    ### CSV
+
+    Many resources can be returned as CSV (comma separated values) or TSV
+    (tab separated values). These results can then be easily imported into
+    spreadsheet software such as Apple Numbers or Microsoft Excel. To return
+    a resource in CSV or TSV format simply append the `.csv` or `.tsv`
+    extension to the resource URI:
+
+    <pre><code>/products<em>.csv</em>?order=price_in_cents.desc
+    </code></pre>
+
     ### Pagination
 
     When the API returns collections of items (stores, products, or inventories)
@@ -83,16 +92,66 @@ manuals:
     It contains all of the information you need (and more) to navigate through
     the pages in the result set.
 
-    ### CSV
+- anchor: 'authentication'
+  title: 'Authentication'
+  is_sub: true
+  body: |
+    # Authentication
 
-    Many resources can be returned as CSV (comma separated values) or TSV
-    (tab separated values). These results can then be easily imported into
-    spreadsheet software such as Apple Numbers or Microsoft Excel. To return
-    a resource in CSV or TSV format simply append the `.csv` or `.tsv`
-    extension to the resource URI:
+    **LCBO API V1 does not require authentication for access.** Starting on
+    <b>March 1<sup>st</sup>, 2015</b>, LCBO API V1 **will** require Access Keys
+    for **unlimited** use. New features in LCBO API V1 such as HTTPS and CORS
+    **require authentication** with an Access Key.
 
-    <pre><code>/products<em>.csv</em>?order=price_in_cents.desc
-    </code></pre>
+    <p class="info">
+      You can provision an unlimited number of Access Keys for free by
+      <a href="/sign-up">creating</a> an LCBO API account.
+    </p>
+
+    There are three different types of access keys, they have specific
+    use-cases in mind:
+
+    <table class="auth-keys-table">
+      <thead>
+        <tr>
+          <th width="22%">Key Type</th>
+          <th width="78%">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td width="22%">
+            <b>Web Browser</b>
+          </td>
+          <td width="78%">
+            Use when LCBO API is accessed from a web browser through
+            <code>XMLHttpRequest</code> (Ajax/XHR)
+            using CORS or through dynamically inserted <code>&lt;script&gt;</code>
+            tags (JSONP). These keys are rate-limited per client IP address and
+            are paired to a domain. For example, a Web Browser Access Key
+            associated with the domain <b>momsandhops.ca</b> would fail to work
+            if used on a page served from <b>thebeerstore.ca</b>.
+          </td>
+        </tr>
+        <tr>
+          <td width="22%">
+            <b>Native Client</b>
+          </td>
+          <td width="78%">
+            In native mobile and desktop applications, these keys are rate-limited per
+            client but do not support CORS or JSONP.
+          </td>
+        </tr>
+        <tr>
+          <td width="22%">
+            <b>Private</b>
+          </td>
+          <td width="78%">
+            When LCBO API is accessed from a web server or private script, these keys are not rate-limited, and they do not support CORS or JSONP.
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
 - anchor: 'errors'
   title: 'Errors'
@@ -124,10 +183,10 @@ manuals:
     | `jsonp_error`      | Supplied callback is not a valid format, or JSONP is not being used correctly. |
     | `unauthorized`     | The feature you're trying to use requires an Access Key |
 
-- anchor: 'browser-use'
-  title: 'Browser Usage'
+- anchor: 'cross-origin-access'
+  title: 'Cross Origin Access'
   body: |
-    # Browser Usage
+    # Cross Origin Access
 
     LCBO API provides support for cross-origin requests so that it can be used
     from a web page. In the past, due to the Single Origin Policy implemented
@@ -136,10 +195,6 @@ manuals:
     called JSONP. Today, all modern browsers implement Cross Origin Resource
     Sharing (CORS). LCBO API supports all of these techniques.
 
-- anchor: 'proxying'
-  title: 'HTTP Proxy'
-  is_sub: yes
-  body: |
     ## HTTP Proxy
 
     In a proxy setup, the API consumer implements an endpoint on their web
@@ -296,68 +351,8 @@ manuals:
     });
     ```
 
-- anchor: 'authentication'
-  title: 'Authentication'
-  body: |
-    # Authentication
-
-    **LCBO API V1 does not require authentication for access.** Starting on
-    <b>March 1<sup>st</sup>, 2015</b>, LCBO API V1 **will** require Access Keys
-    for **unlimited** use. New features in LCBO API V1 such as HTTPS and CORS
-    **require authentication** with an Access Key.
-
-    <p class="info">
-      You can provision an unlimited number of Access Keys for free by
-      <a href="/sign-up">creating</a> an LCBO API account.
-    </p>
-
-    There are three different types of access keys, they have specific
-    use-cases in mind:
-
-    <table class="auth-keys-table">
-      <thead>
-        <tr>
-          <th width="22%">Key Type</th>
-          <th width="78%">Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td width="22%">
-            <b>Web Browser</b>
-          </td>
-          <td width="78%">
-            Use when LCBO API is accessed from a web browser through
-            <code>XMLHttpRequest</code> (Ajax/XHR)
-            using CORS or through dynamically inserted <code>&lt;script&gt;</code>
-            tags (JSONP). These keys are rate-limited per client IP address and
-            are paired to a domain. For example, a Web Browser Access Key
-            associated with the domain <b>momsandhops.ca</b> would fail to work
-            if used on a page served from <b>thebeerstore.ca</b>.
-          </td>
-        </tr>
-        <tr>
-          <td width="22%">
-            <b>Native Client</b>
-          </td>
-          <td width="78%">
-            In native mobile and desktop applications, these keys are rate-limited per
-            client but do not support CORS or JSONP.
-          </td>
-        </tr>
-        <tr>
-          <td width="22%">
-            <b>Private</b>
-          </td>
-          <td width="78%">
-            When LCBO API is accessed from a web server or private script, these keys are not rate-limited, and they do not support CORS or JSONP.
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
 resources:
-- title: 'LCBO API V1 Stores Resource'
+- title: 'LCBO API V1 Stores'
   name: 'Stores'
   slug: 'stores'
 
@@ -403,7 +398,44 @@ resources:
     anchor: 'one'
     one: true
     body: |
-      Returns one store
+      Returns one store by `id`.
+
+  - route: '/products/:id/stores'
+    anchor: 'stores-with-product'
+    many: true
+    body: |
+      Returns all stores that carry a product by `id`.
 
   body: |
     Stores are a hell of a drug.
+
+- title: 'LCBO API V1 Products'
+  name: 'Products'
+  slug: 'products'
+
+  fields:
+
+  endpoints:
+  - route: '/products'
+    name: 'Products'
+    anchor: 'many'
+    many: true
+    body: |
+      Returns many products.
+
+  - route: '/products/:id'
+    name: 'Product'
+    anchor: 'one'
+    one: true
+    body: |
+      Returns one product by `id`.
+
+  - route: '/stores/:id/products'
+    anchor: 'products-at-store'
+    name: 'Products at Store'
+    many: true
+    body: |
+      Returns many products that are available at the given store by `id`.
+
+  body: |
+    Products for one and all.
