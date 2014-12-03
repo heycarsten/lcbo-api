@@ -24,6 +24,20 @@ section.docs-content
     +box-sizing(border-box)
     color: material-color('blue-grey', '900')
 
+    &.affix
+      position: fixed
+      overflow-y: auto
+
+      nav.tabs
+        display: none
+
+    &.affix-bottom
+      position: fixed
+      overflow: auto
+      top: 0
+      left: 0
+      bottom: 49px
+
     nav.tabs
       width: 100%
       background: material-color('blue-grey', '100')

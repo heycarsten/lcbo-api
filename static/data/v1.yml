@@ -9,14 +9,14 @@ manuals:
       unlimited access to LCBO API V1. <a href="/news/whats-next-for-lcbo-api">Read more</a>
     </p>
 
+- anchor: 'getting-started'
+  title: 'Getting Started'
+  body: |
     # Welcome to LCBO API V1
 
     This is the documentation for Version 1 (V1) of LCBO API. It was originally
     released **April 2009**.
 
-- anchor: 'index'
-  title: 'Getting Started'
-  body: |
     * [Requests & Responses](#responses-and-formats)
     * [Pagination](#pagin)
     * [Authentication](#authentication)
@@ -96,7 +96,7 @@ manuals:
   title: 'Authentication'
   is_sub: true
   body: |
-    # Authentication
+    ## Authentication
 
     **LCBO API V1 does not require authentication for access.** Starting on
     <b>March 1<sup>st</sup>, 2015</b>, LCBO API V1 **will** require Access Keys
@@ -311,7 +311,7 @@ manuals:
     });
     ```
 
-    _I **highly** recommend using a library like jQuery to manage the JSONP
+    _I **highly** recommend using a library like jQuery to manage JSONP
     orchistration._
 
 - anchor: 'cors'
@@ -332,7 +332,7 @@ manuals:
     don't understand CORS, there is no shame in using JSONP.
 
     If you don't have to support IE 6 and 7, _welcome to the future!_ To use CORS
-    with LCBO API you need to provide an Web Browser Access Key with your
+    with LCBO API you need to provide a Web Browser Access Key with your
     requests. You'll need an LCBO API account to create Access Keys,
     [sign up](/sign-up) for one and get started. You can also
     [read more](#authentication) about LCBO API authentication.
