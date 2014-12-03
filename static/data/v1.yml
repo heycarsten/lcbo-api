@@ -454,13 +454,13 @@ resources:
     body: |
       Returns many inventories.
 
-  - route: '/stores/:id/products/:id/inventory'
+  - route: '/stores/:store_id/products/:product_id/inventory'
     anchor: 'one'
     name: 'Inventory'
     many: true
     body: |
-      Returns an inventory for the specified store `id` and product `id`
-      combination.
+      Returns an inventory for the specified store `store_id` and product
+      `product_id` combination.
 
   body: |
     Inventories in the house.

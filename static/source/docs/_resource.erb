@@ -2,6 +2,8 @@
 
 <%= markdown resource.body %>
 
+<h2>Object structure</h2>
+
 <table>
   <thead>
     <tr>
@@ -18,3 +20,22 @@
     <% end %>
   </tbody>
 </table>
+
+<% resource.endpoints.each do |endpoint| %>
+  <hr>
+
+  <div class="endpoint-card">
+    <h3>
+      <b class="<%= (endpoint.type || 'get').downcase %>">
+        <%= (endpoint.type || 'GET').upcase %>
+      </b>
+      <%= format_route(endpoint.route) %>
+    </h3>
+
+    <div class="summary">
+      <%= markdown endpoint['body'] %>
+    </div>
+
+    <%= endpoint.name %> - <%= endpoint.summary %>
+  </div>
+<% end %>
