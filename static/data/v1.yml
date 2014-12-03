@@ -15,9 +15,9 @@ manuals:
     released in **April of 2009**.
 
 - anchor: 'overview'
-  title: 'Overview'
+  title: 'Getting Started'
   body: |
-    # Overview
+    # API V1 Overview
 
     * [Requests & Responses](#responses)
     * [Pagination](#pagination)
@@ -25,14 +25,17 @@ manuals:
     * [JSONP & CORS](#jsonp-and-cors)
     * [HTTPS](#https)
 
-- anchor: 'responses'
-  title: 'Responses'
+- anchor: 'responses-and-formats'
+  title: 'Responses &amp; Formats'
+  is_sub: yes
   body: |
-    # Responses
+    ## Responses & Formats
 
     The default response format for the API V1 is JSON `application/json`.
     This means that you don't need to specify JSON in an `Accept` header or as
     an extension (`.json`) if that is the format you intend to request.
+
+    ### JSON
 
     All responses are wrapped in a container object, in its most basic form
     it looks like this:
@@ -51,10 +54,7 @@ manuals:
     object is returned with the list of stores so that your application does
     not have to perform an additional request to obtain the store information.
 
-- anchor: 'pagination'
-  title: 'Pagination'
-  body: |
-    # Pagination
+    ### Pagination
 
     When the API returns collections of items (stores, products, or inventories)
     it will paginate the results instead of returning all of them at once. You
@@ -82,6 +82,219 @@ manuals:
 
     It contains all of the information you need (and more) to navigate through
     the pages in the result set.
+
+    ### CSV
+
+    Many resources can be returned as CSV (comma separated values) or TSV
+    (tab separated values). These results can then be easily imported into
+    spreadsheet software such as Apple Numbers or Microsoft Excel. To return
+    a resource in CSV or TSV format simply append the `.csv` or `.tsv`
+    extension to the resource URI:
+
+    <pre><code>/products<em>.csv</em>?order=price_in_cents.desc
+    </code></pre>
+
+- anchor: 'errors'
+  title: 'Errors'
+  is_sub: true
+  body: |
+    ## Errors
+
+    When an error occurs the response will look something like this:
+
+    ```json
+    {
+      "error": "bad_query_error",
+      "message": "A value supplied for the order parameter (id.desk) is not valid. It contains an invalid sort order (desk) for (id) try using: id.desc or id.asc instead.",
+      "result": null,
+      "status": 400
+    }
+    ```
+
+    Error messages are always as descriptive as possible and they fall into one
+    of the below categories:
+
+    | Code               | Description                                         |
+    | ------------------ | --------------------------------------------------- |
+    | `no_results_error` | The geocoder returned no geometry for the geo query. |
+    | `over_limit_error` | The geocoder has reached its daily limit of requests. |
+    | `geocoder_error`   | The geocoder can't geocode the query it was provided. |
+    | `not_found_error`  | A resource was not found (404) |
+    | `bad_query_error`  | One (or more) of the supplied query parameters is wrong. |
+    | `jsonp_error`      | Supplied callback is not a valid format, or JSONP is not being used correctly. |
+    | `unauthorized`     | The feature you're trying to use requires an Access Key |
+
+- anchor: 'browser-use'
+  title: 'Browser Usage'
+  body: |
+    # Browser Usage
+
+    LCBO API provides support for cross-origin requests so that it can be used
+    from a web page. In the past, due to the Single Origin Policy implemented
+    in all web browsers, there were only two ways to do this. Either by
+    proxying all requests through the origin server, or by using a technique
+    called JSONP. Today, all modern browsers implement Cross Origin Resource
+    Sharing (CORS). LCBO API supports all of these techniques.
+
+- anchor: 'proxying'
+  title: 'HTTP Proxy'
+  is_sub: yes
+  body: |
+    ## HTTP Proxy
+
+    In a proxy setup, the API consumer implements an endpoint on their web
+    server that proxies all requests to and responses from LCBO API. For
+    example, the following endpoint on your web server:
+
+    ```
+    mysite.com/lcboapi/*
+    ```
+
+    Would then proxy anything after lcboapi/ to lcboapi.com, as if it were a
+    part of your site, even though those requests are actually being delegated
+    to lcboapi.com. So a request to your server like this:
+
+    ```
+    mysite.com/lcboapi/products
+    ```
+
+    Would actually request this page on LCBO API:
+
+    ```
+    lcboapi.com/products
+    ```
+
+    And your site would then return the result of that LCBO API response.
+
+    This approach is not bad, the browser doesn't care because all of the
+    requests are to the same domain, and given the performance of modern web
+    servers like Nginx and Apache the overhead is quite low. The downside is
+    that it requires infrastructure and configuration to work properly and
+    ultimately becomes another thing to maintain. This leads us to the first
+    way to truly request 3<sup>rd</sup> party data from a web page: JSONP.
+
+- anchor: 'jsonp'
+  title: 'JSONP'
+  is_sub: yes
+  body: |
+    ## JSONP
+
+    JSONP stands for JSON with Padding and works by dynamically attaching
+    `<script>` elements to a web page, that call a previously defined function
+    in order to load data.
+
+    To use JSONP with LCBO API, simply add a <code>callback</code> parameter
+    to LCBO API URLs. When using JSONP LCBO API also sets the response
+    `Content-Type` to `application/javascript` since the response is now
+    executable JavaScript, and not just data (JSON) anymore.
+
+    Here's how the whole process works, say you have a globally defined
+    function named `loadStore` on your page, like this:
+
+    ```html
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>LCBO Learnin'</title>
+        <script>
+          function loadStore(response) {
+            var el = document.getElementById('store_name');
+            el.innerHTML = response.result.name;
+          }
+        </script>
+      </head>
+      <body>
+        <h1 id="store_name"></h1>
+      </body>
+    </html>
+    ```
+
+    And you dynamically insert a `<script>` tag on the page using a function
+    like this:
+
+    ```javascript
+    function loadStore(id) {
+      var script = document.createElement('script');
+
+      script.src = 'http://lcboapi.com/stores/' + id + '?callback=loadStore';
+      script.async = true;
+
+      document.head.appendChild(script);
+    }
+
+    loadStore(511);
+    ```
+
+    LCBO API retuns a JavaScript file that looks like this:
+
+    ```javascript
+    loadStore({
+      status: 200,
+      message: null,
+      result: {
+        "id": 511,
+        "name": "King & Spadina",
+        ...
+      }
+    });
+    ```
+
+    Which effectively calls our prevously defined `loadStore` function with the
+    response data as its sole argument, so our `<h1>` tag is filled with the
+    name of the store.
+
+    It's important to note that most popular JavaScript libraries have built-in
+    support for JSONP. For example, the following jQuery can be used to perform
+    a JSONP request against LCBO API:
+
+    ```javascript
+    $.ajax({
+      url: 'http://lcboapi.com/products/371906',
+      dataType: 'jsonp'
+    }).then(function(data) {
+      console.log(data);
+    });
+    ```
+
+    I **highly** recommend using a library like jQuery to manage the JSONP
+    orchistration, please don't use my trivialized example in real software.
+
+- anchor: 'cors'
+  title: 'CORS'
+  is_sub: yes
+  body: |
+    ## CORS
+
+    Cross Origin Resource Sharing (CORS) is a robust W3C specification for
+    allowing browsers to access resources from different domains. LCBO API uses
+    it to give access to web browser JavaScript applications.
+
+    If you need to support outdated bowsers,
+    [specifically IE 6 and 7](http://caniuse.com/#feat=cors), you'll either have
+    to use a proxy or JSONP. Hilariously, with the advent of async script tags
+    `<script async>` JSONP can be about as effective in modern browsers as
+    using XMLHttpRequest with CORS. If you have to support older browsers that
+    don't understand CORS, there is no shame in using JSONP.
+
+    If you don't have to support IE 6 and 7, _welcome to the future!_ To use CORS
+    with LCBO API you need to provide an Web Browser Access Key with your
+    requests. You'll need an LCBO API account to create Access Keys,
+    [sign up](/sign-up) for one and get started. You can also
+    [read more](#authentication) about LCBO API authentication.
+
+    Once you have a Web Browser Access Key, using LCBO API with CORS from jQuery
+    is as simple as:
+
+    ```javascript
+    $.ajax({
+      url: 'http://lcboapi.com/products/346197',
+      headers: {
+        Authorization: 'Token YOUR_ACCESS_KEY'
+      }
+    }).then(function(data) {
+      console.log(data);
+    });
+    ```
 
 - anchor: 'authentication'
   title: 'Authentication'
@@ -142,209 +355,6 @@ manuals:
         </tr>
       </tbody>
     </table>
-
-- anchor: 'jsonp-and-cors'
-  title: 'Browser Integration'
-  body: |
-    # Browser Integration
-
-    LCBO API provides support for cross-origin requests so that it can be used
-    from a web page. In the past, due to the Single Origin Policy implemented
-    in all web browsers, there were only two ways to do this. Either by
-    proxying all requests through the origin server, or by using a technique
-    called JSONP. Today, all modern browsers implement Cross Origin Resource
-    Sharing (CORS). LCBO API supports all of these techniques.
-
-    ## HTTP Proxy
-
-    In a proxy setup, the API consumer implements an endpoint on their web
-    server that proxies all requests to and responses from LCBO API. For
-    example, the following endpoint on your web server:
-
-    ```
-    mysite.com/lcboapi/*
-    ```
-
-    Would then proxy anything after lcboapi/ to lcboapi.com, as if it were a
-    part of your site, even though those requests are actually being delegated
-    to lcboapi.com. So a request to your server like this:
-
-    ```
-    mysite.com/lcboapi/products
-    ```
-
-    Would actually request this page on LCBO API:
-
-    ```
-    lcboapi.com/products
-    ```
-
-    And your site would then return the result of that LCBO API response.
-
-    This approach is not bad, the browser doesn't care because all of the
-    requests are to the same domain, and given the performance of modern web
-    servers like Nginx and Apache the overhead is quite low. The downside is
-    that it requires infrastructure and configuration to work properly and
-    ultimately becomes another thing to maintain. This leads us to the first
-    way to truly request 3<sup>rd</sup> party data from a web page:
-
-    ## JSONP
-
-    JSONP stands for JSON with Padding and works by dynamically attaching
-    `<script>` elements to a web page, that call a previously defined function
-    in order to load data.
-
-    To use JSONP with LCBO API, simply add a <code>callback</code> parameter
-    to LCBO API URLs. When using JSONP LCBO API also sets the response
-    `Content-Type` to `application/javascript` since the response is now
-    executable JavaScript, and not just data (JSON) anymore.
-
-    Here's how the whole process works, say you have a globally defined
-    function named `loadStore` on your page, like this:
-
-    ```html
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>LCBO Learnin'</title>
-        <script>
-          function loadStore(response) {
-            var el = document.getElementById('store_name');
-            el.innerHTML = response.result.name;
-          }
-        </script>
-      </head>
-      <body>
-        <h1 id="store_name"></h1>
-      </body>
-    </html>
-    ```
-
-    And you dynamically insert a `<script>` tag on the page using a function
-    like this:
-
-    ```javascript
-    function loadStore(id) {
-      var script = document.createElement('script');
-
-      script.src = 'http://lcboapi.com/stores/ + id + '?callback=loadStore';
-      script.async = true;
-
-      document.head.appendChild(script);
-    }
-
-    loadStore(511);
-    ```
-
-    LCBO API retuns a JavaScript file that looks like this:
-
-    ```javascript
-    loadStore({
-      status: 200,
-      message: null,
-      result: {
-        "id": 511,
-        "name": "King & Spadina",
-        ...
-      }
-    });
-    ```
-
-    Which effectively calls our prevously defined `loadStore` function with the
-    response data as its sole argument, so our `<h1>` tag is filled with the
-    name of the store.
-
-    It's important to note that most popular JavaScript libraries have built-in
-    support for JSONP. For example, the following jQuery can be used to perform
-    a JSONP request against LCBO API:
-
-    ```javascript
-    $.ajax({
-      url: 'http://lcboapi.com/products/371906',
-      dataType: 'jsonp'
-    }).then(function(data) {
-      console.log(data);
-    });
-    ```
-
-    I **highly** recommend using a library like jQuery to manage the JSONP
-    orchistration, please don't use my trivialized example in real software.
-
-    ## CORS
-
-    Cross Origin Resource Sharing (CORS) is a robust W3C specification for
-    allowing browsers to access resources from different domains. LCBO API uses
-    it to give access to web browser JavaScript applications.
-
-    If you need to support outdated bowsers,
-    [specifically IE 6 and 7](http://caniuse.com/#feat=cors), you'll either have
-    to use a proxy or JSONP. Hilariously, with the advent of async script tags
-    `<script async>` JSONP can be about as effective in modern browsers as
-    using XMLHttpRequest with CORS. If you have to support older browsers that
-    don't understand CORS, there is no shame in using JSONP.
-
-    If you don't have to support IE 6 and 7, _welcome to the future!_ To use CORS
-    with LCBO API you need to provide an Web Browser Access Key with your
-    requests. You'll need an LCBO API account to create Access Keys,
-    [sign up](/sign-up) for one and get started. You can also
-    [read more](#authentication) about LCBO API authentication.
-
-    Once you have a Web Browser Access Key, using LCBO API with CORS from jQuery
-    is as simple as:
-
-    ```javascript
-    $.ajax({
-      url: 'http://lcboapi.com/products/346197',
-      headers: {
-        Authorization: 'Token YOUR_ACCESS_KEY'
-      }
-    }).then(function(data) {
-      console.log(data);
-    });
-    ```
-
-- anchor: 'csv'
-  title: 'CSV Data'
-  body: |
-    # CSV and TSV Responses
-
-    Many resources can be returned as CSV (comma separated values) or TSV
-    (tab separated values). These results can then be easily imported into
-    spreadsheet software such as Apple Numbers or Microsoft Excel. To return
-    a resource in CSV or TSV format simply append the `.csv` or `.tsv`
-    extension to the resource URI:
-
-    <pre><code>/products<em>.csv</em>?order=price_in_cents.desc
-    </code></pre>
-
-- anchor: 'errors'
-  title: 'Errors'
-  body: |
-    # Errors
-
-    When an error occurs the response will look something like this:
-
-    ```json
-    {
-      "error": "bad_query_error",
-      "message": "A value supplied for the order parameter (id.desk) is not valid. It contains an invalid sort order (desk) for (id) try using: id.desc or id.asc instead.",
-      "result": null,
-      "status": 400
-    }
-    ```
-
-    Error messages are always as descriptive as possible and they fall into one
-    of the below categories:
-
-    | Code               | Description                                         |
-    | ------------------ | --------------------------------------------------- |
-    | `no_results_error` | The geocoder returned no geometry for the geo query. |
-    | `over_limit_error` | The geocoder has reached its daily limit of requests. |
-    | `geocoder_error`   | The geocoder can't geocode the query it was provided. |
-    | `not_found_error`  | A resource was not found (404) |
-    | `bad_query_error`  | One (or more) of the supplied query parameters is wrong. |
-    | `jsonp_error`      | Supplied callback is not a valid format, or JSONP is not being used correctly. |
-    | `unauthorized`     | The feature you're trying to use requires an Access Key |
 
 resources:
 - title: 'LCBO API V1 Stores Resource'

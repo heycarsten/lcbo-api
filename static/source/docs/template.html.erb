@@ -18,30 +18,30 @@
       <ol class="manuals">
         <% data["v#{api.version}"].manuals.each do |section| %>
           <% next unless section.anchor %>
-          <li>
+          <li<% if section.is_sub %> class="sub"<% end %>>
             <a href="/docs/v1#<%= section.anchor %>">
               <%= section.title %>
             </a>
           </li>
         <% end %>
       </ol>
-      <h1>HTTP Endpoints</h1>
-        <% data["v#{api.version}"].resources.each do |resource| %>
-          <h2>
-            <a href="/docs/v<%= api.version %>/<%= resource.slug %>">
-              <%= resource.name %>
-            </a>
-          </h2>
-          <ol class="endpoints">
-            <% resource.endpoints.each do |endpoint| %>
-              <li>
-                <a href="/docs/v<%= api.version %>/<%= resource.slug %>#<%= endpoint.anchor %>">
-                  <%= endpoint.route %>
-                </a>
-              </li>
-            <% end %>
-          </ol>
-        <% end %>
+      <h2>HTTP Endpoints</h2>
+      <% data["v#{api.version}"].resources.each do |resource| %>
+        <h3 class="endpoint-name">
+          <a href="/docs/v<%= api.version %>/<%= resource.slug %>">
+            <%= resource.name %>
+          </a>
+        </h3>
+        <ol class="endpoints">
+          <% resource.endpoints.each do |endpoint| %>
+            <li>
+              <a href="/docs/v<%= api.version %>/<%= resource.slug %>#<%= endpoint.anchor %>">
+                <%= endpoint.route %>
+              </a>
+            </li>
+          <% end %>
+        </ol>
+      <% end %>
     </nav>
   </header>
 
@@ -55,7 +55,7 @@
         <% content_for :title, api_resource.title %>
         <%= partial 'docs/resource', locals: { resource: api_resource } %>
       <% else %>
-        <% content_for :title, "LCBO API V#{api.version} Reference" %>
+        <% content_for :title, "LCBO API V#{api.version} Documentation" %>
         <% api.manuals.each do |section| %>
           <% if section.anchor %>
             <span id="<%= section.anchor %>"></span>
