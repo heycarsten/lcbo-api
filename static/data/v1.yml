@@ -17,10 +17,12 @@ manuals:
     This is the documentation for Version 1 (V1) of LCBO API. It was originally
     released **April 2009**.
 
-    * [Requests & Responses](#responses-and-formats)
-    * [Pagination](#pagin)
+    * [Responses & Formats](#responses-and-formats)
     * [Authentication](#authentication)
-    * [JSONP & CORS](#jsonp-and-cors)
+    * [Errors](#errors)
+    * [Cross Origin Access](#cross-origin-access)
+      * [JSONP](#jsonp)
+      * [CORS (Cross Origin Resource Sharing)](#cors)
     * [HTTPS](#https)
 
 - anchor: 'responses-and-formats'
@@ -153,6 +155,44 @@ manuals:
       </tbody>
     </table>
 
+    ### Using Access Keys
+
+    <p class="info">
+      Detailed usage information is provided in the LCBO API Manager when you
+      create access keys.
+    </p>
+
+    Your access key will need to be sent with every request you make to LCBO API,
+    you can do this the following ways:
+
+    #### HTTP Header
+
+    This is the recommended way of adding your Access Key to requests:
+
+    ```
+    Authorization: Token token="myLCBOAPIaccessKey"
+    ```
+
+    #### Query Parameter
+
+    Aside from JSONP, you should always try to use the HTTP Header method
+    outlined above. Add your access key to the URL like this:
+
+    ```
+    http://lcboapi.com/products?access_key=myLCBOAPIaccessKey
+    ```
+
+    #### Basic Auth
+
+    If the tool you're using will only support setting the `Authorization`
+    header by username/password, you can provide the following values to pass
+    along your Access Key to LCBO API.
+
+    ```
+    Username: x-access-key
+    Password: myLCBOAPIaccessKey
+    ```
+
 - anchor: 'errors'
   title: 'Errors'
   is_sub: true
@@ -186,7 +226,7 @@ manuals:
 - anchor: 'cross-origin-access'
   title: 'Cross Origin Access'
   body: |
-    # Cross Origin Access
+    ## Cross Origin Access
 
     LCBO API provides support for cross-origin requests so that it can be used
     from a web page. In the past, due to the Single Origin Policy implemented
@@ -195,7 +235,7 @@ manuals:
     called JSONP. Today, all modern browsers implement Cross Origin Resource
     Sharing (CORS). LCBO API supports all of these techniques.
 
-    ## HTTP Proxy
+    ### HTTP Proxy
 
     In a proxy setup, the API consumer implements an endpoint on their web
     server that proxies all requests to and responses from LCBO API. For
@@ -232,7 +272,7 @@ manuals:
   title: 'JSONP'
   is_sub: yes
   body: |
-    ## JSONP
+    ### JSONP
 
     JSONP stands for JSON with Padding and works by dynamically attaching
     `<script>` elements to a web page, that call a previously defined function
@@ -318,7 +358,7 @@ manuals:
   title: 'CORS'
   is_sub: yes
   body: |
-    ## CORS
+    ### CORS
 
     Cross Origin Resource Sharing (CORS) is a robust W3C specification for
     allowing browsers to access resources from different domains. LCBO API uses
@@ -350,12 +390,24 @@ manuals:
       console.log(data);
     });
     ```
+- anchor: https
+  title: HTTPS
+  body: |
+    ## HTTPS
+
+    LCBO API now supports secured connections over HTTPS, this is particularly
+    useful when you want to request data over JSONP or CORS on a webpage that
+    was served over HTTPS.
+
+    To use HTTPS you must provide an Access Key. [Sign Up](/sign-up) for an
+    LCBO API account to create one.
 
 resources:
 - title: 'LCBO API V1 Stores'
   name: 'Stores'
   object: 'Store'
   slug: 'stores'
+
   fields:
     address_line_1: Street address
     address_line_2: Secondary address information (Not all stores)
@@ -429,9 +481,19 @@ resources:
     many: true
     summary: |
       Returns a list of stores that can be filtered and ordered by parameters.
-    body: |
-      _Returns many stores._
     params:
+    - key: page
+      value: Page number
+      summary: The page number you'd like to return.
+      example: lcboapi.com/stores?page=3
+
+    - key: per_page
+      value: Page size
+      summary: |
+        The number of objects to include per page. The defaults is 50, and the
+        maximum is 200.
+      example: lcboapi.com/stores?per_page=150
+
     - key: where
       type: enum
       many: true
@@ -466,16 +528,45 @@ resources:
       - inventory_price_in_cents
       example: lcboapi.com/stores?order=id.asc
       summary: |
-        Sort the returned stores by one or more of the specified attributes,
-        the default order is descending, ascending can be specified by adding
-        `.asc` to the end of an attribute.
+        Sort the returned stores by one or more of the listed attributes.
+        Ascending or descending order is specified by adding `.asc` or `.desc`
+        to the end of the attribute name.
 
+    - key: 'q'
+      value: URI-encoded search query
+      example: 'lcboapi.com/stores?q=dupont'
+      summary: |
+        Returns all stores that match the provided *full-text* search query,
+        this is purely text-based, look to the `lat`, `lon`, and `geo`
+        parameters for geographical queries.
 
+    - key: 'product_id'
+      value: LCBO Product ID
+      example: lcboapi.com/stores?product_id=18
+      summary: |
+        Returns only stores that have inventory for the specified
+        product.
+
+    - key: ['lat', 'lon']
+      value: Latitude and Longitude
+      example: lcboapi.com/stores?lat=43.659&lon=-79.439
+      summary: |
+        Returns all stores starting from closest to the specified geographical
+        point. Adds `distance_in_meters` attribute to the returned store
+        objects, and defaults to ordering them by `distance_in_meters.asc`.
+
+    - key: geo
+      value: "Point of interest: postal code, major intersection, city, address"
+      example: lcboapi.com/stores?geo=m6h+1p2
+      summary: |
+        Geocodes the provided value, and if successful, returns all stores
+        in the same manner as above. Subject to aggressive rate-limiting, use
+        `lat` and `lon` whenever possible. Google Maps JavaScript API is
+        excellent for geocoding client-side.
 
   - route: '/stores/{store_id}'
     anchor: 'one'
-    one: true
-    body: |
+    summary: |
       Returns one store by `{store_id}`.
 
 - title: 'LCBO API V1 Products'
@@ -543,12 +634,23 @@ resources:
   - route: '/products'
     name: 'Products'
     anchor: 'many'
-    many: true
     summary: |
       Returns a list of products that can be sorted and filtered by the
       described parameters.
 
     params:
+    - key: page
+      value: Page number
+      summary: The page number you'd like to return.
+      example: lcboapi.com/products?page=3
+
+    - key: per_page
+      value: Page size
+      summary: |
+        The number of objects to include per page. The defaults is 50, and the
+        maximum is 200.
+      example: lcboapi.com/products?per_page=150
+
     - key: 'where'
       type: 'enum'
       many: true
@@ -596,9 +698,9 @@ resources:
 
       example: 'lcboapi.com/products?order=id.desc'
       summary: |
-        Sort the returned products by one or more of the specified attributes,
-        the default order is descending, ascending can be specified by adding
-        `.asc` to the end of an attribute.
+        Sort the returned products by one or more of the listed attributes.
+        Ascending or descending order is specified by adding `.asc` or `.desc`
+        to the end of the attribute name.
 
     - key: 'q'
       value: URI-encoded search query
@@ -623,24 +725,166 @@ resources:
 - title: 'LCBO API V1 Inventories'
   name: 'Inventories'
   slug: 'inventories'
+  object: 'Inventory'
+  body: |
+    An inventory represents the presence of a product at an LCBO store.
 
-  fields: {}
+  fields:
+    product_id: Product ID
+    store_id: Store ID
+    is_dead: True if this inventory refers to a dead store and/or product
+    quantity: Reported quantity on hand of the product ID at store ID
+    updated_on: Reported date that quantity was updated
+    updated_at: Time that this inventory item was updated
+    product_no: Product ID [Deprecated]
+    store_no: Store ID [Deprecated]
 
   endpoints:
-  - route: '/inventories'
-    name: 'Inventories'
-    anchor: 'many'
-    many: true
-    body: |
-      Returns many inventories.
+  - route: /inventories
+    name: Inventories
+    anchor: many
+    summary: |
+      Returns a list of inventories that can be filtered and ordered by
+      parameters.
 
-  - route: '/inventories/{store_id}-{product_id}'
-    anchor: 'one'
-    name: 'Inventory'
-    many: true
-    body: |
+    params:
+    - key: page
+      value: Page number
+      summary: The page number you'd like to return.
+      example: lcboapi.com/inventories?page=3
+
+    - key: per_page
+      value: Page size
+      summary: |
+        The number of objects to include per page. The defaults is 50, and the
+        maximum is 100.
+      example: lcboapi.com/inventories?per_page=100
+
+    - key: where
+      type: enum
+      many: true
+      values:
+      - is_dead
+      example: lcboapi.com/inventories?where=is_dead
+
+    - key: where_not
+      type: enum
+      many: true
+      values:
+      - is_dead
+      example: lcboapi.com/inventories?where_not=is_dead
+
+    - key: 'order'
+      type: 'enum'
+      many: true
+      values:
+      - quantity
+      - updated_on
+      example: lcboapi.com/inventories?order=quantity.desc
+      summary: |
+        Sort the returned inventories by one or more of the listed attributes.
+        Ascending or descending order is specified by adding `.asc` or `.desc`
+        to the end of the attribute name.
+
+    - key: 'store_id'
+      value: LCBO Store ID
+      example: lcboapi.com/inventories?store_id=511
+      summary: |
+        Returns only inventories that are associated with the specified
+        store.
+
+    - key: 'product_id'
+      value: LCBO Product ID
+      example: lcboapi.com/inventories?product_id=18
+      summary: |
+        Returns only inventories that are associated with the specified
+        product.
+
+  - route: /stores/{store_id}/products/{product_id}/inventory
+    anchor: one
+    name: Inventory
+    summary: |
       Returns an inventory for the specified store `store_id` and product
-      `product_id` combination.
+      `product_id`.
 
+- title: 'LCBO API V1 Datasets'
+  name: 'Datasets'
+  slug: 'datasets'
+  object: 'Dataset'
   body: |
-    Inventories in the house.
+    Datasets represent snapshots of all stores, products, and inventories at a
+    given time. They are created once per day and contain information such as
+    the IDs of stores and products that were added and removed since the
+    previous dataset.
+
+  fields:
+    id: Dataset identifier
+    total_products: Total unique retail products across all stores
+    total_stores: Total stores
+    total_inventories: Total inventory items across all stores
+    total_product_inventory_count: Total product units across all stores
+    total_product_inventory_volume_in_milliliters: Total volume of all product units across all stores
+    total_product_inventory_price_in_cents: Total retail value of all product units across all stores
+    created_at: The time the dataset was created
+    product_ids: List of all active product IDs at the time the dataset was created
+    store_ids: List of all active store IDs at the time the dataset was created
+    added_product_ids: List of product IDs that were added since the previous update
+    added_store_ids: List of store IDs that were added since the previous update
+    removed_product_ids: List of product IDs that were removed since the previous update
+    removed_store_ids: List of store IDs that were removed since the previous update
+    csv_dump: Contains a path to a ZIP archive of CSV files for stores, products, and inventories.
+
+  endpoints:
+  - route: /datasets
+    name: Datasets
+    anchor: many
+    summary: |
+      Returns a list of inventories that can be filtered and ordered by
+      parameters.
+
+    params:
+    - key: page
+      value: Page number
+      summary: The page number you'd like to return.
+      example: lcboapi.com/datasets?page=3
+
+    - key: per_page
+      value: Page size
+      summary: |
+        The number of objects to include per page. The defaults is 20, and the
+        maximum is 50.
+      example: lcboapi.com/datasets?per_page=50
+
+    - key: 'order'
+      type: 'enum'
+      many: true
+      values:
+      - id
+      - created_at
+      - total_products
+      - total_stores
+      - total_inventories
+      - total_product_inventory_count
+      - total_product_inventory_volume_in_milliliters
+      - total_product_inventory_price_in_cents
+      example: lcboapi.com/datasets?order=created_at.asc
+      summary: |
+        Sort the returned datasets by one or more of the listed attributes.
+        Ascending or descending order is specified by adding `.asc` or `.desc`
+        to the end of the attribute name.
+
+  - route: /datasets/{dataset_id}
+    anchor: one
+    name: Dataset
+    summary: |
+      Returns an inventory for the specified dataset `dataset_id`.
+
+      <p class="info">
+        You can get the latest dataset by specifying <code>latest</code> as the ID.
+      </p>
+
+      <p class="info">
+        Datasets are also available as ZIP files containing CSV dumps of all
+        stores, products, and inventories. Just add <code>.zip</code> to
+        the end of the URL.
+      </p>

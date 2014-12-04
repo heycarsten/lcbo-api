@@ -48,7 +48,9 @@
         <tbody>
           <% endpoint.params.each do |param| %>
             <tr>
-              <td class="param-key"><code><%= param['key'] %></code></td>
+              <td class="param-key">
+                <%= Array(param['key']).map { |k| "<code>#{k}</code>" }.join('<br>') %>
+              </td>
               <td class="param-value">
                 <% case param['type'] %>
                 <% when 'enum', 'order' %>

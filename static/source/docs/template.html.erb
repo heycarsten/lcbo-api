@@ -1,5 +1,7 @@
 <section class="docs-content">
   <header data-spy="affix" data-offset-top="68">
+    <%
+=begin %>
     <nav class="tabs">
       <ol>
         <li<% if api.version == 1 %> class="active"<% end %>>
@@ -10,6 +12,8 @@
         </li>
       </ol>
     </nav>
+    <%
+=end %>
     <nav class="sections">
       <div class="manuals">
         <h2>API V<%= api.version %> Guide</h2>
