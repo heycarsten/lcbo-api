@@ -1,5 +1,5 @@
 ---
-title: 'The LCBO API Story'
+title: 'About LCBO API'
 header: 'About LCBO API'
 layout: content
 ---
@@ -26,7 +26,9 @@ Here is a small sampling of some companies and people using LCBO API for
 web and mobile apps. Don&rsquo;t be shy, I'd love to hear how you or your
 company is using LCBO API.
 
+ * [Elsie](http://heyelsie.com) by Doug Estey
  * [Collective Arts Beer Finder](http://collectiveartsbrewing.com/beer-finder) by Collective Arts Brewing
+ * [The Beer Guy](http://www.thebeerguy.ca) by The Beer Guy, Inc.
  * [searC₂H₆O](http://j201.github.io/searc2h6o/) by Alex L
  * [LCBO Price Tracker](https://itunes.apple.com/us/app/lcbo-price-tracker/id851166645) by Mary Chen
  * [Liqbo](http://www.codebeard.io/#/work/liqbo) by Neil Fenton

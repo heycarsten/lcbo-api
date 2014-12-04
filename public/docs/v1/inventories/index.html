@@ -22,17 +22,12 @@
         <ol>
           <li>
             <a class="about" href="/about">
-              Story
+              About
             </a>
           </li>
           <li>
             <a class="docs" href="/docs/v1">
               Documentation
-            </a>
-          </li>
-          <li>
-            <a class="news" href="/news">
-              News
             </a>
           </li>
           <li>
@@ -51,23 +46,13 @@
 
     <main>
       <section class="docs-content">
-  <header>
-    <nav class="tabs">
-      <ol>
-        <li class="active">
-          <a href="/docs/v1">V1</a>
-        </li>
-        <li>
-          <a href="/docs/v2">V2</a>
-        </li>
-      </ol>
-    </nav>
+  <header data-spy="affix" data-offset-top="68">
     <nav class="sections">
       <div class="manuals">
         <h2>API V1 Guide</h2>
         <ol class="manuals">
             <li>
-              <a href="/docs/v1#index">
+              <a href="/docs/v1#getting-started">
                 Getting Started
               </a>
             </li>
@@ -101,6 +86,11 @@
                 CORS
               </a>
             </li>
+            <li>
+              <a href="/docs/v1#https">
+                HTTPS
+              </a>
+            </li>
         </ol>
       </div>
 
@@ -119,12 +109,7 @@
               </li>
               <li>
                 <a href="/docs/v1/stores#one">
-                  /stores/:id
-                </a>
-              </li>
-              <li>
-                <a href="/docs/v1/stores#stores-with-product">
-                  /products/:id/stores
+                  /stores/{store_id}
                 </a>
               </li>
           </ol>
@@ -141,12 +126,7 @@
               </li>
               <li>
                 <a href="/docs/v1/products#one">
-                  /products/:id
-                </a>
-              </li>
-              <li>
-                <a href="/docs/v1/products#products-at-store">
-                  /stores/:id/products
+                  /products/{product_id}
                 </a>
               </li>
           </ol>
@@ -163,7 +143,24 @@
               </li>
               <li>
                 <a href="/docs/v1/inventories#one">
-                  /stores/:id/products/:id/inventory
+                  /stores/{store_id}/products/{product_id}/inventory
+                </a>
+              </li>
+          </ol>
+          <h3 class="endpoint-name">
+            <a href="/docs/v1/datasets">
+              Datasets
+            </a>
+          </h3>
+          <ol class="endpoints">
+              <li>
+                <a href="/docs/v1/datasets#many">
+                  /datasets
+                </a>
+              </li>
+              <li>
+                <a href="/docs/v1/datasets#one">
+                  /datasets/{dataset_id}
                 </a>
               </li>
           </ol>
@@ -179,19 +176,257 @@
     <div class="document">
         <h1>Inventories</h1>
 
-<p>Inventories in the house.</p>
+<p>An inventory represents the presence of a product at an LCBO store.</p>
 
+
+<h2>Inventory Attributes</h2>
 
 <table>
   <thead>
     <tr>
-      <th>Property</th>
+      <th>Attribute</th>
       <th>Description</th>
     </tr>
   </thead>
   <tbody>
+      <tr>
+        <td><code>product_id</code></td>
+        <td><p>Product ID</p>
+</td>
+      </tr>
+      <tr>
+        <td><code>store_id</code></td>
+        <td><p>Store ID</p>
+</td>
+      </tr>
+      <tr>
+        <td><code>is_dead</code></td>
+        <td><p>True if this inventory refers to a dead store and/or product</p>
+</td>
+      </tr>
+      <tr>
+        <td><code>quantity</code></td>
+        <td><p>Reported quantity on hand of the product ID at store ID</p>
+</td>
+      </tr>
+      <tr>
+        <td><code>updated_on</code></td>
+        <td><p>Reported date that quantity was updated</p>
+</td>
+      </tr>
+      <tr>
+        <td><code>updated_at</code></td>
+        <td><p>Time that this inventory item was updated</p>
+</td>
+      </tr>
+      <tr>
+        <td><code>product_no</code></td>
+        <td><p>Product ID [Deprecated]</p>
+</td>
+      </tr>
+      <tr>
+        <td><code>store_no</code></td>
+        <td><p>Store ID [Deprecated]</p>
+</td>
+      </tr>
   </tbody>
 </table>
+
+<h3>Inventory HTTP Endpoints</h3>
+
+  <div class="endpoint-card">
+    <h3 id="many">
+      <b class="get">GET</b> <code class="route-spec"><i>lcboapi.com</i>/inventories</code>
+    </h3>
+
+    <div class="summary">
+      <p>Returns a list of inventories that can be filtered and ordered by
+parameters.</p>
+
+    </div>
+
+      <h4>URL Query Parameters</h4>
+      <table class="endpoint-params">
+        <thead>
+          <tr>
+            <th class="param-key">Param</th>
+            <th class="param-value">Value</th>
+            <th class="param-description">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr>
+              <td class="param-key">
+                <code>page</code>
+              </td>
+              <td class="param-value">
+                  <i>Page number</i>
+              </td>
+              <td class="param-description">
+                <p>The page number you&#39;d like to return.</p>
+
+                  <dl>
+                    <dt>Example</dt>
+                    <dd>
+                      <code class="example-url">lcboapi.com/inventories?page=3</code>
+                    </dd>
+                  </dl>
+
+              </td>
+            </tr>
+            <tr>
+              <td class="param-key">
+                <code>per_page</code>
+              </td>
+              <td class="param-value">
+                  <i>Page size</i>
+              </td>
+              <td class="param-description">
+                <p>The number of objects to include per page. The defaults is 50, and the
+maximum is 100.</p>
+
+                  <dl>
+                    <dt>Example</dt>
+                    <dd>
+                      <code class="example-url">lcboapi.com/inventories?per_page=100</code>
+                    </dd>
+                  </dl>
+
+              </td>
+            </tr>
+            <tr>
+              <td class="param-key">
+                <code>where</code>
+              </td>
+              <td class="param-value">
+                  <code>is_dead</code>
+              </td>
+              <td class="param-description">
+                
+                  <dl>
+                    <dt>Example</dt>
+                    <dd>
+                      <code class="example-url">lcboapi.com/inventories?where=is_dead</code>
+                    </dd>
+                  </dl>
+
+                  <dl>
+                    <dt>Allows multiple values</dt>
+                    <dd>
+                      Separate them with a comma like this:
+                      <code>where=one,two,three</code>
+                    </dd>
+                  </dl>
+              </td>
+            </tr>
+            <tr>
+              <td class="param-key">
+                <code>where_not</code>
+              </td>
+              <td class="param-value">
+                  <code>is_dead</code>
+              </td>
+              <td class="param-description">
+                
+                  <dl>
+                    <dt>Example</dt>
+                    <dd>
+                      <code class="example-url">lcboapi.com/inventories?where_not=is_dead</code>
+                    </dd>
+                  </dl>
+
+                  <dl>
+                    <dt>Allows multiple values</dt>
+                    <dd>
+                      Separate them with a comma like this:
+                      <code>where_not=one,two,three</code>
+                    </dd>
+                  </dl>
+              </td>
+            </tr>
+            <tr>
+              <td class="param-key">
+                <code>order</code>
+              </td>
+              <td class="param-value">
+                  <code>quantity</code><br><code>updated_on</code>
+              </td>
+              <td class="param-description">
+                <p>Sort the returned inventories by one or more of the listed attributes.
+Ascending or descending order is specified by adding <code>.asc</code> or <code>.desc</code>
+to the end of the attribute name.</p>
+
+                  <dl>
+                    <dt>Example</dt>
+                    <dd>
+                      <code class="example-url">lcboapi.com/inventories?order=quantity.desc</code>
+                    </dd>
+                  </dl>
+
+                  <dl>
+                    <dt>Allows multiple values</dt>
+                    <dd>
+                      Separate them with a comma like this:
+                      <code>order=one,two,three</code>
+                    </dd>
+                  </dl>
+              </td>
+            </tr>
+            <tr>
+              <td class="param-key">
+                <code>store_id</code>
+              </td>
+              <td class="param-value">
+                  <i>LCBO Store ID</i>
+              </td>
+              <td class="param-description">
+                <p>Returns only inventories that are associated with the specified
+store.</p>
+
+                  <dl>
+                    <dt>Example</dt>
+                    <dd>
+                      <code class="example-url">lcboapi.com/inventories?store_id=511</code>
+                    </dd>
+                  </dl>
+
+              </td>
+            </tr>
+            <tr>
+              <td class="param-key">
+                <code>product_id</code>
+              </td>
+              <td class="param-value">
+                  <i>LCBO Product ID</i>
+              </td>
+              <td class="param-description">
+                <p>Returns only inventories that are associated with the specified
+product.</p>
+
+                  <dl>
+                    <dt>Example</dt>
+                    <dd>
+                      <code class="example-url">lcboapi.com/inventories?product_id=18</code>
+                    </dd>
+                  </dl>
+
+              </td>
+            </tr>
+        </tbody>
+      </table>
+  </div>
+  <div class="endpoint-card">
+    <h3 id="one">
+      <b class="get">GET</b> <code class="route-spec"><i>lcboapi.com</i>/stores/<span>{store_id}</span>/products/<span>{product_id}</span>/inventory</code>
+    </h3>
+
+    <div class="summary">
+      <p>Returns an inventory for the specified store <code>store_id</code> and product
+<code>product_id</code>.</p>
+
+    </div>
+
+  </div>
 
     </div>
   </article>

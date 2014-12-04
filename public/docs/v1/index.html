@@ -22,17 +22,12 @@
         <ol>
           <li>
             <a class="about" href="/about">
-              Story
+              About
             </a>
           </li>
           <li>
             <a class="docs" href="/docs/v1">
               Documentation
-            </a>
-          </li>
-          <li>
-            <a class="news" href="/news">
-              News
             </a>
           </li>
           <li>
@@ -51,23 +46,13 @@
 
     <main>
       <section class="docs-content">
-  <header>
-    <nav class="tabs">
-      <ol>
-        <li class="active">
-          <a href="/docs/v1">V1</a>
-        </li>
-        <li>
-          <a href="/docs/v2">V2</a>
-        </li>
-      </ol>
-    </nav>
+  <header data-spy="affix" data-offset-top="68">
     <nav class="sections">
       <div class="manuals">
         <h2>API V1 Guide</h2>
         <ol class="manuals">
             <li>
-              <a href="/docs/v1#index">
+              <a href="/docs/v1#getting-started">
                 Getting Started
               </a>
             </li>
@@ -101,6 +86,11 @@
                 CORS
               </a>
             </li>
+            <li>
+              <a href="/docs/v1#https">
+                HTTPS
+              </a>
+            </li>
         </ol>
       </div>
 
@@ -119,12 +109,7 @@
               </li>
               <li>
                 <a href="/docs/v1/stores#one">
-                  /stores/:id
-                </a>
-              </li>
-              <li>
-                <a href="/docs/v1/stores#stores-with-product">
-                  /products/:id/stores
+                  /stores/{store_id}
                 </a>
               </li>
           </ol>
@@ -141,12 +126,7 @@
               </li>
               <li>
                 <a href="/docs/v1/products#one">
-                  /products/:id
-                </a>
-              </li>
-              <li>
-                <a href="/docs/v1/products#products-at-store">
-                  /stores/:id/products
+                  /products/{product_id}
                 </a>
               </li>
           </ol>
@@ -163,7 +143,24 @@
               </li>
               <li>
                 <a href="/docs/v1/inventories#one">
-                  /stores/:id/products/:id/inventory
+                  /stores/{store_id}/products/{product_id}/inventory
+                </a>
+              </li>
+          </ol>
+          <h3 class="endpoint-name">
+            <a href="/docs/v1/datasets">
+              Datasets
+            </a>
+          </h3>
+          <ol class="endpoints">
+              <li>
+                <a href="/docs/v1/datasets#many">
+                  /datasets
+                </a>
+              </li>
+              <li>
+                <a href="/docs/v1/datasets#one">
+                  /datasets/{dataset_id}
                 </a>
               </li>
           </ol>
@@ -183,17 +180,22 @@
   unlimited access to LCBO API V1. <a href="/news/whats-next-for-lcbo-api">Read more</a>
 </p>
 
-<h1>Welcome to LCBO API V1</h1>
+            <span id="getting-started"></span>
+          <h1>Welcome to LCBO API V1</h1>
 
 <p>This is the documentation for Version 1 (V1) of LCBO API. It was originally
 released <strong>April 2009</strong>.</p>
 
-            <span id="index"></span>
-          <ul>
-<li><a href="#responses-and-formats">Requests &amp; Responses</a></li>
-<li><a href="#pagin">Pagination</a></li>
+<ul>
+<li><a href="#responses-and-formats">Responses &amp; Formats</a></li>
 <li><a href="#authentication">Authentication</a></li>
-<li><a href="#jsonp-and-cors">JSONP &amp; CORS</a></li>
+<li><a href="#errors">Errors</a></li>
+<li><a href="#cross-origin-access">Cross Origin Access</a>
+
+<ul>
+<li><a href="#jsonp">JSONP</a></li>
+<li><a href="#cors">CORS (Cross Origin Resource Sharing)</a></li>
+</ul></li>
 <li><a href="#https">HTTPS</a></li>
 </ul>
 
@@ -260,7 +262,7 @@ can control the number of items per page through the <code>per_page</code> param
 the pages in the result set.</p>
 
             <span id="authentication"></span>
-          <h1>Authentication</h1>
+          <h2>Authentication</h2>
 
 <p><strong>LCBO API V1 does not require authentication for access.</strong> Starting on
 <b>March 1<sup>st</sup>, 2015</b>, LCBO API V1 <strong>will</strong> require Access Keys
@@ -317,6 +319,38 @@ use-cases in mind:</p>
   </tbody>
 </table>
 
+<h3>Using Access Keys</h3>
+
+<p class="info">
+  Detailed usage information is provided in the LCBO API Manager when you
+  create access keys.
+</p>
+
+<p>Your access key will need to be sent with every request you make to LCBO API,
+you can do this the following ways:</p>
+
+<h4>HTTP Header</h4>
+
+<p>This is the recommended way of adding your Access Key to requests:</p>
+<pre class="highlight plaintext"><code>Authorization: Token token="myLCBOAPIaccessKey"
+</code></pre>
+
+<h4>Query Parameter</h4>
+
+<p>Aside from JSONP, you should always try to use the HTTP Header method
+outlined above. Add your access key to the URL like this:</p>
+<pre class="highlight plaintext"><code>http://lcboapi.com/products?access_key=myLCBOAPIaccessKey
+</code></pre>
+
+<h4>Basic Auth</h4>
+
+<p>If the tool you&#39;re using will only support setting the <code>Authorization</code>
+header by username/password, you can provide the following values to pass
+along your Access Key to LCBO API.</p>
+<pre class="highlight plaintext"><code>Username: x-access-key
+Password: myLCBOAPIaccessKey
+</code></pre>
+
             <span id="errors"></span>
           <h2>Errors</h2>
 
@@ -369,7 +403,7 @@ of the below categories:</p>
 </tbody></table>
 
             <span id="cross-origin-access"></span>
-          <h1>Cross Origin Access</h1>
+          <h2>Cross Origin Access</h2>
 
 <p>LCBO API provides support for cross-origin requests so that it can be used
 from a web page. In the past, due to the Single Origin Policy implemented
@@ -378,7 +412,7 @@ proxying all requests through the origin server, or by using a technique
 called JSONP. Today, all modern browsers implement Cross Origin Resource
 Sharing (CORS). LCBO API supports all of these techniques.</p>
 
-<h2>HTTP Proxy</h2>
+<h3>HTTP Proxy</h3>
 
 <p>In a proxy setup, the API consumer implements an endpoint on their web
 server that proxies all requests to and responses from LCBO API. For
@@ -406,7 +440,7 @@ ultimately becomes another thing to maintain. This leads us to the first
 way to truly request 3<sup>rd</sup> party data from a web page: JSONP.</p>
 
             <span id="jsonp"></span>
-          <h2>JSONP</h2>
+          <h3>JSONP</h3>
 
 <p>JSONP stands for JSON with Padding and works by dynamically attaching
 <code>&lt;script&gt;</code> elements to a web page, that call a previously defined function
@@ -477,11 +511,11 @@ a JSONP request against LCBO API:</p>
 <span class="p">});</span>
 </code></pre>
 
-<p>I <strong>highly</strong> recommend using a library like jQuery to manage the JSONP
-orchistration, please don&#39;t use my trivialized example in real software.</p>
+<p><em>I <strong>highly</strong> recommend using a library like jQuery to manage JSONP
+orchistration.</em></p>
 
             <span id="cors"></span>
-          <h2>CORS</h2>
+          <h3>CORS</h3>
 
 <p>Cross Origin Resource Sharing (CORS) is a robust W3C specification for
 allowing browsers to access resources from different domains. LCBO API uses
@@ -495,7 +529,7 @@ using XMLHttpRequest with CORS. If you have to support older browsers that
 don&#39;t understand CORS, there is no shame in using JSONP.</p>
 
 <p>If you don&#39;t have to support IE 6 and 7, <em>welcome to the future!</em> To use CORS
-with LCBO API you need to provide an Web Browser Access Key with your
+with LCBO API you need to provide a Web Browser Access Key with your
 requests. You&#39;ll need an LCBO API account to create Access Keys,
 <a href="/sign-up">sign up</a> for one and get started. You can also
 <a href="#authentication">read more</a> about LCBO API authentication.</p>
@@ -511,6 +545,16 @@ is as simple as:</p>
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre>
+
+            <span id="https"></span>
+          <h2>HTTPS</h2>
+
+<p>LCBO API now supports secured connections over HTTPS, this is particularly
+useful when you want to request data over JSONP or CORS on a webpage that
+was served over HTTPS.</p>
+
+<p>To use HTTPS you must provide an Access Key. <a href="/sign-up">Sign Up</a> for an
+LCBO API account to create one.</p>
 
     </div>
   </article>
