@@ -26,7 +26,7 @@ var ENDPOINTS = [
   {
     key: 'store-with-product',
     label: 'Stores with Product',
-    path: 'products/288506/stores'
+    path: 'stores?product_id=288506'
   }
 ];
 

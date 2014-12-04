@@ -354,8 +354,8 @@ manuals:
 resources:
 - title: 'LCBO API V1 Stores'
   name: 'Stores'
+  object: 'Store'
   slug: 'stores'
-
   fields:
     address_line_1: Street address
     address_line_2: Secondary address information (Not all stores)
@@ -387,58 +387,238 @@ resources:
     telephone: Telephone number
     updated_at: Time that the store information was updated
 
+  body: |
+    The store object represents a physical LCBO location.
+
+    <p class="info">
+      Agency stores are not included in LCBO API, a
+      <a href="http://thirsty.kx.nu/js/agency.js">JSON file</a> of them was
+      kindly provided by Svante Richter.
+    </p>
+
+    Open and close times are reperesented in minutes since midnight. This
+    format can be converted into 24 hour time using the approach below:
+
+    ```javascript
+    function msmTo24time(msm) {
+      var hour = msm / 60;
+      var mins = msm % 60;
+
+      return [hour, mins];
+    }
+    ```
+
+    You will probably want to convert the minutes since midnight to 12 hour time
+    since that's what most Ontarians will be familiar with, you can do that
+    with a few extra steps:
+
+    ```javascript
+    function msmTo12time(msm) {
+      var time = msmTo24time(msm);
+      var h24  = time[0];
+      var h12  = (0 == h24 ? 12 : (h24 > 12 ? (h24 - 10) - 2 : h24));
+      var ampm = (h24 >= 12 ? 'PM' : 'AM');
+
+      return [h12, time[1], ampm];
+    }
+    ```
+
   endpoints:
   - route: '/stores'
     anchor: 'many'
     many: true
+    summary: |
+      Returns a list of stores that can be filtered and ordered by parameters.
     body: |
-      Returns many stores.
+      _Returns many stores._
+    params:
+    - key: where
+      type: enum
+      many: true
+      values: &stores_filter_attributes
+      - is_dead
+      - has_wheelchair_accessability
+      - has_bilingual_services
+      - has_product_consultant
+      - has_tasting_bar
+      - has_beer_cold_room
+      - has_special_occasion_permits
+      - has_vintages_corner
+      - has_parking
+      - has_transit_access
+      example: lcboapi.com/stores?where=has_parking
 
-  - route: '/stores/:id'
+    - key: where_not
+      type: enum
+      many: true
+      values: *stores_filter_attributes
+      example: lcboapi.com/stores?where_not=is_dead
+
+    - key: 'order'
+      type: 'enum'
+      many: true
+      values:
+      - distance_in_meters
+      - inventory_volume_in_milliliters
+      - id
+      - products_count
+      - inventory_count
+      - inventory_price_in_cents
+      example: lcboapi.com/stores?order=id.asc
+      summary: |
+        Sort the returned stores by one or more of the specified attributes,
+        the default order is descending, ascending can be specified by adding
+        `.asc` to the end of an attribute.
+
+
+
+  - route: '/stores/{store_id}'
     anchor: 'one'
     one: true
     body: |
-      Returns one store by `id`.
-
-  - route: '/products/:id/stores'
-    anchor: 'stores-with-product'
-    many: true
-    body: |
-      Returns all stores that carry a product by `id`.
-
-  body: |
-    Stores are a hell of a drug.
+      Returns one store by `{store_id}`.
 
 - title: 'LCBO API V1 Products'
   name: 'Products'
   slug: 'products'
+  object: 'Product'
+  body: |
+    The product object represents a product in the LCBO catalog. It's important
+    to note that LCBO API maintains a history of **all** products, not only
+    active ones. The `is_dead` flag indicates a product that is no longer in
+    the official LCBO catalog but was a one point in the past.
 
-  fields: {}
+  fields:
+    alcohol_content: Alcohol content (Divide by 100 for decimal value)
+    bonus_reward_miles: Number of bonus air miles
+    bonus_reward_miles_ends_on: When bonus air miles are no longer valid
+    clearance_sale_savings_in_cents: Savings in cents if on clearance [Deprecated]
+    description: Product description (not available for all products)
+    has_bonus_reward_miles: True if the product has bonus air miles
+    has_clearance_sale: True if the product is currently on clearance [Deprecated]
+    has_limited_time_offer: True if the product is on sale
+    has_value_added_promotion: True if the product has a value added promotion
+    id: The LCBO product ID / number
+    inventory_count: Total units across all stores
+    inventory_price_in_cents: Total retail price of all units across all stores
+    inventory_volume_in_milliliters: Total volume of all units across all stores
+    is_dead: When products are removed from the LCBO catalog they are marked as "dead"
+    is_discontinued: True if the product has been marked as discontinued by the LCBO
+    is_kosher: True if the product is designated as Kosher.
+    is_seasonal: True if the product is designated as seasonal
+    is_vqa: True if the product is designated as VQA
+    limited_time_offer_ends_on: When the sale price is no longer valid
+    limited_time_offer_savings_in_cents: Savings in cents if on sale
+    name: Product name
+    origin: Country of origin / manufacture
+    package: Full package description
+    package_unit_type: Package unit type (bottle, can, etc.)
+    package_unit_volume_in_milliliters: The volume of one unit in the package
+    price_in_cents: Current retail price in cents
+    price_per_liter_in_cents: The beverage price per liter
+    price_per_liter_of_alcohol_in_cents: The alcohol price per liter
+    primary_category: Primary product category
+    producer_name: Name of the company that produces the product
+    product_no: The LCBO product ID / number [Deprecated]
+    regular_price_in_cents: Regular retail price in cents
+    released_on: Official release date (usually unspecified)
+    secondary_category: Secondary LCBO product category (Not available for all products)
+    serving_suggestion: LCBO serving suggestion (Not available for all products)
+    style: The LCBO's determined style designation (Not available for most products)
+    tertiary_category: Tertiary LCBO product category (Not available for all products)
+    image_url: A URL to an image of the product (Not available for all products)
+    image_thumb_url: A URL to a smaller image of the product (Not available for all products)
+    stock_type: Either "LCBO" or "VINTAGES"
+    sugar_content: The product's sweetness descriptor, is usually a designation such as extra-dry (XD), medium sweet (MS), etc. (Not available for all products)
+    sugar_in_grams_per_liter: The amount of sugar that is contained in the product in grams per liter. (Not available for all products)
+    tags: A string of tags that reflect the product
+    tasting_note: Professional tasting note (Not available for all products)
+    total_package_units: Number of units in a package
+    updated_at: Time that the product information was updated
+    value_added_promotion_description: Contents of the value added promotion offer if available
+    varietal: Grape varietal (or blend) designated by the LCBO (Not available for all products)
+    volume_in_milliliters: Total volume of all units in package
 
   endpoints:
   - route: '/products'
     name: 'Products'
     anchor: 'many'
     many: true
-    body: |
-      Returns many products.
+    summary: |
+      Returns a list of products that can be sorted and filtered by the
+      described parameters.
 
-  - route: '/products/:id'
+    params:
+    - key: 'where'
+      type: 'enum'
+      many: true
+      values: &product_filter_attrs
+      - is_dead
+      - is_discontinued
+      - has_value_added_promotion
+      - has_limited_time_offer
+      - has_bonus_reward_miles
+      - is_seasonal
+      - is_vqa
+      - is_kosher
+      example: lcboapi.com/products?where=has_parking
+      summary: Return only products where the specified attributes are true.
+
+    - key: 'where_not'
+      type: 'enum'
+      many: true
+      values: *product_filter_attrs
+      example: 'lcboapi.com/products?where_not=is_dead'
+      summary: Return only products where the specified attributes are false.
+
+    - key: 'order'
+      type: 'enum'
+      many: true
+      values:
+      - id
+      - price_in_cents
+      - regular_price_in_cents
+      - limited_time_offer_savings_in_cents
+      - limited_time_offer_ends_on
+      - bonus_reward_miles
+      - bonus_reward_miles_ends_on
+      - package_unit_volume_in_milliliters
+      - total_package_units
+      - total_package_volume_in_milliliters
+      - volume_in_milliliters
+      - alcohol_content
+      - price_per_liter_of_alcohol_in_cents
+      - price_per_liter_in_cents
+      - inventory_count
+      - inventory_volume_in_milliliters
+      - inventory_price_in_cents
+      - released_on
+
+      example: 'lcboapi.com/products?order=id.desc'
+      summary: |
+        Sort the returned products by one or more of the specified attributes,
+        the default order is descending, ascending can be specified by adding
+        `.asc` to the end of an attribute.
+
+    - key: 'q'
+      value: URI-encoded search query
+      example: 'lcboapi.com/products?q=red+wine'
+      summary: |
+        Returns all products that match the provided search query.
+
+    - key: 'store_id'
+      value: LCBO Store ID
+      example: lcboapi.com/products?store_id=511
+      summary: |
+        Returns only products that have or have had inventory at the specified
+        store.
+
+  - route: '/products/{product_id}'
     name: 'Product'
     anchor: 'one'
     one: true
-    body: |
-      Returns one product by `id`.
-
-  - route: '/stores/:id/products'
-    anchor: 'products-at-store'
-    name: 'Products at Store'
-    many: true
-    body: |
-      Returns many products that are available at the given store by `id`.
-
-  body: |
-    Products for one and all.
+    summary: |
+      Returns the specified product for `product_id`.
 
 - title: 'LCBO API V1 Inventories'
   name: 'Inventories'
@@ -454,7 +634,7 @@ resources:
     body: |
       Returns many inventories.
 
-  - route: '/stores/:store_id/products/:product_id/inventory'
+  - route: '/inventories/{store_id}-{product_id}'
     anchor: 'one'
     name: 'Inventory'
     many: true

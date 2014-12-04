@@ -2,12 +2,12 @@
 
 <%= markdown resource.body %>
 
-<h2>Object structure</h2>
+<h2><%= resource.object %> Attributes</h2>
 
 <table>
   <thead>
     <tr>
-      <th>Property</th>
+      <th>Attribute</th>
       <th>Description</th>
     </tr>
   </thead>
@@ -21,21 +21,67 @@
   </tbody>
 </table>
 
-<% resource.endpoints.each do |endpoint| %>
-  <hr>
+<h3><%= resource.object %> HTTP Endpoints</h3>
 
+<% resource.endpoints.each do |endpoint| %>
   <div class="endpoint-card">
-    <h3>
-      <b class="<%= (endpoint.type || 'get').downcase %>">
-        <%= (endpoint.type || 'GET').upcase %>
-      </b>
-      <%= format_route(endpoint.route) %>
+    <h3 id="<%= endpoint.anchor %>">
+      <b class="<%= (endpoint.type || 'get').downcase %>"><%=
+        (endpoint.type || 'GET').upcase
+      %></b> <%= format_route(endpoint.route) %>
     </h3>
 
     <div class="summary">
-      <%= markdown endpoint['body'] %>
+      <%= markdown endpoint.summary %>
     </div>
 
-    <%= endpoint.name %> - <%= endpoint.summary %>
+    <% if endpoint.params %>
+      <h4>URL Query Parameters</h4>
+      <table class="endpoint-params">
+        <thead>
+          <tr>
+            <th class="param-key">Param</th>
+            <th class="param-value">Value</th>
+            <th class="param-description">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% endpoint.params.each do |param| %>
+            <tr>
+              <td class="param-key"><code><%= param['key'] %></code></td>
+              <td class="param-value">
+                <% case param['type'] %>
+                <% when 'enum', 'order' %>
+                  <%= param['values'].map { |v| "<code>#{v}</code>" }.join('<br>') %>
+                <% else %>
+                  <i><%= param['value'] %></i>
+                <% end %>
+              </td>
+              <td class="param-description">
+                <%= markdown param['summary'] if param['summary'] %>
+                <% if param['example'] %>
+                  <dl>
+                    <dt>Example</dt>
+                    <dd>
+                      <code class="example-url"><%= param['example'] %></code>
+                    </dd>
+                  </dl>
+                <% end %>
+
+                <% if param['many'] %>
+                  <dl>
+                    <dt>Allows multiple values</dt>
+                    <dd>
+                      Separate them with a comma like this:
+                      <code><%= param['key'] %>=one,two,three</code>
+                    </dd>
+                  </dl>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
   </div>
 <% end %>

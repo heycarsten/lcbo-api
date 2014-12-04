@@ -24,9 +24,29 @@ var ENDPOINTS = [
     path: 'stores/511'
   },
   {
-    key: 'store-with-product',
+    key: 'inventory',
+    label: 'Inventory',
+    path: 'stores/511/products/288506/inventory'
+  },
+  {
+    key: 'product-inventory',
+    label: 'Product Inventories',
+    path: 'inventories?product_id=288506'
+  },
+  {
+    key: 'stores-with-product',
     label: 'Stores with Product',
-    path: 'products/288506/stores'
+    path: 'stores?product_id=288506'
+  },
+  {
+    key: 'stores-near-point',
+    label: 'Stores Near Point',
+    path: 'stores?lat=43.65838&lon=-79.44335'
+  },
+  {
+    key: 'stores-near-with-product',
+    label: 'Stores Near Point with Product',
+    path: 'stores?lat=43.65838&lon=-79.44335&product_id=288506'
   }
 ];
 

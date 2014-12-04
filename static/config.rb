@@ -30,8 +30,8 @@ end
 
 helpers do
   def format_route(route)
-    spec = route.gsub(/:[a-z\_]+/) { |part| "<span>#{part}</span>" }
-    %|<code class="route-spec">#{spec}</code>|
+    spec = route.gsub(/\{[a-z\_]+\}/) { |part| "<span>#{part}</span>" }
+    %|<code class="route-spec"><i>lcboapi.com</i>#{spec}</code>|
   end
 
   def markdown(source)

@@ -27,16 +27,10 @@ section.docs-content
     &.affix
       position: fixed
       overflow-y: auto
+      z-index: 100
 
       nav.tabs
         display: none
-
-    &.affix-bottom
-      position: fixed
-      overflow: auto
-      top: 0
-      left: 0
-      bottom: 49px
 
     nav.tabs
       width: 100%
@@ -202,7 +196,7 @@ section.docs-content
         color: material-color('blue-grey', '100')
 
       thead th
-        background: material-color('blue-grey', '100')
+        border-bottom: 1px solid material-color('blue-grey', '100')
 
       table
         font-size: 0.8em
@@ -215,6 +209,9 @@ section.docs-content
         td
           border-bottom: 1px solid material-color('blue-grey', '50')
 
+        tr:last-child td
+          border-bottom: none
+
       td
         vertical-align: top
 
@@ -224,7 +221,7 @@ section.docs-content
         code
           background: transparent
           padding: 0
-          font-weight: 600
+          font-weight: 400
 
       .warning, .info, .orly
         position: relative
@@ -277,3 +274,55 @@ section.docs-content
           font-size: 40px
           height: 40px
           content: '\f118'
+
+  article .document .endpoint-card
+    margin: 22px 0
+
+    h3
+      background: material-color('blue-grey', '800')
+      border-radius: 3px
+      margin: 0
+      padding: 0 14px
+      line-height: 52px
+
+      b
+        display: inline-block
+        font-size: 0.75em
+        border-radius: 3px
+        padding: 0 8px
+        line-height: 1.535em
+        margin-right: 6px
+        font-weight: 400
+        color: rgba(white, 0.95)
+
+        &.get
+          background: material-color('blue', 'a400')
+
+      code
+        font-size: 0.75em
+        background: none
+        padding: 0
+        font-weight: 400
+        color: material-color('blue-grey', '50')
+
+        i
+          font-style: normal
+          color: material-color('blue-grey', '200')
+
+        span
+          color: material-color('purple', 'a200')
+
+    .endpoint-params
+      td.param-value
+        code, i
+          color: material-color('grey', '600')
+
+      td.param-description
+        dl
+          dt, dd
+            margin: 0
+            padding: 0
+
+          dt
+            margin-top: 18px
+            font-weight: 600

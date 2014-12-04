@@ -135,55 +135,6 @@
   - :path: /products/18
     :desc: Show product 18
   :pairs:
-    alcohol_content: Alcohol content (Divide by 100 for decimal value)
-    bonus_reward_miles: Number of bonus air miles
-    bonus_reward_miles_ends_on: When bonus air miles are no longer valid
-    clearance_sale_savings_in_cents: Savings in cents if on clearance [Deprecated]
-    description: Product description (not available for all products)
-    has_bonus_reward_miles: True if the product has bonus air miles
-    has_clearance_sale: True if the product is currently on clearance [Deprecated]
-    has_limited_time_offer: True if the product is on sale
-    has_value_added_promotion: True if the product has a value added promotion
-    id: The LCBO product ID / number
-    inventory_count: Total units across all stores
-    inventory_price_in_cents: Total retail price of all units across all stores
-    inventory_volume_in_milliliters: Total volume of all units across all stores
-    is_dead: When products are removed from the catalog they are marked as "dead"
-    is_discontinued: True if the product has been marked as discontinued
-    is_kosher: True if the product is designated as Kosher.
-    is_seasonal: True if the product is designated as seasonal
-    is_vqa: True if the product is designated as VQA
-    limited_time_offer_ends_on: When the sale price is no longer valid
-    limited_time_offer_savings_in_cents: Savings in cents if on sale
-    name: Product name
-    origin: Country of origin / manufacture
-    package: Full package description
-    package_unit_type: Package unit type (bottle, can, etc.)
-    package_unit_volume_in_milliliters: The volume of one unit in the package
-    price_in_cents: Current retail price in cents
-    price_per_liter_in_cents: The beverage price per liter
-    price_per_liter_of_alcohol_in_cents: The alcohol price per liter
-    primary_category: Primary product category
-    producer_name: Name of the company that produces the product
-    product_no: The LCBO product ID / number [Deprecated]
-    regular_price_in_cents: Regular retail price in cents
-    released_on: Official release date (usually unspecified)
-    secondary_category: Secondary LCBO product category (Not available for all products)
-    serving_suggestion: LCBO serving suggestion (Not available for all products)
-    style: The LCBO's determined style designation (Not available for most products)
-    tertiary_category: Tertiary LCBO product category (Not available for all products)
-    image_url: A URL to an image of the product (Not available for all products)
-    image_thumb_url: A URL to a smaller image of the product (Not available for all products)
-    stock_type: Either "LCBO" or "VINTAGES"
-    sugar_content: The product's sweetness descriptor, is usually a designation such as extra-dry (XD), medium sweet (MS), etc. (Not available for all products)
-    sugar_in_grams_per_liter: The amount of sugar that is contained in the product in grams per liter. (Not available for all products)
-    tags: A string of tags that reflect the product
-    tasting_note: Professional tasting note (Not available for all products)
-    total_package_units: Number of units in a package
-    updated_at: Time that the product information was updated
-    value_added_promotion_description: Contents of the value added promotion offer if available
-    varietal: Grape varietal (or blend) designated by the LCBO (Not available for all products)
-    volume_in_milliliters: Total volume of all units in package
   :body:
     Represents an LCBO product.
 
@@ -250,16 +201,6 @@
   :formats:
     <<: *all_formats
   :filterable_fields:
-  - is_dead
-  - has_wheelchair_accessability
-  - has_bilingual_services
-  - has_product_consultant
-  - has_tasting_bar
-  - has_beer_cold_room
-  - has_special_occasion_permits
-  - has_vintages_corner
-  - has_parking
-  - has_transit_access
   :sortable_fields:
   - distance_in_meters
   - inventory_volume_in_milliliters
