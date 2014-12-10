@@ -36,7 +36,7 @@ helpers do
 
   def markdown(source)
     Middleman::Renderers::RedcarpetTemplate.new(
-      smarty_pants: true,
+      smartypants: true,
       fenced_code_blocks: true,
       tables: true
     ) { source }.render

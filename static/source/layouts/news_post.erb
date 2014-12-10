@@ -15,11 +15,11 @@
             &mdash;
           </span>
           <span class="author">
-            <%= current_article.data.author || raise('please set an author') %>
+            <% a = current_article.data.author || raise('please set an author') %>
+            <a href="https://twitter.com/<%= a %>"><%= a %></a>
           </span>
         </div>
       </header>
-
       <%= yield %>
     </article>
   </article>
