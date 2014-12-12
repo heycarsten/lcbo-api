@@ -157,7 +157,7 @@ using LCBO API for anything beyond that, you'll want to get an Access Key.
 You'll also gain some insight with your key, you can see a graph of total daily
 requests per key and for your entire account:
 
-<img src="https://dx5vpyka4lqst.cloudfront.net/assets/lcboapi-manager-graph.png" width="100%">
+<img src="/assets/images/news/lcboapi-manager-graph.png" width="100%">
 
 I plan to build out the management panel and provide some other useful features
 like more detailed usage stats and analytics.
