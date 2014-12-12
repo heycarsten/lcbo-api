@@ -264,6 +264,17 @@ body.news header nav .news
   padding-top: 16px
   padding-bottom: 322px
 
+  footer
+    border-top: 1px solid material-color('grey', '300')
+    font-size: 0.8em
+    color: material-color('grey', '500')
+    line-height: 1.5
+    padding: 28px 0
+
+  .summary
+    font-size: 0.8em
+    color: material-color('grey', '500')
+
   hr
     display: block
     height: 1px
@@ -278,9 +289,15 @@ body.news header nav .news
     &:active
       color: material-color('purple', 'a400')
 
-  h1, h2, h3, h4, h5, h6, p, ol, ul, pre
+  h1, h2, h3, h4, h5, h6, p, ol, ul, pre, blockquote
     text-align: left
     margin: 1.25em 0
+
+  blockquote
+    color: material-color('grey', '500')
+    font-style: italic
+    border-left: 4px solid material-color('grey', '200')
+    padding: 0 1.25em
 
   ul, ol
     ul, ol
