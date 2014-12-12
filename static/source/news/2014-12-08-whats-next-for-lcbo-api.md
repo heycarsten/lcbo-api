@@ -194,32 +194,29 @@ the visible API hasn't really changed since that time. _UNTIL NOW_
 
 ### HTTPS & CORS
 
-I've actually backported these features into V1 and they're active and
-available. Check out the [documentation](/docs/v1#getting-started) for more
-details.
+These features have been backported into LCBO API V1 and are already live. Check
+out the V1 [documentation](/docs/v1#getting-started) for more details.
 
 ### UPC Support
 
-YES, FINALLY. I know. You'll be able to look up products via UPC (barcode).
+_Finally._ You'll be able to look up products by barcode.
 
 ### JSON API Compliance
 
-This probably doesn't mean much to most people, but it means a lot to me.
-The JSON structure of the V1 API was born out of necessity not standards. Smart
-people have put a lot of effort into this realm over the last few years and it
-makes consuming the API a lot easier when its structure complies with an open
-standard.
+The JSON structure of the V1 API was born out of necessity. Complying with an
+open standard like [JSON API](http://jsonapi.org) makes consuming the API and
+onboarding for new users even easier.
 
 ### Category and Producer APIs
 
-For completness sake and to make it easier to implement discovery / browsing
-apps, I'll be normalizing category and producer data and providing API
-endpoints.
+For the sake of completeness and to make it easier to implement discovery /
+browsing interfaces, I'll be normalizing category and producer data and
+providing API endpoints for them.
 
-### Store(s) with Product(s)
+### Store(s) with Product(s) Feature
 
-This is a doozie, I've been asked for this feature quite a few times. I've even
-been told how easy it is to implement, _it's not_. That said, it's required
+This is a doozie, I've been asked for this feature a handful of times. I've even
+been told how easy it is to implement --- _it's not_. That said, it's required
 functionality if you want to build something like a great shopping-list feature.
 It's a worthwhile ocean to boil, and I'm excited to bring it to LCBO API.
 
@@ -227,12 +224,12 @@ It's a worthwhile ocean to boil, and I'm excited to bring it to LCBO API.
 
 Aggregate metrics such as turnover rate and confidence in inventories. This will
 allow developers to alert users if it looks like a product might not actually
-be available. Eg: consumption increases on Thursday, and spikes on Saturday. If
-a product is selling consistently throughout the week, and there are only a few
-left on Saturday morning, it's very likely by Saturday evening they won't be
-available anymore. Conversely, some products are stocked in very low levels and
-have very low turnover, this also has to be considered as to avoid
-false-positives.
+be available. For example, on average, consumption begins to increase on
+Thursday, and peaks on Saturday. If a product is selling consistently throughout
+the week, and there are only a few left on Saturday morning, it's very likely
+that come Saturday evening it won't be available anymore. Conversely, some
+products are stocked at very low levels and have very low turnover, this also
+has to be considered to avoid false-positives.
 
 ### Intelligent Crawler
 
@@ -245,16 +242,17 @@ officially rolled into LCBO API proper as soon as time allows.
 ### Webhooks
 
 Now that LCBO API has the concept of accounts and Access Keys adding support
-for webhooks is totally doable. You'll be able to register against numerous
-events like when products are added or removed, when prices change, and product
-availability notices, not to mention when new datasets become available.
+for webhooks is a much less daunting task. You'll be able to register against
+numerous events such as when products are added or removed, when prices change,
+and when product availability changes. This will make adding notification
+functionality to apps a lot easier and more reliable.
 
 ### Products Meta API
 
-I want to work with sites like [Untappd](https://untappd.com) to incorporate
-ratings and other useful data so that it can be used in queries. This data would
-only become visible if you ask for it in requests, imagine something like
-`/products?meta=untappd` returning:
+I'd love to integrate with top-notch products like [Untappd](https://untappd.com)
+to incorporate ratings and other useful data so that it can be used in queries.
+This data would only become visible if you ask for it in requests, imagine
+something like `/products?meta=untappd` returning:
 
 ```json
 {
