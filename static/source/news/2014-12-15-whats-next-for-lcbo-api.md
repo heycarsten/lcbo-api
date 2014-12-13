@@ -1,66 +1,65 @@
 ---
 title: 'What&rsquo;s next for LCBO API'
-date: 2014-12-08
+date: 2014-12-15
 author: heycarsten
 ---
 
 > Before I get into the shape of LCBO API to come, I think it's finally time to
-> tell the story of how LCBO API began, and some of the great and not-so great
-> experiences I've had since its release. It's a lengthy read (it's been 6
-> years), so if you'd rather just [skip ahead](#v2) to the new stuff, I won't
-> mind. <i class="fa fa-smile-o"></i>
+> tell the story of how LCBO API began, and the highs and lows of getting to
+> this point. It's a lengthy read, so if you'd rather just [skip ahead](#v2) to
+> the new stuff, I won't mind. <i class="fa fa-smile-o"></i>
 
-This December marks **six** years since I picked up Rod Phillips&rsquo; book
+This December marks _six years_ since I picked up Rod Phillips&rsquo; book
 [The 500 Best-Value Wines in the LCBO](http://www.amazon.ca/The-Best-Value-Wines-LCBO-2009/dp/155285938X):
 
 <div class="center">
-  <img src="/assets/images/news/500-best-value-wines-2009.jpg" width="190">
+  <img src="/assets/images/news/500-best-value-wines-2009.jpg" width="176">
 </div>
 
 I thought, "Wouldn't it be cool if I could use my phone to see a list of the
 wines in this book at the store I'm standing in?" Then I wouldn't have to run
 through each item in the book and look for it, I'd just be presented with a
 list of wines available in the store I'm in. Oh, just imagine the efficiency! A
-decent bottle of red to go with dinner in mere seconds, and I already have my
-phone with me anyways.
+decent bottle of red to go with dinner in mere seconds, and unlike the book, I
+always have my phone with me.
 
-I wanted to build it, but how? --- I'd need to talk to Rod, would he think it's
-a good idea? Would he even care? I'd need to start learning about iPhone
-development --- but before I did anything, I'd need some way to easily access
-the LCBO store, product, and inventory data that the app would rely on for the
-core of it's functionality.
+I really wanted to build it, but how? I'd need to talk to Rod --- would he
+think it's a good idea? Would he even care? Does he have people? He must have
+people? I was getting ahead of myself, before I did anything I'd need a
+way to access the LCBO product catalog, inventory data, and store directory. It
+needed to be fast and minimal so that mobile phones (which were still pretty
+slow at the time) could quickly load and parse the responses, but most
+importantly; it needed to exist, and it didn't.
 
 ## An API is Born
 
 The following weeks consisted of me hacking on a crawler after work to
 transform the pages on LCBO.com into usable, normalized data. I knew that if I
-was going to do this, I had to do it *really well*. At the time, all of the
+was going to do this, it had to be done really well. At the time, all of the
 pages on LCBO.com were table-based and very hard to parse reliably. The
 character encodings were all over the place, everything was UPPERCASE, and all
-requests were via form posts. This would not be trivial.
+requests were via form posts --- it was a blast!
 
 I also wanted to make it clear that I wasn't looking to be a gatekeeper, I'd
 ensure that the service was publicly available so that others could use it and
-build cool things without having to solve this problem again-and-again, and I
-wouldn't ask for anything in return: **LCBO API was born.**
+build cool things without having to solve this problem again-and-again.
 
-The first version of LCBO API was released in April, 2009. It was very raw, but
-it worked as advertised. Over the following months I refined the API, and wrote
-documentation for it. In early 2010, V1 was released. By this point I had
-invested nearly 600 hours of my time into the project, interest was growing and
-just building the API, maintaining the crawler, adding useful features and
-responding to emails from interested parties was keeping me completely busy in
-my free-time.
+The first version of LCBO API was released in April, 2009. Over the following
+months I refined the API, and wrote documentation for it. In early 2010, V1 was
+released. By this point I had invested nearly 600 hours of my time into the
+project, interest was growing and just building the API, maintaining the
+crawler, adding useful features and responding to emails from interested
+parties was keeping me completely busy in my free time.
 
 ## An API is Used
 
 I honestly never thought LCBO API would become as popular as it has. Last month
 (November) it served **1.4 million requests** and over **100** dataset
-downloads. I thought LCBO API might help me get a job, I thought
-developers might use it to build LCBO apps for various mobile devices, I thought
-that reviewers might use it to integrate availability data into their sites and
-blogs, but I never would have foresaw everything that's happened over the past
-six years.
+downloads. I thought LCBO API might help me get a job. I thought
+developers might use it to build LCBO apps for various mobile devices.
+I thought reviewers might use it to integrate availability data into
+their sites and blogs. But I never could have foresaw everything
+that's happened over the past six years.
 
 Developers [have](https://fnd.io/#/us/iphone-app/851166645-lcbo-price-tracker-by-mary-chen)
 [built](https://fnd.io/#/us/iphone-app/927272308-booze-deals-by-john-wreford)
@@ -76,43 +75,42 @@ Developers [have](https://fnd.io/#/us/iphone-app/851166645-lcbo-price-tracker-by
 [web](http://thirsty.kx.nu)
 [apps](http://thebeerguy.ca). Students and hobbyists have fiddled and hacked to
 learn about REST and JSON and how to consume an API. Beer and wine lovers with
-an interest in programming have hacked together scripts to alert them when
-their favorite drink becomes available at a nearby store. Independent brewers
-and winemankers have analyzed and identified how their products are doing and
+an interest in coding have hacked together scripts to alert them when their
+favorite drinks become available at nearby stores. Independent brewers and
+winemakers have analyzed and identified how their products are doing and
 where the most active markets are to get their products closer to the people
-that might want them.
+that might buy them.
 
-One of the most jaw-dropping use-cases I ever received was from a statistician
+One of the most exciting use-cases I ever received was from a statistician
 at Harvard who was using the historical datasets as fixtures for testing
 different algorithms in their research. It was really humbling to learn,
 and it drove home the fact that LCBO API isn't just a provider for LCBO data, it
 also represents time and place for an entire retail sector in a large market.
-This doesn't really exist anywhere else in the world --- I'm very humbled and
-excited to be the one hosting it.
+This doesn't really exist anywhere else in the world --- it's humbling, it's
+exciting!
 
 I've had the pleasure of being introduced to all these incredible people doing
-such great things, without LCBO API, I doubt any of these experiences would have
-ever happened. As much as I'd like to end it there, in order to tell the whole
-story I also have to discuss some of the not-so-enjoyable experiences I've had
-running LCBO API.
+such interesting things, without LCBO API, I doubt any of these experiences
+would have ever happened. As much as I'd like to end it there, in order to tell
+the whole story I also have to discuss some of the not-so-enjoyable experiences
+I've had running LCBO API.
 
 ## An API is Abused
 
 Every now and then an eager opportunist will reach out to me and pitch me on how
-I could work with them to resell portions of the crawled inventory data to small
-businesses in a report format. Presenting it to them like some sort of golden
+I could work with them to resell portions of LCBO API inventory data to small
+producers in a report format. Presenting it to them like some sort of golden
 carrot and charging dearly for a bite of insight. Schemes like this are what
 stifle innovation and cause even more hardship to businesses and people
 that are already struggling enough to produce and survive in our market. Plus,
 the LCBO already officially provides this service through their
 [Sale of Data](http://www.lcbo.com/webapp/wcs/stores/servlet/en/sod/) program.
 
-Perhaps the most upsetting part is that some of these people have been active
-members of the indie beer and wine community in Ontario, seen as peers by the
-very people they are preying on. It's disturbing that anyone could be so
-self-serving, and creates a toxic environment. The thought that LCBO API might
-be used to fuel schemes like this just breaks my heart.
-<i class="fa fa-frown-o"></i>
+Perhaps the most upsetting part is that at least one of these opportunists have
+been active members of the indie beer and wine community in Ontario, seen as
+peers by the very people they are preying on. It's disturbing that anyone could
+be so self-serving. The thought that LCBO API might be used to fuel schemes like
+this just breaks my heart. <i class="fa fa-frown-o"></i>
 
 In the past, particularly the spring of 2012, changes were being made to
 LCBO.com on a fairly routine basis. There were a couple occasions where I was
@@ -127,13 +125,13 @@ days far outnumber the bad ones, and it's those good days, and emails, and
 stories, and projects that stoke my passion for working on LCBO API.
 <i class="fa fa-smile-o"></i>
 
-## What's Next?
+## An API Grows Up
 
 I give LCBO API the utmost attention and care, it's a hardened platform built on
 thousands of hours of work, I take every aspect of it very seriously. Going
-forward, I want to make sure that this level of care and professionalism is
-properly communicated. I also want to make sure that LCBO API is delivering the
-most value possible to users.
+forward, I want to make sure that this level of care and quality is properly
+communicated. I also want to make sure that LCBO API is delivering the most
+value possible not only to developers, but to the entire ecosystem in general.
 
 The look and feel of the old site didn't reflect any of this very well and I've
 wanted to update it for years. So I finally did, yay! I'm hoping the new
@@ -141,7 +139,7 @@ look and feel will reinforce what LCBO API truly is and will continue to grow
 with the project. Clearly, though, it's what's under the hood that counts the
 most, so with that said, here are the coming changes to LCBO API:
 
-### No More _Unlimited_ Anonymous Access
+### _Unlimited_ Anonymous Access is Deprecated
 
 For the sake of my sanity, and to provide a better service and not hinder the
 potential of LCBO API, I need to have an understanding of who is using it, for
@@ -150,17 +148,17 @@ LCBO API.
 
 Anonymous access remains but, as of March 1<sup>st</sup>, 2015, will be
 rate-limited. This means that you won't need an Access Key for playing around
-or learning, and that is really important to me. This also means that existing
-mobile and JavaScript apps will continue to work as they do today. If you're
-using LCBO API for anything beyond that, you'll want to get an Access Key.
+or learning, and it means that existing mobile and JavaScript apps will continue
+to work. If you're using LCBO API for anything beyond fiddling, you'll want to
+acquire an Access Key.
 
 You'll also gain some insight with your key, you can see a graph of total daily
 requests per key and for your entire account:
 
 <img src="/assets/images/news/lcboapi-manager-graph.png" width="100%">
 
-I plan to build out the management panel and provide some other useful features
-like more detailed usage stats and analytics.
+I plan to build out the management panel further and provide some other useful
+features in the future.
 
 <p class="warning">
   As of March 1<sup>st</sup>, 2015 anonymous API access will be
@@ -171,10 +169,10 @@ like more detailed usage stats and analytics.
 
 I don't want to sound like Jimmy Wales here, but outside of simply charging for
 API access on a subscription model, I'm hard pressed to come up with a way to
-financially sustain the project. The hard costs aren't crazy, right now LCBO
-API consists of a load balancer, app server cluster, worker server, and
-database server, it averages about $100/month in hosting costs plus another
-$60/month for AWS, monitoring, and backups.
+financially support the project. The hard costs aren't crazy, right now LCBO
+API consists of a load balancer, app server, worker server, and database server,
+it averages about $100/month in hosting costs plus another $60/month for AWS,
+monitoring, and backups.
 
 Maintaining the crawlers and ensuring updates happen daily and that the data is
 consistent and of high quality. Ensuring performance remains exceptional and
@@ -187,7 +185,9 @@ I really don't enjoy talking about these things, but now they're out there and
 very clear. There are no secrets, **LCBO API costs about $160/month to run, and
 it generates $0/month in income**, every dollar of support helps.
 
-<h2 id="v2">LCBO API V2</h2>
+<h2 id="v2">
+  LCBO API V2
+</h2>
 
 Now for the exciting stuff, as I said before LCBO API was introduced in 2009 and
 the visible API hasn't really changed since that time. _UNTIL NOW_
@@ -278,22 +278,21 @@ the first place has been far surpassed by entire product companies like
 [WineAlign](http://winealign.ca) and [Natalie Maclean](http://www.nataliemaclean.com/).
 I actually find that really cool.
 
-It shows that ideas can be, and often are, futile. You have to act on them ---
-produce with them --- and when you do, what they become isn't something that you
-pondered, it's real, it's something you created.
+It shows that ideas by themselves are so often futile. You have to act on
+them --- create with them --- and when you do, what they become is never
+exactly what you had in mind. Reality always wiggles its way into the equation
+somehow.
 
 I started with the idea to build a $2.99 iPhone app with my hypothetical pal
 Rod, and ended up with a cloud service that leaks money like a sieve and sucks
-time like a black hole. A service that is ultimately taken for granted, but then
-isn't that the ultimate compliment? To have produced something that is
-considered by others a reliable appliance?
+away time like a black hole. A service that is often taken for granted, like an
+appliance.
 
-An appliance that is used to help students learn, to help enthusiasts locate
-specialty drinks, to provide some market insight for small producers, to enable
-naive mobile applications on any device. That's something to be proud of, and I
-am.
-
-Now you know the story, thanks for listening.
+An appliance that's used to help students learn, to help enthusiasts locate
+specialty drinks, to help small producers gain some insight for their product
+line, to enable native mobile applications on any platform, to provide a
+large-scale realistic dataset for research projects. That's something to be
+proud of, and I am. Thanks for listening.
 
 --- Carsten
 
