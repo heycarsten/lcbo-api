@@ -20,8 +20,8 @@ I thought, "Wouldn't it be cool if I could use my phone to see a list of the
 wines in this book at the store I'm standing in?" Then I wouldn't have to run
 through each item in the book and look for it, I'd just be presented with a
 list of wines available in the store I'm in. Oh, just imagine the efficiency! A
-decent bottle of red to go with dinner in mere seconds, and unlike the book, I
-always have my phone with me.
+decent bottle of red to go with dinner in mere seconds, and always have my phone
+with me.
 
 I really wanted to build it, but how? I'd need to talk to Rod --- would he
 think it's a good idea? Would he even care? Does he have people? He must have
@@ -47,19 +47,19 @@ build cool things without having to solve this problem again-and-again.
 The first version of LCBO API was released in April, 2009. Over the following
 months I refined the API, and wrote documentation for it. In early 2010, V1 was
 released. By this point I had invested nearly 600 hours of my time into the
-project, interest was growing and just building the API, maintaining the
-crawler, adding useful features and responding to emails from interested
-parties was keeping me completely busy in my free time.
+project, interest was growing and just maintaining the crawler, adding useful
+features and responding to emails from interested parties was keeping me
+completely busy in my spare time.
 
 ## An API is Used
 
 I honestly never thought LCBO API would become as popular as it has. Last month
 (November) it served **1.4 million requests** and over **100** dataset
-downloads. I thought LCBO API might help me get a job. I thought
-developers might use it to build LCBO apps for various mobile devices.
-I thought reviewers might use it to integrate availability data into
-their sites and blogs. But I never could have foresaw everything
-that's happened over the past six years.
+downloads. I thought developers might use it to build LCBO apps for various
+mobile devices. I thought reviewers might use it to integrate availability data
+into their sites and blogs. I even thought LCBO API might help me get a job one
+day. But I never could have foresaw all the things that have happened over the
+past six years.
 
 Developers [have](https://fnd.io/#/us/iphone-app/851166645-lcbo-price-tracker-by-mary-chen)
 [built](https://fnd.io/#/us/iphone-app/927272308-booze-deals-by-john-wreford)
@@ -97,28 +97,34 @@ I've had running LCBO API.
 
 ## An API is Abused
 
-Every now and then an eager opportunist will reach out to me and pitch me on how
-I could work with them to resell portions of LCBO API inventory data to small
-producers in a report format. Presenting it to them like some sort of golden
-carrot and charging dearly for a bite of insight. Schemes like this are what
-stifle innovation and cause even more hardship to businesses and people
-that are already struggling enough to produce and survive in our market. Plus,
-the LCBO already officially provides this service through their
+Once or twice a year an eager opportunist will reach out to me and pitch me on
+how I could work with them to resell portions of LCBO API inventory data to
+small producers as a report, charging them a premium price for this invaluable
+insight --- insight that's available on LCBO.com to anyone with a spreadsheet.
+
+Schemes like this are not only depressingly uncreative, they contribute toward a
+toxic ecosystem and stifle innovation. It's not a cakewalk producing wine and
+beer in Ontario, it's already a very challenging place for small producers to
+succeed. In addition to that, the LCBO already officially provides _real_
+insight through their
 [Sale of Data](http://www.lcbo.com/webapp/wcs/stores/servlet/en/sod/) program.
 
-Perhaps the most upsetting part is that at least one of these opportunists have
-been active members of the indie beer and wine community in Ontario, seen as
-peers by the very people they are preying on. It's disturbing that anyone could
-be so self-serving. The thought that LCBO API might be used to fuel schemes like
-this just breaks my heart. <i class="fa fa-frown-o"></i>
+However, the most upsetting part is that at least one of these opportunists has
+been an active member of the indie beer and wine community in Ontario, a peer to
+the very people they are preying on. It's extremely upsetting to me that anyone
+would be so self-serving. <i class="fa fa-frown-o"></i>
 
-In the past, particularly the spring of 2012, changes were being made to
-LCBO.com on a fairly routine basis. There were a couple occasions where I was
-not able to update the crawler for days on end, and the data became stale. It
-was very frustrating for me, due external factors I was unable to allocate time
-to fix the crawler even though I was desperate to. During this period I was sent
-scolding emails from two different CTOs, berating me for the lapse and how it
-was making them "look like fools" to their paying customers. --- _**Paying customers**!_
+In the spring of 2012, changes were being made to LCBO.com on a fairly routine
+basis. There were a couple occasions where I was not able to update the crawler
+for days on end, and the data became stale. It was a very frustrating time for
+me, due external factors I was unable to spend time to update the crawler even
+though I was desperate to do so.
+
+During this period I was sent scolding emails from two different CTOs, berating
+me for the lapse in data updates and how it was making them "look like idiots"
+to their paying customers. I'm a professional software developer, but I can only
+do so much in my spare time for free, at some point, if you're expecting a
+certain level of service, just talk to me.
 
 This is some of the dark side of running LCBO API, but you know what? The good
 days far outnumber the bad ones, and it's those good days, and emails, and
@@ -129,15 +135,15 @@ stories, and projects that stoke my passion for working on LCBO API.
 
 I give LCBO API the utmost attention and care, it's a hardened platform built on
 thousands of hours of work, I take every aspect of it very seriously. Going
-forward, I want to make sure that this level of care and quality is properly
-communicated. I also want to make sure that LCBO API is delivering the most
-value possible not only to developers, but to the entire ecosystem in general.
+forward, I want to make sure that this level of commitment and quality is
+properly communicated. I also want to make sure that LCBO API is delivering the
+most value possible not only through developers, but directly to producers, and
+even bars and restaurants.
 
 The look and feel of the old site didn't reflect any of this very well and I've
-wanted to update it for years. So I finally did, yay! I'm hoping the new
-look and feel will reinforce what LCBO API truly is and will continue to grow
-with the project. Clearly, though, it's what's under the hood that counts the
-most, so with that said, here are the coming changes to LCBO API:
+wanted to update it for years. Clearly, though, it's what's under the hood that
+matters the most, so with that said, here are some upcoming changes and
+additions to LCBO API:
 
 ### _Unlimited_ Anonymous Access is Deprecated
 
