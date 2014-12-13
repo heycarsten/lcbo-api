@@ -183,7 +183,7 @@ requests per key and for your entire account:
 I plan to build out the management panel further and provide some other useful
 features in the future.
 
-### If you're making money with LCBO API, please supporting it
+### If you're making money with LCBO API, please support it
 
 > If LCBO API is making it easier for you to do your job, run your business,
 > or build an app, please consider supporting it financially.
