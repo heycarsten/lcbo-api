@@ -5,8 +5,7 @@
     <meta name="description" content="A fast, cloud-based API for LCBO store, product, and inventory data.">
     <title>LCBO API V1 Documentation</title>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href='https://fonts.googleapis.com/css?family=Roboto:500,900,400italic,400,300,300italic,700,700italic' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:500,900,400italic,400,300,300italic,700,700italic|Roboto+Condensed:700|Source+Code+Pro:400' rel='stylesheet' type='text/css'>
     <link href="/assets/css/lcboapi.css" rel="stylesheet" type="text/css" />
     <script src="/assets/js/lcboapi.js" type="text/javascript"></script>
   </head>
@@ -28,6 +27,11 @@
           <li>
             <a class="docs" href="/docs/v1">
               Documentation
+            </a>
+          </li>
+          <li>
+            <a class="news" href="/news">
+              News
             </a>
           </li>
           <li>
@@ -203,7 +207,7 @@ released <strong>April 2009</strong>.</p>
           <h2>Responses &amp; Formats</h2>
 
 <p>The default response format for the API V1 is JSON <code>application/json</code>.
-This means that you don&#39;t need to specify JSON in an <code>Accept</code> header or as
+This means that you don&rsquo;t need to specify JSON in an <code>Accept</code> header or as
 an extension (<code>.json</code>) if that is the format you intend to request.</p>
 
 <h3>JSON</h3>
@@ -344,7 +348,7 @@ outlined above. Add your access key to the URL like this:</p>
 
 <h4>Basic Auth</h4>
 
-<p>If the tool you&#39;re using will only support setting the <code>Authorization</code>
+<p>If the tool you&rsquo;re using will only support setting the <code>Authorization</code>
 header by username/password, you can provide the following values to pass
 along your Access Key to LCBO API.</p>
 <pre class="highlight plaintext"><code>Username: x-access-key
@@ -382,7 +386,7 @@ of the below categories:</p>
 </tr>
 <tr>
 <td><code>geocoder_error</code></td>
-<td>The geocoder can&#39;t geocode the query it was provided.</td>
+<td>The geocoder can&rsquo;t geocode the query it was provided.</td>
 </tr>
 <tr>
 <td><code>not_found_error</code></td>
@@ -398,7 +402,7 @@ of the below categories:</p>
 </tr>
 <tr>
 <td><code>unauthorized</code></td>
-<td>The feature you&#39;re trying to use requires an Access Key</td>
+<td>The feature you&rsquo;re trying to use requires an Access Key</td>
 </tr>
 </tbody></table>
 
@@ -432,7 +436,7 @@ to lcboapi.com. So a request to your server like this:</p>
 
 <p>And your site would then return the result of that LCBO API response.</p>
 
-<p>This approach is not bad, the browser doesn&#39;t care because all of the
+<p>This approach is not bad, the browser doesn&rsquo;t care because all of the
 requests are to the same domain, and given the performance of modern web
 servers like Nginx and Apache the overhead is quite low. The downside is
 that it requires infrastructure and configuration to work properly and
@@ -451,7 +455,7 @@ to LCBO API URLs. When using JSONP LCBO API also sets the response
 <code>Content-Type</code> to <code>application/javascript</code> since the response is now
 executable JavaScript, and not just data (JSON) anymore.</p>
 
-<p>Here&#39;s how the whole process works, say you have a globally defined
+<p>Here&rsquo;s how the whole process works, say you have a globally defined
 function named <code>loadStore</code> on your page, like this:</p>
 <pre class="highlight html"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
 <span class="nt">&lt;html&gt;</span>
@@ -500,7 +504,7 @@ like this:</p>
 response data as its sole argument, so our <code>&lt;h1&gt;</code> tag is filled with the
 name of the store.</p>
 
-<p>It&#39;s important to note that most popular JavaScript libraries have built-in
+<p>It&rsquo;s important to note that most popular JavaScript libraries have built-in
 support for JSONP. For example, the following jQuery can be used to perform
 a JSONP request against LCBO API:</p>
 <pre class="highlight javascript"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
@@ -522,15 +526,15 @@ allowing browsers to access resources from different domains. LCBO API uses
 it to give access to web browser JavaScript applications.</p>
 
 <p>If you need to support outdated bowsers,
-<a href="http://caniuse.com/#feat=cors">specifically IE 6 and 7</a>, you&#39;ll either have
+<a href="http://caniuse.com/#feat=cors">specifically IE 6 and 7</a>, you&rsquo;ll either have
 to use a proxy or JSONP. Hilariously, with the advent of async script tags
 <code>&lt;script async&gt;</code> JSONP can be about as effective in modern browsers as
 using XMLHttpRequest with CORS. If you have to support older browsers that
-don&#39;t understand CORS, there is no shame in using JSONP.</p>
+don&rsquo;t understand CORS, there is no shame in using JSONP.</p>
 
-<p>If you don&#39;t have to support IE 6 and 7, <em>welcome to the future!</em> To use CORS
+<p>If you don&rsquo;t have to support IE 6 and 7, <em>welcome to the future!</em> To use CORS
 with LCBO API you need to provide a Web Browser Access Key with your
-requests. You&#39;ll need an LCBO API account to create Access Keys,
+requests. You&rsquo;ll need an LCBO API account to create Access Keys,
 <a href="/sign-up">sign up</a> for one and get started. You can also
 <a href="#authentication">read more</a> about LCBO API authentication.</p>
 

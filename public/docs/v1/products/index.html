@@ -5,8 +5,7 @@
     <meta name="description" content="A fast, cloud-based API for LCBO store, product, and inventory data.">
     <title>LCBO API V1 Products</title>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href='https://fonts.googleapis.com/css?family=Roboto:500,900,400italic,400,300,300italic,700,700italic' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:500,900,400italic,400,300,300italic,700,700italic|Roboto+Condensed:700|Source+Code+Pro:400' rel='stylesheet' type='text/css'>
     <link href="/assets/css/lcboapi.css" rel="stylesheet" type="text/css" />
     <script src="/assets/js/lcboapi.js" type="text/javascript"></script>
   </head>
@@ -28,6 +27,11 @@
           <li>
             <a class="docs" href="/docs/v1">
               Documentation
+            </a>
+          </li>
+          <li>
+            <a class="news" href="/news">
+              News
             </a>
           </li>
           <li>
@@ -176,7 +180,7 @@
     <div class="document">
         <h1>Products</h1>
 
-<p>The product object represents a product in the LCBO catalog. It&#39;s important
+<p>The product object represents a product in the LCBO catalog. It&rsquo;s important
 to note that LCBO API maintains a history of <strong>all</strong> products, not only
 active ones. The <code>is_dead</code> flag indicates a product that is no longer in
 the official LCBO catalog but was a one point in the past.</p>
@@ -259,7 +263,7 @@ the official LCBO catalog but was a one point in the past.</p>
       </tr>
       <tr>
         <td><code>is_dead</code></td>
-        <td><p>When products are removed from the LCBO catalog they are marked as &quot;dead&quot;</p>
+        <td><p>When products are removed from the LCBO catalog they are marked as &ldquo;dead&rdquo;</p>
 </td>
       </tr>
       <tr>
@@ -369,7 +373,7 @@ the official LCBO catalog but was a one point in the past.</p>
       </tr>
       <tr>
         <td><code>style</code></td>
-        <td><p>The LCBO&#39;s determined style designation (Not available for most products)</p>
+        <td><p>The LCBO&rsquo;s determined style designation (Not available for most products)</p>
 </td>
       </tr>
       <tr>
@@ -389,12 +393,12 @@ the official LCBO catalog but was a one point in the past.</p>
       </tr>
       <tr>
         <td><code>stock_type</code></td>
-        <td><p>Either &quot;LCBO&quot; or &quot;VINTAGES&quot;</p>
+        <td><p>Either &ldquo;LCBO&rdquo; or &ldquo;VINTAGES&rdquo;</p>
 </td>
       </tr>
       <tr>
         <td><code>sugar_content</code></td>
-        <td><p>The product&#39;s sweetness descriptor, is usually a designation such as extra-dry (XD), medium sweet (MS), etc. (Not available for all products)</p>
+        <td><p>The product&rsquo;s sweetness descriptor, is usually a designation such as extra-dry (XD), medium sweet (MS), etc. (Not available for all products)</p>
 </td>
       </tr>
       <tr>
@@ -471,7 +475,7 @@ described parameters.</p>
                   <i>Page number</i>
               </td>
               <td class="param-description">
-                <p>The page number you&#39;d like to return.</p>
+                <p>The page number you&rsquo;d like to return.</p>
 
                   <dl>
                     <dt>Example</dt>

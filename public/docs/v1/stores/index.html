@@ -5,8 +5,7 @@
     <meta name="description" content="A fast, cloud-based API for LCBO store, product, and inventory data.">
     <title>LCBO API V1 Stores</title>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href='https://fonts.googleapis.com/css?family=Roboto:500,900,400italic,400,300,300italic,700,700italic' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:500,900,400italic,400,300,300italic,700,700italic|Roboto+Condensed:700|Source+Code+Pro:400' rel='stylesheet' type='text/css'>
     <link href="/assets/css/lcboapi.css" rel="stylesheet" type="text/css" />
     <script src="/assets/js/lcboapi.js" type="text/javascript"></script>
   </head>
@@ -28,6 +27,11 @@
           <li>
             <a class="docs" href="/docs/v1">
               Documentation
+            </a>
+          </li>
+          <li>
+            <a class="news" href="/news">
+              News
             </a>
           </li>
           <li>
@@ -195,7 +199,7 @@ format can be converted into 24 hour time using the approach below:</p>
 </code></pre>
 
 <p>You will probably want to convert the minutes since midnight to 12 hour time
-since that&#39;s what most Ontarians will be familiar with, you can do that
+since that&rsquo;s what most Ontarians will be familiar with, you can do that
 with a few extra steps:</p>
 <pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">msmTo12time</span><span class="p">(</span><span class="nx">msm</span><span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">time</span> <span class="o">=</span> <span class="nx">msmTo24time</span><span class="p">(</span><span class="nx">msm</span><span class="p">);</span>
@@ -305,7 +309,7 @@ with a few extra steps:</p>
       </tr>
       <tr>
         <td><code>is_dead</code></td>
-        <td><p>When a store is removed it is marked as &quot;dead&quot;</p>
+        <td><p>When a store is removed it is marked as &ldquo;dead&rdquo;</p>
 </td>
       </tr>
       <tr>
@@ -396,7 +400,7 @@ with a few extra steps:</p>
                   <i>Page number</i>
               </td>
               <td class="param-description">
-                <p>The page number you&#39;d like to return.</p>
+                <p>The page number you&rsquo;d like to return.</p>
 
                   <dl>
                     <dt>Example</dt>
