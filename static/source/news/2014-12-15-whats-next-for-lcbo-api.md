@@ -4,10 +4,10 @@ date: 2014-12-15
 author: heycarsten
 ---
 
-> Before I get into the shape of LCBO API to come, I think it's finally time to
-> tell the story of how LCBO API began, and the highs and lows of getting to
-> this point. It's a lengthy read, so if you'd rather just [skip ahead](#v2) to
-> the new stuff, I won't mind. <i class="fa fa-smile-o"></i>
+> Before I get into the shape of LCBO API to come, I think it's about time I
+> told the story of LCBO API, it's been an incredible journey filled with highs
+> and lows. It's a bit of a lengthy read, so if you'd rather [skip ahead](#v2)
+> to the new stuff, I won't mind. <i class="fa fa-smile-o"></i>
 
 This December marks _six years_ since I picked up Rod Phillips&rsquo; book
 [The 500 Best-Value Wines in the LCBO](http://www.amazon.ca/The-Best-Value-Wines-LCBO-2009/dp/155285938X):
@@ -19,13 +19,13 @@ This December marks _six years_ since I picked up Rod Phillips&rsquo; book
 I thought, "Wouldn't it be cool if I could use my phone to see a list of the
 wines in this book at the store I'm standing in?" Then I wouldn't have to run
 through each item in the book and look for it, I'd just be presented with a
-list of wines available in the store I'm in. Oh, just imagine the efficiency! A
-decent bottle of red to go with dinner in mere seconds, and always have my phone
-with me.
+list of wines available in the store I'm in --- oh, just imagine the efficiency!
+A decent bottle of red to go with dinner in mere seconds, and I always have
+my phone on me.
 
 I really wanted to build it, but how? I'd need to talk to Rod --- would he
 think it's a good idea? Would he even care? Does he have people? He must have
-people? I was getting ahead of myself, before I did anything I'd need a
+people, right? --- I was getting ahead of myself, before I did anything I'd need a
 way to access the LCBO product catalog, inventory data, and store directory. It
 needed to be fast and minimal so that mobile phones (which were still pretty
 slow at the time) could quickly load and parse the responses, but most
@@ -40,9 +40,9 @@ pages on LCBO.com were table-based and very hard to parse reliably. The
 character encodings were all over the place, everything was UPPERCASE, and all
 requests were via form posts --- it was a blast!
 
-I also wanted to make it clear that I wasn't looking to be a gatekeeper, I'd
-ensure that the service was publicly available so that others could use it and
-build cool things without having to solve this problem again-and-again.
+I also wanted to make it clear that I wasn't looking to be a gatekeeper. I'd
+host this data through a publicly available service so that others could use it
+and build cool things without having to solve this problem again-and-again.
 
 The first version of LCBO API was released in April, 2009. Over the following
 months I refined the API, and wrote documentation for it. In early 2010, V1 was
@@ -52,6 +52,9 @@ features and responding to emails from interested parties was keeping me
 completely busy in my spare time.
 
 ## An API is Used
+
+> LCBO API isn't just a provider for LCBO data, it also represents time and
+> place for an entire retail sector in a large market.
 
 I honestly never thought LCBO API would become as popular as it has. Last month
 (November) it served **1.4 million requests** and over **100** dataset
@@ -86,8 +89,8 @@ at Harvard who was using the historical datasets as fixtures for testing
 different algorithms in their research. It was really humbling to learn,
 and it drove home the fact that LCBO API isn't just a provider for LCBO data, it
 also represents time and place for an entire retail sector in a large market.
-This doesn't really exist anywhere else in the world --- it's humbling, it's
-exciting!
+This doesn't really exist at this scale anywhere else in the world --- it's
+humbling, it's exciting!
 
 I've had the pleasure of being introduced to all these incredible people doing
 such interesting things, without LCBO API, I doubt any of these experiences
@@ -97,16 +100,20 @@ I've had running LCBO API.
 
 ## An API is Abused
 
+> It's not a cakewalk producing wine and beer in Ontario, it's already a very
+> challenging place for small producers to succeed.
+
 Once or twice a year an eager opportunist will reach out to me and pitch me on
 how I could work with them to resell portions of LCBO API inventory data to
-small producers as a report, charging them a premium price for this invaluable
-insight --- insight that's available on LCBO.com to anyone with a spreadsheet.
+small producers as a report, charging them a premium for this invaluable
+insight --- insight that's available on LCBO.com to anyone with a spreadsheet
+application.
 
 Schemes like this are not only depressingly uncreative, they contribute toward a
 toxic ecosystem and stifle innovation. It's not a cakewalk producing wine and
 beer in Ontario, it's already a very challenging place for small producers to
-succeed. In addition to that, the LCBO already officially provides _real_
-insight through their
+succeed. In addition to that, the LCBO already officially provides _actual_
+sales and market insight through their
 [Sale of Data](http://www.lcbo.com/webapp/wcs/stores/servlet/en/sod/) program.
 
 However, the most upsetting part is that at least one of these opportunists has
@@ -123,8 +130,9 @@ though I was desperate to do so.
 During this period I was sent scolding emails from two different CTOs, berating
 me for the lapse in data updates and how it was making them "look like idiots"
 to their paying customers. I'm a professional software developer, but I can only
-do so much in my spare time for free, at some point, if you're expecting a
-certain level of service, just talk to me.
+do so much in my spare time for free. If you're expecting a certain level of
+service, and especially if you're making money from my work, at the very least
+talk to me about it!
 
 This is some of the dark side of running LCBO API, but you know what? The good
 days far outnumber the bad ones, and it's those good days, and emails, and
@@ -133,17 +141,21 @@ stories, and projects that stoke my passion for working on LCBO API.
 
 ## An API Grows Up
 
+> I want to make sure that LCBO API is delivering the most value possible to all
+> members of the ecosystem, not just developers.
+
 I give LCBO API the utmost attention and care, it's a hardened platform built on
 thousands of hours of work, I take every aspect of it very seriously. Going
 forward, I want to make sure that this level of commitment and quality is
-properly communicated. I also want to make sure that LCBO API is delivering the
-most value possible not only through developers, but directly to producers, and
-even bars and restaurants.
+properly communicated. In addition, I want to make sure that LCBO API is
+delivering the most value possible to all members of the ecosystem, not just
+developers. I want to build features that allow non-technical users to gain
+insight into the data without needing to code.
 
 The look and feel of the old site didn't reflect any of this very well and I've
-wanted to update it for years. Clearly, though, it's what's under the hood that
-matters the most, so with that said, here are some upcoming changes and
-additions to LCBO API:
+wanted to update it for years, so I did. Clearly, though, it's what's under the
+hood that matters the most, so with that said, here are some upcoming changes
+and additions to LCBO API:
 
 ### _Unlimited_ Anonymous Access is Deprecated
 
@@ -151,6 +163,11 @@ For the sake of my sanity, and to provide a better service and not hinder the
 potential of LCBO API, I need to have an understanding of who is using it, for
 what and where. This is why I have introduced the concept of Access Keys to
 LCBO API.
+
+<p class="warning">
+  As of March 1<sup>st</sup>, 2015 anonymous API access will be
+  rate-limited.
+</p>
 
 Anonymous access remains but, as of March 1<sup>st</sup>, 2015, will be
 rate-limited. This means that you won't need an Access Key for playing around
@@ -166,12 +183,10 @@ requests per key and for your entire account:
 I plan to build out the management panel further and provide some other useful
 features in the future.
 
-<p class="warning">
-  As of March 1<sup>st</sup>, 2015 anonymous API access will be
-  rate-limited.
-</p>
+### If you're making money with LCBO API, please supporting it
 
-### If you're making money with LCBO API, please support it
+> If LCBO API is making it easier for you to do your job, run your business,
+> or build an app, please consider supporting it financially.
 
 I don't want to sound like Jimmy Wales here, but outside of simply charging for
 API access on a subscription model, I'm hard pressed to come up with a way to
@@ -180,16 +195,19 @@ API consists of a load balancer, app server, worker server, and database server,
 it averages about $100/month in hosting costs plus another $60/month for AWS,
 monitoring, and backups.
 
-Maintaining the crawlers and ensuring updates happen daily and that the data is
-consistent and of high quality. Ensuring performance remains exceptional and
-dealing with bottlenecks when they occur. Developing new features to provide
-value that can benefit all users of the API. Without financial support, I have
-to rely on other work to pay the bills, this isn't a problem, but it means I
-have very little time to work on LCBO API outside of maintenance and support.
+The reality is that, like everyone, I have bills to pay and a family to support,
+I can't spend as much time on LCBO API as I'd like to because at some point it
+eats into time that must be spent earning an income. Responding to
+project-related emails, maintaining the crawlers and ensuring updates happen
+on a daily basis eats up most of my available free time. This leaves very little
+bandwidth to actually improve LCBO API and develop the new and exciting things
+that fuel my passion for the project in the first place.
 
 I really don't enjoy talking about these things, but now they're out there and
-very clear. There are no secrets, **LCBO API costs about $160/month to run, and
-it generates $0/month in income**, every dollar of support helps.
+very clear, no secrets. **LCBO API costs about $160/month to run, and it
+generates $0/month in income**. If LCBO API is making it easier for you to do
+your job, run your business, or build an app, please consider supporting it
+financially.
 
 <h2 id="v2">
   LCBO API V2
