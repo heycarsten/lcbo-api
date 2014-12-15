@@ -49,10 +49,8 @@ completely busy in my spare time.
 
 ## An API is Used
 
-> LCBO API isn't just a machine-readable representation of the LCBO's website.
-> It's a place for an entire retail sector in a large market.
-
-The LCBO is the world's largest purchaser of beverage alcohol, buying wine, spirits and beer from more than 60 countries for Ontario consumers and licensees
+> LCBO API isn't just a machine-readable representation of LCBO.com, it holds
+> time and place for an entire retail sector in a large market.
 
 I honestly never thought LCBO API would become as popular as it has. Last month
 (November) it served **1.4 million requests** and over **100** dataset
@@ -84,10 +82,10 @@ that might buy them.
 One of the most exciting use-cases I ever received was from a statistician
 at Harvard who was using the historical datasets as fixtures for testing
 different algorithms in their research. It was really humbling, and it drove
-home the fact that LCBO API isn't just a provider for LCBO data, it also
-represents time and place for an entire retail sector in a large market. This
-doesn't really exist at this scale anywhere else in the world --- it's humbling,
-it's exciting!
+home the fact that LCBO API isn't just a machine-readable representation of
+LCBO.com, it holds time and place for an entire retail sector in a
+large market. This doesn't really exist at this scale anywhere else in the
+world --- it's humbling, it's exciting!
 
 I've had the pleasure of meeting all these incredible people doing interesting
 things through my work on LCBO API. As much as I'd like to end it there, in
