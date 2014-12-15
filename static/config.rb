@@ -2,18 +2,18 @@ activate :bower
 activate :react
 activate :syntax
 
-activate :blog do |blog|
-  blog.prefix    = 'news'
-  blog.permalink = '{title}'
-  blog.sources   = '{year}-{month}-{day}-{title}'
-end
-
 set :markdown_engine, :redcarpet
 set :markdown, fenced_code_blocks: true, smartypants: true
 
-activate :directory_indexes
+activate :blog do |blog|
+  blog.publish_future_dated = true
+  blog.prefix    = 'news'
+  blog.sources   = '{year}-{month}-{day}-{title}'
+  blog.permalink = '{title}'
+  blog.layout    = 'news_post'
+end
 
-page '/news/*', layout: :news_post
+activate :directory_indexes
 
 ignore '/docs/template.html.erb'
 
