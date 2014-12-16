@@ -309,5 +309,5 @@ proud of, and I am. Thanks for listening.
 
 <footer>
   Please send me an <a href="mailto:carsten@lcboapi.com">email</a> if you have
-  any comments, corrections, or suggestions about this post.
+  any comments, corrections, or feedback regarding this post.
 </footer>
