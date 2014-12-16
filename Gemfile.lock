@@ -10,15 +10,15 @@ GIT
 
 GIT
   remote: git://github.com/rails-api/active_model_serializers.git
-  revision: 42010cc8e87575fcb674bcdef145ded9640d8517
+  revision: 64cc5385bc38f7e2c25564d80fc9e1bb8ccf49b5
   ref: 0-9-stable
   specs:
-    active_model_serializers (0.9.0)
+    active_model_serializers (0.9.1)
       activemodel (>= 3.2)
 
 GIT
   remote: git://github.com/stripe/stripe-ruby.git
-  revision: 9c7ebd21c97358d1329abdbd91628dbf970d314f
+  revision: 100c522a32937d583fe063441f1250f0874f07e9
   specs:
     stripe (1.16.0)
       json (~> 1.8.1)
@@ -60,8 +60,8 @@ GEM
     awesome_print (1.2.0)
     bcrypt (3.1.9)
     builder (3.2.2)
-    capistrano (3.3.3)
-      capistrano-stats (~> 1.0.3)
+    capistrano (3.3.5)
+      capistrano-stats (~> 1.1.0)
       i18n
       rake (>= 10.0.0)
       sshkit (~> 1.3)
@@ -74,12 +74,12 @@ GEM
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
-    capistrano-stats (1.0.3)
+    capistrano-stats (1.1.1)
     coderay (1.1.0)
-    colorize (0.7.3)
+    colorize (0.7.4)
     diff-lcs (1.2.5)
     erubis (2.7.0)
-    excon (0.42.0)
+    excon (0.42.1)
     execjs (2.2.2)
     fabrication (2.11.3)
     gcoder (1.2.0)
@@ -101,12 +101,12 @@ GEM
     method_source (0.8.2)
     mime-types (2.4.3)
     mini_portile (0.6.1)
-    minitest (5.4.3)
+    minitest (5.5.0)
     multi_json (1.10.1)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.1)
-    netrc (0.9.0)
+    netrc (0.10.1)
     nokogiri (1.6.5)
       mini_portile (~> 0.6.0)
     oj (2.11.1)
@@ -144,7 +144,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
-    redis (3.1.0)
+    redis (3.2.0)
     ref (1.0.5)
     rest-client (1.7.2)
       mime-types (>= 1.16, < 3.0)
@@ -172,11 +172,11 @@ GEM
       sass (~> 3.2.2)
       sprockets (~> 2.8, < 3.0)
       sprockets-rails (~> 2.0)
-    skylight (0.5.0.beta1)
+    skylight (0.5.2)
       activesupport (>= 3.0.0)
     slop (3.6.0)
     spring (1.2.0)
-    spring-commands-rspec (1.0.2)
+    spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
     sprockets (2.12.3)
       hike (~> 1.2)
@@ -201,7 +201,7 @@ GEM
     tins (1.3.3)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    uglifier (2.5.3)
+    uglifier (2.6.0)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
     unicode_utils (1.4.0)
@@ -236,7 +236,7 @@ DEPENDENCIES
   redis
   rspec-rails
   sass-rails (~> 4.0.5)
-  skylight (~> 0.5.0.beta1)
+  skylight (~> 0.5.2)
   spring
   spring-commands-rspec
   stringex

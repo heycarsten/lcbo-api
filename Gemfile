@@ -13,7 +13,7 @@ gem 'puma'
 gem 'sass-rails',   '~> 4.0.5'
 gem 'therubyracer', platforms: :ruby
 gem 'uglifier'
-gem 'skylight',     '~> 0.5.0.beta1'
+gem 'skylight',     '~> 0.5.2'
 gem 'honeybadger'
 gem 'stripe',       github: 'stripe/stripe-ruby'
 
