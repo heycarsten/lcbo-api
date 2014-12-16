@@ -85,12 +85,12 @@ different algorithms in their research. It was really humbling, and it drove
 home the fact that LCBO API isn't just a machine-readable representation of
 LCBO.com, it holds time and place for an entire retail sector in a
 large market. This doesn't really exist at this scale anywhere else in the
-world --- it's humbling, it's exciting!
+world --- it's exciting!
 
-I've had the pleasure of meeting all these incredible people doing interesting
-things through my work on LCBO API. As much as I'd like to end it there, in
-order to tell the whole story I also have to tell you about some of the
-not-so-enjoyable experiences I've had running LCBO API.
+I've had the pleasure of meeting all of these incredible people doing
+interesting things through my work on LCBO API. As much as I'd like to end it
+there, in order to tell the whole story I also have to tell you about some of
+the not-so-enjoyable experiences I've had running LCBO API.
 
 ## An API is Abused
 
@@ -158,14 +158,14 @@ LCBO API.
   rate-limited.
 </p>
 
-Anonymous access remains but, as of March 1<sup>st</sup>, 2015, will be
+Anonymous access remains but, as of March 1<sup>st</sup>, 2015, it will be
 rate-limited. This means that you won't need an Access Key for playing around
 or learning, and it means that existing mobile and JavaScript apps will continue
 to work. If you're using LCBO API for anything beyond fiddling, you'll want to
 acquire an Access Key.
 
-In addition to no rate-limit, by using an access key you'll also gain access to
-insights and statistics related to your account:
+In addition to no rate-limit, by using an Access Key you'll also gain insights
+and statistics related to your account:
 
 <img src="/assets/images/news/lcboapi-manager-graph.png" width="100%">
 
