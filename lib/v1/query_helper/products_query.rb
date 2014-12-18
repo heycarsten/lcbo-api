@@ -73,6 +73,7 @@ module V1
             where('inventories.store_id' => store.id)
         end
 
+        s = s.where(filter_hash)
         s = s.reorder(nil) if has_fulltext? && order.any?
         s = s.order(*order)
         s

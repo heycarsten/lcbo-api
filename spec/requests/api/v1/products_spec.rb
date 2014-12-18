@@ -5,6 +5,7 @@ RSpec.describe 'Products API (V1)', type: :request do
     @product1 = Fabricate(:product, id: '1')
     @product2 = Fabricate(:product, id: '2', name: 'Fitzgibbons')
     @product3 = Fabricate(:product, id: '3', name: 'B\'ock hop bob-omb')
+    @product4 = Fabricate(:product, id: '4', name: 'I AM DEAD', is_dead: true)
     @store1   = Fabricate(:store, id: '1')
     @inv1     = Fabricate(:inventory, store: @store1, product: @product1)
 
@@ -12,7 +13,7 @@ RSpec.describe 'Products API (V1)', type: :request do
   end
 
   it 'contains sane objects' do
-    expect(Product.count).to eq 3
+    expect(Product.count).to eq 4
     expect(Store.count).to eq 1
     expect(Inventory.count).to eq 1
   end
@@ -20,6 +21,22 @@ RSpec.describe 'Products API (V1)', type: :request do
   describe 'all products' do
     subject { '/products' }
     it_behaves_like 'a resource', size: 3
+  end
+
+  describe 'selective filtering' do
+    before { get '/products?where=is_dead' }
+
+    it 'returns only applicable products' do
+      expect(response.json[:result].size).to eq 1
+    end
+  end
+
+  describe 'rejective filtering' do
+    before { get '/products?where_not=is_dead' }
+
+    it 'returns only applicable products' do
+      expect(response.json[:result].size).to eq 3
+    end
   end
 
   describe 'full text search with match' do
