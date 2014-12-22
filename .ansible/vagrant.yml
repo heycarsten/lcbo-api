@@ -8,7 +8,7 @@
     - hostname: vagrant
     - rvm_ruby_version: 2.1.5
     - rvm_install_user: vagrant
-    - postgresql_version: 9.3
+    - postgresql_version: 9.4
     - vagrant_user: vagrant
     - vagrant_data_directory: /vagrant
     - nginx_worker_processes: 1
