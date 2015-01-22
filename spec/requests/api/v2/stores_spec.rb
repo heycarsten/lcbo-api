@@ -12,6 +12,17 @@ RSpec.describe 'V2 Stores API' do
       Fabricate(:store, id: 2, name: 'Store A', inventory_count: 30),
       Fabricate(:store, id: 1, name: 'Store D', is_dead: true)
     ]
+
+    @products = [
+      Fabricate(:product, id: 1),
+      Fabricate(:product, id: 2)
+    ]
+
+    @inventories = [
+      Fabricate(:inventory, store_id: @stores[0].id, product_id: @products[0].id, quantity: 5),
+      Fabricate(:inventory, store_id: @stores[1].id, product_id: @products[0].id, quantity: 10),
+      Fabricate(:inventory, store_id: @stores[1].id, product_id: @products[1].id, quantity: 15)
+    ]
   end
 
   describe 'JSONP and CORS' do
@@ -221,43 +232,41 @@ RSpec.describe 'V2 Stores API' do
     prepare!
     api_headers['Authorization'] = "Token #{@private_key}"
 
-    product   = Fabricate(:product, id: 1)
-    inventory = Fabricate(:inventory, store_id: @stores[1].id, product_id: product.id)
-
-    api_get "/stores?product=1"
+    api_get "/stores?product=#{@products[0].id}"
 
     expect(response.status).to eq 200
-    expect(json[:product][:id]).to eq product.id.to_s
-    expect(json[:stores].size).to eq 1
-    expect(json[:stores][0][:id]).to eq @stores[1].id.to_s
-    expect(json[:stores][0][:links][:inventory]).to eq inventory.compound_id
-    expect(json[:inventories].size).to eq 1
-    expect(json[:inventories][0][:id]).to eq inventory.compound_id
+    expect(json[:product][:id]).to eq @products[0].id.to_s
+    expect(json[:stores].size).to eq 2
+    expect(json[:stores][0][:id]).to eq @stores[0].id.to_s
+    expect(json[:stores][0][:links][:inventory]).to eq @inventories[0].compound_id
+    expect(json[:inventories].size).to eq 2
+    expect(json[:inventories][0][:id]).to eq @inventories[0].compound_id
   end
 
-  it 'returns stores that have all products' do
+  it 'returns stores that have all products (many)' do
     prepare!
-
-    products = [
-      Fabricate(:product, id: 1),
-      Fabricate(:product, id: 2)
-    ]
-
-    inventories = [
-      Fabricate(:inventory, store_id: @stores[0].id, product_id: products[0].id, quantity: 5),
-      Fabricate(:inventory, store_id: @stores[1].id, product_id: products[0].id, quantity: 10),
-      Fabricate(:inventory, store_id: @stores[1].id, product_id: products[1].id, quantity: 15)
-    ]
 
     api_headers['Authorization'] = "Token #{@private_key}"
 
-    api_get "/stores?products=#{products[0].id},#{products[1].id}"
+    api_get "/stores?products=#{@products[0].id},#{@products[1].id}"
     expect(json[:stores].size).to eq 1
+  end
 
-    api_get "/stores?product=#{products[0].id}"
+  it 'returns stores that have all products (one)' do
+    prepare!
+
+    api_headers['Authorization'] = "Token #{@private_key}"
+
+    api_get "/stores?products=#{@products[0].id}"
     expect(json[:stores].size).to eq 2
+  end
 
-    api_get "/stores?products=#{products[0].id}"
+  it 'returns stores that have a product' do
+    prepare!
+
+    api_headers['Authorization'] = "Token #{@private_key}"
+
+    api_get "/stores?product=#{@products[0].id}"
     expect(json[:stores].size).to eq 2
   end
 end
