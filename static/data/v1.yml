@@ -577,7 +577,7 @@ resources:
     The product object represents a product in the LCBO catalog. It's important
     to note that LCBO API maintains a history of **all** products, not only
     active ones. The `is_dead` flag indicates a product that is no longer in
-    the official LCBO catalog but was a one point in the past.
+    the official LCBO catalog but was at one point in the past.
 
   fields:
     alcohol_content: Alcohol content (Divide by 100 for decimal value)
@@ -663,7 +663,7 @@ resources:
       - is_seasonal
       - is_vqa
       - is_kosher
-      example: lcboapi.com/products?where=has_parking
+      example: lcboapi.com/products?where=is_seasonal
       summary: Return only products where the specified attributes are true.
 
     - key: 'where_not'
