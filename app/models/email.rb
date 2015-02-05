@@ -56,13 +56,13 @@ class Email < ActiveRecord::Base
 
   def save_with_verification_message
     return false unless save
-    EmailMailer.verification_message(id).deliver
+    EmailMailer.verification_message(id).deliver_now
     true
   end
 
   def save_with_welcome_verification_message
     return false unless save
-    EmailMailer.welcome_verification_message(id).deliver
+    EmailMailer.welcome_verification_message(id).deliver_now
     true
   end
 

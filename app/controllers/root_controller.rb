@@ -1,9 +1,5 @@
 class RootController < ApplicationController
-  clear_respond_to
-
   before_action :enforce_https
-
-  respond_to :html
 
   def ember
     index = Rails.root + 'public/manager/index.html'

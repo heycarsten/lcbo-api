@@ -6,7 +6,7 @@ class API::V2::Manager::PasswordsController < API::V2::Manager::ManagerControlle
     email = params[:email].to_s.downcase
 
     if (email.present? && user = User.verified.where(email: email).first)
-      UserMailer.change_password_message(user.id).deliver
+      UserMailer.change_password_message(user.id).deliver_now
     end
 
     # Always return success to avoid attack vector

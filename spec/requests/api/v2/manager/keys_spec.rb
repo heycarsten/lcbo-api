@@ -47,8 +47,8 @@ RSpec.describe 'V2 Manager Keys API' do
     it 'returns the key owned by the authenticated user' do
       u1 = create_verified_user!
       u2 = create_verified_user!
-      k1 = create_key!(user_id: u1)
-      k2 = create_key!(user_id: u2)
+      k1 = create_key!(user_id: u1.id)
+      k2 = create_key!(user_id: u2.id)
 
       log_in_user(u1)
 
@@ -104,8 +104,8 @@ RSpec.describe 'V2 Manager Keys API' do
     it 'updates the key owned by the authenticated user' do
       u1 = create_verified_user!
       u2 = create_verified_user!
-      k1 = create_key!(user_id: u1)
-      k2 = create_key!(user_id: u2)
+      k1 = create_key!(user_id: u1.id)
+      k2 = create_key!(user_id: u2.id)
 
       log_in_user(u1)
 
@@ -130,7 +130,7 @@ RSpec.describe 'V2 Manager Keys API' do
     it 'fails if not authenticated' do
       api_headers['Authorization'] = 'Token ' + Token.generate(:session, user_id: 'herp').to_s
       u = create_verified_user!
-      k = create_key!(user_id: u)
+      k = create_key!(user_id: u.id)
 
       api_put "/manager/keys/#{k.id}", key: { label: 'Derp' }
 
@@ -142,8 +142,8 @@ RSpec.describe 'V2 Manager Keys API' do
     it 'deletes the key owned by the authenticated user' do
       u1 = create_verified_user!
       u2 = create_verified_user!
-      k1 = create_key!(user_id: u1)
-      k2 = create_key!(user_id: u2)
+      k1 = create_key!(user_id: u1.id)
+      k2 = create_key!(user_id: u2.id)
 
       log_in_user(u1)
 
@@ -159,7 +159,7 @@ RSpec.describe 'V2 Manager Keys API' do
 
     it 'fails if not authenticated' do
       u = create_verified_user!
-      k = create_key!(user_id: u)
+      k = create_key!(user_id: u.id)
 
       api_headers['Authorization'] = 'Token ' + Token.generate(:session, user_id: u.id).to_s
 
