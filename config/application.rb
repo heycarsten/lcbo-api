@@ -22,6 +22,7 @@ module LCBOAPI
     require 'v1/query_helper'
     require 'v1/exporter'
     require 'boticus'
+    require 'data_migrator'
     require 'crawler'
     require 'image_cacher'
 
