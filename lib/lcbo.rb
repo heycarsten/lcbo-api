@@ -17,6 +17,7 @@ module LCBO
   autoload :Parseable,                 'lcbo/parseable'
   autoload :Parser,                    'lcbo/parser'
 
+  autoload :OCBProducersCrawler,       'lcbo/ocb_producers_crawler'
   autoload :ProductParser,             'lcbo/product_parser'
   autoload :CatalogProductCrawler,     'lcbo/catalog_product_crawler'
   autoload :StoreIdsParser,            'lcbo/store_ids_parser'

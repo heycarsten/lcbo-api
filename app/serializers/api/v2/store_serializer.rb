@@ -41,6 +41,7 @@ class API::V2::StoreSerializer < ApplicationSerializer
     :saturday_open,
     :saturday_close,
     :updated_at,
+    :created_at,
     :distance_in_meters
 
   def attributes

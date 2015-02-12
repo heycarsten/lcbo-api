@@ -52,6 +52,34 @@ COMMENT ON EXTENSION btree_gist IS 'support for indexing common datatypes in GiS
 
 
 --
+-- Name: cube; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS cube WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION cube; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION cube IS 'data type for multidimensional cubes';
+
+
+--
+-- Name: earthdistance; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS earthdistance WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION earthdistance; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION earthdistance IS 'calculate great-circle distances on the surface of the Earth';
+
+
+--
 -- Name: fuzzystrmatch; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -91,6 +119,34 @@ CREATE EXTENSION IF NOT EXISTS intarray WITH SCHEMA public;
 --
 
 COMMENT ON EXTENSION intarray IS 'functions, operators, and index support for 1-D arrays of integers';
+
+
+--
+-- Name: isn; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS isn WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION isn; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION isn IS 'data types for international product numbering standards';
+
+
+--
+-- Name: ltree; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS ltree WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION ltree; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION ltree IS 'data type for hierarchical tree-like structures';
 
 
 --
@@ -328,6 +384,23 @@ CREATE TABLE plans (
 
 
 --
+-- Name: producers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE producers (
+    id uuid DEFAULT uuid_generate_v1() NOT NULL,
+    name character varying(80) NOT NULL,
+    lcbo_name character varying(100) NOT NULL,
+    slug character varying(80) NOT NULL,
+    lcbo_slug character varying(100) NOT NULL,
+    is_dead boolean DEFAULT false NOT NULL,
+    is_ocb boolean DEFAULT false NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
 -- Name: products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -384,12 +457,13 @@ CREATE TABLE products (
     clearance_sale_savings_in_cents integer DEFAULT 0,
     has_clearance_sale boolean DEFAULT false,
     tag_vectors pg_catalog.tsvector,
-    upc character varying(255),
-    scc character varying(255),
+    upc bigint,
+    scc bigint,
     style_flavour character varying(255),
     style_body character varying(255),
     value_added_promotion_ends_on date,
-    data_source integer DEFAULT 0
+    data_source integer DEFAULT 0,
+    producer_id uuid
 );
 
 
@@ -599,6 +673,14 @@ ALTER TABLE ONLY plans
 
 
 --
+-- Name: producers_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY producers
+    ADD CONSTRAINT producers_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: products_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -756,6 +838,27 @@ CREATE INDEX index_plans_on_is_active ON plans USING btree (is_active);
 
 
 --
+-- Name: index_producers_on_is_dead; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_producers_on_is_dead ON producers USING btree (is_dead);
+
+
+--
+-- Name: index_producers_on_lcbo_slug; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_producers_on_lcbo_slug ON producers USING btree (lcbo_slug);
+
+
+--
+-- Name: index_producers_on_slug; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_producers_on_slug ON producers USING btree (slug);
+
+
+--
 -- Name: index_products_on_is_dead_and_inventory_volume_in_milliliters; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -763,10 +866,24 @@ CREATE INDEX index_products_on_is_dead_and_inventory_volume_in_milliliters ON pr
 
 
 --
+-- Name: index_products_on_producer_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_products_on_producer_id ON products USING btree (producer_id);
+
+
+--
 -- Name: index_products_on_tag_vectors; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE INDEX index_products_on_tag_vectors ON products USING gin (tag_vectors);
+
+
+--
+-- Name: index_products_on_upc; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_products_on_upc ON products USING btree (upc);
 
 
 --
@@ -1133,4 +1250,12 @@ INSERT INTO schema_migrations (version) VALUES ('20141110171340');
 INSERT INTO schema_migrations (version) VALUES ('20141111022512');
 
 INSERT INTO schema_migrations (version) VALUES ('20141111023631');
+
+INSERT INTO schema_migrations (version) VALUES ('20150211195035');
+
+INSERT INTO schema_migrations (version) VALUES ('20150211202803');
+
+INSERT INTO schema_migrations (version) VALUES ('20150212011542');
+
+INSERT INTO schema_migrations (version) VALUES ('20150212015705');
 

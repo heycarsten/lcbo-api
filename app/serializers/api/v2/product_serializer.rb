@@ -27,7 +27,6 @@ class API::V2::ProductSerializer < ApplicationSerializer
     :inventory_volume_in_milliliters,
     :inventory_price_in_cents,
     :sugar_content,
-    :producer_name,
     :released_on,
     :has_value_added_promotion,
     :has_limited_time_offer,
@@ -50,6 +49,8 @@ class API::V2::ProductSerializer < ApplicationSerializer
     :has_clearance_sale,
     :quantity,
     :reported_on,
+    :created_at,
+    :updated_at,
     :distance_in_meters
 
   def id
@@ -82,5 +83,17 @@ class API::V2::ProductSerializer < ApplicationSerializer
     end
 
     keys
+  end
+
+  def attributes
+    h = super
+
+    h[:links] = {}.tap do |links|
+      links[:producer] = object.producer_id if object.producer_id
+    end
+
+    h.delete(:links) if h[:links].empty?
+
+    h
   end
 end

@@ -4,8 +4,8 @@ class API::V2::ProductsQuery < API::V2::APIQuery
   has_pagination
   has_include_dead
 
-  by :id, limit: 100
-  by :upc, type: :string, limit: 100
+  by :id, limit: 50
+  by :upc, type: :upc, limit: 50
 
   toggle \
     :is_discontinued,
@@ -34,7 +34,9 @@ class API::V2::ProductsQuery < API::V2::APIQuery
     :inventory_count,
     :inventory_volume_in_milliliters,
     :inventory_price_in_cents,
-    :released_on
+    :released_on,
+    :created_at,
+    :updated_at
   ]
 
   range :price_in_cents,                      type: :whole
@@ -54,6 +56,8 @@ class API::V2::ProductsQuery < API::V2::APIQuery
   range :inventory_volume_in_milliliters,     type: :whole
   range :inventory_price_in_cents,            type: :whole
   range :released_on,                         type: :date
+  range :created_at,                          type: :date
+  range :updated_at,                          type: :date
 
   param :q, type: :string do |q|
     scope.search(q)

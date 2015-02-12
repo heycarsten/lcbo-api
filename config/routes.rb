@@ -110,7 +110,7 @@ Rails.application.routes.draw do
     get '/manager'
     get '/manager/log-in'
     get '/manager/sign-up'
-    get '/manager/verify/:token',   as: :verify
+    get '/manager/verify/:token',   as: :verify_token
     get '/manager/password/recover'
     get '/manager/password/:token', as: :password
     get '/manager/account'

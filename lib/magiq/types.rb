@@ -92,6 +92,23 @@ module Magiq
     end
     register :id, ID
 
+    class UPC < Type
+      UPC_RNG = /[^0-9]/
+      UPC_MAX = 9999999999999
+
+      def cast!
+        v = raw.to_s.gsub(UPC_RNG, '').to_i
+
+        if v > 0 && v <= UPC_MAX
+          v
+        else
+          bad! "provided value of #{raw.inspect} is not permitted, it must " \
+          "be a valid UPC with a numerical value between zero and #{UPC_MAX}."
+        end
+      end
+    end
+    register :upc, UPC
+
     class Latitude < Type
       def cast!
         case v = raw.to_f

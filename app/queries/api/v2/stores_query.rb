@@ -4,7 +4,7 @@ class API::V2::StoresQuery < API::V2::APIQuery
   has_pagination
   has_include_dead
 
-  by :id
+  by :id, limit: 50
 
   unqualified [
     :distance_in_meters
@@ -28,13 +28,17 @@ class API::V2::StoresQuery < API::V2::APIQuery
     :has_special_occasion_permits,
     :has_vintages_corner,
     :has_parking,
-    :has_transit_access
+    :has_transit_access,
+    :created_at,
+    :updated_at
 
   range :distance_in_meters,              type: :whole
   range :inventory_volume_in_milliliters, type: :whole
   range :products_count,                  type: :whole
   range :inventory_count,                 type: :whole
   range :inventory_price_in_cents,        type: :whole
+  range :created_at,                      type: :date
+  range :updated_at,                      type: :date
 
   param :product, type: :id do |id|
     scope.with_product_id(id)

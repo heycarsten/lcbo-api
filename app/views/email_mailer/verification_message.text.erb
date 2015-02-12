@@ -2,4 +2,4 @@ Hi <%= @email.user.first_name %>,
 
 Click the link below to verify this email address:
 
-<%= verify_url @email.verification_token %>
+<%= verify_token_url @email.verification_token %>

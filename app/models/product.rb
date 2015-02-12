@@ -17,7 +17,11 @@ class Product < ActiveRecord::Base
     }
 
   belongs_to :crawl
+  belongs_to :producer
+
   has_many :inventories
+
+  after_create :associate_producer!
 
   scope :by_ids, ->(*raw_ids) {
     ids   = raw_ids.flatten.map(&:to_i)
@@ -31,10 +35,31 @@ class Product < ActiveRecord::Base
     end
   }
 
+  def associate_producer!
+    return true if producer_name.blank?
+    return true if producer_id.present?
+
+    producer = Producer.fetch(lcbo_name: producer_name)
+
+    update_column :producer_id, producer.id
+  end
+
   def self.place(attrs)
     attrs[:updated_at] = Time.now.utc
     attrs[:tags]       = attrs[:tags].any? ? attrs[:tags].join(' ') : nil
     attrs[:is_dead]    = false
+
+    if (upc = attrs[:upc]).present?
+      attrs[:upc] = normalize_isn(upc)
+    else
+      attrs.delete(:upc)
+    end
+
+    if (scc = attrs[:scc]).present?
+      attrs[:scc] = normalize_isn(scc)
+    else
+      attrs.delete(:scc)
+    end
 
     if 0 == where(id: attrs[:id]).update_all(attrs)
       create!(attrs)
