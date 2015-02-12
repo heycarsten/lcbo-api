@@ -38,9 +38,7 @@ class Product < ActiveRecord::Base
   def associate_producer!
     return true if producer_name.blank?
     return true if producer_id.present?
-
-    producer = Producer.fetch(lcbo_name: producer_name)
-
+    producer = Producer.fetch_by_lcbo_name(producer_name)
     update_column :producer_id, producer.id
   end
 

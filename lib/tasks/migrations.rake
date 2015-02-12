@@ -42,4 +42,48 @@ namespace :migrations do
     puts
     puts '> Done'
   end
+
+  desc 'Clean product categories'
+  task clean_product_categories: :environment do
+    puts "Cleaning product categories..."
+
+    Product.where(%{
+      (primary_category LIKE '%Price $ %') OR
+      (primary_category LIKE '%CLEARANCE%') OR
+      (primary_category = 'N/A') OR
+      (primary_category = '')
+    }).update_all(primary_category: nil)
+
+    Product.where(%{
+      (primary_category = 'Ready-To-') OR
+      (primary_category = 'Ready-To-Drink/Coolers') OR
+      (primary_category = 'Coolers and Cocktails')
+    }).update_all(primary_category: 'Ready-to-Drink/Coolers')
+
+    Product.where(%{
+      (primary_category = 'Non-Alcoholic') OR
+      (primary_category = 'Non-Alc')
+    }).update_all(primary_category: 'Accessories and Non-Alcohol Items')
+
+    puts "> Done"
+  end
+
+  desc 'Normalize category information'
+  task normalize_categories: :environment do
+    puts 'Normalizing categories...'
+    tings = []
+    Product.select(
+      :id,
+      :primary_category,
+      :secondary_category,
+      :tertiary_category
+    ).find_each do |p|
+      tings << [p.primary_category, p.secondary_category, p.tertiary_category]
+    end
+
+    tings.each do |t|
+      next unless t[1] == nil
+      puts t.inspect
+    end
+  end
 end

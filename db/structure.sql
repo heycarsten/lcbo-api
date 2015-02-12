@@ -212,6 +212,23 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE categories (
+    id uuid DEFAULT uuid_generate_v1() NOT NULL,
+    name character varying(40) NOT NULL,
+    slug character varying(40) NOT NULL,
+    lcbo_ref character varying(40) NOT NULL,
+    depth smallint NOT NULL,
+    is_dead boolean DEFAULT false NOT NULL,
+    parent_category_id uuid,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
 -- Name: crawl_events; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -390,9 +407,8 @@ CREATE TABLE plans (
 CREATE TABLE producers (
     id uuid DEFAULT uuid_generate_v1() NOT NULL,
     name character varying(80) NOT NULL,
-    lcbo_name character varying(100) NOT NULL,
     slug character varying(80) NOT NULL,
-    lcbo_slug character varying(100) NOT NULL,
+    lcbo_ref character varying(100) NOT NULL,
     is_dead boolean DEFAULT false NOT NULL,
     is_ocb boolean DEFAULT false NOT NULL,
     created_at timestamp without time zone NOT NULL,
@@ -625,6 +641,14 @@ ALTER TABLE ONLY stores ALTER COLUMN id SET DEFAULT nextval('stores_id_seq'::reg
 
 
 --
+-- Name: categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY categories
+    ADD CONSTRAINT categories_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: crawl_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -775,6 +799,34 @@ CREATE INDEX crawls_updated_at_index ON crawls USING btree (updated_at);
 
 
 --
+-- Name: index_categories_on_is_dead; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_categories_on_is_dead ON categories USING btree (is_dead);
+
+
+--
+-- Name: index_categories_on_lcbo_ref; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_categories_on_lcbo_ref ON categories USING btree (lcbo_ref);
+
+
+--
+-- Name: index_categories_on_parent_category_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_categories_on_parent_category_id ON categories USING btree (parent_category_id);
+
+
+--
+-- Name: index_categories_on_slug_and_depth; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_categories_on_slug_and_depth ON categories USING btree (slug, depth);
+
+
+--
 -- Name: index_emails_on_address; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -845,10 +897,10 @@ CREATE INDEX index_producers_on_is_dead ON producers USING btree (is_dead);
 
 
 --
--- Name: index_producers_on_lcbo_slug; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_producers_on_lcbo_ref; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_producers_on_lcbo_slug ON producers USING btree (lcbo_slug);
+CREATE UNIQUE INDEX index_producers_on_lcbo_ref ON producers USING btree (lcbo_ref);
 
 
 --
@@ -1258,4 +1310,6 @@ INSERT INTO schema_migrations (version) VALUES ('20150211202803');
 INSERT INTO schema_migrations (version) VALUES ('20150212011542');
 
 INSERT INTO schema_migrations (version) VALUES ('20150212015705');
+
+INSERT INTO schema_migrations (version) VALUES ('20150212040211');
 
