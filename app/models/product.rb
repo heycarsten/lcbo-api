@@ -22,6 +22,7 @@ class Product < ActiveRecord::Base
   has_many :inventories
 
   after_create :associate_producer!
+  after_save :associate_categories!
 
   scope :by_ids, ->(*raw_ids) {
     ids   = raw_ids.flatten.map(&:to_i)
@@ -34,6 +35,24 @@ class Product < ActiveRecord::Base
       scope.order("CASE products.id #{sql} END")
     end
   }
+
+  def associate_categories!
+    names = [
+      primary_category,
+      secondary_category,
+      tertiary_category
+    ].reject(&:blank?)
+
+    ids = if names[0]
+      Category.fetch_by_lcbo_cat_names(names).map(&:id)
+    else
+      []
+    end
+
+    return if category_ids == ids
+
+    update_column :category_ids, ids
+  end
 
   def associate_producer!
     return true if producer_name.blank?

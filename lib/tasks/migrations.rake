@@ -1,6 +1,6 @@
 namespace :migrations do
   desc 'Normalize producer information'
-  task normalize_producers: :environment do
+  task associate_producers: :environment do
     puts 'Creating producers and associating products...'
     Product.where(producer_id: nil).find_each do |product|
       product.associate_producer!
@@ -12,7 +12,7 @@ namespace :migrations do
   end
 
   desc 'Identify Ontario Craft Brewers'
-  task identify_ocb: :environment do
+  task identify_ocb_producers: :environment do
     puts 'Finding OCB producers...'
 
     producers = LCBO::OCBProducersCrawler.parse[:producers]
@@ -43,6 +43,9 @@ namespace :migrations do
     puts '> Done'
   end
 
+  desc 'Normalize producer information and identify Ontario Craft Brewers'
+  task normalize_producers: [:associate_producers, :identify_ocb_producers]
+
   desc 'Clean product categories'
   task clean_product_categories: :environment do
     puts "Cleaning product categories..."
@@ -69,21 +72,19 @@ namespace :migrations do
   end
 
   desc 'Normalize category information'
-  task normalize_categories: :environment do
+  task normalize_categories: [:environment, :clean_product_categories] do
     puts 'Normalizing categories...'
-    tings = []
-    Product.select(
-      :id,
-      :primary_category,
-      :secondary_category,
-      :tertiary_category
-    ).find_each do |p|
-      tings << [p.primary_category, p.secondary_category, p.tertiary_category]
+
+    Product.find_each do |product|
+      product.associate_categories!
+      STDOUT.print('.')
+      STDOUT.flush
     end
 
-    tings.each do |t|
-      next unless t[1] == nil
-      puts t.inspect
-    end
+    puts
+    puts '> Done'
   end
+
+  desc 'Normalize all data in the system'
+  task normalize: [:normalize_producers, :normalize_categories]
 end

@@ -122,20 +122,6 @@ COMMENT ON EXTENSION intarray IS 'functions, operators, and index support for 1-
 
 
 --
--- Name: isn; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS isn WITH SCHEMA public;
-
-
---
--- Name: EXTENSION isn; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION isn IS 'data types for international product numbering standards';
-
-
---
 -- Name: ltree; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -206,6 +192,23 @@ COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UU
 
 
 SET search_path = public, pg_catalog;
+
+--
+-- Name: _uuid_ops; Type: OPERATOR CLASS; Schema: public; Owner: -
+--
+
+CREATE OPERATOR CLASS _uuid_ops
+    DEFAULT FOR TYPE uuid[] USING gin AS
+    STORAGE uuid ,
+    OPERATOR 1 &&(anyarray,anyarray) ,
+    OPERATOR 2 @>(anyarray,anyarray) ,
+    OPERATOR 3 <@(anyarray,anyarray) ,
+    OPERATOR 4 =(anyarray,anyarray) ,
+    FUNCTION 1 (uuid[], uuid[]) uuid_cmp(uuid,uuid) ,
+    FUNCTION 2 (uuid[], uuid[]) ginarrayextract(anyarray,internal,internal) ,
+    FUNCTION 3 (uuid[], uuid[]) ginqueryarrayextract(anyarray,internal,smallint,internal,internal,internal,internal) ,
+    FUNCTION 4 (uuid[], uuid[]) ginarrayconsistent(internal,smallint,anyarray,integer,internal,internal,internal,internal);
+
 
 SET default_tablespace = '';
 
@@ -479,7 +482,8 @@ CREATE TABLE products (
     style_body character varying(255),
     value_added_promotion_ends_on date,
     data_source integer DEFAULT 0,
-    producer_id uuid
+    producer_id uuid,
+    category_ids uuid[] DEFAULT '{}'::uuid[] NOT NULL
 );
 
 
@@ -911,6 +915,13 @@ CREATE UNIQUE INDEX index_producers_on_slug ON producers USING btree (slug);
 
 
 --
+-- Name: index_products_on_category_ids; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_products_on_category_ids ON products USING gin (category_ids);
+
+
+--
 -- Name: index_products_on_is_dead_and_inventory_volume_in_milliliters; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1312,4 +1323,8 @@ INSERT INTO schema_migrations (version) VALUES ('20150212011542');
 INSERT INTO schema_migrations (version) VALUES ('20150212015705');
 
 INSERT INTO schema_migrations (version) VALUES ('20150212040211');
+
+INSERT INTO schema_migrations (version) VALUES ('20150212054728');
+
+INSERT INTO schema_migrations (version) VALUES ('20150212141949');
 
