@@ -12,8 +12,6 @@ class API::V2::ProductSerializer < ApplicationSerializer
     :bonus_reward_miles,
     :bonus_reward_miles_ends_on,
     :stock_type,
-    :primary_category,
-    :secondary_category,
     :origin,
     :package,
     :package_unit_type,
@@ -43,7 +41,6 @@ class API::V2::ProductSerializer < ApplicationSerializer
     :image_url,
     :varietal,
     :style,
-    :tertiary_category,
     :sugar_in_grams_per_liter,
     :clearance_sale_savings_in_cents,
     :has_clearance_sale,
@@ -51,7 +48,8 @@ class API::V2::ProductSerializer < ApplicationSerializer
     :reported_on,
     :created_at,
     :updated_at,
-    :distance_in_meters
+    :distance_in_meters,
+    :category
 
   def id
     object.id.to_s
@@ -89,7 +87,12 @@ class API::V2::ProductSerializer < ApplicationSerializer
     h = super
 
     h[:links] = {}.tap do |links|
-      links[:producer] = object.producer_id if object.producer_id
+      links[:producer] = object.producer_id.to_s if object.producer_id
+
+      category_ids = object.category_ids || []
+
+      links[:category]   = category_ids.last.to_s unless category_ids.empty?
+      links[:categories] = category_ids.map(&:to_s)
     end
 
     h.delete(:links) if h[:links].empty?

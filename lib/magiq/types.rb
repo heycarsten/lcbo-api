@@ -109,6 +109,20 @@ module Magiq
     end
     register :upc, UPC
 
+    class CategoryDepth < Type
+      def cast!
+        v = raw.to_s.to_i
+
+        if v >= 0 && v <= 2
+          v
+        else
+          bad! "provided value of #{raw.inspect} is not a permitted category " \
+          "depth, it must be an integer value of 0, 1, or 2."
+        end
+      end
+    end
+    register :category_depth, CategoryDepth
+
     class Latitude < Type
       def cast!
         case v = raw.to_f

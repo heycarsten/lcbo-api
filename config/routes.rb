@@ -1,4 +1,4 @@
-many_id_re = /([0-9]+\,[0-9]+\,{0,1})+/
+many_id_re = /([a-z0-9\-]+\,[a-z0-9\-]+\,{0,1})+/
 
 Rails.application.routes.draw do
   namespace :api, path: '/', format: :json do
@@ -62,6 +62,18 @@ Rails.application.routes.draw do
         get '/stores'     => :index, as: :stores
         get '/stores/:id' => :index, constraints: { id: many_id_re }
         get '/stores/:id' => :show,  as: :store
+      end
+
+      controller :producers do
+        get '/producers'     => :index, as: :producers
+        get '/producers/:id' => :index, constraints: { id: many_id_re }
+        get '/producers/:id' => :show,  as: :producer
+      end
+
+      controller :categories do
+        get '/categories'     => :index, as: :categories
+        get '/categories/:id' => :index, constraints: { id: many_id_re }
+        get '/categories/:id' => :show,  as: :category
       end
     end
 

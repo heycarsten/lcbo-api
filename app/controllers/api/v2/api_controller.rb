@@ -2,6 +2,8 @@ class API::V2::APIController < APIController
   VERSION  = 2
   PER      = 50
 
+  serialization_scope nil
+
   rescue_from \
     GCoder::NoResultsError,
     GCoder::OverLimitError,

@@ -4,7 +4,7 @@ class API::V2::StoresQuery < API::V2::APIQuery
   has_pagination
   has_include_dead
 
-  by :id, limit: 50
+  by :id, limit: 100
 
   unqualified [
     :distance_in_meters

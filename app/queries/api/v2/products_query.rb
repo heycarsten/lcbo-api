@@ -4,8 +4,8 @@ class API::V2::ProductsQuery < API::V2::APIQuery
   has_pagination
   has_include_dead
 
-  by :id, limit: 50
-  by :upc, type: :upc, limit: 50
+  by :id, limit: 100
+  by :upc, type: :upc, limit: 100
 
   toggle \
     :is_discontinued,

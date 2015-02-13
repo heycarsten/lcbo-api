@@ -1,5 +1,15 @@
 class Producer < ActiveRecord::Base
-  before_save :generate_slug
+  include PgSearch
+
+  pg_search_scope :search,
+    against:  :name,
+    ignoring: :accents,
+    using: {
+      tsearch: {
+        prefix: true,
+        tsvector_column: :name_vectors
+      }
+    }
 
   has_many :products
 
@@ -36,10 +46,5 @@ class Producer < ActiveRecord::Base
         lcbo_ref: lcbo_ref
       )
     end
-  end
-
-  def generate_slug
-    write_attribute :slug, read_attribute(:name).parameterize
-    true
   end
 end

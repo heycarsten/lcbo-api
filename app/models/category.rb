@@ -1,7 +1,33 @@
 class Category < ActiveRecord::Base
-  before_save :generate_slug
+  include PgSearch
+
+  after_save :update_parent_category_ids
+
+  pg_search_scope :search,
+    against:  :name,
+    ignoring: :accents,
+    using: {
+      tsearch: {
+        prefix: true,
+        tsvector_column: :name_vectors
+      }
+    }
 
   has_many :categories, foreign_key: :parent_category_id
+
+  belongs_to :parent_category, class_name: 'Category'
+
+  scope :by_ids, ->(*raw_ids) {
+    ids   = raw_ids.flatten.map(&:to_i)
+    scope = where(id: ids)
+
+    if ids.empty?
+      scope
+    else
+      sql = ids.each_with_index.map { |id, i| "WHEN #{id} THEN #{i}" }.join(' ')
+      scope.order("CASE categories.id #{sql} END")
+    end
+  }
 
   def self.mark_dead!(&each)
     Category.find_each do |category|
@@ -43,7 +69,7 @@ class Category < ActiveRecord::Base
         h[:depth]    = c[:depth]
         h[:name]     = c[:name].
           gsub('/', ' / ').
-          gsub(' and ', ' & ').
+          gsub(' & ', ' and ').
           gsub(/[ ]+/, ' ').
           strip
         h[:parent_category_id] = parent.id if parent
@@ -62,8 +88,18 @@ class Category < ActiveRecord::Base
     Product.where('? = ANY(category_ids)', id)
   end
 
-  def generate_slug
-    write_attribute(:slug, read_attribute(:name).parameterize)
-    true
+  def update_parent_category_ids
+    ids = []
+    cat = self
+
+    loop do
+      if (cat = cat.parent_category)
+        ids.insert(0, cat.id)
+      else
+        break
+      end
+    end
+
+    update_column :parent_category_ids, ids
   end
 end

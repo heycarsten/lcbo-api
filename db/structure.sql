@@ -193,23 +193,6 @@ COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UU
 
 SET search_path = public, pg_catalog;
 
---
--- Name: _uuid_ops; Type: OPERATOR CLASS; Schema: public; Owner: -
---
-
-CREATE OPERATOR CLASS _uuid_ops
-    DEFAULT FOR TYPE uuid[] USING gin AS
-    STORAGE uuid ,
-    OPERATOR 1 &&(anyarray,anyarray) ,
-    OPERATOR 2 @>(anyarray,anyarray) ,
-    OPERATOR 3 <@(anyarray,anyarray) ,
-    OPERATOR 4 =(anyarray,anyarray) ,
-    FUNCTION 1 (uuid[], uuid[]) uuid_cmp(uuid,uuid) ,
-    FUNCTION 2 (uuid[], uuid[]) ginarrayextract(anyarray,internal,internal) ,
-    FUNCTION 3 (uuid[], uuid[]) ginqueryarrayextract(anyarray,internal,smallint,internal,internal,internal,internal) ,
-    FUNCTION 4 (uuid[], uuid[]) ginarrayconsistent(internal,smallint,anyarray,integer,internal,internal,internal,internal);
-
-
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -219,16 +202,36 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE categories (
-    id uuid DEFAULT uuid_generate_v1() NOT NULL,
+    id integer NOT NULL,
     name character varying(40) NOT NULL,
-    slug character varying(40) NOT NULL,
     lcbo_ref character varying(40) NOT NULL,
-    depth smallint NOT NULL,
+    parent_category_id integer,
+    parent_category_ids integer[] DEFAULT '{}'::integer[] NOT NULL,
     is_dead boolean DEFAULT false NOT NULL,
-    parent_category_id uuid,
+    depth smallint NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    name_vectors pg_catalog.tsvector
 );
+
+
+--
+-- Name: categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE categories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE categories_id_seq OWNED BY categories.id;
 
 
 --
@@ -408,15 +411,34 @@ CREATE TABLE plans (
 --
 
 CREATE TABLE producers (
-    id uuid DEFAULT uuid_generate_v1() NOT NULL,
+    id integer NOT NULL,
     name character varying(80) NOT NULL,
-    slug character varying(80) NOT NULL,
     lcbo_ref character varying(100) NOT NULL,
     is_dead boolean DEFAULT false NOT NULL,
     is_ocb boolean DEFAULT false NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    name_vectors pg_catalog.tsvector
 );
+
+
+--
+-- Name: producers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE producers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: producers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE producers_id_seq OWNED BY producers.id;
 
 
 --
@@ -482,8 +504,9 @@ CREATE TABLE products (
     style_body character varying(255),
     value_added_promotion_ends_on date,
     data_source integer DEFAULT 0,
-    producer_id uuid,
-    category_ids uuid[] DEFAULT '{}'::uuid[] NOT NULL
+    producer_id integer,
+    category_ids integer[] DEFAULT '{}'::integer[] NOT NULL,
+    category character varying(140)
 );
 
 
@@ -613,6 +636,13 @@ CREATE TABLE users (
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY categories ALTER COLUMN id SET DEFAULT nextval('categories_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY crawl_events ALTER COLUMN id SET DEFAULT nextval('crawl_events_id_seq'::regclass);
 
 
@@ -628,6 +658,13 @@ ALTER TABLE ONLY crawls ALTER COLUMN id SET DEFAULT nextval('crawls_id_seq'::reg
 --
 
 ALTER TABLE ONLY inventories ALTER COLUMN id SET DEFAULT nextval('inventories_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY producers ALTER COLUMN id SET DEFAULT nextval('producers_id_seq'::regclass);
 
 
 --
@@ -803,6 +840,20 @@ CREATE INDEX crawls_updated_at_index ON crawls USING btree (updated_at);
 
 
 --
+-- Name: index_categories_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_categories_on_created_at ON categories USING btree (created_at);
+
+
+--
+-- Name: index_categories_on_depth; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_categories_on_depth ON categories USING btree (depth);
+
+
+--
 -- Name: index_categories_on_is_dead; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -817,6 +868,20 @@ CREATE INDEX index_categories_on_lcbo_ref ON categories USING btree (lcbo_ref);
 
 
 --
+-- Name: index_categories_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_categories_on_name ON categories USING btree (name);
+
+
+--
+-- Name: index_categories_on_name_vectors; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_categories_on_name_vectors ON categories USING gin (name_vectors);
+
+
+--
 -- Name: index_categories_on_parent_category_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -824,10 +889,17 @@ CREATE INDEX index_categories_on_parent_category_id ON categories USING btree (p
 
 
 --
--- Name: index_categories_on_slug_and_depth; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_categories_on_parent_category_ids; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_categories_on_slug_and_depth ON categories USING btree (slug, depth);
+CREATE INDEX index_categories_on_parent_category_ids ON categories USING gin (parent_category_ids);
+
+
+--
+-- Name: index_categories_on_updated_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_categories_on_updated_at ON categories USING btree (updated_at);
 
 
 --
@@ -894,10 +966,24 @@ CREATE INDEX index_plans_on_is_active ON plans USING btree (is_active);
 
 
 --
+-- Name: index_producers_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_producers_on_created_at ON producers USING btree (created_at);
+
+
+--
 -- Name: index_producers_on_is_dead; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE INDEX index_producers_on_is_dead ON producers USING btree (is_dead);
+
+
+--
+-- Name: index_producers_on_is_ocb; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_producers_on_is_ocb ON producers USING btree (is_ocb);
 
 
 --
@@ -908,10 +994,24 @@ CREATE UNIQUE INDEX index_producers_on_lcbo_ref ON producers USING btree (lcbo_r
 
 
 --
--- Name: index_producers_on_slug; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_producers_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_producers_on_slug ON producers USING btree (slug);
+CREATE INDEX index_producers_on_name ON producers USING btree (name);
+
+
+--
+-- Name: index_producers_on_name_vectors; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_producers_on_name_vectors ON producers USING gin (name_vectors);
+
+
+--
+-- Name: index_producers_on_updated_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_producers_on_updated_at ON producers USING btree (updated_at);
 
 
 --
@@ -1251,6 +1351,20 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 
 
 --
+-- Name: categories_tsvectorupdate; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER categories_tsvectorupdate BEFORE INSERT OR UPDATE ON categories FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('name_vectors', 'pg_catalog.simple', 'name');
+
+
+--
+-- Name: producers_tsvectorupdate; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER producers_tsvectorupdate BEFORE INSERT OR UPDATE ON producers FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('name_vectors', 'pg_catalog.simple', 'name');
+
+
+--
 -- Name: products_tsvectorupdate; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -1324,7 +1438,9 @@ INSERT INTO schema_migrations (version) VALUES ('20150212015705');
 
 INSERT INTO schema_migrations (version) VALUES ('20150212040211');
 
-INSERT INTO schema_migrations (version) VALUES ('20150212054728');
-
 INSERT INTO schema_migrations (version) VALUES ('20150212141949');
+
+INSERT INTO schema_migrations (version) VALUES ('20150213020057');
+
+INSERT INTO schema_migrations (version) VALUES ('20150213173003');
 

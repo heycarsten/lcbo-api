@@ -36,6 +36,16 @@ class Product < ActiveRecord::Base
     end
   }
 
+  def categories
+    @categories ||= begin
+      if (ids = category_ids).any?
+        Category.by_ids(ids).load
+      else
+        []
+      end
+    end
+  end
+
   def associate_categories!
     names = [
       primary_category,
@@ -43,13 +53,19 @@ class Product < ActiveRecord::Base
       tertiary_category
     ].reject(&:blank?)
 
-    ids = if names[0]
-      Category.fetch_by_lcbo_cat_names(names).map(&:id)
+    cats = if names[0]
+      Category.fetch_by_lcbo_cat_names(names)
     else
       []
     end
 
-    return if category_ids == ids
+    if cats.empty?
+      update_column :category, nil
+    else
+      update_column :category, cats.map(&:name).join(', ')
+    end
+
+    return if category_ids == (ids = cats.map(&:id))
 
     update_column :category_ids, ids
   end
