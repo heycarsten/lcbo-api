@@ -9,7 +9,7 @@ require 'capistrano/rails/migrations'
 require 'capistrano/rvm'
 
 # Include 3rd party cap tasks
-require 'honeybadger/capistrano'
+require 'capistrano/honeybadger'
 
 # Includes tasks from other gems included in your Gemfile
 #
