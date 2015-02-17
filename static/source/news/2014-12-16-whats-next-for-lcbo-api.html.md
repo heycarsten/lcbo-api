@@ -154,11 +154,11 @@ what and where. This is why I have introduced the concept of Access Keys to
 LCBO API.
 
 <p class="warning">
-  As of March 1<sup>st</sup>, 2015 anonymous API access will be
+  As of March 8<sup>th</sup>, 2015 anonymous API access will be
   rate-limited.
 </p>
 
-Anonymous access remains but, as of March 1<sup>st</sup>, 2015, it will be
+Anonymous access remains but, as of March 8<sup>th</sup>, 2015, it will be
 rate-limited. This means that you won't need an Access Key for playing around
 or learning, and it means that existing mobile and JavaScript apps will continue
 to work. If you're using LCBO API for anything beyond fiddling, you'll want to

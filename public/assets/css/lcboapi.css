@@ -1138,29 +1138,30 @@ section.content-page {
         text-align: center;
         font-family: "Roboto Condensed", "Roboto", "Helvetica Neue", "Open Sanse", sans-serif;
         letter-spacing: -0.02em;
+        line-height: 1.32em;
         font-size: 2.65em; }
-        /* line 21, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_content-page.css.sass */
+        /* line 22, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_content-page.css.sass */
         section.content-page > article.document > header h1 a {
           text-decoration: none;
           color: #424242; }
-          /* line 25, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_content-page.css.sass */
+          /* line 26, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_content-page.css.sass */
           section.content-page > article.document > header h1 a:hover {
             color: #4a148c; }
-          /* line 28, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_content-page.css.sass */
+          /* line 29, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_content-page.css.sass */
           section.content-page > article.document > header h1 a:active {
             color: #d500f9; }
-      /* line 31, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_content-page.css.sass */
+      /* line 32, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_content-page.css.sass */
       section.content-page > article.document > header .meta {
         color: #8c9389;
         font-size: 0.8em;
         text-align: center; }
-        /* line 36, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_content-page.css.sass */
+        /* line 37, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_content-page.css.sass */
         section.content-page > article.document > header .meta .sep {
           color: #b9c2b3; }
-    /* line 39, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_content-page.css.sass */
+    /* line 40, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_content-page.css.sass */
     section.content-page > article.document .fa-heart {
       color: #e91e63; }
-    /* line 42, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_content-page.css.sass */
+    /* line 43, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_content-page.css.sass */
     section.content-page > article.document .center {
       text-align: center; }
 

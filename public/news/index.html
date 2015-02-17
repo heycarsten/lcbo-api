@@ -57,6 +57,61 @@
     <article class="document">
       <header>
         <h1>
+          <a class="link" href="/news/v2-update-ontario-craft-brewers-identification/">V2 Update, Ontario Craft Brewers Identification</a>
+        </h1>
+        <div class="meta">
+          <span class="date">
+            February 17, 2015
+          </span>
+          <span class="sep">
+            &mdash;
+          </span>
+          <span class="author">
+            <a href="https://twitter.com/heycarsten">heycarsten</a>
+          </span>
+        </div>
+      </header>
+      <p>Well, it&rsquo;s been a busy couple of months since my
+<a href="/news/whats-next-for-lcbo-api/">last post</a>. In two months, exactly 99 of you
+have registered and created API keys, I am humbled and impressed! LCBO API saw
+200% more throughput this January compared to last year for a total of 2.3
+million requests served, pretty wild for the slowest time of the year!</p>
+
+<p>In other news I&rsquo;ve been hard at work on all of the new stuff I have planned for
+V2 of LCBO API. Catagories are now a first-class resource as well as producers,
+and UPC lookups are now functional.</p>
+
+<p>After I normalized producers it had me thinking about how the official LCBO site
+allows people to filter products by VQA designation. I thought it would be nice
+to identify products that are produced by
+<a href="http://www.ontariocraftbrewers.com/">Ontario Craft Brewers</a>, so I now cross
+reference that data with the LCBO product catalog.</p>
+
+<p>I&rsquo;ve backported this functionality into V1 so you can start using it immediately.
+Products now have a boolean field called <code>is_ocb</code> that identifies if the product
+is produced by an OCB member. You can also filter on this field with the standard
+V1 filtering parameter <a href="/products?where=is_ocb"><code>/products?where=is_ocb</code></a> or
+exclude OCB products by using
+<a href="/products?where_not=is_ocb"><code>/products?where_not=is_ocb</code></a>. I&rsquo;m excited to see
+how people integrate this data into their products. It&rsquo;s a simple
+addition and one that reflects the direction that LCBO API is taking.</p>
+
+<p>Finally, I&rsquo;m going to be in Portland, Oregon for the first week of March to attend
+<a href="http://emberconf.com">Ember Conf</a>, I realized that this conflicts with
+my original release date of March 1<sup>st</sup> for LCBO API V2, so I&rsquo;m bumping
+the date by a week to March 8<sup>th</sup>. I don&rsquo;t want to release V2 when I&rsquo;m
+possibly not available to answer questions and deal with potential issues.</p>
+
+<p>That&rsquo;s it for now, take care everyone!</p>
+
+<p>&mdash; Carsten</p>
+
+<hr>
+
+    </article>
+    <article class="document">
+      <header>
+        <h1>
           <a class="link" href="/news/whats-next-for-lcbo-api/">What’s next for LCBO API</a>
         </h1>
         <div class="meta">
@@ -229,11 +284,11 @@ what and where. This is why I have introduced the concept of Access Keys to
 LCBO API.</p>
 
 <p class="warning">
-  As of March 1<sup>st</sup>, 2015 anonymous API access will be
+  As of March 8<sup>th</sup>, 2015 anonymous API access will be
   rate-limited.
 </p>
 
-<p>Anonymous access remains but, as of March 1<sup>st</sup>, 2015, it will be
+<p>Anonymous access remains but, as of March 8<sup>th</sup>, 2015, it will be
 rate-limited. This means that you won&rsquo;t need an Access Key for playing around
 or learning, and it means that existing mobile and JavaScript apps will continue
 to work. If you&rsquo;re using LCBO API for anything beyond fiddling, you&rsquo;ll want to
