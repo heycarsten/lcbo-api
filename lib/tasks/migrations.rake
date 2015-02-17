@@ -49,5 +49,5 @@ namespace :migrations do
   end
 
   desc 'Normalize all data in the system'
-  task normalize: [:normalize_producers, :normalize_categories, :update_product_catalog_references]
+  task normalize: [:normalize_producers, :normalize_categories, :update_product_catalog_refs]
 end
