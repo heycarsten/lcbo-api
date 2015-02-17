@@ -59,7 +59,7 @@ RSpec.describe 'V2 Stores API' do
       api_headers['Authorization'] = "Token #{@public_key}"
       api_get '/stores'
       expect(response.status).to eq 403
-      expect(json[:error][:code]).to eq 'bad_origin'
+      expect(json[:errors][0][:code]).to eq 'bad_origin'
     end
 
     it 'allows requests for public keys with domains' do
@@ -68,7 +68,7 @@ RSpec.describe 'V2 Stores API' do
       api_headers['Authorization'] = "Token #{@public_key}"
       api_get '/stores'
       expect(response.status).to eq 200
-      expect(json[:stores].size).to_not eq 0
+      expect(json[:data].size).to_not eq 0
     end
   end
 
@@ -105,7 +105,7 @@ RSpec.describe 'V2 Stores API' do
       api_get '/stores'
       expect(response.status).to eq 403
       expect(response.headers['X-Client-Limit-Count']).to eq 4
-      expect(json[:error][:code]).to eq 'too_many_sessions'
+      expect(json[:errors][0][:code]).to eq 'too_many_sessions'
     end
   end
 
@@ -124,7 +124,7 @@ RSpec.describe 'V2 Stores API' do
     api_get '/stores'
 
     expect(response.status).to eq 200
-    expect(json[:stores].size).to eq 3
+    expect(json[:data].size).to eq 3
     expect(json[:meta][:pagination][:total_records]).to eq 3
   end
 
@@ -136,7 +136,7 @@ RSpec.describe 'V2 Stores API' do
     api_get '/stores'
 
     expect(response.status).to eq 200
-    expect(json[:stores].size).to eq 3
+    expect(json[:data].size).to eq 3
     expect(json[:meta][:pagination][:total_records]).to eq 3
   end
 
@@ -147,8 +147,8 @@ RSpec.describe 'V2 Stores API' do
     api_get "/stores/#{@stores[0].id},#{@stores[1].id}"
 
     expect(response.status).to eq 200
-    expect(json[:stores].size).to eq 2
-    expect(json[:stores].map { |s| s[:id] }).to include @stores[0].id.to_s, @stores[1].id.to_s
+    expect(json[:data].size).to eq 2
+    expect(json[:data].map { |s| s[:id] }).to include @stores[0].id.to_s, @stores[1].id.to_s
     expect(json[:meta]).to eq nil
   end
 
@@ -159,7 +159,7 @@ RSpec.describe 'V2 Stores API' do
     api_get "/stores/#{@stores[2].id}"
 
     expect(response.status).to eq 200
-    expect(json[:store][:id]).to eq @stores[2].id.to_s
+    expect(json[:data][:id]).to eq @stores[2].id.to_s
     expect(json[:meta]).to eq nil
   end
 
@@ -170,7 +170,7 @@ RSpec.describe 'V2 Stores API' do
     api_get "/stores?id=1&q=fail"
 
     expect(response.status).to eq 400
-    expect(json[:error][:code]).to eq 'bad_param'
+    expect(json[:errors][0][:code]).to eq 'bad_param'
   end
 
   it 'returns stores by query' do
@@ -180,7 +180,7 @@ RSpec.describe 'V2 Stores API' do
     api_get '/stores?q=store+b'
 
     expect(response.status).to eq 200
-    expect(json[:stores].size).to eq 1
+    expect(json[:data].size).to eq 1
   end
 
   it 'returns stores by lat/lon' do
@@ -190,8 +190,8 @@ RSpec.describe 'V2 Stores API' do
     api_get "/stores?lat=#{@stores[2].latitude}&lon=#{@stores[2].longitude}"
 
     expect(response.status).to eq 200
-    expect(json[:stores].size).to eq 3
-    expect(json[:stores][0][:distance_in_meters]).to be 0
+    expect(json[:data].size).to eq 3
+    expect(json[:data][0][:distance_in_meters]).to be 0
   end
 
   it 'can include dead stores' do
@@ -201,7 +201,7 @@ RSpec.describe 'V2 Stores API' do
     api_get "/stores?include_dead=yes"
 
     expect(response.status).to eq 200
-    expect(json[:stores].size).to eq 4
+    expect(json[:data].size).to eq 4
   end
 
   it 'can order results' do
@@ -211,10 +211,10 @@ RSpec.describe 'V2 Stores API' do
     api_get "/stores?sort=-id"
 
     expect(response.status).to eq 200
-    expect(json[:stores].size).to eq 3
-    expect(json[:stores][0][:id]).to eq '4'
-    expect(json[:stores][1][:id]).to eq '3'
-    expect(json[:stores][2][:id]).to eq '2'
+    expect(json[:data].size).to eq 3
+    expect(json[:data][0][:id]).to eq '4'
+    expect(json[:data][1][:id]).to eq '3'
+    expect(json[:data][2][:id]).to eq '2'
   end
 
   it 'can constrain results' do
@@ -224,8 +224,8 @@ RSpec.describe 'V2 Stores API' do
     api_get "/stores?inventory_count_gt=10"
 
     expect(response.status).to eq 200
-    expect(json[:stores].size).to eq 2
-    expect(json[:stores].map { |s| s[:id] }).to include '3', '2'
+    expect(json[:data].size).to eq 2
+    expect(json[:data].map { |s| s[:id] }).to include '3', '2'
   end
 
   it 'returns stores that have a product' do
@@ -234,13 +234,16 @@ RSpec.describe 'V2 Stores API' do
 
     api_get "/stores?product=#{@products[0].id}"
 
+    linked_products    = json[:linked].select { |l| l[:type] == 'product' }
+    linked_inventories = json[:linked].select { |l| l[:type] == 'inventory' }
+
     expect(response.status).to eq 200
-    expect(json[:product][:id]).to eq @products[0].id.to_s
-    expect(json[:stores].size).to eq 2
-    expect(json[:stores][0][:id]).to eq @stores[0].id.to_s
-    expect(json[:stores][0][:links][:inventory]).to eq @inventories[0].compound_id
-    expect(json[:inventories].size).to eq 2
-    expect(json[:inventories][0][:id]).to eq @inventories[0].compound_id
+    expect(linked_products[0][:id]).to eq @products[0].id.to_s
+    expect(json[:data].size).to eq 2
+    expect(json[:data][0][:id]).to eq @stores[0].id.to_s
+    expect(json[:data][0][:links][:inventory]).to eq @inventories[0].compound_id
+    expect(linked_inventories.size).to eq 2
+    expect(linked_inventories[0][:id]).to eq @inventories[0].compound_id
   end
 
   it 'returns stores that have all products (many)' do
@@ -249,7 +252,7 @@ RSpec.describe 'V2 Stores API' do
     api_headers['Authorization'] = "Token #{@private_key}"
 
     api_get "/stores?products=#{@products[0].id},#{@products[1].id}"
-    expect(json[:stores].size).to eq 1
+    expect(json[:data].size).to eq 1
   end
 
   it 'returns stores that have all products (one)' do
@@ -258,7 +261,7 @@ RSpec.describe 'V2 Stores API' do
     api_headers['Authorization'] = "Token #{@private_key}"
 
     api_get "/stores?products=#{@products[0].id}"
-    expect(json[:stores].size).to eq 2
+    expect(json[:data].size).to eq 2
   end
 
   it 'returns stores that have a product' do
@@ -267,6 +270,6 @@ RSpec.describe 'V2 Stores API' do
     api_headers['Authorization'] = "Token #{@private_key}"
 
     api_get "/stores?product=#{@products[0].id}"
-    expect(json[:stores].size).to eq 2
+    expect(json[:data].size).to eq 2
   end
 end

@@ -1,7 +1,9 @@
 class API::V2::ProductSerializer < ApplicationSerializer
   attributes \
+    :type,
     :id,
     :is_dead,
+    :catalog,
     :name,
     :tags,
     :is_discontinued,
@@ -11,7 +13,6 @@ class API::V2::ProductSerializer < ApplicationSerializer
     :limited_time_offer_ends_on,
     :bonus_reward_miles,
     :bonus_reward_miles_ends_on,
-    :stock_type,
     :origin,
     :package,
     :package_unit_type,
@@ -31,6 +32,7 @@ class API::V2::ProductSerializer < ApplicationSerializer
     :has_bonus_reward_miles,
     :is_seasonal,
     :is_vqa,
+    :is_ocb,
     :is_kosher,
     :value_added_promotion_description,
     :description,
@@ -51,8 +53,16 @@ class API::V2::ProductSerializer < ApplicationSerializer
     :distance_in_meters,
     :category
 
+  def type
+    :product
+  end
+
   def id
     object.id.to_s
+  end
+
+  def catalog
+    Product::CATALOG_REFS.invert[object.catalog_refs.last]
   end
 
   def quantity
@@ -78,6 +88,10 @@ class API::V2::ProductSerializer < ApplicationSerializer
 
     unless object.respond_to?(:distance_in_meters)
       keys.delete(:distance_in_meters)
+    end
+
+    unless scope && scope[:include_dead]
+      keys.delete(:is_dead)
     end
 
     keys

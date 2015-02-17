@@ -10212,7 +10212,7 @@ Prism.languages.swift = Prism.languages.extend('clike', {
   'builtin': /\b([A-Z]\S+|abs|advance|alignof|alignofValue|assert|contains|count|countElements|debugPrint|debugPrintln|distance|dropFirst|dropLast|dump|enumerate|equal|filter|find|first|getVaList|indices|isEmpty|join|last|lazy|lexicographicalCompare|map|max|maxElement|min|minElement|numericCast|overlaps|partition|prefix|print|println|reduce|reflect|reverse|sizeof|sizeofValue|sort|sorted|split|startsWith|stride|strideof|strideofValue|suffix|swap|toDebugString|toString|transcode|underestimateCount|unsafeBitCast|withExtendedLifetime|withUnsafeMutablePointer|withUnsafeMutablePointers|withUnsafePointer|withUnsafePointers|withVaList)\b/g
 });
 /**
- * React (with addons) v0.12.1
+ * React (with addons) v0.12.2
  */
 
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.React=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
@@ -10645,7 +10645,6 @@ module.exports = CSSCore;
  */
 var isUnitlessNumber = {
   columnCount: true,
-  fillOpacity: true,
   flex: true,
   flexGrow: true,
   flexShrink: true,
@@ -10657,7 +10656,11 @@ var isUnitlessNumber = {
   orphans: true,
   widows: true,
   zIndex: true,
-  zoom: true
+  zoom: true,
+
+  // SVG-related properties
+  fillOpacity: true,
+  strokeOpacity: true
 };
 
 /**
@@ -13875,7 +13878,11 @@ var HTMLDOMPropertyConfig = {
     draggable: null,
     encType: null,
     form: MUST_USE_ATTRIBUTE,
+    formAction: MUST_USE_ATTRIBUTE,
+    formEncType: MUST_USE_ATTRIBUTE,
+    formMethod: MUST_USE_ATTRIBUTE,
     formNoValidate: HAS_BOOLEAN_VALUE,
+    formTarget: MUST_USE_ATTRIBUTE,
     frameBorder: MUST_USE_ATTRIBUTE,
     height: MUST_USE_ATTRIBUTE,
     hidden: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
@@ -13890,6 +13897,8 @@ var HTMLDOMPropertyConfig = {
     list: MUST_USE_ATTRIBUTE,
     loop: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
     manifest: MUST_USE_ATTRIBUTE,
+    marginHeight: null,
+    marginWidth: null,
     max: null,
     maxLength: MUST_USE_ATTRIBUTE,
     media: MUST_USE_ATTRIBUTE,
@@ -14614,7 +14623,7 @@ if ("production" !== "development") {
 
 // Version exists only in the open-source version of React, not in Facebook's
 // internal version.
-React.version = '0.12.1';
+React.version = '0.12.2';
 
 module.exports = React;
 
@@ -20121,7 +20130,7 @@ ReactElement.createElement = function(type, config, children) {
   }
 
   // Resolve default props
-  if (type.defaultProps) {
+  if (type && type.defaultProps) {
     var defaultProps = type.defaultProps;
     for (propName in defaultProps) {
       if (typeof props[propName] === 'undefined') {
@@ -20214,6 +20223,7 @@ var ReactPropTypeLocations = _dereq_("./ReactPropTypeLocations");
 var ReactCurrentOwner = _dereq_("./ReactCurrentOwner");
 
 var monitorCodeUse = _dereq_("./monitorCodeUse");
+var warning = _dereq_("./warning");
 
 /**
  * Warn if there's no key explicitly set on dynamic arrays of children or
@@ -20411,6 +20421,15 @@ function checkPropTypes(componentName, propTypes, props, location) {
 var ReactElementValidator = {
 
   createElement: function(type, props, children) {
+    // We warn in this case but don't throw. We expect the element creation to
+    // succeed and there will likely be errors in render.
+    ("production" !== "development" ? warning(
+      type != null,
+      'React.createElement: type should not be null or undefined. It should ' +
+        'be a string (for DOM elements) or a ReactClass (for composite ' +
+        'components).'
+    ) : null);
+
     var element = ReactElement.createElement.apply(this, arguments);
 
     // The result can be nullish if a mock or a custom function is used.
@@ -20423,22 +20442,24 @@ var ReactElementValidator = {
       validateChildKeys(arguments[i], type);
     }
 
-    var name = type.displayName;
-    if (type.propTypes) {
-      checkPropTypes(
-        name,
-        type.propTypes,
-        element.props,
-        ReactPropTypeLocations.prop
-      );
-    }
-    if (type.contextTypes) {
-      checkPropTypes(
-        name,
-        type.contextTypes,
-        element._context,
-        ReactPropTypeLocations.context
-      );
+    if (type) {
+      var name = type.displayName;
+      if (type.propTypes) {
+        checkPropTypes(
+          name,
+          type.propTypes,
+          element.props,
+          ReactPropTypeLocations.prop
+        );
+      }
+      if (type.contextTypes) {
+        checkPropTypes(
+          name,
+          type.contextTypes,
+          element._context,
+          ReactPropTypeLocations.context
+        );
+      }
     }
     return element;
   },
@@ -20456,7 +20477,7 @@ var ReactElementValidator = {
 
 module.exports = ReactElementValidator;
 
-},{"./ReactCurrentOwner":42,"./ReactElement":58,"./ReactPropTypeLocations":78,"./monitorCodeUse":150}],60:[function(_dereq_,module,exports){
+},{"./ReactCurrentOwner":42,"./ReactElement":58,"./ReactPropTypeLocations":78,"./monitorCodeUse":150,"./warning":160}],60:[function(_dereq_,module,exports){
 /**
  * Copyright 2014, Facebook, Inc.
  * All rights reserved.
@@ -24499,7 +24520,7 @@ var ReactTestUtils = {
   mockComponent: function(module, mockTagName) {
     mockTagName = mockTagName || module.mockTagName || "div";
 
-    var ConvenienceConstructor = React.createClass({displayName: 'ConvenienceConstructor',
+    var ConvenienceConstructor = React.createClass({displayName: "ConvenienceConstructor",
       render: function() {
         return React.createElement(
           mockTagName,
@@ -30065,7 +30086,7 @@ var ENDPOINTS = [
   }
 ];
 
-var TryItEndpointOption = React.createClass({displayName: 'TryItEndpointOption',
+var TryItEndpointOption = React.createClass({displayName: "TryItEndpointOption",
   handleClick: function(endpoint) {
     this.props.onSelected(endpoint);
   },
@@ -30083,7 +30104,7 @@ var TryItEndpointOption = React.createClass({displayName: 'TryItEndpointOption',
   }
 });
 
-var TryItEndpointSelectList = React.createClass({displayName: 'TryItEndpointSelectList',
+var TryItEndpointSelectList = React.createClass({displayName: "TryItEndpointSelectList",
   handleSelected: function(endpoint) {
     this.props.onSelected(endpoint);
   },
@@ -30112,7 +30133,7 @@ var TryItEndpointSelectList = React.createClass({displayName: 'TryItEndpointSele
   }
 });
 
-var TryItEndpointSelector = React.createClass({displayName: 'TryItEndpointSelector',
+var TryItEndpointSelector = React.createClass({displayName: "TryItEndpointSelector",
   getInitialState: function() {
     return {
       label: ENDPOINTS[0].label,
@@ -30167,7 +30188,7 @@ var TryItEndpointSelector = React.createClass({displayName: 'TryItEndpointSelect
   }
 });
 
-var TryItEndpointPathInput = React.createClass({displayName: 'TryItEndpointPathInput',
+var TryItEndpointPathInput = React.createClass({displayName: "TryItEndpointPathInput",
   handleSubmit: function(event) {
     event.preventDefault();
     this.props.onSubmit();
@@ -30190,7 +30211,7 @@ var TryItEndpointPathInput = React.createClass({displayName: 'TryItEndpointPathI
   }
 });
 
-var TryItConsole = React.createClass({displayName: 'TryItConsole',
+var TryItConsole = React.createClass({displayName: "TryItConsole",
   componentDidUpdate: function() {
     $(this.refs.codeDiv.getDOMNode()).scrollTop(0);
   },
@@ -30206,7 +30227,7 @@ var TryItConsole = React.createClass({displayName: 'TryItConsole',
   }
 });
 
-var TryItComponent = React.createClass({displayName: 'TryItComponent',
+var TryItComponent = React.createClass({displayName: "TryItComponent",
   getInitialState: function() {
     return {
       endpoints: ENDPOINTS,

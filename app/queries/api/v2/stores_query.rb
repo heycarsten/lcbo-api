@@ -4,7 +4,7 @@ class API::V2::StoresQuery < API::V2::APIQuery
   has_pagination
   has_include_dead
 
-  by :id, limit: 100
+  by :id, alias: :ids, limit: 100
 
   unqualified [
     :distance_in_meters
@@ -28,9 +28,7 @@ class API::V2::StoresQuery < API::V2::APIQuery
     :has_special_occasion_permits,
     :has_vintages_corner,
     :has_parking,
-    :has_transit_access,
-    :created_at,
-    :updated_at
+    :has_transit_access
 
   range :distance_in_meters,              type: :whole
   range :inventory_volume_in_milliliters, type: :whole

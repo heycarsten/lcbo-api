@@ -574,25 +574,28 @@ pre {
   .document h1, .document h2, .document h3, .document h4, .document h5, .document h6, .document ol, .document ul, .document li, .document p, .document table {
     margin: 30px 0; }
   /* line 62, /Users/carsten/Projects/lcbo-api/manager/app/styles/common/base.sass */
+  .document li {
+    margin: 0; }
+  /* line 65, /Users/carsten/Projects/lcbo-api/manager/app/styles/common/base.sass */
   .document h1, .document h2, .document h3, .document h4, .document h5, .document h6 {
     margin: 54px;
     font-weight: 500;
     text-align: center; }
-  /* line 67, /Users/carsten/Projects/lcbo-api/manager/app/styles/common/base.sass */
+  /* line 70, /Users/carsten/Projects/lcbo-api/manager/app/styles/common/base.sass */
   .document h1 {
     font-size: 2em; }
-  /* line 70, /Users/carsten/Projects/lcbo-api/manager/app/styles/common/base.sass */
+  /* line 73, /Users/carsten/Projects/lcbo-api/manager/app/styles/common/base.sass */
   .document ol, .document ul {
     padding: 0;
     padding-left: 24px; }
-  /* line 74, /Users/carsten/Projects/lcbo-api/manager/app/styles/common/base.sass */
+  /* line 77, /Users/carsten/Projects/lcbo-api/manager/app/styles/common/base.sass */
   .document table {
     width: 100%; }
-    /* line 77, /Users/carsten/Projects/lcbo-api/manager/app/styles/common/base.sass */
+    /* line 80, /Users/carsten/Projects/lcbo-api/manager/app/styles/common/base.sass */
     .document table tr, .document table td, .document table th {
       margin: 0;
       padding: 0; }
-    /* line 81, /Users/carsten/Projects/lcbo-api/manager/app/styles/common/base.sass */
+    /* line 84, /Users/carsten/Projects/lcbo-api/manager/app/styles/common/base.sass */
     .document table th {
       text-align: left; }
 
@@ -1023,8 +1026,6 @@ body.news header nav .news {
     color: #222; }
   /* line 345, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
   .document pre code {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
     box-sizing: border-box;
     padding: 12px 14px;
     line-height: 1.3;
@@ -1040,8 +1041,6 @@ body.news header nav .news {
     font-size: 0.8em; }
     /* line 360, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_layout.css.sass */
     .document table th, .document table td {
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
       box-sizing: border-box;
       padding: 8px 10px;
       line-height: 1.5; }
@@ -1327,8 +1326,6 @@ body.index .try-it-component {
       height: 36px;
       left: 0;
       padding: 0 12px;
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
       box-sizing: border-box;
       cursor: pointer; }
       /* line 159, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_index.css.sass */
@@ -1377,8 +1374,6 @@ body.index .try-it-component {
       border: 0;
       background: transparent;
       left: -4px;
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
       box-sizing: border-box;
       height: 33px;
       outline: none; }
@@ -1535,8 +1530,6 @@ section.docs-content {
     bottom: 0;
     width: 322px;
     background: #eceff1;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
     box-sizing: border-box;
     color: #263238; }
     /* line 27, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
@@ -1638,14 +1631,13 @@ section.docs-content {
         max-width: 260px;
         overflow: hidden;
         text-overflow: ellipsis;
-        white-space: nowrap; }
+        white-space: nowrap;
+        word-wrap: normal; }
   /* line 123, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
   section.docs-content > article {
     margin-left: 322px; }
     /* line 126, /Users/carsten/Projects/lcbo-api/static/source/assets/css/pages/_docs.css.sass */
     section.docs-content > article header {
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
       box-sizing: border-box;
       width: 100%;
       padding: 0 32px;

@@ -18,7 +18,8 @@ RSpec.describe 'V2 Products API' do
     api_get '/products/4'
 
     expect(response.status).to eq 200
-    expect(json[:product][:id]).to eq @products[0].id.to_s
+    expect(json[:data][:id]).to eq @products[0].id.to_s
+    expect(json[:data][:type]).to eq 'product'
     expect(json[:meta]).to eq nil
   end
 end

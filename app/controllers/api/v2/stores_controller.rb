@@ -1,6 +1,7 @@
 class API::V2::StoresController < API::V2::APIController
   def index
     data        = {}
+    linked      = []
     query       = API::V2::StoresQuery.new(params)
     scope       = query.to_scope
     results     = scope.load
@@ -8,36 +9,51 @@ class API::V2::StoresController < API::V2::APIController
     products    = query.products
     inventories = extract_inventories(results)
 
-    data[:stores] = results.map { |r|
-      API::V2::StoreSerializer.new(r).as_json(root: false)
-    }
+    data[:data] = results.map { |s| serialize_store(s, params) }
 
     if product
-      data[:product] = serialize_product(product)
+      linked << serialize_product(product)
     end
 
     if products
-      data[:products] = products.map { |p| serialize_product(p) }
+      products.each { |p| linked << serialize_product(p) }
     end
 
     if inventories
-      data[:inventories] = inventories
+      inventories.each { |i| linked << i }
+    end
+
+    unless linked.empty?
+      data[:linked] = linked
     end
 
     if (pagination = pagination_for(scope))
       data[:meta] = pagination
     end
 
-    render json: data, callback: params[:callback], serializer: nil
+    render_json(data)
   end
 
   def show
-    respond_with :api, :v2, Store.find(params[:id]),
-      serializer: API::V2::StoreSerializer,
-      callback:   params[:callback]
+    data  = {}
+    store = Store.find(params[:id])
+
+    data[:data] = serialize_store(store, include_dead: true)
+
+    render_json(data)
   end
 
   private
+
+  def serialize_store(store, scope = nil)
+    API::V2::StoreSerializer.new(store,
+      scope: scope || params
+    ).as_json(root: false)
+  end
+
+  def serialize_product(product)
+    API::V2::ProductSerializer.new(product).as_json(root: false)
+  end
 
   def extract_inventories(stores)
     extract_product_inventories(stores) || extract_products_inventories(stores)
@@ -50,6 +66,7 @@ class API::V2::StoresController < API::V2::APIController
       next ary unless (product_id = store.try(:inventory_product_id))
 
       ary << {
+        type: :inventory,
         id: "#{product_id}-#{store.id}",
         links: {
           product:  product_id.to_s,
@@ -74,6 +91,7 @@ class API::V2::StoresController < API::V2::APIController
 
       product_ids.each_with_index do |product_id, i|
         ary << {
+          type: :inventory,
           id: "#{product_id}-#{store.id}",
           links: {
             product: product_id.to_s,
@@ -87,9 +105,5 @@ class API::V2::StoresController < API::V2::APIController
 
       ary
     }
-  end
-
-  def serialize_product(product, opts = {})
-    API::V2::ProductSerializer.new(product, opts).as_json(root: false)
   end
 end

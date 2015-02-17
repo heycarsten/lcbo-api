@@ -4,8 +4,8 @@ class API::V2::ProductsQuery < API::V2::APIQuery
   has_pagination
   has_include_dead
 
-  by :id, limit: 100
-  by :upc, type: :upc, limit: 100
+  by :id,  alias: :ids,              limit: 100
+  by :upc, alias: :upcs, type: :upc, limit: 100
 
   toggle \
     :is_discontinued,
@@ -14,7 +14,8 @@ class API::V2::ProductsQuery < API::V2::APIQuery
     :has_bonus_reward_miles,
     :is_seasonal,
     :is_vqa,
-    :is_kosher
+    :is_kosher,
+    :is_ocb
 
   sort [
     :id,
@@ -61,5 +62,16 @@ class API::V2::ProductsQuery < API::V2::APIQuery
 
   param :q, type: :string do |q|
     scope.search(q)
+  end
+
+  param :catalog, type: :string do |raw_ref|
+    ref = raw_ref.to_s.downcase.strip
+
+    if (ref_index = Product::CATALOG_REFS[ref])
+      scope.where('? = ANY(products.catalog_refs)', ref_index)
+    else
+      bad! "unknown product catalog: '#{raw_ref}', accepted " \
+      "values are: #{Product::CATALOG_REFS.keys.join(', ')}"
+    end
   end
 end

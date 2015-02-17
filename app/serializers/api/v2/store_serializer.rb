@@ -1,5 +1,6 @@
 class API::V2::StoreSerializer < ApplicationSerializer
   attributes \
+    :type,
     :id,
     :is_dead,
     :name,
@@ -57,6 +58,10 @@ class API::V2::StoreSerializer < ApplicationSerializer
     h
   end
 
+  def type
+    :store
+  end
+
   def id
     object.id.to_s
   end
@@ -78,6 +83,10 @@ class API::V2::StoreSerializer < ApplicationSerializer
   def filter(keys)
     unless object.respond_to?(:distance_in_meters)
       keys.delete(:distance_in_meters)
+    end
+
+    unless scope && scope[:include_dead]
+      keys.delete(:is_dead)
     end
 
     keys

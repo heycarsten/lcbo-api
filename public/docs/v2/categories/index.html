@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="A fast, cloud-based API for LCBO store, product, and inventory data.">
+    <title>LCBO API V2 Categories</title>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:500,900,400italic,400,300,300italic,700,700italic|Roboto+Condensed:700|Source+Code+Pro:400' rel='stylesheet' type='text/css'>
+    <link href="/assets/css/lcboapi.css" rel="stylesheet" type="text/css" />
+    <script src="/assets/js/lcboapi.js" type="text/javascript"></script>
+  </head>
+
+  <body class="lcboapi docs docs_v2 docs_v2_categories docs_v2_categories_index">
+    <header>
+      <h1 class="lcboapi-wordmark">
+        <a href="/">
+          <span>LCBO API</span>
+        </a>
+      </h1>
+      <nav>
+        <ol>
+          <li>
+            <a class="about" href="/about">
+              About
+            </a>
+          </li>
+          <li>
+            <a class="docs" href="/docs/v1">
+              Documentation
+            </a>
+          </li>
+          <li>
+            <a class="news" href="/news">
+              News
+            </a>
+          </li>
+          <li>
+            <a href="/log-in">
+              Log In
+            </a>
+          </li>
+          <li class="sign-up">
+            <a href="/sign-up" class="button">
+              Get A Key
+            </a>
+          </li>
+        </ol>
+      </nav>
+    </header>
+
+    <main>
+      <section class="docs-content">
+  <header data-spy="affix" data-offset-top="68">
+    <nav class="sections">
+      <div class="manuals">
+        <h2>API V2 Guide</h2>
+        <ol class="manuals">
+            <li>
+              <a href="/docs/v1#getting-started">
+                Getting Started
+              </a>
+            </li>
+            <li class="sub">
+              <a href="/docs/v1#responses-and-formats">
+                Responses &amp; Formats
+              </a>
+            </li>
+            <li class="sub">
+              <a href="/docs/v1#authentication">
+                Authentication
+              </a>
+            </li>
+            <li class="sub">
+              <a href="/docs/v1#errors">
+                Errors
+              </a>
+            </li>
+            <li>
+              <a href="/docs/v1#cross-origin-access">
+                Cross Origin Access
+              </a>
+            </li>
+            <li class="sub">
+              <a href="/docs/v1#jsonp">
+                JSONP
+              </a>
+            </li>
+            <li class="sub">
+              <a href="/docs/v1#cors">
+                CORS
+              </a>
+            </li>
+            <li>
+              <a href="/docs/v1#https">
+                HTTPS
+              </a>
+            </li>
+        </ol>
+      </div>
+
+      <div class="endpoints">
+        <h2>Endpoints</h2>
+          <h3 class="endpoint-name">
+            <a href="/docs/v2/stores">
+              Stores
+            </a>
+          </h3>
+          <ol class="endpoints">
+              <li>
+                <a href="/docs/v2/stores#many">
+                  (/v2)/stores
+                </a>
+              </li>
+              <li>
+                <a href="/docs/v2/stores#one">
+                  (/v2)/stores/{store_id}
+                </a>
+              </li>
+          </ol>
+          <h3 class="endpoint-name">
+            <a href="/docs/v2/products">
+              Products
+            </a>
+          </h3>
+          <ol class="endpoints">
+              <li>
+                <a href="/docs/v2/products#many">
+                  (/v2)/products
+                </a>
+              </li>
+              <li>
+                <a href="/docs/v2/products#one">
+                  (/v2)/products/{product_id}
+                </a>
+              </li>
+          </ol>
+          <h3 class="endpoint-name">
+            <a href="/docs/v2/inventories">
+              Inventories
+            </a>
+          </h3>
+          <ol class="endpoints">
+              <li>
+                <a href="/docs/v2/inventories#many">
+                  (/v2)/inventories
+                </a>
+              </li>
+              <li>
+                <a href="/docs/v2/inventories#one">
+                  (/v2)/inventories/{inventory_id}
+                </a>
+              </li>
+          </ol>
+          <h3 class="endpoint-name">
+            <a href="/docs/v2/categories">
+              Categories
+            </a>
+          </h3>
+          <ol class="endpoints">
+              <li>
+                <a href="/docs/v2/categories#many">
+                  (/v2)/categories
+                </a>
+              </li>
+              <li>
+                <a href="/docs/v2/categories#one">
+                  (/v2)/categories/{category_id}
+                </a>
+              </li>
+          </ol>
+          <h3 class="endpoint-name">
+            <a href="/docs/v2/producers">
+              Producers
+            </a>
+          </h3>
+          <ol class="endpoints">
+              <li>
+                <a href="/docs/v2/producers#many">
+                  (/v2)/producers
+                </a>
+              </li>
+              <li>
+                <a href="/docs/v2/producers#one">
+                  (/v2)/categories/{category_id}
+                </a>
+              </li>
+          </ol>
+          <h3 class="endpoint-name">
+            <a href="/docs/v2/datasets">
+              Datasets
+            </a>
+          </h3>
+          <ol class="endpoints">
+              <li>
+                <a href="/docs/v2/datasets#many">
+                  (/v2)/datasets
+                </a>
+              </li>
+              <li>
+                <a href="/docs/v2/datasets#one">
+                  (/v2)/datasets/{dataset_id}
+                </a>
+              </li>
+          </ol>
+      </div>
+    </nav>
+  </header>
+
+  <article>
+    <header>
+      <h1>LCBO API Version 2</h1>
+    </header>
+
+    <div class="document">
+        <h1>Categories</h1>
+
+<p>Categories are </p>
+
+
+<h2>Category Attributes</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>id</code></td>
+        <td><p>Category ID</p>
+</td>
+      </tr>
+      <tr>
+        <td><code>type</code></td>
+        <td><p>Always set to &ldquo;category&rdquo; for category resources</p>
+</td>
+      </tr>
+      <tr>
+        <td><code>name</code></td>
+        <td><p>The name of the category</p>
+</td>
+      </tr>
+  </tbody>
+</table>
+
+<h3>Category HTTP Endpoints</h3>
+
+  <div class="endpoint-card">
+    <h3 id="many">
+      <b class="get">GET</b> <code class="route-spec"><i>lcboapi.com</i>(/v2)/categories</code>
+    </h3>
+
+    <div class="summary">
+      <p>Returns all categories, not paginated</p>
+
+    </div>
+
+      <h4>URL Query Parameters</h4>
+      <table class="endpoint-params">
+        <thead>
+          <tr>
+            <th class="param-key">Param</th>
+            <th class="param-value">Value</th>
+            <th class="param-description">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr>
+              <td class="param-key">
+                <code>order</code>
+              </td>
+              <td class="param-value">
+                  <code>id</code><br><code>total_products</code><br><code>total_stores</code><br><code>total_inventories</code><br><code>total_product_inventory_count</code><br><code>total_product_inventory_volume_in_milliliters</code><br><code>total_product_inventory_price_in_cents</code>
+              </td>
+              <td class="param-description">
+                <p>Sort the returned datasets by one or more of the listed attributes.
+Ascending or descending order is specified by adding <code>.asc</code> or <code>.desc</code>
+to the end of the attribute name.</p>
+
+                  <dl>
+                    <dt>Example</dt>
+                    <dd>
+                      <code class="example-url">lcboapi.com/datasets?order=created_at.asc</code>
+                    </dd>
+                  </dl>
+
+                  <dl>
+                    <dt>Allows multiple values</dt>
+                    <dd>
+                      Separate them with a comma like this:
+                      <code>order=one,two,three</code>
+                    </dd>
+                  </dl>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+  </div>
+  <div class="endpoint-card">
+    <h3 id="one">
+      <b class="get">GET</b> <code class="route-spec"><i>lcboapi.com</i>(/v2)/categories/<span>{category_id}</span></code>
+    </h3>
+
+    <div class="summary">
+      <p>TODO: Describe.</p>
+
+    </div>
+
+  </div>
+
+    </div>
+  </article>
+</section>
+
+    </main>
+
+    <footer>
+      <nav>
+        <ol>
+          <li>
+            <a href="mailto:info@lcboapi.com">
+              Contact
+            </a>
+          </li>
+          <li>
+            <a href="/tos">
+              Legal
+            </a>
+          </li>
+          <li>
+            <a href="/privacy">
+              Privacy
+            </a>
+          </li>
+          <li>
+            <a href="/credits">
+              Credits
+            </a>
+          </li>
+        </ol>
+      </nav>
+
+      <p class="disclaimer">
+        <span>
+          LCBO API is not funded or endorsed by the LCBO
+        </span>
+      </p>
+
+      <p class="copyright">
+        &copy; 2009&ndash;2015
+        <a href="http://heycarsten.com">Carsten Nielsen</a>
+      </p>
+    </footer>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-8617929-2', 'auto');
+      ga('send', 'pageview');
+    </script>
+  </body>
+</html>

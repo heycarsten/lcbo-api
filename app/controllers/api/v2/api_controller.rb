@@ -33,6 +33,14 @@ class API::V2::APIController < APIController
 
   protected
 
+  def render_json(json, opts = {})
+    render({
+      json: json,
+      callback: params[:callback],
+      serializer: nil
+    }.merge(opts))
+  end
+
   def authenticate!
     current_key ? true : not_authorized
   end

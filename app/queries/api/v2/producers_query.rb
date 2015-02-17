@@ -6,7 +6,7 @@ class API::V2::ProducersQuery < API::V2::APIQuery
 
   toggle :is_ocb
 
-  by :id, limit: 100
+  by :id, alias: :ids, limit: 100
 
   sort [
     :name

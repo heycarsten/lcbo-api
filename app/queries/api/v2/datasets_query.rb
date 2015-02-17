@@ -4,7 +4,7 @@ class API::V2::DatasetsQuery < API::V2::APIQuery
 
   has_pagination
 
-  by :id
+  by :id, limit: 100
 
   sort [
     :id,

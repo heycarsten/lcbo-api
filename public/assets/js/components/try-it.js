@@ -50,7 +50,7 @@ var ENDPOINTS = [
   }
 ];
 
-var TryItEndpointOption = React.createClass({displayName: 'TryItEndpointOption',
+var TryItEndpointOption = React.createClass({displayName: "TryItEndpointOption",
   handleClick: function(endpoint) {
     this.props.onSelected(endpoint);
   },
@@ -68,7 +68,7 @@ var TryItEndpointOption = React.createClass({displayName: 'TryItEndpointOption',
   }
 });
 
-var TryItEndpointSelectList = React.createClass({displayName: 'TryItEndpointSelectList',
+var TryItEndpointSelectList = React.createClass({displayName: "TryItEndpointSelectList",
   handleSelected: function(endpoint) {
     this.props.onSelected(endpoint);
   },
@@ -97,7 +97,7 @@ var TryItEndpointSelectList = React.createClass({displayName: 'TryItEndpointSele
   }
 });
 
-var TryItEndpointSelector = React.createClass({displayName: 'TryItEndpointSelector',
+var TryItEndpointSelector = React.createClass({displayName: "TryItEndpointSelector",
   getInitialState: function() {
     return {
       label: ENDPOINTS[0].label,
@@ -152,7 +152,7 @@ var TryItEndpointSelector = React.createClass({displayName: 'TryItEndpointSelect
   }
 });
 
-var TryItEndpointPathInput = React.createClass({displayName: 'TryItEndpointPathInput',
+var TryItEndpointPathInput = React.createClass({displayName: "TryItEndpointPathInput",
   handleSubmit: function(event) {
     event.preventDefault();
     this.props.onSubmit();
@@ -175,7 +175,7 @@ var TryItEndpointPathInput = React.createClass({displayName: 'TryItEndpointPathI
   }
 });
 
-var TryItConsole = React.createClass({displayName: 'TryItConsole',
+var TryItConsole = React.createClass({displayName: "TryItConsole",
   componentDidUpdate: function() {
     $(this.refs.codeDiv.getDOMNode()).scrollTop(0);
   },
@@ -191,7 +191,7 @@ var TryItConsole = React.createClass({displayName: 'TryItConsole',
   }
 });
 
-var TryItComponent = React.createClass({displayName: 'TryItComponent',
+var TryItComponent = React.createClass({displayName: "TryItComponent",
   getInitialState: function() {
     return {
       endpoints: ENDPOINTS,

@@ -1,5 +1,6 @@
 class API::V2::DatasetSerializer < ApplicationSerializer
   attributes \
+    :type,
     :id,
     :total_products,
     :total_stores,
@@ -9,6 +10,10 @@ class API::V2::DatasetSerializer < ApplicationSerializer
     :total_product_inventory_price_in_cents,
     :created_at,
     :updated_at
+
+  def type
+    :dataset
+  end
 
   def id
     object.id.to_s

@@ -506,7 +506,9 @@ CREATE TABLE products (
     data_source integer DEFAULT 0,
     producer_id integer,
     category_ids integer[] DEFAULT '{}'::integer[] NOT NULL,
-    category character varying(140)
+    category character varying(140),
+    is_ocb boolean DEFAULT false NOT NULL,
+    catalog_refs integer[] DEFAULT '{}'::integer[] NOT NULL
 );
 
 
@@ -1015,6 +1017,13 @@ CREATE INDEX index_producers_on_updated_at ON producers USING btree (updated_at)
 
 
 --
+-- Name: index_products_on_catalog_refs; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_products_on_catalog_refs ON products USING gin (catalog_refs);
+
+
+--
 -- Name: index_products_on_category_ids; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1026,6 +1035,13 @@ CREATE INDEX index_products_on_category_ids ON products USING gin (category_ids)
 --
 
 CREATE INDEX index_products_on_is_dead_and_inventory_volume_in_milliliters ON products USING btree (is_dead, inventory_volume_in_milliliters);
+
+
+--
+-- Name: index_products_on_is_ocb; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_products_on_is_ocb ON products USING btree (is_ocb);
 
 
 --
@@ -1443,4 +1459,8 @@ INSERT INTO schema_migrations (version) VALUES ('20150212141949');
 INSERT INTO schema_migrations (version) VALUES ('20150213020057');
 
 INSERT INTO schema_migrations (version) VALUES ('20150213173003');
+
+INSERT INTO schema_migrations (version) VALUES ('20150213203700');
+
+INSERT INTO schema_migrations (version) VALUES ('20150214035627');
 

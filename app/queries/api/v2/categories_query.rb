@@ -4,8 +4,7 @@ class API::V2::CategoriesQuery < API::V2::APIQuery
   has_include_dead
 
   by :depth, type: :category_depth, limit: 3
-
-  by_slug :id, limit: 100
+  by :id, limit: 100
 
   sort [
     :name,

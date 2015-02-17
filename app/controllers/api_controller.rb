@@ -331,7 +331,7 @@ class APIController < ApplicationController
     error[:detail] || raise(ArgumentError, 'must supply :detail')
 
     render json: {
-      error: error
+      errors: [error]
     }, status: status, callback: params[:callback]
 
     false

@@ -21,9 +21,20 @@ proxy '/docs/v1/index.html', '/docs/template.html', locals: {
   api: data.v1
 }
 
+proxy '/docs/v2/index.html', '/docs/template.html', locals: {
+  api: data.v2
+}
+
 data.v1.resources.each do |resource|
   proxy "/docs/v1/#{resource.slug}/index.html", '/docs/template.html', locals: {
     api: data.v1,
+    api_resource: resource
+  }
+end
+
+data.v2.resources.each do |resource|
+  proxy "/docs/v2/#{resource.slug}/index.html", '/docs/template.html', locals: {
+    api: data.v2,
     api_resource: resource
   }
 end

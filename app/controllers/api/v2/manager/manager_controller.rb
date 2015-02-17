@@ -18,4 +18,17 @@ class API::V2::Manager::ManagerController < API::V2::APIController
       expires_at: Time.now + ttl
     } }, status: 200, serializer: nil
   end
+
+  def render_error(error)
+    status = error.delete(:status) || raise(ArgumentError, 'must supply :status')
+
+    error[:code]   || raise(ArgumentError, 'must supply :code')
+    error[:detail] || raise(ArgumentError, 'must supply :detail')
+
+    render json: {
+      error: error
+    }, status: status, callback: params[:callback]
+
+    false
+  end
 end

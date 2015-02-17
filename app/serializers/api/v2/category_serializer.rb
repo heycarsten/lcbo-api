@@ -1,10 +1,14 @@
 class API::V2::CategorySerializer < ApplicationSerializer
   attributes \
+    :type,
     :id,
-    :slug,
     :name,
     :depth,
     :is_dead
+
+  def type
+    :category
+  end
 
   def id
     object.id.to_s

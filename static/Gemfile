@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
 
 gem 'redcarpet'
-gem 'middleman',       '~> 3.3.7'
+gem 'middleman',       '~> 3.3.8'
 gem 'middleman-syntax'
 gem 'middleman-bower'
 gem 'middleman-blog'
-gem 'middleman-react', '0.12.1'
+gem 'middleman-react', '~> 0.12.1.1'
 gem 'sass-material-colors'
 gem 'bourbon'

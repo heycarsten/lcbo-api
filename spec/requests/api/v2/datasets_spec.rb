@@ -20,9 +20,9 @@ RSpec.describe 'V2 Datasets API' do
 
     expect(response.status).to eq 200
     expect(json[:meta][:pagination][:total_pages]).to eq 1
-    expect(json[:datasets].size).to eq 2
-    expect(json[:datasets][0][:links][:products]).to be_blank
-    expect(json[:datasets][0][:links][:stores]).to be_blank
+    expect(json[:data].size).to eq 2
+    expect(json[:data][0][:links][:products]).to be_blank
+    expect(json[:data][0][:links][:stores]).to be_blank
   end
 
   it 'returns one dataset (GET /datasets/:id)' do
@@ -31,7 +31,7 @@ RSpec.describe 'V2 Datasets API' do
     api_get "/datasets/#{@crawls[0].id}"
 
     expect(response.status).to eq 200
-    expect(json[:dataset][:id]).to eq @crawls[0].id.to_s
+    expect(json[:data][:id]).to eq @crawls[0].id.to_s
   end
 
   it 'does not return hidden datasets' do

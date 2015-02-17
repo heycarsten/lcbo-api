@@ -122,13 +122,16 @@ module Magiq
         vals = raw_vals.is_a?(Array) ? raw_vals : raw_vals.split(',')
 
         vals.reduce(scope) do |scope, val|
-          direction = :asc
-
           col = if val.start_with?('-')
             direction = :desc
             val.sub('-', '').to_sym
+          elsif val.start_with?('+')
+            direction = :asc
+            val.sub('+', '').to_sym
           else
-            val.to_sym
+            bad! "A sort order was not specified for the sort field value " \
+            "'#{val}', it must be prefixed with either a plus (+#{val}) for " \
+            "ascending order, or a minus (-#{val}) for decending order"
           end
 
           unless fields.include?(col)
@@ -178,16 +181,21 @@ module Magiq
       lte_param = :"#{field}_lte"
       gt_param  = :"#{field}_gt"
       gte_param = :"#{field}_gte"
+      eq_param  = field.to_sym
 
-      param(lt_param,  type: :whole)
-      param(lte_param, type: :whole)
-      param(gt_param,  type: :whole)
-      param(gte_param, type: :whole)
+      param(lt_param,  type: opts[:type] || :whole)
+      param(lte_param, type: opts[:type] || :whole)
+      param(gt_param,  type: opts[:type] || :whole)
+      param(gte_param, type: opts[:type] || :whole)
+      param(eq_param,  type: opts[:type] || :whole)
 
       exclusive(gt_param, gte_param)
       exclusive(lt_param, lte_param)
+      mutual(eq_param, exclusive: [lt_param, lte_param, gt_param, gte_param])
 
       check do
+        next if params[eq_param].present?
+
         lt_par = if (lt_val = params[lte_param])
           lte_param
         elsif (lt_val = params[lt_param])
@@ -213,6 +221,14 @@ module Magiq
           bad! "The same value of #{gt_val} was provided for both `#{lt_par}` " \
           "and #{gt_par}. The permitted value of `#{lt_par}` must be " \
           "less than the permitted value provided for `#{gt_par}`."
+        end
+      end
+
+      apply(eq_param) do |val|
+        if is_unqualified?(field)
+          scope.where("#{field} = ?", val)
+        else
+          scope.where(model.arel_table[field].eq(val))
         end
       end
 

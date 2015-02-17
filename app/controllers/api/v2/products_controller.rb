@@ -5,21 +5,34 @@ class API::V2::ProductsController < API::V2::APIController
     scope   = query.to_scope
     results = scope.load
 
-    data[:products] = results.map { |r|
-      API::V2::ProductSerializer.new(r).as_json(root: false)
-    }
+    data[:data] = results.map { |p| serialize(p, params) }
 
     if (pagination = pagination_for(scope))
       data[:meta] = pagination
     end
 
-    render json: data, callback: params[:callback], serializer: nil
+    if data[:data].empty? && params[:q].present?
+      data[:meta] ||= {}
+      data[:meta][:search_suggestions] = [Fuzz[:products, params[:q]]]
+    end
+
+    render_json(data)
   end
 
   def show
+    data    = {}
     product = Product.find(params[:id])
-    data    = API::V2::ProductSerializer.new(product).as_json(root: false)
 
-    render json: { product: data }, callback: params[:callback], serializer: nil
+    data[:data] = serialize(product, include_dead: true)
+
+    render_json(data)
+  end
+
+  private
+
+  def serialize(product, scope = nil)
+    API::V2::ProductSerializer.new(product,
+      scope: scope || params
+    ).as_json(root: false)
   end
 end

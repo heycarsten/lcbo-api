@@ -1,0 +1,943 @@
+---
+version: 2
+released: 'March 2015'
+manuals:
+- anchor: 'getting-started'
+  title: 'Getting Started'
+  body: |
+    # Welcome to LCBO API V2
+
+    This is the documentation for Version 2 (V2) of LCBO API. It was originally
+    released **March 2015**.
+
+    * [Responses & Formats](#responses-and-formats)
+    * [Authentication](#authentication)
+    * [Errors](#errors)
+    * [Cross Origin Access](#cross-origin-access)
+      * [JSONP](#jsonp)
+      * [CORS (Cross Origin Resource Sharing)](#cors)
+    * [HTTPS](#https)
+
+- anchor: 'responses-and-formats'
+  title: 'Responses &amp; Formats'
+  is_sub: yes
+  body: |
+    ## Responses & Formats
+
+    The default response format for API V2 is JSON API, all requests that
+    specify `application/vnd.api+json` in an `Accept` header will be routed
+    to the V2 API endpoints. You can also prefix resource paths with `/v2` to
+    target V2.
+
+    ### JSON API
+
+    All responses are wrapped in a container object, in its most basic form
+    it looks like this:
+
+    ```json
+    {
+      "data": ...
+      "meta": ... (optional)
+      "linked": ...
+    }
+    ```
+
+    ### Pagination
+
+    Paginated responses include pagination data in their JSON payload. This
+    data is present at `meta.pagination`.
+
+- anchor: 'authentication'
+  title: 'Authentication'
+  is_sub: true
+  body: |
+    ## Authentication
+
+    **LCBO API V2 does not require authentication for limited access.** Extended
+    features such as CORS, HTTPS, dataset downloads, history APIs, and higher
+    request rate limits require the use of an API key.
+
+    <p class="info">
+      You can provision an unlimited number of Access Keys for free by
+      <a href="/sign-up">creating</a> an LCBO API account.
+    </p>
+
+    There are three different types of access keys, they have specific
+    use-cases in mind:
+
+    <table class="auth-keys-table">
+      <thead>
+        <tr>
+          <th width="22%">Key Type</th>
+          <th width="78%">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td width="22%">
+            <b>Web Browser</b>
+          </td>
+          <td width="78%">
+            Use when LCBO API is accessed from a web browser through
+            <code>XMLHttpRequest</code> (Ajax/XHR)
+            using CORS or through dynamically inserted <code>&lt;script&gt;</code>
+            tags (JSONP). These keys are rate-limited per client IP address and
+            are paired to a domain. For example, a Web Browser Access Key
+            associated with the domain <b>momsandhops.ca</b> would fail to work
+            if used on a page served from <b>thebeerstore.ca</b>.
+          </td>
+        </tr>
+        <tr>
+          <td width="22%">
+            <b>Native Client</b>
+          </td>
+          <td width="78%">
+            In native mobile and desktop applications, these keys are rate-limited per
+            client but do not support CORS or JSONP.
+          </td>
+        </tr>
+        <tr>
+          <td width="22%">
+            <b>Private</b>
+          </td>
+          <td width="78%">
+            When LCBO API is accessed from a web server or private script, these keys are not rate-limited, and they do not support CORS or JSONP.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    ### Using Access Keys
+
+    <p class="info">
+      Detailed usage information is provided in the LCBO API Manager when you
+      create access keys.
+    </p>
+
+    Your access key will need to be sent with every request you make to LCBO API,
+    you can do this the following ways:
+
+    #### HTTP Header
+
+    This is the recommended way of adding your Access Key to requests:
+
+    ```
+    Authorization: Token token="myLCBOAPIaccessKey"
+    ```
+
+    #### Query Parameter
+
+    Aside from JSONP, you should always try to use the HTTP Header method
+    outlined above. Add your access key to the URL like this:
+
+    ```
+    http://lcboapi.com/products?access_key=myLCBOAPIaccessKey
+    ```
+
+    #### Basic Auth
+
+    If the tool you're using will only support setting the `Authorization`
+    header by username/password, you can provide the following values to pass
+    along your Access Key to LCBO API.
+
+    ```
+    Username: x-access-key
+    Password: myLCBOAPIaccessKey
+    ```
+
+- anchor: 'errors'
+  title: 'Errors'
+  is_sub: true
+  body: |
+    ## Errors
+
+    When an error occurs the response will look something like this:
+
+    ```json
+    {
+      "errors": [
+        {
+          "name": "bad_query_error",
+          "description": "A value supplied for the order parameter (id.desk) is not valid. It contains an invalid sort order (desk) for (id) try using: id.desc or id.asc instead."
+        }
+      ]
+    }
+    ```
+
+    Error messages are always as descriptive as possible and they fall into one
+    of the below categories:
+
+    | Code               | Description                                         |
+    | ------------------ | --------------------------------------------------- |
+    | `no_results_error` | The geocoder returned no geometry for the geo query. |
+    | `over_limit_error` | The geocoder has reached its daily limit of requests. |
+    | `geocoder_error`   | The geocoder can't geocode the query it was provided. |
+    | `not_found_error`  | A resource was not found (404) |
+    | `bad_query_error`  | One (or more) of the supplied query parameters is wrong. |
+    | `jsonp_error`      | Supplied callback is not a valid format, or JSONP is not being used correctly. |
+    | `unauthorized`     | The feature you're trying to use requires an Access Key |
+
+- anchor: 'cross-origin-access'
+  title: 'Cross Origin Access'
+  body: |
+    ## Cross Origin Access
+
+    LCBO API provides support for cross-origin requests so that it can be used
+    from a web page. In the past, due to the Single Origin Policy implemented
+    in all web browsers, there were only two ways to do this. Either by
+    proxying all requests through the origin server, or by using a technique
+    called JSONP. Today, all modern browsers implement Cross Origin Resource
+    Sharing (CORS). LCBO API supports all of these techniques.
+
+    ### HTTP Proxy
+
+    In a proxy setup, the API consumer implements an endpoint on their web
+    server that proxies all requests to and responses from LCBO API. For
+    example, the following endpoint on your web server:
+
+    ```
+    mysite.com/lcboapi/*
+    ```
+
+    Would then proxy anything after lcboapi/ to lcboapi.com, as if it were a
+    part of your site, even though those requests are actually being delegated
+    to lcboapi.com. So a request to your server like this:
+
+    ```
+    mysite.com/lcboapi/products
+    ```
+
+    Would actually request this page on LCBO API:
+
+    ```
+    lcboapi.com/products
+    ```
+
+    And your site would then return the result of that LCBO API response.
+
+    This approach is not bad, the browser doesn't care because all of the
+    requests are to the same domain, and given the performance of modern web
+    servers like Nginx and Apache the overhead is quite low. The downside is
+    that it requires infrastructure and configuration to work properly and
+    ultimately becomes another thing to maintain. This leads us to the first
+    way to truly request 3<sup>rd</sup> party data from a web page: JSONP.
+
+- anchor: 'jsonp'
+  title: 'JSONP'
+  is_sub: yes
+  body: |
+    ### JSONP
+
+    JSONP stands for JSON with Padding and works by dynamically attaching
+    `<script>` elements to a web page, that call a previously defined function
+    in order to load data.
+
+    To use JSONP with LCBO API, simply add a <code>callback</code> parameter
+    to LCBO API URLs. When using JSONP LCBO API also sets the response
+    `Content-Type` to `application/javascript` since the response is now
+    executable JavaScript, and not just data (JSON) anymore.
+
+    Here's how the whole process works, say you have a globally defined
+    function named `loadStore` on your page, like this:
+
+    ```html
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>LCBO Learnin'</title>
+        <script>
+          function loadStore(response) {
+            var el = document.getElementById('store_name');
+            el.innerHTML = response.result.name;
+          }
+        </script>
+      </head>
+      <body>
+        <h1 id="store_name"></h1>
+      </body>
+    </html>
+    ```
+
+    And you dynamically insert a `<script>` tag on the page using a function
+    like this:
+
+    ```javascript
+    function loadStore(id) {
+      var script = document.createElement('script');
+
+      script.src = 'http://lcboapi.com/v2/stores/'+id+'?callback=loadStore';
+      script.async = true;
+
+      document.head.appendChild(script);
+    }
+
+    loadStore(571);
+    ```
+
+    LCBO API retuns a JavaScript file that looks like this:
+
+    ```javascript
+    loadStore({
+      "data": {
+        "type": "store",
+        "id": 571,
+        "name": "King & James",
+        ...
+      }
+    });
+    ```
+
+    Which effectively calls our prevously defined `loadStore` function with the
+    response data as its sole argument, so our `<h1>` tag is filled with the
+    name of the store.
+
+    It's important to note that most popular JavaScript libraries have built-in
+    support for JSONP. For example, the following jQuery can be used to perform
+    a JSONP request against LCBO API:
+
+    ```javascript
+    $.ajax({
+      url: 'http://lcboapi.com/v2/products/371906',
+      dataType: 'jsonp'
+    }).then(function(data) {
+      console.log(data);
+    });
+    ```
+
+    _I **highly** recommend using a library like jQuery to manage JSONP
+    orchistration._
+
+- anchor: 'cors'
+  title: 'CORS'
+  is_sub: yes
+  body: |
+    ### CORS
+
+    Cross Origin Resource Sharing (CORS) is a robust W3C specification for
+    allowing browsers to access resources from different domains. LCBO API uses
+    it to give access to web browser JavaScript applications.
+
+    If you need to support outdated bowsers,
+    [specifically IE 6 and 7](http://caniuse.com/#feat=cors), you'll either have
+    to use a proxy or JSONP. Hilariously, with the advent of async script tags
+    `<script async>` JSONP can be about as effective in modern browsers as
+    using XMLHttpRequest with CORS. If you have to support older browsers that
+    don't understand CORS, there is no shame in using JSONP.
+
+    If you don't have to support IE 6 and 7, _welcome to the future!_ To use CORS
+    with LCBO API you need to provide a Web Browser Access Key with your
+    requests. You'll need an LCBO API account to create Access Keys,
+    [sign up](/sign-up) for one and get started. You can also
+    [read more](#authentication) about LCBO API authentication.
+
+    Once you have a Web Browser Access Key, using LCBO API with CORS from jQuery
+    is as simple as:
+
+    ```javascript
+    $.ajax({
+      url: 'http://lcboapi.com/products/346197',
+      headers: {
+        Accept: 'application/vnd.api+json',
+        Authorization: 'Token YOUR_ACCESS_KEY'
+      }
+    }).then(function(data) {
+      console.log(data);
+    });
+    ```
+- anchor: https
+  title: HTTPS
+  body: |
+    ## HTTPS
+
+    LCBO API now supports secured connections over HTTPS, this is particularly
+    useful when you want to request data over JSONP or CORS on a webpage that
+    was served over HTTPS.
+
+    To use HTTPS you must provide an Access Key. [Sign Up](/sign-up) for an
+    LCBO API account to create one.
+
+resources:
+- title: 'LCBO API V2 Stores'
+  name: 'Stores'
+  object: 'Store'
+  slug: 'stores'
+
+  fields:
+    id: LCBO store number
+    type: The resource type, for stores this is always the value "store"
+    is_dead: When a store is removed it is marked as "dead"
+    name: Official LCBO store name
+    address_line_1: Street address
+    address_line_2: Secondary address information (Not all stores)
+    city: City the store is in
+    fax: Fax number (not all stores have one)
+    has_beer_cold_room: True if the store has a walk-in beer fridge
+    has_bilingual_services: True if the store has bilingual services
+    has_parking: True if the store has a parking lot
+    has_product_consultant: True if the store has a product consultant on staff
+    has_special_occasion_permits: True if the store can issue special occasion permits
+    has_tasting_bar: True if the store has a tasting bar
+    has_transit_access: True if the store is accessible by public transit
+    has_vintages_corner: True if the store has a Vintages area
+    has_wheelchair_accessability: True if the store can be entered via wheelchair
+    inventory_count: Total inventory units at the store
+    inventory_price_in_cents: Total retail value of all products at the store
+    inventory_volume_in_milliliters: Total volume of all products at the store
+    latitude: Reported latitude
+    longitude: Reported longitude
+    postal_code: Postal code
+    products_count: Total unique products at the store
+    "[sunday..monday]_close": Minutes since midnight that the store closes
+    "[sunday..monday]_open": Minutes since midnight that the store opens
+    tags: A string of tags that reflect the store
+    telephone: Telephone number
+    updated_at: Time that the store information was updated
+    created_at: Time that the store information was added to LCBO API
+
+  body: |
+    The store object represents a physical LCBO location.
+
+    <p class="info">
+      Agency stores are not included in LCBO API, a
+      <a href="http://thirsty.kx.nu/js/agency.js">JSON file</a> of them was
+      kindly provided by Svante Richter.
+    </p>
+
+    Open and close times are reperesented in minutes since midnight. This
+    format can be converted into 24 hour time using the approach below:
+
+    ```javascript
+    function msmTo24time(msm) {
+      var hour = msm / 60;
+      var mins = msm % 60;
+
+      return [hour, mins];
+    }
+    ```
+
+    You will probably want to convert the minutes since midnight to 12 hour time
+    since that's what most Ontarians will be familiar with, you can do that
+    with a few extra steps:
+
+    ```javascript
+    function msmTo12time(msm) {
+      var time = msmTo24time(msm);
+      var h24  = time[0];
+      var h12  = (0 == h24 ? 12 : (h24 > 12 ? (h24 - 10) - 2 : h24));
+      var ampm = (h24 >= 12 ? 'PM' : 'AM');
+
+      return [h12, time[1], ampm];
+    }
+    ```
+
+  endpoints:
+  - route: '(/v2)/stores'
+    anchor: 'many'
+    many: true
+    summary: |
+      Returns a list of stores that can be filtered and ordered by parameters.
+    params:
+    - key: page
+      value: Page number
+      summary: The page number you'd like to return.
+      example: lcboapi.com/stores?page=3
+
+    - key: per_page
+      value: Page size
+      summary: |
+        The number of objects to include per page. The defaults is 50, and the
+        maximum is 200.
+      example: lcboapi.com/stores?per_page=150
+
+    - key: where
+      type: enum
+      many: true
+      values: &stores_filter_attributes
+      - is_dead
+      - has_wheelchair_accessability
+      - has_bilingual_services
+      - has_product_consultant
+      - has_tasting_bar
+      - has_beer_cold_room
+      - has_special_occasion_permits
+      - has_vintages_corner
+      - has_parking
+      - has_transit_access
+      example: lcboapi.com/stores?where=has_parking
+
+    - key: where_not
+      type: enum
+      many: true
+      values: *stores_filter_attributes
+      example: lcboapi.com/stores?where_not=is_dead
+
+    - key: 'order'
+      type: 'enum'
+      many: true
+      values:
+      - distance_in_meters
+      - inventory_volume_in_milliliters
+      - id
+      - products_count
+      - inventory_count
+      - inventory_price_in_cents
+      example: lcboapi.com/stores?order=id.asc
+      summary: |
+        Sort the returned stores by one or more of the listed attributes.
+        Ascending or descending order is specified by adding `.asc` or `.desc`
+        to the end of the attribute name.
+
+    - key: 'q'
+      value: URI-encoded search query
+      example: 'lcboapi.com/stores?q=hamilton'
+      summary: |
+        Returns all stores that match the provided *full-text* search query,
+        this is purely text-based, look to the `lat`, `lon`, and `geo`
+        parameters for geographical queries.
+
+    - key: 'product'
+      value: LCBO Product ID
+      example: lcboapi.com/stores?product=18
+      summary: |
+        Returns only stores that have inventory for the specified
+        product.
+
+    - key: 'products'
+      value: LCBO Product IDs
+      example: lcboapi.com/stores?products=18,288506
+      summary: |
+        Returns *only* stores that have inventory for __all__ of the specified
+        products.
+
+    - key: ['lat', 'lon']
+      value: Latitude and Longitude
+      example: lcboapi.com/stores?lat=43.659&lon=-79.439
+      summary: |
+        Returns all stores starting from closest to the specified geographical
+        point. Adds `distance_in_meters` attribute to the returned store
+        objects, and defaults to ordering them by `distance_in_meters.asc`.
+
+    - key: geo
+      value: "Point of interest: postal code, major intersection, city, address"
+      example: lcboapi.com/stores?geo=m6h+1p2
+      summary: |
+        Geocodes the provided value, and if successful, returns all stores
+        in the same manner as above. Subject to aggressive rate-limiting, use
+        `lat` and `lon` whenever possible. Google Maps JavaScript API is
+        excellent for geocoding client-side.
+
+  - route: '(/v2)/stores/{store_id}'
+    anchor: 'one'
+    summary: |
+      Returns one store by `{store_id}`.
+
+- title: 'LCBO API V1 Products'
+  name: 'Products'
+  slug: 'products'
+  object: 'Product'
+  body: |
+    The product object represents a product in the LCBO catalog. It's important
+    to note that LCBO API maintains a history of **all** products, not only
+    active ones. The `is_dead` flag indicates a product that is no longer in
+    the official LCBO catalog but was at one point in the past.
+
+  fields:
+    alcohol_content: Alcohol content (Divide by 100 for decimal value)
+    bonus_reward_miles: Number of bonus air miles
+    bonus_reward_miles_ends_on: When bonus air miles are no longer valid
+    clearance_sale_savings_in_cents: Savings in cents if on clearance [Deprecated]
+    description: Product description (not available for all products)
+    has_bonus_reward_miles: True if the product has bonus air miles
+    has_clearance_sale: True if the product is currently on clearance [Deprecated]
+    has_limited_time_offer: True if the product is on sale
+    has_value_added_promotion: True if the product has a value added promotion
+    id: The LCBO product ID / number
+    inventory_count: Total units across all stores
+    inventory_price_in_cents: Total retail price of all units across all stores
+    inventory_volume_in_milliliters: Total volume of all units across all stores
+    is_dead: When products are removed from the LCBO catalog they are marked as "dead"
+    is_discontinued: True if the product has been marked as discontinued by the LCBO
+    is_kosher: True if the product is designated as Kosher.
+    is_seasonal: True if the product is designated as seasonal
+    is_vqa: True if the product is designated as VQA
+    limited_time_offer_ends_on: When the sale price is no longer valid
+    limited_time_offer_savings_in_cents: Savings in cents if on sale
+    name: Product name
+    origin: Country of origin / manufacture
+    package: Full package description
+    package_unit_type: Package unit type (bottle, can, etc.)
+    package_unit_volume_in_milliliters: The volume of one unit in the package
+    price_in_cents: Current retail price in cents
+    price_per_liter_in_cents: The beverage price per liter
+    price_per_liter_of_alcohol_in_cents: The alcohol price per liter
+    primary_category: Primary product category
+    producer_name: Name of the company that produces the product
+    product_no: The LCBO product ID / number [Deprecated]
+    regular_price_in_cents: Regular retail price in cents
+    released_on: Official release date (usually unspecified)
+    secondary_category: Secondary LCBO product category (Not available for all products)
+    serving_suggestion: LCBO serving suggestion (Not available for all products)
+    style: The LCBO's determined style designation (Not available for most products)
+    tertiary_category: Tertiary LCBO product category (Not available for all products)
+    image_url: A URL to an image of the product (Not available for all products)
+    image_thumb_url: A URL to a smaller image of the product (Not available for all products)
+    stock_type: Either "LCBO" or "VINTAGES"
+    sugar_content: The product's sweetness descriptor, is usually a designation such as extra-dry (XD), medium sweet (MS), etc. (Not available for all products)
+    sugar_in_grams_per_liter: The amount of sugar that is contained in the product in grams per liter. (Not available for all products)
+    tags: A string of tags that reflect the product
+    tasting_note: Professional tasting note (Not available for all products)
+    total_package_units: Number of units in a package
+    updated_at: Time that the product information was updated
+    value_added_promotion_description: Contents of the value added promotion offer if available
+    varietal: Grape varietal (or blend) designated by the LCBO (Not available for all products)
+    volume_in_milliliters: Total volume of all units in package
+
+  endpoints:
+  - route: '(/v2)/products'
+    name: 'Products'
+    anchor: 'many'
+    summary: |
+      Returns a list of products that can be sorted and filtered by the
+      described parameters.
+
+    params:
+    - key: page
+      value: Page number
+      summary: The page number you'd like to return.
+      example: lcboapi.com/products?page=3
+
+    - key: per_page
+      value: Page size
+      summary: |
+        The number of objects to include per page. The defaults is 50, and the
+        maximum is 200.
+      example: lcboapi.com/products?per_page=150
+
+    - key: 'where'
+      type: 'enum'
+      many: true
+      values: &product_filter_attrs
+      - is_dead
+      - is_discontinued
+      - has_value_added_promotion
+      - has_limited_time_offer
+      - has_bonus_reward_miles
+      - is_seasonal
+      - is_vqa
+      - is_kosher
+      example: lcboapi.com/products?where=is_seasonal
+      summary: Return only products where the specified attributes are true.
+
+    - key: 'where_not'
+      type: 'enum'
+      many: true
+      values: *product_filter_attrs
+      example: 'lcboapi.com/products?where_not=is_dead'
+      summary: Return only products where the specified attributes are false.
+
+    - key: 'sort'
+      type: 'enum'
+      many: true
+      values:
+      - id
+      - price_in_cents
+      - regular_price_in_cents
+      - limited_time_offer_savings_in_cents
+      - limited_time_offer_ends_on
+      - bonus_reward_miles
+      - bonus_reward_miles_ends_on
+      - package_unit_volume_in_milliliters
+      - total_package_units
+      - total_package_volume_in_milliliters
+      - volume_in_milliliters
+      - alcohol_content
+      - price_per_liter_of_alcohol_in_cents
+      - price_per_liter_in_cents
+      - inventory_count
+      - inventory_volume_in_milliliters
+      - inventory_price_in_cents
+      - released_on
+
+      example: 'lcboapi.com/products?order=id.desc'
+      summary: |
+        Sort the returned products by one or more of the listed attributes.
+        Ascending or descending order is specified by adding `.asc` or `.desc`
+        to the end of the attribute name.
+
+    - key: 'q'
+      value: URI-encoded search query
+      example: 'lcboapi.com/products?q=red+wine'
+      summary: |
+        Returns all products that match the provided search query.
+
+    - key: 'store_id'
+      value: LCBO Store ID
+      example: lcboapi.com/products?store_id=511
+      summary: |
+        Returns only products that have or have had inventory at the specified
+        store.
+
+  - route: '(/v2)/products/{product_id}'
+    name: 'Product'
+    anchor: 'one'
+    one: true
+    summary: |
+      Returns the specified product for `product_id`.
+
+- title: 'LCBO API V1 Inventories'
+  name: 'Inventories'
+  slug: 'inventories'
+  object: 'Inventory'
+  body: |
+    An inventory represents the presence of a product at an LCBO store.
+
+  fields:
+    product_id: Product ID
+    store_id: Store ID
+    is_dead: True if this inventory refers to a dead store and/or product
+    quantity: Reported quantity on hand of the product ID at store ID
+    updated_on: Reported date that quantity was updated
+    updated_at: Time that this inventory item was updated
+    product_no: Product ID [Deprecated]
+    store_no: Store ID [Deprecated]
+
+  endpoints:
+  - route: (/v2)/inventories
+    name: Inventories
+    anchor: many
+    summary: |
+      Returns a list of inventories that can be filtered and ordered by
+      parameters.
+
+    params:
+    - key: page
+      value: Page number
+      summary: The page number you'd like to return.
+      example: lcboapi.com/inventories?page=3
+
+    - key: per_page
+      value: Page size
+      summary: |
+        The number of objects to include per page. The defaults is 50, and the
+        maximum is 100.
+      example: lcboapi.com/inventories?per_page=100
+
+    - key: where
+      type: enum
+      many: true
+      values:
+      - is_dead
+      example: lcboapi.com/inventories?where=is_dead
+
+    - key: where_not
+      type: enum
+      many: true
+      values:
+      - is_dead
+      example: lcboapi.com/inventories?where_not=is_dead
+
+    - key: 'order'
+      type: 'enum'
+      many: true
+      values:
+      - quantity
+      - updated_on
+      example: lcboapi.com/inventories?order=quantity.desc
+      summary: |
+        Sort the returned inventories by one or more of the listed attributes.
+        Ascending or descending order is specified by adding `.asc` or `.desc`
+        to the end of the attribute name.
+
+    - key: 'store'
+      value: LCBO Store ID
+      example: lcboapi.com/inventories?store=511
+      summary: |
+        Returns only inventories that are associated with the specified
+        store.
+
+    - key: 'product'
+      value: LCBO Product ID
+      example: lcboapi.com/inventories?product=18
+      summary: |
+        Returns only inventories that are associated with the specified
+        product.
+
+  - route: (/v2)/inventories/{inventory_id}
+    anchor: one
+    name: Inventory
+    summary: |
+      Returns an inventory for the specified inventory ID. Inventory IDs are
+      composed of a store ID and a product ID separated by a dash. Example:
+      Store 511 and product 18 have the inventory ID of `511-18`.
+
+- title: 'LCBO API V2 Categories'
+  name: 'Categories'
+  slug: 'categories'
+  object: 'Category'
+  body: |
+    Categories are 
+
+  fields:
+    id: Category ID
+    type: Always set to "category" for category resources
+    name: The name of the category
+
+  links:
+    parent_category: If the category is a sub category this references its parent category
+
+  endpoints:
+  - route: (/v2)/categories
+    name: Categories
+    anchor: many
+    summary: |
+      Returns all categories, not paginated
+
+    params:
+    - key: 'order'
+      type: 'enum'
+      many: true
+      values:
+      - id
+      - total_products
+      - total_stores
+      - total_inventories
+      - total_product_inventory_count
+      - total_product_inventory_volume_in_milliliters
+      - total_product_inventory_price_in_cents
+      example: lcboapi.com/datasets?order=created_at.asc
+      summary: |
+        Sort the returned datasets by one or more of the listed attributes.
+        Ascending or descending order is specified by adding `.asc` or `.desc`
+        to the end of the attribute name.
+
+  - route: (/v2)/categories/{category_id}
+    anchor: one
+    name: Category
+    summary: |
+      TODO: Describe.
+
+- title: 'LCBO API V2 Producers'
+  name: 'Producers'
+  slug: 'producers'
+  object: 'Producer'
+  body: |
+    Represents a producer of a subset of LCBO products.
+
+  fields:
+    id: LCBO API producer ID
+    type: Always set to "producer" for producer resources
+    name: The producers name as indicated by the LCBO
+    is_ocb: True if the producer is a member of the Ontario Craft Brewers Association
+
+  endpoints:
+  - route: (/v2)/producers
+    name: Producers
+    anchor: many
+    summary: |
+      Returns producers.
+
+    params:
+    - key: 'order'
+      type: 'enum'
+      many: true
+      values:
+      - id
+      - total_products
+      - total_stores
+      - total_inventories
+      - total_product_inventory_count
+      - total_product_inventory_volume_in_milliliters
+      - total_product_inventory_price_in_cents
+      example: lcboapi.com/datasets?order=created_at.asc
+      summary: |
+        Sort the returned datasets by one or more of the listed attributes.
+        Ascending or descending order is specified by adding `.asc` or `.desc`
+        to the end of the attribute name.
+
+  - route: (/v2)/categories/{category_id}
+    anchor: one
+    name: Category
+    summary: |
+      TODO: Describe.
+
+- title: 'LCBO API V2 Datasets'
+  name: 'Datasets'
+  slug: 'datasets'
+  object: 'Dataset'
+  body: |
+    Datasets represent snapshots of all stores, products, and inventories at a
+    given time. They are created once per day and contain information such as
+    the IDs of stores and products that were added and removed since the
+    previous dataset.
+
+  fields:
+    id: Dataset identifier
+    total_products: Total unique retail products across all stores
+    total_stores: Total stores
+    total_inventories: Total inventory items across all stores
+    total_product_inventory_count: Total product units across all stores
+    total_product_inventory_volume_in_milliliters: Total volume of all product units across all stores
+    total_product_inventory_price_in_cents: Total retail value of all product units across all stores
+    created_at: The time the dataset was created
+    product_ids: List of all active product IDs at the time the dataset was created
+    store_ids: List of all active store IDs at the time the dataset was created
+    added_product_ids: List of product IDs that were added since the previous update
+    added_store_ids: List of store IDs that were added since the previous update
+    removed_product_ids: List of product IDs that were removed since the previous update
+    removed_store_ids: List of store IDs that were removed since the previous update
+    csv_dump: Contains a path to a ZIP archive of CSV files for stores, products, and inventories.
+
+  endpoints:
+  - route: (/v2)/datasets
+    name: Datasets
+    anchor: many
+    summary: |
+      Returns a list of inventories that can be filtered and ordered by
+      parameters.
+
+    params:
+    - key: page
+      value: Page number
+      summary: The page number you'd like to return.
+      example: lcboapi.com/datasets?page=3
+
+    - key: per_page
+      value: Page size
+      summary: |
+        The number of objects to include per page. The defaults is 20, and the
+        maximum is 50.
+      example: lcboapi.com/datasets?per_page=50
+
+    - key: 'order'
+      type: 'enum'
+      many: true
+      values:
+      - id
+      - created_at
+      - total_products
+      - total_stores
+      - total_inventories
+      - total_product_inventory_count
+      - total_product_inventory_volume_in_milliliters
+      - total_product_inventory_price_in_cents
+      example: lcboapi.com/datasets?order=created_at.asc
+      summary: |
+        Sort the returned datasets by one or more of the listed attributes.
+        Ascending or descending order is specified by adding `.asc` or `.desc`
+        to the end of the attribute name.
+
+  - route: (/v2)/datasets/{dataset_id}
+    anchor: one
+    name: Dataset
+    summary: |
+      Returns an inventory for the specified dataset `dataset_id`.
+
+      <p class="info">
+        You can get the latest dataset by specifying <code>latest</code> as the ID.
+      </p>
+
+      <p class="info">
+        Datasets are also available as ZIP files containing CSV dumps of all
+        stores, products, and inventories. Just add <code>.zip</code> to
+        the end of the URL.
+      </p>

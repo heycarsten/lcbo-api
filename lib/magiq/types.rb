@@ -109,6 +109,23 @@ module Magiq
     end
     register :upc, UPC
 
+    class InventoryID < Type
+      INVENTORY_ID_RNG = /\A([0-9]{1,12})\-([0-9]{1,3})\Z/
+
+      def cast!
+        v = raw.to_s.strip
+
+        if v =~ INVENTORY_ID_RNG
+          [$1.to_i, $2.to_i]
+        else
+          bad! "provided value of #{raw.inspect} is not a permitted " \
+          "inventory ID, it must be a product ID and store ID separated by a " \
+          "dash, eg: 232744-94"
+        end
+      end
+    end
+    register :inventory_id, InventoryID
+
     class CategoryDepth < Type
       def cast!
         v = raw.to_s.to_i

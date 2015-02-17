@@ -46,6 +46,22 @@ module DataMigrator
     puts '> Done'
   end
 
+  def identify_ocb_products!
+    puts 'Identifying OCB products...'
+
+    Product.
+      joins(:producer).
+      where(:'producers.is_ocb' => true).
+      update_all(is_ocb: true)
+
+    Product.
+      joins(:producer).
+      where(:'producers.is_ocb' => false).
+      update_all(is_ocb: false)
+
+    puts '> Done'
+  end
+
   def clean_product_categories!
     puts "Cleaning product categories..."
 
@@ -75,6 +91,19 @@ module DataMigrator
 
     Product.find_each do |product|
       product.associate_categories!
+      STDOUT.print('.')
+      STDOUT.flush
+    end
+
+    puts
+    puts '> Done'
+  end
+
+  def update_product_catalog_refs!
+    puts 'Updating product catalog references...'
+
+    Product.find_each do |product|
+      product.update_catalog_refs!
       STDOUT.print('.')
       STDOUT.flush
     end

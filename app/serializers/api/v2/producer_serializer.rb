@@ -1,5 +1,6 @@
 class API::V2::ProducerSerializer < ApplicationSerializer
   attributes \
+    :type,
     :id,
     :slug,
     :name,
@@ -7,6 +8,14 @@ class API::V2::ProducerSerializer < ApplicationSerializer
     :is_dead,
     :created_at,
     :updated_at
+
+  def type
+    :producer
+  end
+
+  def id
+    object.id.to_s
+  end
 
   def filter(keys)
     keys.delete(:is_dead) unless scope && scope[:include_dead]
