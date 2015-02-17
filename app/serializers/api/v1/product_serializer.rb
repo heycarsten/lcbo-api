@@ -34,6 +34,7 @@ class API::V1::ProductSerializer < ApplicationSerializer
     :has_bonus_reward_miles,
     :is_seasonal,
     :is_vqa,
+    :is_ocb,
     :is_kosher,
     :value_added_promotion_description,
     :description,

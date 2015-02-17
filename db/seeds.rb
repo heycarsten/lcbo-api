@@ -19,7 +19,7 @@ Plan.create! \
   has_cors: true,
   has_upc_lookup: true,
   request_pool_size: 100_000,
-  fee_in_cents: 7000
+  fee_in_cents: 700
 
 Plan.create! \
   kind: Plan.kinds[:developer],

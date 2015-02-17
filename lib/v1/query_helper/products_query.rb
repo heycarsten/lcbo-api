@@ -23,6 +23,7 @@ module V1
         has_bonus_reward_miles
         is_seasonal
         is_vqa
+        is_ocb
         is_kosher ]
       end
 

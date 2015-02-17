@@ -598,6 +598,7 @@ resources:
     is_kosher: True if the product is designated as Kosher.
     is_seasonal: True if the product is designated as seasonal
     is_vqa: True if the product is designated as VQA
+    is_ocb: True if the product is produced by a member of the Ontario Craft Brewers
     limited_time_offer_ends_on: When the sale price is no longer valid
     limited_time_offer_savings_in_cents: Savings in cents if on sale
     name: Product name
@@ -662,6 +663,7 @@ resources:
       - has_bonus_reward_miles
       - is_seasonal
       - is_vqa
+      - is_ocb
       - is_kosher
       example: lcboapi.com/products?where=is_seasonal
       summary: Return only products where the specified attributes are true.
