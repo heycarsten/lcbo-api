@@ -258,7 +258,7 @@ body.news header nav .news
   width: auto
   max-width: 680px
   min-height: 70vh
-  line-height: 2
+  line-height: 1.25
   margin: 0 auto
   padding: 32px
   padding-top: 16px
@@ -292,6 +292,9 @@ body.news header nav .news
   h1, h2, h3, h4, h5, h6, p, ol, ul, pre, blockquote
     text-align: left
     margin: 1.25em 0
+
+  p, li, blockquote
+    line-height: 1.6
 
   blockquote
     color: material-color('grey', '500')
@@ -341,6 +344,14 @@ body.news header nav .news
     padding: 3px 4px
     top: -1px
     color: #222
+
+  a
+    code
+      color: material-color('purple', '500')
+      text-decoration: none
+
+    &:active code
+      color: material-color('purple', 'a400')
 
   pre code
     box-sizing: border-box
