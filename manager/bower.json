@@ -13,11 +13,11 @@
     "ember-qunit-notifications": "0.0.7",
     "qunit": "~1.17.1",
     "normalize.css": "~3.0.2",
-    "ember-simple-auth": "~0.7.3",
     "moment": "~2.9.0",
     "bourbon": "3.2.3",
     "rickshaw": "~1.5.1",
-    "d3": "~3.5.5"
+    "d3": "~3.5.5",
+    "ember-simple-auth": "0.7.3"
   },
   "devDependencies": {
     "sass-material-colors": "^0.0.5"
