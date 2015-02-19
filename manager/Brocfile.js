@@ -5,10 +5,8 @@ var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 var app = new EmberApp({
   minifyJS: {
     options: {
-      uglify2: {
-        mangle: {
-          except: ["$super"]
-        }
+      mangle: {
+        except: ["$super"]
       }
     }
   }
