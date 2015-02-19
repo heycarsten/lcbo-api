@@ -14,10 +14,15 @@
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="assets/vendor.css">
     <link rel="stylesheet" href="assets/manager.css">
+
+    {{content-for 'head-footer'}}
   </head>
   <body>
     {{content-for 'body'}}
+
     <script src="assets/vendor.js"></script>
     <script src="assets/manager.js"></script>
+
+    {{content-for 'body-footer'}}
   </body>
 </html>

@@ -11,7 +11,7 @@ export default Em.Route.extend({
     });
   },
 
-  afterModel: function(model, transition) {
+  afterModel: function(model) {
     if (model.get('length')) {
       return;
     }

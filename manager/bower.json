@@ -1,29 +1,25 @@
 {
   "name": "manager",
   "dependencies": {
-    "handlebars": "~1.3.0",
-    "jquery": "^1.11.1",
-    "ember": "1.8.1",
-    "ember-data": "1.0.0-beta.11",
-    "ember-resolver": "~0.1.7",
-    "loader.js": "stefanpenner/loader.js#1.0.1",
-    "ember-cli-shims": "stefanpenner/ember-cli-shims#0.0.3",
-    "ember-cli-test-loader": "rwjblue/ember-cli-test-loader#0.0.4",
-    "ember-load-initializers": "stefanpenner/ember-load-initializers#0.0.2",
-    "ember-qunit": "0.1.8",
-    "ember-qunit-notifications": "0.0.4",
-    "qunit": "~1.15.0",
+    "jquery": "^1.11.2",
+    "ember": "1.10.0",
+    "ember-data": "1.0.0-beta.15",
+    "ember-resolver": "~0.1.11",
+    "loader.js": "ember-cli/loader.js#1.0.1",
+    "ember-cli-shims": "ember-cli/ember-cli-shims#0.0.3",
+    "ember-cli-test-loader": "ember-cli-test-loader#0.1.3",
+    "ember-load-initializers": "ember-cli/ember-load-initializers#0.0.2",
+    "ember-qunit": "0.2.8",
+    "ember-qunit-notifications": "0.0.7",
+    "qunit": "~1.17.1",
     "normalize.css": "~3.0.2",
-    "ember-simple-auth": "0.7.0",
-    "moment": "~2.8.3",
+    "ember-simple-auth": "~0.7.3",
+    "moment": "~2.9.0",
     "bourbon": "3.2.3",
-    "rickshaw": "~1.5.0",
-    "d3": "~3.4.13"
+    "rickshaw": "~1.5.1",
+    "d3": "~3.5.5"
   },
   "devDependencies": {
-    "sass-material-colors": "^0.0.4"
-  },
-  "resolutions": {
-    "handlebars": ">= 1.0.0 < 2.0.0"
+    "sass-material-colors": "^0.0.5"
   }
 }
