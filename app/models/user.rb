@@ -16,6 +16,7 @@ class User < ActiveRecord::Base
 
   after_create  :welcome_and_update_email
   after_update  :update_email,  if: :email_changed?
+  after_save    :redis_cache
 
   validates :plan_id, presence: true
 
