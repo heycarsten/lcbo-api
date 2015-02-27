@@ -138,5 +138,7 @@ Rails.application.routes.draw do
     root to: 'crawls#index'
     resources :crawls
     resources :crawl_events
+    resources :users
+    resources :plans
   end
 end

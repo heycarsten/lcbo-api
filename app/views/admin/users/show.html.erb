@@ -1,0 +1,42 @@
+<form>
+  <header>
+    <h1>User Details</h1>
+  </header>
+
+  <fieldset>
+    <legend>Info</legend>
+    <dl>
+      <dt>Name</dt>
+      <dd><%= @user.name %></dd>
+    </dl>
+  </fieldset>
+
+  <fieldset>
+    <legend>Emails</legend>
+    <table>
+      <thead>
+        <tr>
+          <th>Address</th>
+          <th>Approved</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @user.emails.each do |email| %>
+          <tr>
+            <td><%= email.address %></td>
+            <td><b><%= email.is_verified ? 'Yes' : 'No' %></b></td>
+          </li>
+        <% end %>
+      </tbody>
+    </table>
+  </fieldset>
+
+  <fieldset>
+    <legend>Plan</legend>
+    <%= @user.plan.title %>
+  </fieldset>
+
+  <fieldset>
+    <button class="button" type="submit">Save</button>
+  </fieldset>
+</form>

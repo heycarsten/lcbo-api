@@ -7,6 +7,23 @@
     <%= stylesheet_link_tag :application %>
   </head>
   <body class="admin">
-    <%= yield %>
+    <header>
+      <h1>
+        <%= link_to 'LCBO API', admin_crawls_path %>
+      </h1>
+      <nav>
+        <ul>
+          <li><%= link_to 'Crawls', admin_crawls_path %></li>
+          <li><%= link_to 'Users', admin_users_path %></li>
+          <li><%= link_to 'Plans', admin_plans_path %></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+<%= yield %>
+    </main>
+    <footer>
+      <small>You&rsquo;re beautiful!</small>
+    </footer>
   </body>
 </html>

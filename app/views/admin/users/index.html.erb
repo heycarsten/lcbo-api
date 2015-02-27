@@ -1,0 +1,16 @@
+<table>
+  <thead>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Activity</th>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= link_to user.name, admin_user_path(user) %></td>
+        <td><%= user.email %></td>
+        <td><%= user.cycle_requests.reduce(0) { |m,r| m + r[1] } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
