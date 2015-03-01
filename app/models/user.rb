@@ -44,6 +44,12 @@ class User < ActiveRecord::Base
 
   scope :verified, -> { where.not(email: nil) }
 
+  scope :with_keys_count, -> {
+    select('users.*, count(keys.id) AS keys_count').
+    joins('LEFT OUTER JOIN keys ON keys.user_id = users.id').
+    group('users.id')
+  }
+
   attr_reader \
     :password,
     :new_password,

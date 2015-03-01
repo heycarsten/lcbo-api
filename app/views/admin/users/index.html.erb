@@ -1,16 +1,28 @@
-<table>
-  <thead>
-    <th>Name</th>
-    <th>Email</th>
-    <th>Activity</th>
-  </thead>
-  <tbody>
-    <% @users.each do |user| %>
-      <tr>
-        <td><%= link_to user.name, admin_user_path(user) %></td>
-        <td><%= user.email %></td>
-        <td><%= user.cycle_requests.reduce(0) { |m,r| m + r[1] } %></td>
-      </tr>
+<section>
+  <div class="page-header">
+    <% if @plan %>
+      <h1>Users <small>of the <%= link_to @plan.title, admin_plan_path(@plan) %> plan</small></h1>
+    <% else %>
+      <h1>Users</h1>
     <% end %>
-  </tbody>
-</table>
+  </div>
+
+  <table class="table table-hover">
+    <thead>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Keys</th>
+      <th>Activity</th>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr >
+          <td><%= link_to user.name, admin_user_path(user) %></td>
+          <td><%= user.email %></td>
+          <td><%= user.keys_count %></td>
+          <td><%= user.cycle_requests.reduce(0) { |m,r| m + r[1] } %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</section>

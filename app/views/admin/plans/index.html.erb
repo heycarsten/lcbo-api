@@ -1,16 +1,20 @@
-<h1>Plans</h1>
+<section>
+  <div class="page-header">
+    <h1>Plans</h1>
+  </div>
 
-<table>
-  <thead>
-    <th>Title</th>
-    <th>Users</th>
-  </thead>
-  <tbody>
-    <% @plans.each do |plan| %>
-      <tr>
-        <td><%= link_to plan.title, admin_plan_path(plan) %></td>
-        <td><%= plan.users_count %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <table class="table table-hover">
+    <thead>
+      <th>Title</th>
+      <th>Users</th>
+    </thead>
+    <tbody>
+      <% @plans.each do |plan| %>
+        <tr>
+          <td><%= link_to plan.title, admin_plan_path(plan) %></td>
+          <td><%= plan.users_count %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</section>

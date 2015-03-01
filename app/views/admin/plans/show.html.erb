@@ -1,0 +1,87 @@
+<section>
+  <div class="page-header">
+    <h1>Plan</h1>
+  </div>
+
+  <%= form_for [:admin, @plan] do |f| %>
+    <fieldset>
+      <legend>Info</legend>
+      <% if @plan.respond_to?(:users_count) %>
+        <div class="form-group">
+          <label>Active Users</label>
+          <p class="form-control-static">
+            <%= link_to @plan.users_count, admin_users_path(plan_id: @plan.id) %>
+          </p>
+        </div>
+      <% end %>
+      <div class="form-group">
+        <%= f.label :title %>
+        <%= f.text_field :title, class: 'form-control' %>
+      </div>
+      <div class="form-group">
+        <%= f.label :kind %>
+        <p class="form-control-static">
+          <%= f.select :kind, Plan.kinds.keys %>
+        </p>
+      </div>
+      <div class="form-group">
+        <%= f.label :stripe_uid, 'Stripe UID' %>
+        <%= f.text_field :stripe_uid, class: 'form-control' %>
+      </div>
+      <div class="form-group">
+        <%= f.label :request_pool_size %>
+        <%= f.text_field :request_pool_size, class: 'form-control' %>
+      </div>
+      <div class="form-group">
+        <%= f.label :fee_in_cents %>
+        <%= f.text_field :fee_in_cents, class: 'form-control' %>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Attributes</legend>
+      <div class="checkbox">
+        <label>
+          <%= f.check_box :has_cors %> Has CORS
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <%= f.check_box :has_ssl %> Has SSL
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <%= f.check_box :has_upc_lookup %> Has UPC Lookup
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <%= f.check_box :has_upc_value %> Has UPC Values
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <%= f.check_box :has_history %> Has History
+        </label>
+      </div>
+    </fieldset>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-success">
+        Save
+      </button>
+
+      <% if @plan.persisted? %>
+        <%= link_to 'Clone', clone_admin_plan_path(@plan), class: 'btn', data: { method: :put } %>
+      <% end %>
+    </div>
+
+    <% if @plan.persisted? && @plan.users_count == 0 %>
+      <fieldset>
+        <legend>DANGER ZONE</legend>
+        <%= link_to 'Delete Plan', admin_plan_path(@plan), class: 'btn btn-danger', data: { method: :delete, confirm: 'Are you sure you want to destroy this plan?' } %>
+      </fieldset>
+    <% end %>
+  <% end %>
+</section>

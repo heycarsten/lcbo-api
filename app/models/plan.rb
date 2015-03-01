@@ -10,6 +10,18 @@ class Plan < ActiveRecord::Base
 
   after_save :recache_users
 
+  scope :with_users_count, -> {
+    select('plans.*, count(users.id) AS users_count').
+    joins('LEFT OUTER JOIN users ON users.plan_id = plans.id').
+    group('plans.id')
+  }
+
+  def self.select_options
+    with_users_count.order(updated_at: :desc).map { |plan|
+      ["#{plan.title} (#{plan.kind.titlecase}, #{plan.users_count} users)", plan.id]
+    }
+  end
+
   def clone(params = {})
     Plan.create!({
       kind:              kind,

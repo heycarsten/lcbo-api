@@ -136,9 +136,21 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root to: 'crawls#index'
+
     resources :crawls
     resources :crawl_events
-    resources :users
-    resources :plans
+
+    resources :users do
+      member do
+        put :enable
+        put :disable
+      end
+    end
+
+    resources :plans do
+      member do
+        put :clone
+      end
+    end
   end
 end

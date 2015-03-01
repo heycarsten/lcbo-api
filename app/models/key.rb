@@ -71,6 +71,10 @@ class Key < ActiveRecord::Base
     "#{redis_key(key_id)}:hourly_ips_log"
   end
 
+  def total_requests
+    $redis.get(Key.redis_total_requests_key(id)).to_i
+  end
+
   def cycle_requests
     now    = Time.now
     first  = now.beginning_of_month.to_date

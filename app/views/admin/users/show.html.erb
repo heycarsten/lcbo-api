@@ -1,42 +1,109 @@
-<form>
-  <header>
-    <h1>User Details</h1>
-  </header>
+<section>
+  <div class="page-header">
+    <h1>User<% if @user.is_disabled %> <span class="label label-danger">Disabled</span><% end %></h1>
+  </div>
 
-  <fieldset>
-    <legend>Info</legend>
-    <dl>
-      <dt>Name</dt>
-      <dd><%= @user.name %></dd>
-    </dl>
-  </fieldset>
-
-  <fieldset>
-    <legend>Emails</legend>
-    <table>
-      <thead>
-        <tr>
-          <th>Address</th>
-          <th>Approved</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @user.emails.each do |email| %>
+  <%= form_for [:admin, @user] do |f| %>
+    <fieldset>
+      <legend>Info</legend>
+      <div class="form-group">
+        <label>ID</label>
+        <p class="form-control-static">
+          <%= @user.id %>
+        </p>
+      </div>
+      <div class="form-group">
+        <label>Joined</label>
+        <p class="form-control-static">
+          <%= @user.created_at.strftime("%B #{@user.created_at.day.ordinalize}, %Y") %>
+        </p>
+      </div>
+      <% if @user.last_seen_at %>
+        <div class="form-group">
+          <label>Last Seen</label>
+          <p class="form-control-static">
+            <%= @user.last_seen_at.strftime("%B #{@user.last_seen_at.day.ordinalize}, %Y") %>
+            <% if last_seen_ip = @user.last_seen_ip %>
+              (<%= last_seen_ip %>)
+            <% end %>
+          </p>
+        </div>
+      <% end %>
+      <div class="form-group">
+        <label>Name</label>
+        <p class="form-control-static">
+          <%= @user.name %>
+        </p>
+      </div>
+      <div class="form-group">
+        <%= f.label :plan %>
+        <p class="form-control-static">
+          <%= f.select :plan_id, Plan.select_options %>
+        </p>
+      </div>
+      <div class="checkbox">
+        <label>
+          <%= f.check_box :is_disabled %> Disabled
+        </label>
+      </div>
+      <table class="table table-bordered">
+        <thead>
           <tr>
-            <td><%= email.address %></td>
-            <td><b><%= email.is_verified ? 'Yes' : 'No' %></b></td>
-          </li>
-        <% end %>
-      </tbody>
-    </table>
-  </fieldset>
+            <th>Email Address</th>
+            <th>Approved</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @user.emails.each do |email| %>
+            <tr>
+              <td><%= email.address %></td>
+              <td><b><%= email.is_verified ? 'Yes' : 'No' %></b></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </fieldset>
 
-  <fieldset>
-    <legend>Plan</legend>
-    <%= @user.plan.title %>
-  </fieldset>
+    <fieldset>
+      <legend>Keys</legend>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Label</th>
+            <th>Kind</th>
+            <th>Total Requests</th>
+            <th>Info</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @user.keys.each do |key| %>
+            <tr>
+              <td><%= key.label %></td>
+              <td>
+                <%= key.kind.titlecase %>
+                <% if key.domain.present? %>
+                  <span class="label"><%= key.domain %></span>
+                <% end %>
+              </td>
+              <td><%= key.total_requests %></td>
+              <td><small><%= key.info %></small></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </fieldset>
 
-  <fieldset>
-    <button class="button" type="submit">Save</button>
-  </fieldset>
-</form>
+    <div class="form-group">
+      <button type="submit" class="btn btn-success">
+        Save
+      </button>
+    </div>
+
+    <% if @user.is_disabled? || @user.email.blank? %>
+      <fieldset>
+        <legend>DANGER ZONE</legend>
+        <%= link_to 'Delete User', admin_user_path(@user), class: 'btn btn-danger', data: { method: :delete, confirm: 'Are you sure you want to delete this user?' } %>
+      </fieldset>
+    <% end %>
+  <% end %>
+</section>
