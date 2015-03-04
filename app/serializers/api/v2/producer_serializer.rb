@@ -2,7 +2,6 @@ class API::V2::ProducerSerializer < ApplicationSerializer
   attributes \
     :type,
     :id,
-    :slug,
     :name,
     :is_ocb,
     :is_dead,
