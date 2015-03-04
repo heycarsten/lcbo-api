@@ -125,3 +125,11 @@ Fabricator(:inventory) do
   created_at  Time.at(1293645823)
   updated_at  Time.at(1293645823)
 end
+
+
+Fabricator(:producer) do
+  name 'Producer Co.'
+  lcbo_ref 'producer-co'
+  is_dead false
+  is_ocb false
+end

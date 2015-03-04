@@ -45,4 +45,19 @@ module Factories
     k.save!
     k
   end
+
+  def build_producer(attrs = {})
+    name = "Producer #{rand 99999}"
+
+    Producer.new({
+      name:     name,
+      lcbo_ref: name.parameterize
+    }.merge(attrs))
+  end
+
+  def create_producer!(attrs = {})
+    p = build_producer(attrs)
+    p.save!
+    p
+  end
 end
