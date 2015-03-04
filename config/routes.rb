@@ -139,13 +139,7 @@ Rails.application.routes.draw do
 
     resources :crawls
     resources :crawl_events
-
-    resources :users do
-      member do
-        put :enable
-        put :disable
-      end
-    end
+    resources :users
 
     resources :plans do
       member do
