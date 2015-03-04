@@ -1,5 +1,5 @@
-import Authenticator from 'simple-auth/authenticators/base';
 import Ember from 'ember';
+import Authenticator from 'simple-auth/authenticators/base';
 
 export default Authenticator.extend({
   restore: function(data) {
