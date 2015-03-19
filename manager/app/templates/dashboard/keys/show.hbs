@@ -1,12 +1,12 @@
 <h1>{{label}}</h1>
 
-{{#if totalCycleRequests}}
+{{#if model.totalCycleRequests}}
   <section class="activity-detail">
     <header>
       <h1>{{currentMonth}}</h1>
       <h2>Daily Activity</h2>
     </header>
-    {{line-area-chart height=150 data=cycleRequests}}
+    {{line-area-chart height=150 data=model.cycleRequests}}
   </section>
 {{/if}}
 
@@ -14,31 +14,27 @@
   <section class="key-detail">
     <h1>API Key</h1>
 
-    <code class='key-payload'>{{unbound token}}</code>
+    <code class='key-payload'>{{unbound model.token}}</code>
 
     <ul class='meta'>
-      {{#if isServer}}
+      {{#if model.isServer}}
         <li>
           <h2>Type</h2>
           <p>Private / Server</p>
         </li>
-      {{/if}}
-
-      {{#if isClient}}
+      {{else if model.isClient}}
         <li>
           <h2>Type</h2>
           <p>Mobile / Desktop</p>
         </li>
-      {{/if}}
-
-      {{#if isWeb}}
+      {{else if model.isWeb}}
         <li>
           <h2>Type</h2>
           <p>Web Browser</p>
         </li>
         <li title="You can make requests from this domain with CORS or JSONP.">
           <h2>Domain</h2>
-          <p>{{domain}}</p>
+          <p>{{model.domain}}</p>
         </li>
         <li title="Individual clients are limited to 1200 requests per hour.">
           <h2>Rate Limit</h2>

@@ -20,5 +20,4 @@ import Em from 'ember';
 //   return ret;
 // }.property('cycleRequests')
 
-export default Em.ObjectController.extend({
-});
+export default Em.Controller.extend();

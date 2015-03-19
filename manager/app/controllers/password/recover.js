@@ -5,25 +5,23 @@ export default Em.Controller.extend({
 
   subTemplate: 'password/recover/form',
 
-  reset: function() {
+  reset() {
     this.set('email', null);
     this.set('subTemplate', 'password/recover/form');
   },
 
   actions: {
-    submit: function() {
-      var controller = this;
-
+    submit() {
       this.send('loading');
 
       Em.$.ajax({
         url:  '/manager/passwords',
         type: 'POST',
         data: { email: this.get('email') }
-      }).always(function() {
-        Em.run(function() {
-          controller.set('subTemplate', 'password/recover/done');
-          controller.send('loaded');
+      }).always(() => {
+        Em.run(() => {
+          this.set('subTemplate', 'password/recover/done');
+          this.send('loaded');
         });
       });
     }

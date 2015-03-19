@@ -6,17 +6,15 @@ var KINDS = [
   { id: 'native_client',  label: 'Desktop / Mobile \u2014 Apple iOS / Cocoa, Android, Blackberry, etc.' }
 ];
 
-export default Em.ObjectController.extend({
+export default Em.Controller.extend({
   kindOptions: KINDS,
-  isWebClient: Em.computed.equal('kind', 'web_client'),
-  isClient:    Em.computed.match('kind', /_client$/),
+  isWebClient: Em.computed.equal('model.kind', 'web_client'),
+  isClient:    Em.computed.match('model.kind', /_client$/),
 
   actions: {
-    createKey: function(model) {
-      var controller = this;
-
-      model.save().then(function() {
-        controller.transitionTo('dashboard.keys');
+    createKey(model) {
+      model.save().then(() => {
+        this.transitionTo('dashboard.keys');
       }, Em.K);
     }
   }

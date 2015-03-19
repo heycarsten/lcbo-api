@@ -1,33 +1,27 @@
 import Em from 'ember';
 
-export default Em.ObjectController.extend({
+export default Em.Controller.extend({
   disabled: false,
   currentTemplate: 'signup/form',
 
-  reset: function() {
+  reset() {
     this.setProperties({
-      name:     null,
-      email:    null,
+      name: null,
+      email: null,
       password: null
     });
   },
 
   actions: {
-    createAccount: function(model) {
-      var controller = this;
-
+    createAccount(model) {
       this.send('loading');
 
-      model.save().then(
-        function() {
-          controller.send('loaded');
-          controller.set('currentTemplate', 'signup/done');
-        },
-
-        function() {
-          controller.send('loaded');
-        }
-      );
+      model.save().then(() => {
+        this.send('loaded');
+        this.set('currentTemplate', 'signup/done');
+      }).catch(() => {
+        this.send('loaded');
+      });
     }
   }
 });
