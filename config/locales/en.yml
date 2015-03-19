@@ -24,8 +24,15 @@ en:
   rate_limited: "The maximum requests per hour of %{max} has been reached, this limit will be reset in %{ttl} second(s). To learn more visit: https://lcboapi.com/docs/v2/#rate-limiting."
   bad_origin: "The provided Access Key does not support requests from the originating domain. Visit https://lcboapi.com/manager to generate an Access Key for your domain."
   too_many_sessions: "The maximum client sessions per hour of %{max} has been reached, this limit will be reset in %{ttl} second(s)."
-  plan_limited_feature: "Your LCBO API subscription does not support %{feature}."
+  unsupported_feature: "Your LCBO API account does not support %{feature}, contact help@lcboapi.com to enable the feature."
+  authorized_feature: "You need an Access Key to %{action} on LCBO API, sign up for one at https://lcboapi.com/sign-up"
   too_many_requests: "You have exceeded the maximum number of requests (%{max}) allowed by your LCBO API subscription, please upgrade your subscription."
+
+  authorized_features:
+    has_upc_lookup: "to perform UPC product lookups"
+
+  supported_features:
+    has_upc_lookup: "UPC product lookups"
 
   email:
     invalid_address: "must contain one '@' character"

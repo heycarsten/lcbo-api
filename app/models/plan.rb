@@ -41,5 +41,6 @@ class Plan < ActiveRecord::Base
 
   def recache_users
     users.find_each(&:redis_cache)
+    true
   end
 end

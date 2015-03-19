@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Products API (V1)', type: :request do
   before do
-    @product1 = Fabricate(:product, id: 1)
+    @product1 = Fabricate(:product, id: 1, upc: 1_000_000)
     @product2 = Fabricate(:product, id: 2, name: 'Fitzgibbons')
     @product3 = Fabricate(:product, id: 3, name: 'B\'ock hop bob-omb')
     @product4 = Fabricate(:product, id: 4, name: 'I AM DEAD', is_dead: true)
@@ -89,8 +89,37 @@ RSpec.describe 'Products API (V1)', type: :request do
   end
 
   it 'returns 404s when product does not exist' do
-    get '/products/9999999'
+    get '/products/1234'
     expect(response.json[:error]).to be_present
     expect(response.status).to eq 404
+  end
+
+  describe 'lookup by UPC' do
+    it 'fails if no access key is given' do
+      get '/products/1000000'
+      expect(response.json[:error]).to be_present
+      expect(response.status).to eq 401
+    end
+
+    it 'fails if the given account does not support it' do
+      user = create_verified_user!
+      key  = user.keys.create!(label: 'Example', kind: :private_server)
+
+      get "/products/1000000?access_key=#{key}"
+
+      expect(response.json[:error]).to be_present
+      expect(response.status).to eq 403
+    end
+
+    it 'works if the given account supports it' do
+      user = create_verified_user!
+      user.plan.update!(has_upc_lookup: true)
+      key = user.keys.create!(label: 'Example', kind: :private_server)
+
+      get "/products/1000000?access_key=#{key}"
+
+      expect(response.json[:result][:id]).to eq 1
+      expect(response.status).to eq 200
+    end
   end
 end

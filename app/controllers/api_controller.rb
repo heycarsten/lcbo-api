@@ -285,6 +285,35 @@ class APIController < ApplicationController
     @current_hit
   end
 
+  def feature_enabled?(flag)
+    return false unless current_key
+    account_info[flag] ? true : false
+  end
+
+  def enforce_feature_flag!(flag)
+    if !current_key
+      message = I18n.t('authorized_feature', action: I18n.t("authorized_features.#{flag}"))
+      add_www_authenticate_header(message)
+      render_error \
+        code:   'unauthorized',
+        title:  'Access Key Required',
+        detail: message,
+        status: 401
+      return false
+    end
+
+    if !account_info[flag]
+      render_error \
+        code: 'unauthorized',
+        title: 'Unsupported Feature',
+        detail: I18n.t('unsupported_feature', feature: I18n.t("supported_features.#{flag}")),
+        status: 403
+      return false
+    end
+
+    return true
+  end
+
   def enforce_request_pool!
     now   = Time.now
     max   = account_info[:request_pool_size]
