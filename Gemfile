@@ -17,7 +17,7 @@ gem 'sass-rails',     '~> 5.0.1'
 gem 'therubyracer',   platforms: :ruby
 gem 'uglifier'
 gem 'skylight',       '~> 0.6.0'
-gem 'honeybadger',    '~> 2.0.0'
+gem 'honeybadger',    '~> 2.0.6'
 gem 'stripe',         github: 'stripe/stripe-ruby'
 
 # Crawler Junk
