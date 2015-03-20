@@ -9,7 +9,7 @@ module V1
       end
 
       def self.get(raw_id)
-        id = raw_id.to_i
+        return unless id = Product.normalize_isn(raw_id)
 
         if id > 999999
           Product.where(upc: id).first
