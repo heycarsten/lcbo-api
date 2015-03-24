@@ -160,16 +160,9 @@ class APIController < ApplicationController
     return true unless current_key
 
     return false unless enforce_request_pool!
-    return false unless enforce_restrictions!
     return false unless enforce_max_clients!
     return false unless enforce_rate_limit!
 
-    true
-  end
-
-  def enforce_restrictions!
-    account_info[:has_ssl]
-    account_info[:has_cors]
     true
   end
 
@@ -234,13 +227,14 @@ class APIController < ApplicationController
     response.headers['X-Rate-Limit-Max']   = max
     response.headers['X-Rate-Limit-Count'] = count
     response.headers['X-Rate-Limit-TTL']   = ttl
+    response.headers['Retry-After']        = ttl
 
     if count > max
       render_error \
         code:   'rate_limited',
         title:  'Rate limit reached',
         detail: I18n.t('rate_limited', max: max, ttl: ttl),
-        status: 403
+        status: 428
 
       return false
     end
@@ -323,13 +317,14 @@ class APIController < ApplicationController
     response.headers['X-Request-Pool-Size']  = max
     response.headers['X-Request-Pool-Count'] = count
     response.headers['X-Request-Pool-TTL']   = ttl
+    response.headers['Retry-After']          = ttl
 
     if count > max
       render_error \
         code:   'too_many_requests',
         title:  'Exceeded monthly request pool',
         detail: I18n.t('too_many_requests', max: max),
-        status: 403
+        status: 429
 
       return false
     end
