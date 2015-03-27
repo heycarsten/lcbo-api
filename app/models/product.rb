@@ -1,6 +1,8 @@
 class Product < ActiveRecord::Base
   include PgSearch
 
+  MAX_LCBO_ID = 999999
+
   CATALOG_REFS = {
     'lcbo'          => 1,
     'lcbo.vintages' => 2,

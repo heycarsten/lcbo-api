@@ -10,7 +10,7 @@ class API::V1::ProductsController < API::V1::APIController
   end
 
   def show
-    if Product.normalize_isn(params[:id]).to_i > 999999
+    if Product.normalize_isn(params[:id]).to_i > Product::MAX_LCBO_ID
       return unless enforce_feature_flag!(:has_upc_lookup)
     end
 

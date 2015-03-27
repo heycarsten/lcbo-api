@@ -11,7 +11,7 @@ module V1
       def self.get(raw_id)
         return unless id = Product.normalize_isn(raw_id)
 
-        if id > 999999
+        if id > Product::MAX_LCBO_ID
           Product.where(upc: id).first
         else
           Product.where(id: id).first

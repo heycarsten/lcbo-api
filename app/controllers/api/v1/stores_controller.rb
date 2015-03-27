@@ -1,6 +1,6 @@
 class API::V1::StoresController < API::V1::APIController
   def index
-    if params[:product_id].present? && Product.normalize_isn(params[:product_id]).to_i > 999999
+    if params[:product_id].present? && Product.normalize_isn(params[:product_id]).to_i > Product::MAX_LCBO_ID
       return unless enforce_feature_flag!(:has_upc_lookup)
     end
 
