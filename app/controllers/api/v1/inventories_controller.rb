@@ -1,5 +1,9 @@
 class API::V1::InventoriesController < API::V1::APIController
   def index
+    if params[:product_id].present? && Product.normalize_isn(params[:product_id]).to_i > 999999
+      return unless enforce_feature_flag!(:has_upc_lookup)
+    end
+
     @query = query(:inventories)
 
     respond_to do |format|
