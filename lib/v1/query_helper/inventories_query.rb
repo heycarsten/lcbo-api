@@ -60,17 +60,21 @@ module V1
       end
 
       def product
-        @product ||= V1::QueryHelper.find(:product, product_id)
+        @product ||= if product_id
+          V1::QueryHelper.find(:product, product_id)
+        else
+          nil
+        end
       end
 
       def scope
         case
         when product_id && store_id
           model.where(
-            product_id: product_id,
+            product_id: product.id,
             store_id:   store_id)
         when product_id
-          model.where(product_id: product_id)
+          model.where(product_id: product.id)
         when store_id
           model.where(store_id: store_id)
         else

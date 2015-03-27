@@ -5,7 +5,9 @@ RSpec.describe 'Stores API (V1)', type: :request do
     @store1   = Fabricate(:store)
     @store2   = Fabricate(:store, name: 'Test Store')
     @product1 = Fabricate(:product)
+    @product2 = Fabricate(:product, upc: 10000000)
     @inv1     = Fabricate(:inventory, store: @store1, product: @product1)
+    @inv2     = Fabricate(:inventory, store: @store1, product: @product2)
   end
 
   describe 'all stores' do
@@ -86,6 +88,18 @@ RSpec.describe 'Stores API (V1)', type: :request do
       expect(response.json[:result].size).to eq 1
       expect(response.json[:result][0][:distance_in_meters]).to eq 0
     end
+  end
+
+  it 'looks up stores by product UPC if the given account supports it' do
+    user = create_verified_user!
+    user.plan.update!(has_upc_lookup: true)
+    key = user.keys.create!(label: 'Example', kind: :private_server)
+
+    get "/products/10000000/stores?access_key=#{key}"
+
+    expect(response.status).to eq 200
+    expect(response.json[:result].size).to eq 1
+    expect(response.json[:result][0][:id]).to eq @store1.id
   end
 
   context 'stores with product (product not found)' do

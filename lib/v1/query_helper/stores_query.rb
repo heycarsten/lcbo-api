@@ -114,14 +114,14 @@ module V1
 
       def _filtered_scope
         case
-        when is_spatial? && product_id
-          model.distance_from_with_product(latitude, longitude, product_id)
+        when is_spatial? && product
+          model.distance_from_with_product(latitude, longitude, product.id)
         when is_spatial?
           model.distance_from(latitude, longitude)
-        when product_id
+        when product
           model.joins(:inventories).
             select('stores.*, inventories.quantity, inventories.reported_on').
-            where('inventories.product_id' => product_id)
+            where('inventories.product_id' => product.id)
         else
           model
         end.
@@ -145,7 +145,11 @@ module V1
       end
 
       def product
-        @product ||= V1::QueryHelper.find(:product, product_id)
+        @product ||= if product_id
+          V1::QueryHelper.find(:product, product_id)
+        else
+          nil
+        end
       end
 
       def as_json
