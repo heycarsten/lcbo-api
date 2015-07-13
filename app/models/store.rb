@@ -6,6 +6,10 @@ class Store < ActiveRecord::Base
     'Victoria Street & Parry Sound' => 'Rosseau'
   }
 
+  CORRECTED_ADDRESSES = {
+    '16 Post Street' => '16 Ottawa Street'
+  }
+
   SIMPLIFIED_CITIES = {
     'Cambridge-Preston'   => 'Preston',
     'Ottawa-Gloucester'   => 'Gloucester',
@@ -82,6 +86,7 @@ class Store < ActiveRecord::Base
     attrs[:tags] = attrs[:tags].any? ? attrs[:tags].join(' ') : nil
     attrs[:city] = SIMPLIFIED_CITIES[attrs[:city]] || attrs[:city]
     attrs[:name] = SIMPLIFIED_NAMES[attrs[:name]] || attrs[:name]
+    attrs[:address_line_1] = CORRECTED_ADDRESSES[attrs[:address_line_1]] || attrs[:address_line_1]
 
     if (store = where(id: id).first)
       store.update!(attrs)
