@@ -464,7 +464,7 @@ CREATE TABLE products (
     origin character varying(60),
     package character varying(32),
     package_unit_type character varying(20),
-    package_unit_volume_in_milliliters smallint DEFAULT 0,
+    package_unit_volume_in_milliliters integer DEFAULT 0,
     total_package_units smallint DEFAULT 0,
     total_package_volume_in_milliliters integer DEFAULT 0,
     volume_in_milliliters integer DEFAULT 0,
@@ -1463,4 +1463,6 @@ INSERT INTO schema_migrations (version) VALUES ('20150213173003');
 INSERT INTO schema_migrations (version) VALUES ('20150213203700');
 
 INSERT INTO schema_migrations (version) VALUES ('20150214035627');
+
+INSERT INTO schema_migrations (version) VALUES ('20150924205712');
 
