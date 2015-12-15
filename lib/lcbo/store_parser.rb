@@ -27,7 +27,7 @@ module LCBO
       if (name = lookup(:locationIntersection))
         util.titlecase(name)
       else
-        raise LCBO::DafuqError, "expected store to have name"
+        raise LCBO::NotFoundError, "this is how the LCBO removes stores"
       end
     end
 
