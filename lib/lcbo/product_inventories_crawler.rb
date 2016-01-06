@@ -3,7 +3,7 @@ module LCBO
     include Parseable
 
     STORE_ID_RNG = /STORE=([0-9]+)/i
-    BASE_URL = 'http://www.vintages.com/lcbo-ear/vintages/product/' \
+    BASE_URL = 'http://www.foodanddrink.ca/lcbo-ear/vintages/product/' \
       'inventory/searchResults.do?language=EN&itemNumber='
     INVENTORY_TR_SEL = 'form[name="inventoryresults"] table[border="0"]' \
       '[width="100%"][cellpadding="5"] tr'

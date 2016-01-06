@@ -5,7 +5,7 @@ Excon.defaults[:headers] = {
 }
 
 module LCBO
-  API_BASE_URL = 'http://stage.lcbo.com/lcbo-webapp/'
+  API_BASE_URL = 'http://www.foodanddrink.ca/lcbo-webapp/'
   NUM_PRODUCTS = 15_000
 
   class Error < StandardError; end
@@ -29,7 +29,7 @@ module LCBO
   module_function
 
   def store_ids
-    xml = get('http://www.vintages.com/lcbo-webapp/storequery.do?searchType=' \
+    xml = get('http://www.foodanddrink.ca/lcbo-webapp/storequery.do?searchType=' \
       'proximity&longitude=-79.4435649&latitude=43.6581718&numstores=900')
     StoreIdsParser.parse(xml)[:ids]
   end
