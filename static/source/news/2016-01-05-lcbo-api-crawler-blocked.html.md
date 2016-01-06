@@ -4,6 +4,12 @@ date: 2016-01-05
 author: heycarsten
 ---
 
+**UPDATE: (Jan 6) It appears that the blockage was
+[NOT intentional](https://twitter.com/LCBO/status/684740392529604609), and the
+LCBO is working to resolve the issue.**
+
+---
+
 **On January 5th, 2016 the LCBO blocked LCBO API's crawler from accessing LCBO
 websites. This means that LCBO API can not update its data.**
 
