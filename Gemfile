@@ -26,7 +26,7 @@ gem 'amatch',        require: false
 gem 'stringex',      require: false
 gem 'nokogiri',      require: false
 gem 'unicode_utils', require: false
-gem 'aws-s3',        require: false, github: 'fnando/aws-s3', ref: 'fef95c2d'
+gem 'aws-sdk',       '~> 2'
 
 group :development do
   gem 'capistrano',         '~> 3.3.5'

@@ -106,13 +106,15 @@ module V1
     }
 
     def initialize(key)
-      AWS::S3::Base.establish_connection!(
-        access_key_id:     Rails.application.secrets.s3_access_key,
-        secret_access_key: Rails.application.secrets.s3_secret_key)
-
       @key = key
-      @s3  = AWS::S3::S3Object
       @dir = File.join(Dir.tmpdir, 'lcboapi-tmp')
+      @s3 = Aws::S3::Client.new(
+        region: 'us-east-1',
+        credentials: {
+          access_key_id: Rails.application.secrets.s3_access_key,
+          secret_access_key: Rails.application.secrets.s3_secret_key
+        }
+      )
 
       `mkdir -p #{@dir} && chmod 0777 #{@dir}`
 
@@ -142,9 +144,12 @@ module V1
     end
 
     def upload_archive
-      @s3.store("datasets/#{@key}.zip", open(@zip), Rails.application.secrets.s3_bucket,
+      @s3.put_object(
+        key: "datasets/#{@key}.zip",
+        body: open(@zip),
+        bucket: Rails.application.secrets.s3_bucket,
         content_type: 'application/zip',
-        access:       :public_read
+        acl: 'public-read'
       )
     end
 

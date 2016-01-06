@@ -22,11 +22,13 @@ class ImageCacher
   end
 
   def initialize
-    AWS::S3::Base.establish_connection!(
-      access_key_id:     Rails.application.secrets.s3_access_key,
-      secret_access_key: Rails.application.secrets.s3_secret_key)
-
-    @s3 = AWS::S3::S3Object
+    @s3 = Aws::S3::Client.new(
+      region: 'us-east-1',
+      credentials: {
+        access_key_id: Rails.application.secrets.s3_access_key,
+        secret_access_key: Rails.application.secrets.s3_secret_key
+      }
+    )
   end
 
   def uncached
@@ -62,10 +64,13 @@ class ImageCacher
     bucket = Rails.application.secrets.s3_bucket
     key    = "products/#{product.id}/images/#{type}.#{ext}"
 
-    @s3.store(key, data, bucket, {
+    @s3.put_object(
+      acl: 'public-read',
+      key: key,
+      bucket: bucket,
       content_type: mime,
-      access:       :public_read
-    })
+      body: data
+    )
 
     key
   end
