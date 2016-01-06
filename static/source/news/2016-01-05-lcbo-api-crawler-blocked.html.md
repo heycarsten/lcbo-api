@@ -1,17 +1,23 @@
 ---
-title: 'LCBO API Crawler Blocked'
+title: 'LCBO API Crawler Blocked (Resolved)'
 date: 2016-01-05
 author: heycarsten
 ---
 
-**UPDATE: (Jan 6) It appears that the blockage was
-[NOT intentional](https://twitter.com/LCBO/status/684740392529604609), and the
-LCBO is working to resolve the issue.**
+**UPDATE: (Jan 6) The issue has been resolved and LCBO
+API is functioning normally again. A big thanks to the LCBO team!
+<i class="fa fa-heart"></i>**
 
 ---
 
-**On January 5th, 2016 the LCBO blocked LCBO API's crawler from accessing LCBO
-websites. This means that LCBO API can not update its data.**
+UPDATE: (Jan 6) It appears that the blockage was
+[NOT intentional](https://twitter.com/LCBO/status/684740392529604609), and the
+LCBO is working to resolve the issue.
+
+---
+
+On January 5th, 2016 the LCBO blocked LCBO API's crawler from accessing LCBO
+websites. This means that LCBO API can not update its data.
 
 It is still unknown whether this action was deliberate or an unintended
 side-effect of something else.
