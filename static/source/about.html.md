@@ -32,7 +32,7 @@ company is using LCBO API.
  * [searC₂H₆O](http://j201.github.io/searc2h6o/) by Alex L
  * [LCBO Price Tracker](https://itunes.apple.com/us/app/lcbo-price-tracker/id851166645) by Mary Chen
  * [Liqbo](http://www.codebeard.io/#/work/liqbo) by Neil Fenton
- * [Dowser](http://theworkshed.com/projects/dowser) by Plank
+ * [Dowser](http://dowserapp.ca) by Geoffrey Weeks
  * [Lickur](http://www.lickur.com) by Neil Chudleigh, Jonathan Mendes, and Zach McGrenere
  * [Thirsty in Ontario?](http://thirsty.kx.nu) by Svante Richter
  * [Booze Run](http://calvinwinter.ca/booze-run) by Calvin Winter
