@@ -58,9 +58,9 @@ set :sass_assets_paths, [
   File.expand_path(File.dirname(__FILE__) + '/../manager/app/styles')
 ]
 
-set :css_dir,    'assets/css'
-set :js_dir,     'assets/js'
-set :images_dir, 'assets/images'
+set :css_dir,    'static/css'
+set :js_dir,     'static/js'
+set :images_dir, 'static/images'
 
 ready do
   sprockets.append_path File.expand_path(File.dirname(__FILE__) + '/../manager/vendor')
