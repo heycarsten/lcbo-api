@@ -1,0 +1,103 @@
+/*
+Error: File to import not found or unreadable: bourbon.
+       Load paths:
+         /Users/carsten/.rvm/gems/ruby-2.2.4/gems/compass-core-1.0.3/stylesheets
+         /Users/carsten/Projects/lcbo-api/manager/app/styles
+         Compass::SpriteImporter
+         /Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-material-colors-0.0.5/sass
+        on line 4 of /Users/carsten/Projects/lcbo-api/static/source/static/css/lcboapi.css.sass
+
+1: //= require normalize.css/normalize.css
+2: //= require_self
+3: 
+4: @import "bourbon"
+5: @import "sass-material-colors"
+6: 
+7: @import "settings"
+8: @import "common/fonts"
+9: @import "common/colors"
+
+Backtrace:
+/Users/carsten/Projects/lcbo-api/static/source/static/css/lcboapi.css.sass:4
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/import_node.rb:66:in `rescue in import'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/import_node.rb:45:in `import'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/import_node.rb:28:in `imported_file'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/import_node.rb:37:in `css_import?'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/visitors/perform.rb:311:in `visit_import'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/visitors/base.rb:36:in `visit'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/stack.rb:79:in `block in with_base'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/stack.rb:115:in `with_frame'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/stack.rb:79:in `with_base'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/visitors/perform.rb:158:in `visit'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/visitors/base.rb:52:in `block in visit_children'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/visitors/base.rb:52:in `map'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/visitors/base.rb:52:in `visit_children'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/visitors/perform.rb:167:in `block in visit_children'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/visitors/perform.rb:179:in `with_environment'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/visitors/perform.rb:166:in `visit_children'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/visitors/base.rb:36:in `block in visit'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/visitors/perform.rb:186:in `visit_root'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/visitors/base.rb:36:in `visit'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/visitors/perform.rb:157:in `visit'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/visitors/perform.rb:8:in `visit'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/root_node.rb:36:in `css_tree'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/tree/root_node.rb:20:in `render'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-3.4.12/lib/sass/engine.rb:268:in `render'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/compass-import-once-1.0.5/lib/compass/import-once/engine.rb:17:in `block in render'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/compass-import-once-1.0.5/lib/compass/import-once/engine.rb:29:in `with_import_scope'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/compass-import-once-1.0.5/lib/compass/import-once/engine.rb:16:in `render'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/renderers/sass.rb:87:in `evaluate'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/tilt-1.4.1/lib/tilt/template.rb:103:in `render'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/core_extensions/rendering.rb:303:in `render_individual_file'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/core_extensions/rendering.rb:181:in `_render_with_all_renderers'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/core_extensions/rendering.rb:149:in `render_template'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/sitemap/resource.rb:127:in `block in render'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/activesupport-4.1.9/lib/active_support/notifications.rb:161:in `instrument'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/util.rb:41:in `instrument'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/application.rb:219:in `instrument'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/sitemap/resource.rb:14:in `instrument'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/sitemap/resource.rb:100:in `render'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/core_extensions/request.rb:256:in `process_request'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/core_extensions/request.rb:206:in `block in call!'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/core_extensions/request.rb:205:in `catch'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/core_extensions/request.rb:205:in `call!'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/core_extensions/request.rb:191:in `call'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/rack-1.6.0/lib/rack/urlmap.rb:66:in `block in call'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/rack-1.6.0/lib/rack/urlmap.rb:50:in `each'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/rack-1.6.0/lib/rack/urlmap.rb:50:in `call'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/rack-1.6.0/lib/rack/head.rb:13:in `call'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/rack-1.6.0/lib/rack/lint.rb:49:in `_call'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/rack-1.6.0/lib/rack/lint.rb:37:in `call'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/rack-1.6.0/lib/rack/builder.rb:153:in `call'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/rack-test-0.6.3/lib/rack/mock_session.rb:30:in `request'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/rack-test-0.6.3/lib/rack/test.rb:244:in `process_request'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/rack-test-0.6.3/lib/rack/test.rb:58:in `get'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/cli/build.rb:255:in `render_to_file'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/cli/build.rb:221:in `build_resource'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/cli/build.rb:188:in `each'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/cli/build.rb:188:in `execute!'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/cli/build.rb:128:in `invoke!'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/thor-0.19.1/lib/thor/actions.rb:94:in `action'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/cli/build.rb:70:in `build'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/thor-0.19.1/lib/thor/command.rb:27:in `run'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/thor-0.19.1/lib/thor/invocation.rb:126:in `invoke_command'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/thor-0.19.1/lib/thor.rb:359:in `dispatch'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/thor-0.19.1/lib/thor/base.rb:440:in `start'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/cli.rb:72:in `method_missing'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/thor-0.19.1/lib/thor/command.rb:29:in `run'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/thor-0.19.1/lib/thor/command.rb:126:in `run'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/thor-0.19.1/lib/thor/invocation.rb:126:in `invoke_command'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/thor-0.19.1/lib/thor.rb:359:in `dispatch'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/thor-0.19.1/lib/thor/base.rb:440:in `start'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/lib/middleman-core/cli.rb:20:in `start'
+/Users/carsten/.rvm/gems/ruby-2.2.4/gems/middleman-core-3.3.8/bin/middleman:18:in `<top (required)>'
+/Users/carsten/.rvm/gems/ruby-2.2.4/bin/middleman:23:in `load'
+/Users/carsten/.rvm/gems/ruby-2.2.4/bin/middleman:23:in `<main>'
+/Users/carsten/.rvm/gems/ruby-2.2.4/bin/ruby_executable_hooks:15:in `eval'
+/Users/carsten/.rvm/gems/ruby-2.2.4/bin/ruby_executable_hooks:15:in `<main>'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Error: File to import not found or unreadable: bourbon.\A        Load paths:\A          /Users/carsten/.rvm/gems/ruby-2.2.4/gems/compass-core-1.0.3/stylesheets\A          /Users/carsten/Projects/lcbo-api/manager/app/styles\A          Compass::SpriteImporter\A          /Users/carsten/.rvm/gems/ruby-2.2.4/gems/sass-material-colors-0.0.5/sass\A         on line 4 of /Users/carsten/Projects/lcbo-api/static/source/static/css/lcboapi.css.sass\A \A 1: //= require normalize.css/normalize.css\A 2: //= require_self\A 3: \A 4: @import \"bourbon\"\A 5: @import \"sass-material-colors\"\A 6: \A 7: @import \"settings\"\A 8: @import \"common/fonts\"\A 9: @import \"common/colors\""; }
