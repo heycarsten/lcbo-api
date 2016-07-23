@@ -89,7 +89,7 @@ GEM
     domain_name (0.5.20160310)
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
-    excon (0.49.0)
+    excon (0.51.0)
     execjs (2.6.0)
     fabrication (2.15.0)
     gcoder (1.2.0)
