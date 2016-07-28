@@ -54,9 +54,13 @@ class Crawler < Boticus::Bot
   desc 'Updating product images'
   task :update_product_images do
     Product.where(is_dead: false, image_url: nil).find_each do |product|
-      if (attrs = LCBO.product_images(product.id))
-        product.update!(attrs)
-        log :dot, "Adding image for product: #{product.id}"
+      begin
+        if (attrs = LCBO.product_images(product.id))
+          product.update!(attrs)
+          log :dot, "Adding image for product: #{product.id}"
+        end
+      rescue Excon::Error::Socket
+        log :warn, "Skipping image for product: #{product.id} (Socket EOF)"
       end
     end
 
