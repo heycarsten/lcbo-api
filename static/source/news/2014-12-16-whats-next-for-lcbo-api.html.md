@@ -13,7 +13,7 @@ This December marks _six years_ since I picked up Rod Phillips&rsquo; book
 [The 500 Best-Value Wines in the LCBO](http://www.amazon.ca/The-Best-Value-Wines-LCBO-2009/dp/155285938X):
 
 <div class="center">
-  <img src="/assets/images/news/500-best-value-wines-2009.jpg" width="176">
+  <img src="/static/images/news/500-best-value-wines-2009.jpg" width="176">
 </div>
 
 I thought, "Wouldn't it be cool if I could use my phone to see a list of the
@@ -167,7 +167,7 @@ acquire an Access Key.
 In addition to no rate-limit, by using an Access Key you'll also gain insights
 and statistics related to your account:
 
-<img src="/assets/images/news/lcboapi-manager-graph.png" width="100%">
+<img src="/static/images/news/lcboapi-manager-graph.png" width="100%">
 
 I plan to build out the management panel further and provide some other useful
 features in the future.
