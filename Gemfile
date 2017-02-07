@@ -1,13 +1,13 @@
 source 'https://rubygems.org'
 
-gem 'rails',          '4.2.6'
+gem 'rails',          '4.2.7'
 gem 'responders'
 gem 'oj'
 gem 'pg'
 gem 'pg_search'
 gem 'bcrypt'
 gem 'kaminari'
-gem 'active_model_serializers', github: 'rails-api/active_model_serializers', ref: '0-9-stable'
+gem 'active_model_serializers', git: 'https://github.com/rails-api/active_model_serializers', ref: '0-9-stable'
 gem 'redis'
 gem 'gcoder'
 gem 'puma'
@@ -18,7 +18,7 @@ gem 'therubyracer',   platforms: :ruby
 gem 'uglifier'
 #gem 'skylight',       '~> 0.6.0'
 #gem 'honeybadger',    '~> 2.0.6'
-gem 'stripe',         github: 'stripe/stripe-ruby'
+gem 'stripe',         git: 'https://github.com/stripe/stripe-ruby'
 
 # Crawler Junk
 gem 'excon',         require: false
