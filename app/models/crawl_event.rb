@@ -1,3 +1,3 @@
-class CrawlEvent < ActiveRecord::Base
+class CrawlEvent < ApplicationRecord
   belongs_to :crawl
 end

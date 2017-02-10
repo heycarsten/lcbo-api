@@ -1,4 +1,4 @@
-class Product < ActiveRecord::Base
+class Product < ApplicationRecord
   include PgSearch
 
   MAX_LCBO_ID = 999999

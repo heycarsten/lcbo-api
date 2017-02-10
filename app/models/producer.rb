@@ -1,4 +1,4 @@
-class Producer < ActiveRecord::Base
+class Producer < ApplicationRecord
   include PgSearch
 
   pg_search_scope :search,

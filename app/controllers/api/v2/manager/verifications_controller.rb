@@ -1,5 +1,5 @@
 class API::V2::Manager::VerificationsController < API::V2::Manager::ManagerController
-  skip_before_filter :authenticate!, only: :update
+  skip_before_action :authenticate!, only: :update
 
   def update
     if (user = lookup_user_by_token(params[:token]))

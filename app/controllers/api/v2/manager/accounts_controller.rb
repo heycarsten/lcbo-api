@@ -1,5 +1,5 @@
 class API::V2::Manager::AccountsController < API::V2::Manager::ManagerController
-  skip_before_filter :authenticate!, only: :create
+  skip_before_action :authenticate!, only: :create
 
   def show
     respond_with :api, :v2, :manager, current_user,

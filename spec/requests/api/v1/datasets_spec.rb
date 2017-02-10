@@ -38,7 +38,7 @@ RSpec.describe 'Datasets API (V1)', type: :request do
   it 'responds with one dataset (Authenticated)' do
     prepare!
 
-    get '/datasets', nil, 'Authorization' => "Token #{@server_key}"
+    get '/datasets', headers: { 'Authorization' => "Token #{@server_key}" }
 
     expect(response).to be_success
     expect(response).to be_json
@@ -52,7 +52,7 @@ RSpec.describe 'Datasets API (V1)', type: :request do
   it 'disallows HTTPS for unauthenticated requests' do
     prepare!
 
-    get '/datasets', nil, 'X-Forwarded-Proto' => 'https'
+    get '/datasets', headers: { 'X-Forwarded-Proto' => 'https' }
 
     expect(response.status).to eq 401
     expect(response.payload[:error]).to eq 'unauthorized'
@@ -61,7 +61,7 @@ RSpec.describe 'Datasets API (V1)', type: :request do
   it 'disallows CORS for unauthenticated requests' do
     prepare!
 
-    get '/datasets', nil, 'Origin' => 'http://lcboapi.test'
+    get '/datasets', headers: { 'Origin' => 'http://lcboapi.test' }
 
     expect(response.status).to eq 401
     expect(response.payload[:error]).to eq 'unauthorized'
@@ -70,9 +70,10 @@ RSpec.describe 'Datasets API (V1)', type: :request do
   it 'allows CORS for authenticated requests' do
     prepare!
 
-    get '/datasets', nil,
+    get '/datasets', headers: {
       'Origin'        => 'http://lcboapi.test',
       'Authorization' => "Token #{@web_key}"
+    }
 
     expect(response.status).to eq 200
     expect(response.headers['Access-Control-Allow-Origin']).to eq '*'

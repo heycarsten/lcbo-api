@@ -81,17 +81,13 @@ Rails.application.routes.draw do
       match '*path', to: 'api#preflight_cors', via: :options
 
       # Legacy V1
-      scope constraints: { lat: GeoScope::LATLON_RE, lon: GeoScope::LATLON_RE } do
-        get '/download/:year-:month-:day'               => 'root#deprecated', name: :dataset_by_date
-        get '/download/current'                         => 'root#deprecated', name: :current_dataset
-        get '/products/search'                          => 'products#index'
-        get '/products/:product_id/inventory'           => 'inventories#index'
-        get '/stores/search'                            => 'stores#index'
-        get '/stores/near/geo(/with/:product_id)'       => 'stores#index',    is_geo_q: true
-        get '/stores/near/:geo(/with/:product_id)'      => 'stores#index'
-        get '/stores/near/:lat/:lon(/with/:product_id)' => 'stores#index'
-        get '/stores/:store_id/products/search'         => 'products#index'
-      end
+      get '/products/search'                          => 'products#index'
+      get '/products/:product_id/inventory'           => 'inventories#index'
+      get '/stores/search'                            => 'stores#index'
+      get '/stores/near/geo(/with/:product_id)'       => 'stores#index',    is_geo_q: true
+      get '/stores/near/:geo(/with/:product_id)'      => 'stores#index'
+      get '/stores/near/:lat/:lon(/with/:product_id)' => 'stores#index', constraints: { lat: GeoScope::LATLON_RE, lon: GeoScope::LATLON_RE }
+      get '/stores/:store_id/products/search'         => 'products#index'
 
       resources :datasets, only: [:index, :show]
 
@@ -107,14 +103,10 @@ Rails.application.routes.draw do
       end
 
       resources :inventories, only: [:index]
-
-      get '/stores/:id/history'                            => 'root#deprecated', name: :store_history
-      get '/products/:id/history'                          => 'root#deprecated', name: :product_history
-      get '/stores/:store_id/products/:product_id/history' => 'root#deprecated', name: :inventory_history
     end
   end
 
-  controller :root, action: :ember, format: :html do
+  scope controller: :root, action: :ember, format: :html do
     get '/sign-up'      => redirect('/manager/sign-up')
     get '/log-in'       => redirect('/manager/log-in')
     get '/manage'       => redirect('/manager')
