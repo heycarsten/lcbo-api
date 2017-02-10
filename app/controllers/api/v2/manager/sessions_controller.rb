@@ -1,5 +1,5 @@
 class API::V2::Manager::SessionsController < API::V2::Manager::ManagerController
-  skip_before_filter :authenticate!, only: :create
+  skip_before_action :authenticate!, only: :create
 
   def show
     ttl = current_user.session_token_ttl(auth_token)
@@ -25,6 +25,6 @@ class API::V2::Manager::SessionsController < API::V2::Manager::ManagerController
 
   def destroy
     unauthenticate!
-    render text: '', status: 204
+    render plain: '', status: 204
   end
 end

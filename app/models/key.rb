@@ -1,4 +1,4 @@
-class Key < ActiveRecord::Base
+class Key < ApplicationRecord
   DOMAIN_RNG = /\A([a-z0-9\-]+\.[a-z0-9\-]+)+\Z/
 
   enum kind: [

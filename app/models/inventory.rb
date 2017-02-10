@@ -1,4 +1,4 @@
-class Inventory < ActiveRecord::Base
+class Inventory < ApplicationRecord
   belongs_to :crawl
   belongs_to :product
   belongs_to :store

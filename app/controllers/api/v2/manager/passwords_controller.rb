@@ -1,6 +1,6 @@
 class API::V2::Manager::PasswordsController < API::V2::Manager::ManagerController
-  skip_before_filter :authenticate!, only: [:create, :update]
-  before_filter :find_user, only: :update
+  skip_before_action :authenticate!, only: [:create, :update]
+  before_action :find_user, only: :update
 
   def create
     email = params[:email].to_s.downcase
@@ -10,7 +10,7 @@ class API::V2::Manager::PasswordsController < API::V2::Manager::ManagerControlle
     end
 
     # Always return success to avoid attack vector
-    render text: '', status: 204
+    render plain: '', status: 204
   end
 
   def update

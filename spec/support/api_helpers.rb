@@ -32,7 +32,7 @@ module APIHelpers
 
   [:get, :put, :post, :patch, :delete, :head, :options].each do |action|
     define_method :"api_#{action}" do |path, params = {}|
-      send(action, path, params, api_headers)
+      send(action, path, params: params, headers: api_headers)
     end
   end
 end

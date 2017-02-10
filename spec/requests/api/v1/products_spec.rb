@@ -85,7 +85,7 @@ RSpec.describe 'Products API (V1)', type: :request do
     get "/products/#{@product1.id}"
     expect(response.json[:result]).to be_a Hash
     expect(response.status).to eq 200
-    expect(response.content_type).to be_json
+    expect(response.content_type).to eq 'application/json'
   end
 
   it 'returns 404s when product does not exist' do

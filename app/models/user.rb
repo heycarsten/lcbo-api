@@ -1,4 +1,4 @@
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   SESSION_TTL = 3.weeks
   NAME_RE     = /\A[[:alpha:] '\-]+\Z/u
   MAX_RATE    = 1000

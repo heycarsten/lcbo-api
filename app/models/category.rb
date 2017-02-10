@@ -1,4 +1,4 @@
-class Category < ActiveRecord::Base
+class Category < ApplicationRecord
   include PgSearch
 
   after_save :update_parent_category_ids

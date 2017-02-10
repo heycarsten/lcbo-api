@@ -1,6 +1,4 @@
-class EmailMailer < ActionMailer::Base
-  default from: 'LCBO API <help@lcboapi.com>'
-
+class EmailMailer < ApplicationMailer
   def welcome_verification_message(email_id)
     @email = Email.find(email_id)
 

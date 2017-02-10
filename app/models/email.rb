@@ -1,4 +1,4 @@
-class Email < ActiveRecord::Base
+class Email < ApplicationRecord
   EMAIL_RE = /\A[^@]+@[^@]+\Z/
 
   belongs_to :user

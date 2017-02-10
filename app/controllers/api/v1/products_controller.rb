@@ -3,8 +3,8 @@ class API::V1::ProductsController < API::V1::APIController
     @query = query(:products)
 
     respond_to do |format|
-      format.csv { render text: @query.as_csv }
-      format.tsv { render text: @query.as_tsv }
+      format.csv { render plain: @query.as_csv }
+      format.tsv { render plain: @query.as_tsv }
       format.any(:js, :json) { render_json @query.as_json }
     end
   end
@@ -17,8 +17,8 @@ class API::V1::ProductsController < API::V1::APIController
     @query = query(:product)
 
     respond_to do |format|
-      format.csv { render text: @query.as_csv }
-      format.tsv { render text: @query.as_tsv }
+      format.csv { render plain: @query.as_csv }
+      format.tsv { render plain: @query.as_tsv }
       format.any(:js, :json) { render_json @query.as_json }
     end
   end

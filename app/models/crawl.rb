@@ -1,4 +1,4 @@
-class Crawl < ActiveRecord::Base
+class Crawl < ApplicationRecord
   include RedisAbuse::Model
 
   class StateError < StandardError; end
