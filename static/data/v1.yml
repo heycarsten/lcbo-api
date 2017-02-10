@@ -2,13 +2,6 @@
 version: 1
 released: 'April 2009'
 manuals:
-- body: |
-    <p class="warning">
-      Unlimited, anonymous API access will end on <b>March 8<sup>th</sup>,
-      2015</b>. Starting on that date Access Keys will be required for
-      unlimited access to LCBO API V1. <a href="/news/whats-next-for-lcbo-api">Read more</a>
-    </p>
-
 - anchor: 'getting-started'
   title: 'Getting Started'
   body: |

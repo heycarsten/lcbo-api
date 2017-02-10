@@ -1,14 +1,20 @@
 ---
 version: 2
-released: 'March 2015'
+released: 'No'
 manuals:
+- body: |
+    <p class="warning">
+      This is unreleased documentation for V2 of LCBO API, it is not fully
+      functional and will likely change a lot before being released.
+    </p>
+
 - anchor: 'getting-started'
   title: 'Getting Started'
   body: |
     # Welcome to LCBO API V2
 
-    This is the documentation for Version 2 (V2) of LCBO API. It was originally
-    released **March 2015**.
+    This is the documentation for Version 2 (V2) of LCBO API. It is still in
+    development.
 
     * [Responses & Formats](#responses-and-formats)
     * [Authentication](#authentication)

@@ -22,7 +22,7 @@
           <% data["v#{api.version}"].manuals.each do |section| %>
             <% next unless section.anchor %>
             <li<% if section.is_sub %> class="sub"<% end %>>
-              <a href="/docs/v1#<%= section.anchor %>">
+              <a href="/docs/v<%= api.version %>#<%= section.anchor %>">
                 <%= section.title %>
               </a>
             </li>
