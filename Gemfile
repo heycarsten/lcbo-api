@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 
 gem 'rails',          '5.0.1'
+gem 'graphql'
+gem 'graphiql-rails'
 gem 'responders'
 gem 'pg'
 gem 'pg_search'

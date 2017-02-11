@@ -59,13 +59,13 @@ GEM
     autoprefixer-rails (6.7.2)
       execjs
     awesome_print (1.7.0)
-    aws-sdk (2.7.5)
-      aws-sdk-resources (= 2.7.5)
-    aws-sdk-core (2.7.5)
+    aws-sdk (2.7.7)
+      aws-sdk-resources (= 2.7.7)
+    aws-sdk-core (2.7.7)
       aws-sigv4 (~> 1.0)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.7.5)
-      aws-sdk-core (= 2.7.5)
+    aws-sdk-resources (2.7.7)
+      aws-sdk-core (= 2.7.7)
     aws-sigv4 (1.0.0)
     bcrypt (3.1.11)
     bootstrap-sass (3.3.7)
@@ -105,7 +105,10 @@ GEM
       ruby-hmac
     globalid (0.3.7)
       activesupport (>= 4.1.0)
-    hashie (3.5.1)
+    graphiql-rails (1.4.1)
+      rails
+    graphql (1.4.3)
+    hashie (3.5.2)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     i18n (0.8.0)
@@ -229,10 +232,10 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    sshkit (1.11.5)
+    sshkit (1.12.0)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
-    stringex (2.7.0)
+    stringex (2.7.1)
     thor (0.19.4)
     thread_safe (0.3.5)
     tilt (2.0.6)
@@ -272,6 +275,8 @@ DEPENDENCIES
   excon
   fabrication
   gcoder
+  graphiql-rails
+  graphql
   jquery-rails
   kaminari
   listen (~> 3.0.5)
