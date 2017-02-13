@@ -26,6 +26,7 @@ Here is a small sampling of some companies and people using LCBO API for
 web and mobile apps. Don&rsquo;t be shy, I'd love to hear how you or your
 company is using LCBO API.
 
+ * [Brewskibooze](http://brewskibooze.com)
  * [BoozeWatch](http://boozewatch.ca) by Erwin Kooi
  * [Elsie](http://heyelsie.com) by Doug Estey
  * [Collective Arts Beer Finder](http://collectiveartsbrewing.com/beer-finder) by Collective Arts Brewing
