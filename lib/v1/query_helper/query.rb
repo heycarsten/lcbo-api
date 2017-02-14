@@ -239,7 +239,7 @@ module V1
           total_record_count:        page_scope.total_count,
           current_page_record_count: page_scope.load.size,
           is_first_page:             page_scope.first_page?,
-          is_final_page:             page_scope.last_page?
+          is_final_page:             (0 == page_scope.total_pages) || page_scope.last_page?
         ) do |hsh, (meth, key)|
           num = page_scope.send(meth)
           hsh.merge(
