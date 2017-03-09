@@ -2,7 +2,7 @@ many_id_re = /([a-z0-9\-]+\,[a-z0-9\-]+\,{0,1})+/
 
 Rails.application.routes.draw do
   namespace :api, path: '/', format: :json do
-    namespace :v2, path: '(v2)', constraints: APIConstraint.new(2) do
+    namespace :v2 do
       namespace :manager do
         controller :accounts do
           get    '/account'  => :show,   as: :account
@@ -38,43 +38,12 @@ Rails.application.routes.draw do
 
       match '*path', to: 'api#preflight_cors', via: :options
 
-      controller :datasets do
-        get '/datasets'     => :index, as: :datasets
-        get '/datasets/:id' => :index, constraints: { id: many_id_re }
-        get '/datasets/:id' => :show,  as: :dataset
-      end
-
-      controller :inventories do
-        get '/inventories'     => :index, as: :inventories
-        get '/inventories/:id' => :index, constraints: { id: many_id_re }
-        get '/inventories/:id' => :show, as: :inventory
-        get '/products/:product_id/stores/:store_id' => redirect('/inventories/%{product_id}-%{store_id}')
-        get '/stores/:store_id/products/:product_id' => redirect('/inventories/%{product_id}-%{store_id}')
-      end
-
-      controller :products do
-        get '/products'     => :index, as: :products
-        get '/products/:id' => :index, constraints: { id: many_id_re }
-        get '/products/:id' => :show,  as: :product
-      end
-
-      controller :stores do
-        get '/stores'     => :index, as: :stores
-        get '/stores/:id' => :index, constraints: { id: many_id_re }
-        get '/stores/:id' => :show,  as: :store
-      end
-
-      controller :producers do
-        get '/producers'     => :index, as: :producers
-        get '/producers/:id' => :index, constraints: { id: many_id_re }
-        get '/producers/:id' => :show,  as: :producer
-      end
-
-      controller :categories do
-        get '/categories'     => :index, as: :categories
-        get '/categories/:id' => :index, constraints: { id: many_id_re }
-        get '/categories/:id' => :show,  as: :category
-      end
+      jsonapi_resources :products,    only: [:index, :show]
+      jsonapi_resources :stores,      only: [:index, :show]
+      jsonapi_resources :inventories, only: [:index, :show]
+      jsonapi_resources :producers,   only: [:index, :show]
+      jsonapi_resources :categories,  only: [:index, :show]
+      jsonapi_resources :snapshots,   only: [:index, :show]
     end
 
     scope module: :v1, path: '(v1)', constraints: APIConstraint.new(1, true) do

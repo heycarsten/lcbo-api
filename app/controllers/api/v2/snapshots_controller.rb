@@ -1,7 +1,9 @@
-class API::V2::DatasetsController < API::V2::APIController
+class API::V2::SnapshotsController < API::V2::APIController
+  include JSONAPI::ActsAsResourceController
+
   def index
     data  = {}
-    query = API::V2::DatasetsQuery.new(params)
+    query = API::V2::SnapshotsQuery.new(params)
     scope = query.to_scope
 
     data[:data] = scope.map { |d| serialize(d, :index) }

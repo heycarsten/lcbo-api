@@ -1,38 +1,40 @@
 class API::V2::ProductsController < API::V2::APIController
-  def index
-    data    = {}
-    query   = API::V2::ProductsQuery.new(params)
-    scope   = query.to_scope
-    results = scope.load
+  include JSONAPI::ActsAsResourceController
 
-    data[:data] = results.map { |p| serialize(p, params) }
+  # def index
+  #   data    = {}
+  #   query   = API::V2::ProductsQuery.new(params)
+  #   scope   = query.to_scope
+  #   results = scope.load
 
-    if (pagination = pagination_for(scope))
-      data[:meta] = pagination
-    end
+  #   data[:data] = results.map { |p| serialize(p, params) }
 
-    if data[:data].empty? && params[:q].present?
-      data[:meta] ||= {}
-      data[:meta][:search_suggestions] = [Fuzz[:products, params[:q]]]
-    end
+  #   if (pagination = pagination_for(scope))
+  #     data[:meta] = pagination
+  #   end
 
-    render_json(data)
-  end
+  #   if data[:data].empty? && params[:q].present?
+  #     data[:meta] ||= {}
+  #     data[:meta][:search_suggestions] = [Fuzz[:products, params[:q]]]
+  #   end
 
-  def show
-    data    = {}
-    product = Product.find(params[:id])
+  #   render_json(data)
+  # end
 
-    data[:data] = serialize(product, include_dead: true)
+  # def show
+  #   data    = {}
+  #   product = Product.find(params[:id])
 
-    render_json(data)
-  end
+  #   data[:data] = serialize(product, include_dead: true)
 
-  private
+  #   render_json(data)
+  # end
 
-  def serialize(product, scope = nil)
-    API::V2::ProductSerializer.new(product,
-      scope: scope || params
-    ).as_json(root: false)
-  end
+  # private
+
+  # def serialize(product, scope = nil)
+  #   API::V2::ProductSerializer.new(product,
+  #     scope: scope || params
+  #   ).as_json(root: false)
+  # end
 end

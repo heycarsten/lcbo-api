@@ -1,4 +1,6 @@
 class API::V2::StoresController < API::V2::APIController
+  include JSONAPI::ActsAsResourceController
+
   def index
     data        = {}
     linked      = []

@@ -1,4 +1,6 @@
 class API::V2::CategoriesController < API::V2::APIController
+  include JSONAPI::ActsAsResourceController
+
   def index
     data  = {}
     query = API::V2::CategoriesQuery.new(params)

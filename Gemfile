@@ -6,6 +6,7 @@ gem 'pg'
 gem 'pg_search'
 gem 'bcrypt'
 gem 'kaminari'
+gem 'jsonapi-resources', '~> 0.9'
 gem 'active_model_serializers', git: 'https://github.com/rails-api/active_model_serializers', ref: '0-9-stable'
 gem 'redis'
 gem 'gcoder'
@@ -14,7 +15,6 @@ gem 'jquery-rails'
 gem 'bootstrap-sass', '~> 3.3.3'
 gem 'sass-rails',     '~> 5.0'
 gem 'uglifier',       '>= 1.3.0'
-gem 'stripe',         git: 'https://github.com/stripe/stripe-ruby'
 
 gem 'capistrano',         '~> 3.3.5'
 gem 'capistrano-rails'
@@ -32,7 +32,7 @@ gem 'aws-sdk',       '~> 2', require: false
 group :development do
   gem 'pry-rails'
   gem 'web-console',        '>= 3.3.0'
-  gem 'listen',             '~> 3.0.5'
+  #gem 'listen',             '~> 3.0.5'
 
   # Spring speeds up development by keeping your application running in the
   # background. Read more: https://github.com/rails/spring

@@ -1,6 +1,7 @@
 class API::V1::ProductSerializer < ApplicationSerializer
   attributes \
     :id,
+    :slug,
     :is_dead,
     :name,
     :tags,
@@ -53,6 +54,14 @@ class API::V1::ProductSerializer < ApplicationSerializer
     :updated_on,
     :distance_in_meters,
     :product_no
+
+  def slug
+    if object.name.present?
+      "#{object.id}-#{object.name.parameterize}"
+    else
+      object.id.to_s
+    end
+  end
 
   def product_no
     object.id
