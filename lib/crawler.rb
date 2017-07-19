@@ -61,6 +61,8 @@ class Crawler < Boticus::Bot
         end
       rescue Excon::Error::Socket
         log :warn, "Skipping image for product: #{product.id} (Socket EOF)"
+      rescue Excon::Error::Timeout
+        log :warn, "Skipping image for product: #{product.id} (Timeout)"
       end
     end
 
