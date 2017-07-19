@@ -19,7 +19,7 @@ RSpec.describe 'V2 Manager Keys API' do
       expect(u1.keys.count).to eq 3
       expect(u2.keys.count).to eq 1
 
-      api_get '/manager/keys'
+      api_get '/v2/manager/keys'
 
       keys = json[:keys]
       key  = keys.first
@@ -37,7 +37,7 @@ RSpec.describe 'V2 Manager Keys API' do
     it 'fails if not authenticated' do
       api_headers['Authorization'] = 'Token ' + Token.generate(:session, user_id: 'herp').to_s
 
-      api_get '/manager/keys'
+      api_get '/v2/manager/keys'
 
       expect(response.status).to eq 401
     end
@@ -52,22 +52,22 @@ RSpec.describe 'V2 Manager Keys API' do
 
       log_in_user(u1)
 
-      api_get "/manager/keys/#{k1.id}"
+      api_get "/v2/manager/keys/#{k1.id}"
 
       expect(response.status).to eq 200
       expect(json[:key][:token]).to be_present
 
       expect {
-        api_get "/manager/keys/#{k2.id}"
+        api_get "/v2/manager/keys/#{k2.id}"
       }.to raise_error ActiveRecord::RecordNotFound
     end
   end
 
-  describe 'POST /manager/keys' do
+  describe 'POST /v2/manager/keys' do
     it 'creates a new key for the authenticated user given valid attributes' do
       log_in_user(u = create_verified_user!)
 
-      api_post '/manager/keys', key: {
+      api_post '/v2/manager/keys', key: {
         label: 'HERP',
         info: 'Yo Yo Yo',
         kind: 'private_server'
@@ -85,7 +85,7 @@ RSpec.describe 'V2 Manager Keys API' do
     it 'fails to create a new key for the authenticated user given no attributes' do
       log_in_user(u = create_verified_user!)
 
-      api_post '/manager/keys', key: {}
+      api_post '/v2/manager/keys', key: {}
 
       expect(response.status).to eq 422
       expect(json[:errors]).to be_present
@@ -94,13 +94,13 @@ RSpec.describe 'V2 Manager Keys API' do
     it 'fails if not authenticated' do
       api_headers['Authorization'] = 'Token ' + Token.generate(:session, user_id: 'herp').to_s
 
-      api_post '/manager/keys'
+      api_post '/v2/manager/keys'
 
       expect(response.status).to eq 401
     end
   end
 
-  describe 'PUT /manager/keys/:id' do
+  describe 'PUT /v2/manager/keys/:id' do
     it 'updates the key owned by the authenticated user' do
       u1 = create_verified_user!
       u2 = create_verified_user!
@@ -109,7 +109,7 @@ RSpec.describe 'V2 Manager Keys API' do
 
       log_in_user(u1)
 
-      api_put "/manager/keys/#{k1.id}", key: {
+      api_put "/v2/manager/keys/#{k1.id}", key: {
         label: 'Nu Label',
         info: 'Nu Infos'
       }
@@ -121,7 +121,7 @@ RSpec.describe 'V2 Manager Keys API' do
       expect(k1.info).to eq 'Nu Infos'
 
       expect {
-        api_put "/manager/keys/#{k2.id}", key: {
+        api_put "/v2/manager/keys/#{k2.id}", key: {
           info: nil
         }
       }.to raise_error ActiveRecord::RecordNotFound
@@ -132,13 +132,13 @@ RSpec.describe 'V2 Manager Keys API' do
       u = create_verified_user!
       k = create_key!(user_id: u.id)
 
-      api_put "/manager/keys/#{k.id}", key: { label: 'Derp' }
+      api_put "/v2/manager/keys/#{k.id}", key: { label: 'Derp' }
 
       expect(response.status).to eq 401
     end
   end
 
-  describe 'DELETE /manager/keys/:id' do
+  describe 'DELETE /v2/manager/keys/:id' do
     it 'deletes the key owned by the authenticated user' do
       u1 = create_verified_user!
       u2 = create_verified_user!
@@ -147,13 +147,13 @@ RSpec.describe 'V2 Manager Keys API' do
 
       log_in_user(u1)
 
-      api_delete "/manager/keys/#{k1.id}"
+      api_delete "/v2/manager/keys/#{k1.id}"
 
       expect(response.status).to eq 204
       expect(Key.exists?(k1.id)).to eq false
 
       expect {
-        api_delete "/manager/keys/#{k2.id}"
+        api_delete "/v2/manager/keys/#{k2.id}"
       }.to raise_error ActiveRecord::RecordNotFound
     end
 
@@ -163,7 +163,7 @@ RSpec.describe 'V2 Manager Keys API' do
 
       api_headers['Authorization'] = 'Token ' + Token.generate(:session, user_id: u.id).to_s
 
-      api_delete "/manager/keys/#{k.id}"
+      api_delete "/v2/manager/keys/#{k.id}"
 
       expect(response.status).to eq 401
     end

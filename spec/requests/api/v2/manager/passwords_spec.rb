@@ -1,11 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe 'V2 Manager Passwords API' do
-  describe 'POST /manager/passwords' do
+  describe 'POST /v2/manager/passwords' do
     it 'sends an email with change password link for email of verified user' do
       u = create_verified_user!
 
-      api_post '/manager/passwords', email: u.email
+      api_post '/v2/manager/passwords', email: u.email
 
       expect(response.status).to eq 204
       expect(last_delivery.to.first).to eq u.email
@@ -13,7 +13,7 @@ RSpec.describe 'V2 Manager Passwords API' do
     end
 
     it 'pretends to send email for address that does not exist' do
-      api_post '/manager/passwords', email: 'herp@example.com'
+      api_post '/v2/manager/passwords', email: 'herp@example.com'
 
       expect(response.status).to eq 204
     end
@@ -21,18 +21,18 @@ RSpec.describe 'V2 Manager Passwords API' do
     it 'pretends to send message to unverified email' do
       u = create_user!
 
-      api_post '/manager/passwords', email: u.new_email.address
+      api_post '/v2/manager/passwords', email: u.new_email.address
 
       expect(response.status).to eq 204
     end
   end
 
-  describe 'PUT /manager/passwords/:token' do
+  describe 'PUT /v2/manager/passwords/:token' do
     it 'returns a session for a valid password token' do
       u = create_verified_user!
       t = u.verification_token
 
-      api_put "/manager/passwords/#{t}", password: '1234abcd'
+      api_put "/v2/manager/passwords/#{t}", password: '1234abcd'
 
       u.reload
 
@@ -40,7 +40,7 @@ RSpec.describe 'V2 Manager Passwords API' do
       expect(u.password_digest).to eq '1234abcd'
       expect(json[:session][:token]).to be_present
 
-      api_put "/manager/passwords/#{t}", password: 'failpass'
+      api_put "/v2/manager/passwords/#{t}", password: 'failpass'
 
       expect(response.status).to eq 404
     end
@@ -48,7 +48,7 @@ RSpec.describe 'V2 Manager Passwords API' do
     it 'fails for an invalid token' do
       t = Token.generate(:verification, user_id: 'herp')
 
-      api_put "/manager/passwords/#{t}"
+      api_put "/v2/manager/passwords/#{t}"
 
       expect(response.status).to eq 404
       expect(json[:error][:detail]).to be_present
@@ -58,7 +58,7 @@ RSpec.describe 'V2 Manager Passwords API' do
       u = create_verified_user!
       t = u.verification_token
 
-      api_put "/manager/passwords/#{t}", password: '2short'
+      api_put "/v2/manager/passwords/#{t}", password: '2short'
 
       expect(response.status).to eq 422
       expect(json[:errors][0][:path]).to eq 'password'

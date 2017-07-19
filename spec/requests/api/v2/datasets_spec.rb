@@ -16,7 +16,7 @@ RSpec.describe 'V2 Datasets API' do
   it 'returns datasets (GET /datasets)' do
     prepare!
 
-    api_get '/datasets'
+    api_get '/v2/datasets'
 
     expect(response.status).to eq 200
     expect(json[:meta][:pagination][:total_pages]).to eq 1
@@ -28,7 +28,7 @@ RSpec.describe 'V2 Datasets API' do
   it 'returns one dataset (GET /datasets/:id)' do
     prepare!
 
-    api_get "/datasets/#{@crawls[0].id}"
+    api_get "/v2/datasets/#{@crawls[0].id}"
 
     expect(response.status).to eq 200
     expect(json[:data][:id]).to eq @crawls[0].id.to_s
@@ -38,7 +38,7 @@ RSpec.describe 'V2 Datasets API' do
     prepare!
 
     expect {
-      api_get "/datasets/#{@crawls[2].id}"
+      api_get "/v2/datasets/#{@crawls[2].id}"
     }.to raise_error ActiveRecord::RecordNotFound
   end
 end

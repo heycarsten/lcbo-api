@@ -5,7 +5,7 @@ RSpec.describe 'V2 Manager Accounts API' do
     it 'returns the account with a valid session token' do
       log_in_user(u = create_verified_user!)
 
-      api_get '/manager/account'
+      api_get '/v2/manager/account'
 
       expect(response.status).to eq 200
       expect(json.keys).to include :account
@@ -14,7 +14,7 @@ RSpec.describe 'V2 Manager Accounts API' do
 
     it 'fails with an invalid session token' do
       api_headers['Authorization'] = 'Token ' + Token.generate(:session, user_id: 'herp').to_s
-      api_get '/manager/account'
+      api_get '/v2/manager/account'
 
       expect(response.status).to eq 401
       expect(json[:error][:detail]).to be_a String
@@ -25,7 +25,7 @@ RSpec.describe 'V2 Manager Accounts API' do
     it 'returns errors if the email address has already been taken' do
       u = create_user!
 
-      api_post '/manager/accounts', account: {
+      api_post '/v2/manager/accounts', account: {
         name:     'Carsten',
         email:    u.new_email.address,
         password: 'password',
@@ -37,7 +37,7 @@ RSpec.describe 'V2 Manager Accounts API' do
     end
 
     it 'returns errors if the password is too short' do
-      api_post '/manager/accounts', account: {
+      api_post '/v2/manager/accounts', account: {
         name: 'Carsten',
         email: 'test@example.com',
         password: 'passwd',
@@ -49,7 +49,7 @@ RSpec.describe 'V2 Manager Accounts API' do
     end
 
     it 'returns errors when not agreeing to terms' do
-      api_post '/manager/accounts', account: {
+      api_post '/v2/manager/accounts', account: {
         name: 'Carsten',
         email: 'test@example.com',
         password: 'password',
@@ -60,7 +60,7 @@ RSpec.describe 'V2 Manager Accounts API' do
     end
 
     it 'returns a new unverified account' do
-      api_post '/manager/accounts', account: {
+      api_post '/v2/manager/accounts', account: {
         name: 'Carsten',
         email: 'carsten@example.com',
         password: 'password',
@@ -78,7 +78,7 @@ RSpec.describe 'V2 Manager Accounts API' do
     it 'updates password when current password matches' do
       log_in_user(u = create_verified_user!)
 
-      api_put '/manager/account', account: {
+      api_put '/v2/manager/account', account: {
         new_password: 'password2',
         current_password: 'password'
       }
@@ -92,7 +92,7 @@ RSpec.describe 'V2 Manager Accounts API' do
     it 'fails to update password when current password is wrong' do
       log_in_user(u = create_verified_user!)
 
-      api_put '/manager/account', account: {
+      api_put '/v2/manager/account', account: {
         new_password: 'password2',
         current_password: 'herp'
       }
@@ -105,7 +105,7 @@ RSpec.describe 'V2 Manager Accounts API' do
     it 'fails to update password when new password is invalid' do
       log_in_user(u = create_verified_user!)
 
-      api_put '/manager/account', account: {
+      api_put '/v2/manager/account', account: {
         new_password: 'boop',
         current_password: 'password'
       }
@@ -119,7 +119,7 @@ RSpec.describe 'V2 Manager Accounts API' do
     it 'updates name' do
       log_in_user(u = create_verified_user!)
 
-      api_put '/manager/account', account: {
+      api_put '/v2/manager/account', account: {
         name: 'Yoyo Sup'
       }
 
@@ -132,7 +132,7 @@ RSpec.describe 'V2 Manager Accounts API' do
     it 'fails to update name with invalid chars' do
       log_in_user(u = create_verified_user!)
 
-      api_put '/manager/account', account: {
+      api_put '/v2/manager/account', account: {
         name: "Yo\r\nLOL"
       }
 
@@ -141,11 +141,11 @@ RSpec.describe 'V2 Manager Accounts API' do
     end
   end
 
-  describe 'DELETE /manager/account' do
+  describe 'DELETE /v2/manager/account' do
     it 'destroys the current account' do
       log_in_user(u = create_verified_user!)
 
-      api_delete '/manager/account'
+      api_delete '/v2/manager/account'
 
       expect(response.status).to eq 204
       expect(User.where(id: u.id).exists?).to eq false

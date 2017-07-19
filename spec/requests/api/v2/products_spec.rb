@@ -15,11 +15,11 @@ RSpec.describe 'V2 Products API' do
 
   it 'returns a product' do
     prepare!
-    api_get '/products/4'
+    api_get '/v2/products/4'
 
     expect(response.status).to eq 200
     expect(json[:data][:id]).to eq @products[0].id.to_s
-    expect(json[:data][:type]).to eq 'product'
+    expect(json[:data][:type]).to eq 'products'
     expect(json[:meta]).to eq nil
   end
 end

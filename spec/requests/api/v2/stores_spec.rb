@@ -28,20 +28,20 @@ RSpec.describe 'V2 Stores API' do
   describe 'JSONP and CORS' do
     it 'allows JSONP for public keys' do
       prepare!
-      api_get "/stores?access_key=#{@public_key}&callback=jsonpcb"
+      api_get "/v2/stores?access_key=#{@public_key}&callback=jsonpcb"
       expect(response.body).to start_with '/**/jsonpcb({'
     end
 
     it 'disables JSONP for private keys' do
       prepare!
-      api_get "/stores?access_key=#{@private_key}&callback=jsonpcb"
+      api_get "/v2/stores?access_key=#{@private_key}&callback=jsonpcb"
       expect(response.body).to_not start_with '/**/jsonpcb({'
     end
 
     it 'disables CORS for private keys' do
       prepare!
       api_headers['Authorization'] = "Token #{@private_key}"
-      api_get '/stores'
+      api_get '/v2/stores'
       expect(response.headers['Access-Control-Allow-Origin']).to eq nil
     end
 
@@ -49,7 +49,7 @@ RSpec.describe 'V2 Stores API' do
       prepare!
       api_headers['Origin'] = 'null'
       api_headers['Authorization'] = "Token #{@public_key}"
-      api_get '/stores'
+      api_get '/v2/stores'
       expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
     end
 
@@ -57,7 +57,7 @@ RSpec.describe 'V2 Stores API' do
       prepare!
       api_headers['Origin'] = nil
       api_headers['Authorization'] = "Token #{@public_key}"
-      api_get '/stores'
+      api_get '/v2/stores'
       expect(response.status).to eq 403
       expect(json[:errors][0][:code]).to eq 'bad_origin'
     end
@@ -66,7 +66,7 @@ RSpec.describe 'V2 Stores API' do
       prepare!
       api_headers['Origin'] = 'http://lcboapi.test'
       api_headers['Authorization'] = "Token #{@public_key}"
-      api_get '/stores'
+      api_get '/v2/stores'
       expect(response.status).to eq 200
       expect(json[:data].size).to_not eq 0
     end
@@ -79,7 +79,7 @@ RSpec.describe 'V2 Stores API' do
       api_headers['Authorization'] = "Token #{@public_key_dev}"
 
       api_headers['REMOTE_ADDR'] = '1.0.0.1'
-      api_get '/stores'
+      api_get '/v2/stores'
       expect(response.status).to eq 200
       expect(response.headers['X-Client-Limit-Max']).to eq 3
       expect(response.headers['X-Client-Limit-Count']).to eq 1
@@ -87,22 +87,22 @@ RSpec.describe 'V2 Stores API' do
       expect(response.headers['X-Rate-Limit-Count']).to be nil
 
       api_headers['REMOTE_ADDR'] = '1.0.0.2'
-      api_get '/stores'
+      api_get '/v2/stores'
       expect(response.status).to eq 200
       expect(response.headers['X-Client-Limit-Count']).to eq 2
 
       api_headers['REMOTE_ADDR'] = '1.0.0.3'
-      api_get '/stores'
+      api_get '/v2/stores'
       expect(response.status).to eq 200
       expect(response.headers['X-Client-Limit-Count']).to eq 3
 
       api_headers['REMOTE_ADDR'] = '1.0.0.1'
-      api_get '/stores'
+      api_get '/v2/stores'
       expect(response.status).to eq 200
       expect(response.headers['X-Client-Limit-Count']).to eq 3
 
       api_headers['REMOTE_ADDR'] = '1.0.0.4'
-      api_get '/stores'
+      api_get '/v2/stores'
       expect(response.status).to eq 403
       expect(response.headers['X-Client-Limit-Count']).to eq 4
       expect(json[:errors][0][:code]).to eq 'too_many_sessions'
@@ -110,10 +110,10 @@ RSpec.describe 'V2 Stores API' do
   end
 
   it 'requires authentication' do
-    api_get '/stores/1'
+    api_get '/v2/stores/1'
     expect(response.status).to eq 401
 
-    api_get '/stores'
+    api_get '/v2/stores'
     expect(response.status).to eq 401
   end
 
@@ -121,7 +121,7 @@ RSpec.describe 'V2 Stores API' do
     prepare!
     api_headers['Authorization'] = "Token #{@private_key}"
 
-    api_get '/stores'
+    api_get '/v2/stores'
 
     expect(response.status).to eq 200
     expect(json[:data].size).to eq 3
@@ -133,7 +133,7 @@ RSpec.describe 'V2 Stores API' do
 
     api_headers['Authorization'] = ActionController::HttpAuthentication::Basic.encode_credentials('x-access-key', @private_key)
 
-    api_get '/stores'
+    api_get '/v2/stores'
 
     expect(response.status).to eq 200
     expect(json[:data].size).to eq 3
@@ -144,7 +144,7 @@ RSpec.describe 'V2 Stores API' do
     prepare!
     api_headers['Authorization'] = "Token #{@private_key}"
 
-    api_get "/stores/#{@stores[0].id},#{@stores[1].id}"
+    api_get "/v2/stores/#{@stores[0].id},#{@stores[1].id}"
 
     expect(response.status).to eq 200
     expect(json[:data].size).to eq 2
@@ -156,7 +156,7 @@ RSpec.describe 'V2 Stores API' do
     prepare!
     api_headers['Authorization'] = "Token #{@private_key}"
 
-    api_get "/stores/#{@stores[2].id}"
+    api_get "/v2/stores/#{@stores[2].id}"
 
     expect(response.status).to eq 200
     expect(json[:data][:id]).to eq @stores[2].id.to_s
@@ -167,7 +167,7 @@ RSpec.describe 'V2 Stores API' do
     prepare!
     api_headers['Authorization'] = "Token #{@private_key}"
 
-    api_get "/stores?id=1&q=fail"
+    api_get "/v2/stores?id=1&q=fail"
 
     expect(response.status).to eq 400
     expect(json[:errors][0][:code]).to eq 'bad_param'
@@ -177,7 +177,7 @@ RSpec.describe 'V2 Stores API' do
     prepare!
     api_headers['Authorization'] = "Token #{@private_key}"
 
-    api_get '/stores?q=store+b'
+    api_get '/v2/stores?q=store+b'
 
     expect(response.status).to eq 200
     expect(json[:data].size).to eq 1
@@ -187,7 +187,7 @@ RSpec.describe 'V2 Stores API' do
     prepare!
     api_headers['Authorization'] = "Token #{@private_key}"
 
-    api_get "/stores?lat=#{@stores[2].latitude}&lon=#{@stores[2].longitude}"
+    api_get "/v2/stores?lat=#{@stores[2].latitude}&lon=#{@stores[2].longitude}"
 
     expect(response.status).to eq 200
     expect(json[:data].size).to eq 3
@@ -198,7 +198,7 @@ RSpec.describe 'V2 Stores API' do
     prepare!
     api_headers['Authorization'] = "Token #{@private_key}"
 
-    api_get "/stores?include_dead=yes"
+    api_get "/v2/stores?include_dead=yes"
 
     expect(response.status).to eq 200
     expect(json[:data].size).to eq 4
@@ -208,7 +208,7 @@ RSpec.describe 'V2 Stores API' do
     prepare!
     api_headers['Authorization'] = "Token #{@private_key}"
 
-    api_get "/stores?sort=-id"
+    api_get "/v2/stores?sort=-id"
 
     expect(response.status).to eq 200
     expect(json[:data].size).to eq 3
@@ -221,7 +221,7 @@ RSpec.describe 'V2 Stores API' do
     prepare!
     api_headers['Authorization'] = "Token #{@private_key}"
 
-    api_get "/stores?inventory_count_gt=10"
+    api_get "/v2/stores?inventory_count_gt=10"
 
     expect(response.status).to eq 200
     expect(json[:data].size).to eq 2
@@ -232,7 +232,7 @@ RSpec.describe 'V2 Stores API' do
     prepare!
     api_headers['Authorization'] = "Token #{@private_key}"
 
-    api_get "/stores?product=#{@products[0].id}"
+    api_get "/v2/stores?product=#{@products[0].id}"
 
     linked_products    = json[:linked].select { |l| l[:type] == 'product' }
     linked_inventories = json[:linked].select { |l| l[:type] == 'inventory' }
@@ -251,7 +251,7 @@ RSpec.describe 'V2 Stores API' do
 
     api_headers['Authorization'] = "Token #{@private_key}"
 
-    api_get "/stores?products=#{@products[0].id},#{@products[1].id}"
+    api_get "/v2/stores?products=#{@products[0].id},#{@products[1].id}"
     expect(json[:data].size).to eq 1
   end
 
@@ -260,7 +260,7 @@ RSpec.describe 'V2 Stores API' do
 
     api_headers['Authorization'] = "Token #{@private_key}"
 
-    api_get "/stores?products=#{@products[0].id}"
+    api_get "/v2/stores?products=#{@products[0].id}"
     expect(json[:data].size).to eq 2
   end
 
@@ -269,7 +269,7 @@ RSpec.describe 'V2 Stores API' do
 
     api_headers['Authorization'] = "Token #{@private_key}"
 
-    api_get "/stores?product=#{@products[0].id}"
+    api_get "/v2/stores?product=#{@products[0].id}"
     expect(json[:data].size).to eq 2
   end
 end

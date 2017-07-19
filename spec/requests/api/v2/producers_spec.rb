@@ -14,7 +14,7 @@ RSpec.describe 'V2 Producers API' do
   end
 
   def get_many(params = {})
-    api_get '/producers'
+    api_get '/v2/producers'
 
     @data = response.json[:data]
     @meta = response.json[:meta]
@@ -23,7 +23,7 @@ RSpec.describe 'V2 Producers API' do
   end
 
   it 'can get a producer' do
-    api_get "/producers/#{@producers[0].id}"
+    api_get "/v2/producers/#{@producers[0].id}"
 
     data = response.json[:data]
 
