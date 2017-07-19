@@ -1,0 +1,11 @@
+Woomp-woomp, the crawl was cancelled 🤡
+
+https://lcboapi.com/admin/crawls/<%= @crawl.id %>
+
+<%- if @error -%>
+Error: @error.message
+Trace:
+<%= JSON.parse(@error.payload, symbolize_names: true).to_yaml %>
+<%- end -%>
+
+Good luck fixing it! ❤️

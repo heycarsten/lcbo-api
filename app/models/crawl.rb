@@ -22,6 +22,8 @@ class Crawl < ApplicationRecord
   list :crawled_store_ids,   :integer
   list :crawled_product_ids, :integer
 
+  after_save :check_if_cancelled
+
   validates :state, inclusion: { in: STATES }
 
   SERIALIZED_FIELDS.each do |f|
@@ -113,6 +115,11 @@ class Crawl < ApplicationRecord
   end
 
   protected
+
+  def check_if_cancelled
+    return true unless state == 'cancelled'
+    AdminMailer.crawl_cancelled_message(self.id).deliver
+  end
 
   def verify_unlocked!
     raise StateError, "Crawl is #{state}" if is_locked?
