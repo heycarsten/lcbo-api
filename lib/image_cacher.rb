@@ -42,11 +42,16 @@ class ImageCacher
         src_ext  = File.extname(src_url).sub('.', '').downcase.to_sym
         src_mime = MIMES[src_ext]
 
-        puts "Downloading #{col} for product #{product.id}..."
-        response = Excon.get(src_url)
+        begin
+          puts "Downloading #{col} for product #{product.id}..."
+          response = Excon.get(src_url)
 
-        unless response.status == 200
-          puts "Skipping #{col} for product #{product.id} (#{response.status})"
+          unless response.status == 200
+            puts "Skipping #{col} for product #{product.id} (#{response.status})"
+            next
+          end
+        rescue Excon::Error::Socket, Excon::Error::Timeout => e
+          puts "Skipping #{col} for product #{product.id} (#{e.message})"
           next
         end
 
