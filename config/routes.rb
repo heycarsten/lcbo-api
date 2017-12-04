@@ -1,6 +1,10 @@
 many_id_re = /([a-z0-9\-]+\,[a-z0-9\-]+\,{0,1})+/
 
 Rails.application.routes.draw do
+  controller :letsencrypt do
+    get '/.well-known/acme-challenge/gNCtCbL-vk4TWp3wZAUBz5MF5kxwHEQaFOwUmM1JLb4' => :show
+  end
+
   namespace :api, path: '/', format: :json do
     namespace :v2, path: '(v2)', constraints: APIConstraint.new(2) do
       namespace :manager do
