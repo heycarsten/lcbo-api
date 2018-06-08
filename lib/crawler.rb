@@ -210,15 +210,15 @@ class Crawler < Boticus::Bot
     )
   end
 
-  desc 'Identifying OCB producers'
-  task :identify_ocb_producers do
-    DataMigrator.identify_ocb_producers!
-  end
+  # desc 'Identifying OCB producers'
+  # task :identify_ocb_producers do
+  #   DataMigrator.identify_ocb_producers!
+  # end
 
-  desc 'Identify OCB products'
-  task :identify_ocb_products do
-    DataMigrator.identify_ocb_products!
-  end
+  # desc 'Identify OCB products'
+  # task :identify_ocb_products do
+  #   DataMigrator.identify_ocb_products!
+  # end
 
   desc 'Marking dead producers'
   task :mark_dead_producers do
