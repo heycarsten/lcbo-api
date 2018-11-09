@@ -2,14 +2,14 @@
 <html>
   <head>
     <meta name="description" content="A fast, cloud-based API for LCBO store, product, and inventory data">
-    <title>V2 Update, Ontario Craft Brewers Identification</title>
+    <title>LCBO API Shutting Down</title>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Roboto:500,900,400italic,400,300,300italic,700,700italic|Roboto+Condensed:700|Source+Code+Pro:400' rel='stylesheet' type='text/css'>
     <link href="/static/css/lcboapi.css" rel="stylesheet" type="text/css" />
     <script src="/static/js/lcboapi.js" type="text/javascript"></script>
   </head>
 
-  <body class="lcboapi news news_v2-update-ontario-craft-brewers-identification news_v2-update-ontario-craft-brewers-identification_index">
+  <body class="lcboapi news news_lcbo-api-shutting-down news_lcbo-api-shutting-down_index">
     <header>
       <h1 class="lcboapi-wordmark">
         <a href="/">
@@ -54,11 +54,11 @@
     </header>
     <article class="document">
       <header>
-        <h1>V2 Update, Ontario Craft Brewers Identification</h1>
+        <h1>LCBO API Shutting Down</h1>
 
         <div class="meta">
           <span class="date">
-            February 17, 2015
+            November  9, 2018
           </span>
           <span class="sep">
             &mdash;
@@ -68,38 +68,13 @@
           </span>
         </div>
       </header>
-      <p>Well, it&rsquo;s been a busy couple of months since my
-<a href="/news/whats-next-for-lcbo-api/">last post</a>. In two months, exactly 99 of you
-have registered and created API keys, I am humbled and impressed! LCBO API saw
-200% more throughput this January compared to last year for a total of 2.3
-million requests served, pretty wild for the slowest time of the year!</p>
+      <p>Hey y&rsquo;all!</p>
 
-<p>In other news I&rsquo;ve been hard at work on all of the new stuff I have planned for
-V2 of LCBO API. Catagories are now a first-class resource as well as producers,
-and UPC lookups are now functional.</p>
+<p>2018 has been a wild year for me. In March I was diagnosed with Diffuse Large B-Cell Lymphoma, an aggressive form of Non-Hodgekin Lymphoma. It was a shock. My treatment was progressing well until May when it stopped working. After a couple rounds of salvage chemotherapy I underwent an <a href="https://twitter.com/heycarsten/status/1024494222521638912">Autologus Stem Cell Transplant</a>&ndash;<em>and so far it seems to be working!</em> I&rsquo;m feeling better every day and I&rsquo;m finally in a place where I can work again and mostly live my normal life. 🙏</p>
 
-<p>After I normalized producers it had me thinking about how the official LCBO site
-allows people to filter products by VQA designation. I thought it would be nice
-to identify products that are produced by
-<a href="http://www.ontariocraftbrewers.com/">Ontario Craft Brewers</a>, so I now cross
-reference that data with the LCBO product catalog.</p>
+<p>During my treatment it became alarmingly clear to me that this project either needed to progress in a <em><strong>BIG</strong></em> way or be retired. I have been in contact with the LCBO and they are not interested in supporting the project, they expect to have their own API released at some point soon though. I&rsquo;ve put the feelers out to you, my users, and you&rsquo;ve spoken too; LCBO API is just not something enough of you are willing/able to support financially.</p>
 
-<p>I&rsquo;ve backported this functionality into V1 so you can start using it immediately.
-Products now have a boolean field called <code>is_ocb</code> that identifies if the product
-is produced by an OCB member. You can also filter on this field with the standard
-V1 filtering parameter <a href="/products?where=is_ocb"><code>/products?where=is_ocb</code></a> or
-exclude OCB products by using
-<a href="/products?where_not=is_ocb"><code>/products?where_not=is_ocb</code></a>. I&rsquo;m excited to see
-how people integrate this data into their products. It&rsquo;s a simple
-addition and one that reflects the direction that LCBO API is taking.</p>
-
-<p>Finally, I&rsquo;m going to be in Portland, Oregon for the first week of March to attend
-<a href="http://emberconf.com">Ember Conf</a>, I realized that this conflicts with
-my original release date of March 1<sup>st</sup> for LCBO API V2, so I&rsquo;m bumping
-the date by a week to March 8<sup>th</sup>. I don&rsquo;t want to release V2 when I&rsquo;m
-possibly not available to answer questions and deal with potential issues.</p>
-
-<p>That&rsquo;s it for now, take care everyone!</p>
+<p>LCBO API will continue to do its thing until <strong>January 15th, 2019</strong> at which point it will be shut down forever. I&rsquo;ve met so many great people, I&rsquo;ve been incredibly inspired, and I&rsquo;ve learned a lot in the 10 years of running this project. I am forever grateful, thank you for being a part of it!</p>
 
 <p>&mdash; Carsten</p>
 
