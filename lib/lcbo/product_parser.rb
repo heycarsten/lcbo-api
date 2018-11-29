@@ -130,7 +130,7 @@ module LCBO
     field :package do
       size = lookup(:productSize)
 
-      if size == 'N/A'
+      if (size == 'N/A') || size.blank?
         nil
       else
         size + ' ' + lookup(:sellingPackage)
