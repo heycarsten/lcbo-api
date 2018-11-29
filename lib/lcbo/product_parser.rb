@@ -134,7 +134,7 @@ module LCBO
       if (size == 'N/A') || size.blank?
         nil
       elsif package.present?
-        size + ' ' + selling_package
+        size + ' ' + package
       else
         nil
       end
