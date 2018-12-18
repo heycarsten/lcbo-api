@@ -1,6 +1,17 @@
 # LCBO API
 
+Hello :wave:, welcome to LCBO API :smile:
+
+If you find yourself here wondering, what's an LCBO API? Let me explain. In Ontario, Canada all beverage alcohol sales go through a government owned monopoly called the Liquor Control Board of Ontario (LCBO). They have numerous retail stores distributed across the entire province and a website that hosts a catalog of every product, store, and even inventory levels. They even publish a seasonal catalog with recipes, editorials, and other content called Food & Drink. They also contribute billions of dollars of revenue to our public healthcare system annually. It's a fascinating situation when you think about it, other places have similar systems but to my knowledge none have the breadth and depth of the LCBO. So, now you know what it is, pretty cool eh?
+
 ## Background
+
+In the fall of 2008 I was a freshly minted web developer with a few years of experience under my belt, I was hungry for a challenge, and for some recognition. Apps were becoming a thing at the time and I wanted to build one, badly. I decided I wanted to build one that would require me to first build this API. I never did build that app :laughing:
+
+
+## Be kind
+
+If you look into this codebase long enough you are likely to find moments of frustration, dead ends, confusing cruft, etc. I really hope you don't focus on that, on any negativity you might find. I'm not that person anymore, and I don't want you to be that person either. I am an open book on this, open an issue and ask me a question, I will be as honest as possible, I only ask you do the same.
 
 ## Development
 
