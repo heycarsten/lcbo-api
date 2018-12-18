@@ -8,10 +8,23 @@ If you find yourself here wondering, what's an LCBO API? Let me explain. In Onta
 
 In the fall of 2008 I was a freshly minted web developer with a few years of experience under my belt, I was hungry for a challenge, and for some recognition. Apps were becoming a thing at the time and I wanted to build one, badly. I decided I wanted to build one that would require me to first build this API. I never did build that app :laughing:
 
-
 ## Be kind
 
 If you look into this codebase long enough you are likely to find moments of frustration, dead ends, confusing cruft, etc. I really hope you don't focus on that, on any negativity you might find. I'm not that person anymore, and I don't want you to be that person either. I am an open book on this, open an issue and ask me a question, I will be as honest as possible, I only ask you do the same.
+
+## :moneybag: Fiscal support :moneybag:
+
+Over the entire course of this project I have struggled massively with accepting financial support, on one hand I needed it and I wanted it, on the other I was weary of the complications it would cause. Well, now I have THE PERFECT solution to this problem!
+
+I'm undergoing treatment for blood cancer right now, I'm going to write more about that soon somewhere else, but during this past year people from everywhere have supported me in every way they could, and it has changed me, and I want us to do something big to show that we care too!
+
+If you've ever wanted to support this project in the past, please, make a donation to Hamilton Health Sciences on LCBO API's behalf:
+
+<center>
+**[Donate to Hamilton Health Sciences](https://hamiltonhealth.ca/inhonourgiving/)**
+</center>
+
+I am undergoing treatment at the Juravinski Cancer Center, but really you can choose any option, or leave the default one. Any amount, they will notify me when you do and I will tabulate a list, let's see how much we can raise!
 
 ## Development
 
