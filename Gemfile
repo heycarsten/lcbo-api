@@ -15,6 +15,7 @@ gem 'bootstrap-sass', '~> 3.3.3'
 gem 'sass-rails',     '~> 5.0'
 gem 'uglifier',       '>= 1.3.0'
 gem 'stripe',         git: 'https://github.com/stripe/stripe-ruby'
+gem 'dotenv-rails'
 
 gem 'capistrano',         '~> 3.3.5'
 gem 'capistrano-rails'
