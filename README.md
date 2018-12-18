@@ -1,5 +1,20 @@
 # LCBO API
 
+## Background
+
+## Development
+
+You can probably run the app directly on your host environment, it doesn't require anything too fancy as far as system dependencies are concerned. I develop on Apple hardware, if you do too, you may have success using [Postgres.app](https://postgresapp.com/), and [Homebrew](https://brew.sh/) for installing Redis. Otherwise, you can use Docker.
+
+First, you'll need to install the Docker client for your system, you can find out about that [here](https://www.docker.com/get-started). Once you've installed Docker, you can get things started:
+
+```
+docker-compose build
+docker-compose up
+```
+
+Once complete, you will be able to seed the database, 
+
 ## Gettin goin'
 
 ```

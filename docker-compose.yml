@@ -1,0 +1,43 @@
+version: '3'
+
+volumes:
+  pg_data:
+    driver: local
+  redis_data:
+    driver: local
+  app_bundle:
+    driver: local
+
+services:
+  db:
+    image: postgres:9.6-alpine
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./db/structure.sql:/docker-entrypoint-initdb.d/structure.sql
+    env_file: .env
+
+  redis:
+    image: redis:5-alpine
+    volumes:
+      - redis_data:/data
+    ports:
+      - '${REDIS_PORT}:6379'
+    command: redis-server --appendonly yes
+    env_file: .env
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: ruby:2.5-stretch
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/lcboapi
+    env_file: .env
+    stdin_open: true
+    tty: true
+    ports:
+      - '${RAILS_PORT}:3000'
+    command: bash -c "rm -f tmp/pids/server.pid && rails s -b '0.0.0.0'"

@@ -1,5 +1,6 @@
 .bundle
 .vagrant
+.env
 Vagrantfile
 config/database.yml
 config/skylight.yml
