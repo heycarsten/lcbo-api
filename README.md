@@ -14,7 +14,10 @@ If you've ever wanted to support this project in the past, please, [make a donat
 
 <p align="center">
   <b>
-    <a href="https://hamiltonhealth.ca/inhonourgiving/">Donate to Hamilton Health Sciences</a>
+    <a href="https://hamiltonhealth.ca/inhonourgiving/">
+      <img src="https://snappities.s3.amazonaws.com/7pez3ktcqn1rvo5fnwgc.png" alt="Hamilton Health Sciences"><br>
+      Donate to Hamilton Health Sciences
+    </a>
   </b>
 </p>
 
@@ -67,7 +70,7 @@ If you are just wanting to boot the app and access it locally, you should be goo
 
 The rest of the settings either only really matter in a production environment, are not really used, or only matter if you don't like the default preference. As always, if you need clarification, open and issue and I'm happy to help.
 
-##### Getting the app running for the first time
+#### Getting the app running for the first time
 
 First, you'll need to install the Docker client for your system, you can find out about that [here](https://www.docker.com/get-started). Once you've installed Docker, you can get things started:
 
