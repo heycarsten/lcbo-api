@@ -15,7 +15,7 @@ If you've ever wanted to support this project in the past, please, [make a donat
 <p align="center">
   <b>
     <a href="https://hamiltonhealth.ca/inhonourgiving/">
-      <img src="https://snappities.s3.amazonaws.com/7pez3ktcqn1rvo5fnwgc.png" alt="Hamilton Health Sciences"><br>
+      <img width="50%" src="https://snappities.s3.amazonaws.com/7pez3ktcqn1rvo5fnwgc.png" alt="Hamilton Health Sciences"><br>
       Donate to Hamilton Health Sciences
     </a>
   </b>
