@@ -6,6 +6,12 @@ Hello :wave:, welcome to LCBO API :slightly_smiling_face:
 
 If you find yourself here wondering, what's an LCBO API? Let me explain. In Ontario, Canada all beverage alcohol sales go through a government owned monopoly called the Liquor Control Board of Ontario (LCBO). They have numerous retail stores distributed across the entire province and a website that hosts a catalog of every product, store, and even inventory levels. They even publish a seasonal catalog with recipes, editorials, and other content called Food & Drink. They also contribute billions of dollars of revenue to our public healthcare system annually. It's a fascinating situation when you think about it, other places have similar systems but to my knowledge none have the breadth and depth of the LCBO. So, now you know what it is, pretty cool eh?
 
+**This might be interesting to you even if you don't live in Ontario, Canada, if:**
+
+- You want access to a lot of data for learning or testing
+- You are curious to learn how some types of web crawlers work
+- You are curious to learn what a small-scale production Rails application spaning 10 years of development might look like
+
 ## An important notice :gift:
 
 Over the entire course of this project I have struggled massively with accepting financial support, on one hand I needed it and I wanted it, on the other I was weary of the complications it would cause. Well, now I have **THE PERFECT** solution to this problem!
