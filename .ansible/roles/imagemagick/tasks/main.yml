@@ -1,7 +1,0 @@
----
-- name: Install packages
-  tags: setup
-  apt: name={{item}} state=latest update_cache=yes
-  with_items:
-    - imagemagick
-    - libmagickwand-dev

@@ -6,11 +6,11 @@ If you find yourself here wondering, what's an LCBO API? Let me explain. In Onta
 
 ## An important notice
 
-Over the entire course of this project I have struggled massively with accepting financial support, on one hand I needed it and I wanted it, on the other I was weary of the complications it would cause. Well, now I have THE PERFECT solution to this problem!
+Over the entire course of this project I have struggled massively with accepting financial support, on one hand I needed it and I wanted it, on the other I was weary of the complications it would cause. Well, now I have **THE PERFECT** solution to this problem!
 
 I'm undergoing treatment for blood cancer right now, I'm going to write more about that soon somewhere else, but during this past year people from everywhere have supported me in every way they could, and it has changed me, and I want us to do something big to show that we care too!
 
-If you've ever wanted to support this project in the past, please, make a donation to Hamilton Health Sciences on LCBO API's behalf, they are saving my life.
+If you've ever wanted to support this project in the past, please, [make a donation to Hamilton Health Sciences](https://hamiltonhealth.ca/inhonourgiving/) on LCBO API's behalf, they are saving my life.
 
 <p align="center">
   <b>

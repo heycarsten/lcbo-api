@@ -1,9 +1,0 @@
----
-nginx_max_connections: 2000
-nginx_max_body_size: '10m'
-nginx_user: www-data
-nginx_group: adm
-nginx_worker_processes: '{{ansible_processor_count}}'
-nginx_http_conf:
-  client_body_temp_path: '/var/spool/nginx-client-body 1 2'
-  server_names_hash_bucket_size: 64

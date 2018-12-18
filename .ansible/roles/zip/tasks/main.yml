@@ -1,2 +1,0 @@
-- name: Install ZIP
-  apt: pkg=zip state=latest update_cache=yes

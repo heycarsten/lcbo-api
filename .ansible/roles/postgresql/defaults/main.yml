@@ -1,5 +1,0 @@
----
-postgresql_version: 9.4
-postgresql_config_path: '/etc/postgresql/{{postgresql_version}}/main/postgresql.conf'
-postgresql_hba_path: '/etc/postgresql/{{postgresql_version}}/main/pg_hba.conf'
-postgresql_install_postgis: no

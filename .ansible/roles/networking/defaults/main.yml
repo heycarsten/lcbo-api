@@ -1,9 +1,0 @@
----
-fqdn: '{{inventory_hostname}}'
-hostname: '{{inventory_hostname_short}}'
-public_ip: '{{ansible_default_ipv4.address}}'
-public_netmask: '{{ansible_default_ipv4.netmask}}'
-gateway: '{{ansible_default_ipv4.gateway}}'
-dns_servers:
-  - 208.67.222.222 # OpenDNS
-  - 208.67.220.220 # OpenDNS

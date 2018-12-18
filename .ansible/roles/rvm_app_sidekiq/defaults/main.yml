@@ -1,4 +1,0 @@
----
-sidekiq_cluster_size: 1 # how many instances of sidekiq to spin-up
-sidekiq_init_worker_cluster_ident: '{{app_ident}}-worker-cluster'
-sidekiq_init_worker_ident: '{{app_ident}}-worker'
