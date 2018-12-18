@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img width="85%" src="https://dx5vpyka4lqst.cloudfront.net/assets/lcboapi-wordmark.png" alt="LCBO API">
+  <img width="50%" src="https://dx5vpyka4lqst.cloudfront.net/assets/lcboapi-wordmark.png" alt="LCBO API">
 </h1>
 
 Hello :wave:, welcome to LCBO API :slightly_smiling_face:
