@@ -212,7 +212,7 @@ This contains a [Middleman](https://middlemanapp.com/) site, when you visit lcbo
 
 There are A LOT of dead ends in this codebase, branches that went 40-60-80% of the way to a feature and then stagnated, experiments, etc. As always if you find something that's got you like :thinking: just file an issue and I'll respond as soon as I can.
 
-It would also be cool if we could tie up some of the dead ends in here, I'd be super interested in finally getting [JSON:API](https://jsonapi.org/) and [GraphQL](https://graphql.org/) added in. The current API response design is from 2008!!! In a way I'm kind of impressed that nobody ever complains about it.
+It would also be cool if we could tie up some of the dead ends in here, I'd be super interested in finally getting [JSON:API](https://jsonapi.org/) and [GraphQL](https://graphql.org/) added in. The current API response design is from 2008!!! In a way I'm kind of surprised that nobody ever complains about it.
 
 The #1 by far most requested feature I never implemented was categories, it's sort of in here, I forgot why I never shipped it, I don't remember what final stuff had to fall into place, but maybe that would be a good first thing to tackle? There's also Producers, and Origins which never quite got wrapped up.
 
