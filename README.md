@@ -208,6 +208,16 @@ This encompasses an [Ember](https://emberjs.com) application, when you sign up/i
 
 This contains a [Middleman](https://middlemanapp.com/) site, when you visit lcboapi.com this is what you're looking at. It also contains a very small (also outdated) [React](https://reactjs.org/) app which is the "Give it a try" thingy on the right of the homepage. It has it's own Gemfile and build script `static/generate`, when that is run it builds the site and syncs the changes into the `public` folder. In Rails apps the `public` folder is served as static content.
 
+## Dead ends
+
+There are A LOT of dead ends in this codebase, branches that went 40-60-80% of the way to a feature and then stagnated, experiments, etc. As always if you find something that's got you like :thinking: just file an issue and I'll respond as soon as I can.
+
+It would also be cool if we could tie up some of the dead ends in here, I'd be super interested in finally getting [JSON:API](https://jsonapi.org/) and [GraphQL](https://graphql.org/) added in. The current API response design is from 2008!!! In a way I'm kind of impressed that nobody ever complains about it.
+
+The #1 by far most requested feature I never implemented was categories, it's sort of in here, I forgot why I never shipped it, I don't remember what final stuff had to fall into place, but maybe that would be a good first thing to tackle? There's also Producers, and Origins which never quite got wrapped up.
+
+I also have a whole bunch of other repos and little experiments I made over the years, I was always fascinated by the idea of inventory level prediction, somewhere there's a dataset dump analysis tool written in Go for analyzing the CSV dumps for a particular product inventory over a set of time. I'd be happy to release that stuff too if there's interest.
+
 ## WIP (Work in progress)
 
 I'm going to leave it here for now and I'm going to wait to hear back from you. I would love to keep adding to this base of knowledge in whatever way people want to see (screencasts, interviews, inline documentation, etc.) I also want you to do the same, if you're not sure, ask. :heart:
