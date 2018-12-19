@@ -13,7 +13,6 @@ services:
     image: postgres:9.6-alpine
     volumes:
       - pg_data:/var/lib/postgresql/data
-      - ./db/structure.sql:/docker-entrypoint-initdb.d/structure.sql
     env_file: .env
 
   redis:
