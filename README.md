@@ -4,19 +4,19 @@
 
 Hello :wave:, welcome to LCBO API :slightly_smiling_face:
 
-If you find yourself here wondering, what's an LCBO API? Let me explain. In Ontario, Canada all beverage alcohol sales go through a government owned monopoly called the Liquor Control Board of Ontario (LCBO). They have numerous retail stores distributed across the entire province and a website that hosts a catalog of every product, store, and even inventory levels. They even publish a seasonal catalog with recipes, editorials, and other content called Food & Drink. They also contribute billions of dollars of revenue to our public healthcare system annually. It's a fascinating situation when you think about it, other places have similar systems but to my knowledge none have the breadth and depth of the LCBO. So, now you know what it is, pretty cool eh?
+If you find yourself here wondering "what's an LCBO API?", let me explain. In Ontario, Canada all beverage alcohol sales go through a government owned corporation called the Liquor Control Board of Ontario (LCBO) which handles retail and distribution of alcoholic beverages throughout the province. The LCBO has numerous retail stores and a website that hosts a catalog of every product, store, and even inventory levels. They publish a seasonal catalog with recipes, editorials, and other content called Food & Drink. They also contribute billions of dollars of revenue to our public healthcare system annually. It's a fascinating situation when you think about it, other places have similar systems but to my knowledge none have the breadth and depth of the LCBO. So, now you know what it is, pretty cool eh?
 
 **This might be interesting to you even if you don't live in Ontario, Canada, if:**
 
 - You want access to a lot of data for learning or testing
 - You are curious to learn how some types of web crawlers work
-- You are curious to learn what a small-scale production Rails application spaning 10 years of development might look like
+- You are curious to learn what a production Rails application spaning 10 years of development might look like
 
 ## An important notice :gift:
 
-Over the entire course of this project I have struggled massively with accepting financial support, on one hand I needed it and I wanted it, on the other I was weary of the complications it would cause. Well, now I have **THE PERFECT** solution to this problem!
+Over the entire course of this project I have struggled massively with the idea of accepting financial support. On one hand LCBO API needed it, on the other I was weary of the complications it would cause. Well, now I have **THE PERFECT** solution to this problem!
 
-I'm undergoing treatment for blood cancer right now, specifically diffuse large b-cell lymphoma, I'm going to write more about that soon somewhere else, but during this past year people from everywhere have supported me in every way they could, and it has changed me, and I want us to do something big to show that we care too!
+I'm undergoing treatment for blood cancer right now, specifically diffuse large b-cell lymphoma. I'm going to write more about that soon somewhere else but during this past year people from everywhere have supported me in every way they could, and it has changed me. I want us to do something big to show that we care too!
 
 If you've ever wanted to support this project in the past, please, [make a donation to Hamilton Health Sciences](https://hamiltonhealth.ca/inhonourgiving/) on LCBO API's behalf, they are saving my life.
 
@@ -29,17 +29,17 @@ If you've ever wanted to support this project in the past, please, [make a donat
   </b>
 </p>
 
-I am undergoing treatment at the Juravinski Cancer Center, but really you can choose any option, or leave the default one. Any amount, they will notify me when you do and I will tabulate a list, let's see how much we can raise!
+I am undergoing treatment at the Juravinski Cancer Center, but really you can choose any option, or leave the default one. It doesn't matter if the amount is small or large, they will notify me when you donate. I will tabulate a list to track the total, let's see how much we can raise!
 
-Finally I'd like to make a special mention to my workplace, [Crowdmark](https://crowdmark.com). They have been incredibly kind and understanding during all of this, and I quite literally would not have been able to do this without them. We are working tirelessly toward advancing the status quo of assessment in higher education, if you care about education and learning, I urge you to check us out.
+Finally I'd like to make a special mention to my workplace, [Crowdmark](https://crowdmark.com). They have been incredibly kind and understanding during all of this, and I quite literally would not have been able to do this without them. We are working tirelessly toward advancing the status quo of assessment in higher education. If you care about education and learning, I urge you to check us out.
 
 ## Background
 
-In the fall of 2008 I was a freshly minted web developer with a few years of experience under my belt, I was hungry for a challenge, and for some recognition. Apps were becoming a thing at the time and I wanted to build one, badly. I decided I wanted to build one that would require me to first build this API. I never did build that app :laughing:
+In the fall of 2008 I was a freshly minted web developer with a few years of experience under my belt. I was hungry for a challenge, and for some recognition. Apps were becoming a thing at the time and I wanted to build one, badly. I decided I wanted to build one that would require me to first build this API. I never did build that app :laughing:
 
 ## Be kind
 
-If you look into this codebase long enough you are likely to find moments of frustration, dead ends, confusing cruft, etc. I really hope you don't focus on that, on any negativity you might find. I'm not that person anymore, and I don't want you to be that person either. I am an open book on this, open an issue and ask me a question, I will be as honest and respectful as possible, I only ask you do the same. :pray:
+If you look into this codebase long enough you are likely to find moments of frustration, dead ends, confusing cruft, etc. I really hope you don't focus on that or on any negativity you might find. I'm not that person anymore, and I don't want you to be that person either. I am an open book on this! Open an issue and ask me a question, I will be as honest and respectful as possible, I only ask you do the same. :pray:
 
 ## License
 
