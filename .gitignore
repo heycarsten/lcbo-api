@@ -1,5 +1,6 @@
 .bundle
 .env
+.pry_history
 config/skylight.yml
 config/secrets.yml
 db/*.rdb
