@@ -174,7 +174,7 @@ docker-compose run app rails c
 
 Once that's running you can do stuff like:
 
-Fetch the first store in the database:
+Fetch the first product in the database:
 
 ```
 Product.first
