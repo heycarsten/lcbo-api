@@ -78,7 +78,7 @@ class Token
   end
 
   def initialize(kind_or_index, params = {})
-    if kind_or_index.is_a?(Fixnum)
+    if kind_or_index.is_a?(Integer)
       @signature = self.class.lookup_index(kind_or_index)
       @index     = kind_or_index
     else
