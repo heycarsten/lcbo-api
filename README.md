@@ -45,6 +45,20 @@ If you look into this codebase long enough you are likely to find moments of fru
 
 I'm releasing this project under GNU GPLv3, I think this is the most fair and responsible option for a project like this. If you feel differently, open an issue and we can have a discussion in the open about it. I only ask, respectfully, that you do not reuse the branding and design. I'm fine with re-use of the documentation, but the styling, identity, and branding must be changed if you want to deploy your own siloed version of this app.
 
+## Have big dreams!
+
+What if instead of a monolithic application trying to do everything in one style, in one place, we thought bigger? What if the crawler was a separate project again, responsible for collecting and normalizing data, others could build API nodes in whatever platforms they wished, those nodes would register with the data provider and receive updated data as it was made available and provide that data to users of all different types.
+
+Instead of dozens of similar API servers trying to do the same thing, fighting for LCBO.com's resources we could focus our efforts on building value on this data instead of fighting for ownership over it. We could get other disciplines involved to generate new value beyond the obvious, get the craft beer and wine communities involved, build on this, make it bigger than just Ontario.
+
+I don't know how feasible something like that would be, but I know if others are interested I would love to have these discussions.
+
+ Also, maybe we should consider charging corporate users a reasonable fee to access the API nodes, that money could be used to fund the hosting costs to keep things sustainable, it could also be used to fund support programs for people who can't drink, or who don't want to drink, or who want to drink less, to give back to our communities and to actually make a difference.
+
+But I need others to help share the burden of maintaining and managing all of this, my and my family's health and happiness is priority #1, followed by my career, and then my friends and community. This project can't be my #1 time sink anymore, it's not sustainable for me, and it's not healthy for me. But if you are inspired by this message, please reach out to me, ideally in the open, but privately at first is okay too.
+
+I hope this excites you!
+
 ## Getting started :sparkles:
 
 Now, with that out of the way, we can start getting into who I really did this for, and what got me excited and inspired to do this in the first place: the opportunity to learn and grow and to help others do the same. For those of you out there who are curious, let's see where this goes :slightly_smiling_face:
