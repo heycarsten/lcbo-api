@@ -124,7 +124,8 @@ Download and extract the archive in the `tmp` directory of this project:
 
 ```
 cd tmp
-curl https://s3.amazonaws.com/heycarsten/lcboapi-2018-12-17.bz2 -o lcboapi.bz2
+curl -O https://s3.amazonaws.com/heycarsten/lcboapi-2018-12-17.bz2
+tar xzf lcboapi-2018-12-17.bz2
 cd ..
 ```
 
@@ -134,10 +135,10 @@ Once you've downloaded and extracted the database file, you can load the data in
 
 ```
 docker-compose run --rm app rake db:create
-docker-compose run --rm app bash -c 'pv tmp/lcboapi.bz2 | bzcat | psql -q -h db -U $POSTGRES_USER $POSTGRES_DB > /dev/null'
+docker-compose run --rm app bash -c 'pv tmp/lcboapi-2018-12-17.sql | psql -q -h db -U $POSTGRES_USER $POSTGRES_DB > /dev/null'
 ```
 
-The first line, ending in `rake db:create` will create the database schemas in Postgres for development and testing, the second line will load the database dump into the development database. When that final command completes, and it might take some time depending on your machine, it's a fair amount of data. Then you can fire up the app again:
+The first line, ending in `rake db:create` will create the database schemas in Postgres for development and testing, the second line will load the database dump into the development database. The progress bar indicates how much of the data has been piped into the database, once that completes indexes will be built. This might take some time depending on your machine, it's a fair amount of data. Then you can fire up the app again:
 
 ```
 docker-compose up
