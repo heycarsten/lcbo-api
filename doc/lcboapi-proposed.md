@@ -26,7 +26,7 @@ Some of these nodes may only consume the data, others might consume it and add v
 
 _If you let your mind wander I'm sure you can think of lots of ideas!_
 
-Trusted nodes use the data as needed and apply metadata, they then also wrap this up in an SQLite image, save to S3 and then notify the datacore. It is important to consider the value structure here, I never considered financials when I started LCBO API and it was the biggest issue, so we need to have that in mind when designing this. Some ideas:
+Trusted nodes use the data as needed and apply metadata, they then also wrap this up in an SQLite image, save to S3 and then notify the conductor. It is important to consider the value structure here, I never considered financials when I started LCBO API and it was the biggest issue, so we need to have that in mind when designing this. Some ideas:
 
 - Charging 3rd party nodes who only consume data direct $$$
 - Charging 3rd party nodes who give back data differently
