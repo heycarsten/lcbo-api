@@ -9,8 +9,9 @@ ENV PATH=/lcboapi/bin:$PATH
 ENV HOME=/lcboapi
 
 # Install basics
-RUN apt-get -qq update && \
-    DEBIAN_FRONTEND=noninteractive apt-get -y -qq install \
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get -yqq update && \
+    apt-get -yqq install \
     software-properties-common \
     apt-transport-https \
     build-essential \
@@ -19,15 +20,11 @@ RUN apt-get -qq update && \
     libssl-dev \
     acl \
     zip \
+    pv \
     postgresql-client-$POSTGRES_VERSION \
-    libpq-dev
-
-# Install Node and Yarn for Rails AssetPipeline (5.2+)
-RUN curl -sL https://deb.nodesource.com/setup_$NODE_DIST | bash - && \
-    curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-    apt-get -y -qq update && \
-    DEBIAN_FRONTEND=noninteractive apt-get -y -qq install nodejs yarn
+    libpq-dev \
+    nodejs \
+    yarn
 
 RUN mkdir -p $HOME
 
