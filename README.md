@@ -59,6 +59,8 @@ But I need others to help share the burden of maintaining and managing all of th
 
 I hope this excites you!
 
+_I couldn't help myself, I wrote more about my ideas on this: [doc/lcboapi-proposed.md](https://github.com/heycarsten/lcbo-api/blob/master/doc/lcboapi-proposed.md)_
+
 ## Getting started :sparkles:
 
 Now, with that out of the way, we can start getting into who I really did this for, and what got me excited and inspired to do this in the first place: the opportunity to learn and grow and to help others do the same. For those of you out there who are curious, let's see where this goes :slightly_smiling_face:
