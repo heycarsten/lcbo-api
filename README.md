@@ -10,7 +10,7 @@ If you find yourself here wondering "what's an LCBO API?", let me explain. In On
 
 - You want access to a lot of data for learning or testing
 - You are curious to learn how some types of web crawlers work
-- You are curious to learn what a production Rails application spaning 10 years of development might look like
+- You are curious to learn what a production Rails application spanning 10 years of development might look like
 
 ## An important notice :gift:
 
@@ -116,7 +116,7 @@ Go ahead and shut down the containers:
 Ctrl-C
 ```
 
-That means, press the `Control` + `C` keys similtaniously.
+That means, press the `Control` + `C` keys simultaneously.
 
 You can download an archive of the latest production database dump from my personal Amazon S3 account [here](https://s3.amazonaws.com/heycarsten/lcboapi-2018-12-17.tbz2). Please note that there are sensitive tables (emails, users, keys) and that data has been excluded from this file.
 
@@ -124,20 +124,17 @@ Download and extract the archive in the `tmp` directory of this project:
 
 ```
 cd tmp
-curl -O https://s3.amazonaws.com/heycarsten/lcboapi-2018-12-17.tbz2
-tar xzf lcboapi-2018-12-17.tbz2
+curl https://s3.amazonaws.com/heycarsten/lcboapi-2018-12-17.bz2 -o lcboapi.bz2
 cd ..
 ```
 
 The file is about 180MiB, so it might take a while to download depending on your connection speed (this happens on the line that starts with `curl`).
 
-After that command completes, the next command uncompresses the archive (the line that starts with `tar`).
-
-Once you've downloaded and extracted the database file, you can load the data into it:
+Once you've downloaded and extracted the database file, you can load the data into the database:
 
 ```
-docker-compose run app rake db:create
-docker-compose run app bash -c 'psql -h db -U $POSTGRES_USER $POSTGRES_DB < tmp/lcboapi-2018-12-17.sql'
+docker-compose run --rm app rake db:create
+docker-compose run --rm app bash -c 'pv tmp/lcboapi.bz2 | bzcat | psql -q -h db -U $POSTGRES_USER $POSTGRES_DB > /dev/null'
 ```
 
 The first line, ending in `rake db:create` will create the database schemas in Postgres for development and testing, the second line will load the database dump into the development database. When that final command completes, and it might take some time depending on your machine, it's a fair amount of data. Then you can fire up the app again:
@@ -151,6 +148,8 @@ You can also safely delete the archive and extracted SQL file from your `tmp` di
 > If you're finding typing `docker-compose` over-and-over tedious, look into [shell aliases](https://stackoverflow.com/questions/8967843/how-do-i-create-a-bash-alias)
 >
 > You can add an alias line to your shell profile like `alias dc=docker-compose` and then you can just type `dc` instead of having to type `docker-compose` every time. :white_check_mark:
+>
+> Think of other aliases you could create to improve on this even further :thinking:
 
 Now, navigate to http://localhost:3000/products/438457
 
@@ -169,7 +168,7 @@ If you add a new gem to the `Gemfile`, you will need to re-install the packages 
 To fire up a Rails console and inspect objects inside the application:
 
 ```
-docker-compose run app rails c
+docker-compose exec app rails c
 ```
 
 Once that's running you can do stuff like:
@@ -186,16 +185,16 @@ Find LCBO retail store #25 (my local store):
 Store.find(25)
 ```
 
-If you change code in the app, you'll need to issue the `reload!` command in the console to refesh the changes.
+If you change code in the app, you'll need to issue the `reload!` command in the console to refresh the changes.
 
 ### Running tests
 
-Inside of the `spec` folder, you'll find the test suite for LCBO API. It is regrettably not comprehensive, but it's not too bad either. I have struggled my entire career to maintain test suites that I am satisifed with. We should improve these tests!
+Inside of the `spec` folder, you'll find the test suite for LCBO API. It is regrettably not comprehensive, but it's not too bad either. I have struggled my entire career to maintain test suites that I am satisfied with. We should improve these tests!
 
 To run the test suite:
 
 ```
-docker-compose run app rspec
+docker-compose exec app rspec
 ```
 
 You'll see a bunch of green dots `.`, each one of those represents a passed test case. That's good. If a failure occurs you'll see a red `F`, that's bad... JUST KIDDING! Actually it's good! Tests give you the power to change things in an existing codebase and see if you cause any regressions to existing functionality. Of course nothing is perfect, but I can tell you without a doubt, from experience, tests are good.
