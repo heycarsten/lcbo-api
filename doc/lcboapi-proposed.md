@@ -2,6 +2,8 @@
 
 I can't stop thinking about this, so I'm just going to get it out in the open so I can stop thinking about it! :laughing:
 
+I can see a bigger vision for this API and data, read on and give it a think, also let me know what you think! I need your help :pray:
+
 ## Conductor (lcboapi-conductor)
 
 Responsible for crawling source data, normalizing, and shipping to trusted
@@ -48,9 +50,24 @@ These are hard problems and I won't try to solve them here, but if anyone wants 
 
 ## API clients
 
-Here's where I think the different platforms and paradigms can come in! The API server and datacore should probably be Ruby since that's what the project is already using, but I'm not opposed to changing that, let's have the discussion!
+Here's where I think the different platforms and paradigms can come in! The API server and conductor should probably be Ruby since that's what the project is already using, but I'm not opposed to changing that, let's have the discussion!
 
 Where I think it could be really exciting for diversity of technologies is in API consumer libraries. I think the API server should return JSON:API or GraphQL (or both, ideally!) but the clients to consume that data could be written in whatever languages people want to support.
+
+## Consumer pricing model
+
+- No more API snapshots, if you want that, you have to register as a 3rd party
+- Usage-based, reasonable $$
+- Free tier: reasonable but low rate limit, access to non-profit 3rd party subscriptions
+- Each 3rd party subscription increases cost by $$
+
+## 3rd party pricing model
+
+Third parties that only consume the data should be charged enterprise-level fees, I don't know what those are, business people please help!
+
+Third parties that add metadata but are commercial entities should also perhaps be charged a reasonable maintenance fee. They would also get a cut of consumer subscription fees.
+
+Third parties that are non-profit would not have to pay a fee, and we would give them a cut of consumer subscription fees.
 
 ## Additional thoughts
 
