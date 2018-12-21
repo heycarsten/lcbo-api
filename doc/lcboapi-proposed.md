@@ -9,7 +9,7 @@ I can see a bigger vision for this API and data, read on and give it a think, al
 Responsible for crawling source data, normalizing, and shipping to trusted
 external nodes. This might just be part of the API Server? It orchestrates the crawling process and the post-crawl process of notifying 3rd parties, waiting to hear back, wrapping up all of the data, and applying it to the API.
 
-## 3rd Party Data Nodes
+## 3rd party "data nodes" (external, proprietary)
 
 When a crawl completes, it is packaged into an SQLlite image, and saved to S3. All trusted 3rd party nodes are notified and receive the data package.
 
