@@ -50,6 +50,42 @@ These are hard problems and I won't try to solve them here, but if anyone wants 
 
 ## Official CLI interface (`@bevgraph/cli`)
 
+An official CLI tool for interacting with the BevGraph API. Would be able to fetch all endpoints and return data in JSON, CSV, whatever makes sense. Would be written in Node.js to ensure maximum accessibility.
+
+```bash
+npm i -g @bevgraph/cli
+
+# Set your API key
+bevgraph config set api-key 2YSFD8jhbFGaosf9823u923hwe8f7hq872oq3u4fhadjq7238rgfiauyerksbfZXMNV
+
+# Find a product by source ID (products will be normalized to UPC but will retain various source IDs as well)
+bevgraph get-product lcbo:438457 --format="csv" > longslice.csv # Store CSV output in a file
+```
+
+Also human-readable output would be available (perhaps even the default, could be changed via config of course)
+
+```bash
+bevgraph search-products --producer="collective arts" --format="human"
+```
+
+Might output something like:
+
+```
+Found 20 products in 33ms:
+
+--- [0]
+  name: "Collective Arts Ransack the Universe IPA"
+  upc: "20003492938484"
+  source: "lcbo/450312"
+  ...
+[1]
+  ...
+```
+
+People could probably do most things using this CLI interface, of course JSON:API and GraphQL APIs would be available for all other uses as well.
+
+:thinking: I'm pretty stoked about this!
+
 ## API clients
 
 Here's where I think the different platforms and paradigms can come in! The API server and conductor should probably be Ruby since that's what the project is already using, but I'm not opposed to changing that, let's have the discussion!
@@ -74,3 +110,7 @@ Third parties that are non-profit would not have to pay a fee, and we would give
 ## Additional thoughts
 
 The conductor design I proposed is very synchronous. This was just how I was thinking at the time, it probably makes more sense to allow 3rd party nodes to report back whenever they want. The concept of a Dataset in LCBO API is based on a crawl beginning and ending, that could still be a thing, the concept of a "snapshot" but I feel like people who want that would really want to register as a 3rd party. :thinking: Something to consider.
+
+## Does this interest you / excited you?
+
+If so, get in touch and let's start discussing it, and building it! Open an [issue](https://github.com/heycarsten/lcbo-api/issues/new), tweet me [@heycarsten](https://twitter.com/heycarsten), or email me: heycarsten@gmail.com :+1:
