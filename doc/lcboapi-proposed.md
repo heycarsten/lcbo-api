@@ -1,10 +1,10 @@
-# Proposal for the future of LCBO API
+# BevGraph: Proposal for the future of LCBO API
 
 I can't stop thinking about this, so I'm just going to get it out in the open so I can stop thinking about it! :laughing:
 
 I can see a bigger vision for this API and data, read on and give it a think, also let me know what you think! I need your help :pray:
 
-## Conductor (lcboapi-conductor)
+## Conductor (`bevgraph/conductor`)
 
 Responsible for crawling source data, normalizing, and shipping to trusted
 external nodes. This might just be part of the API Server? It orchestrates the crawling process and the post-crawl process of notifying 3rd parties, waiting to hear back, wrapping up all of the data, and applying it to the API.
@@ -37,7 +37,7 @@ The reason we need to charge money is:
 - LCBO API: hosting, tipjar for volunteers, to support community programs and charities
 - 3rd party: thanks for adding value, here's some support
 
-## Consumer API Server (lcboapi-server)
+## Consumer API Server (`bevgraph/server`)
 
 API server (GraphQL, JSON:API, etc.) similar to current Rails app. Takes care of what LCBO API currently does, but taking into consideration new responsibilities:
 
@@ -47,6 +47,8 @@ API server (GraphQL, JSON:API, etc.) similar to current Rails app. Takes care of
 - Storage/retrieval of 3rd party aggregations
 
 These are hard problems and I won't try to solve them here, but if anyone wants to work on them with me just open an issue, I'd love to get started :heart:
+
+## Official CLI interface (`@bevgraph/cli`)
 
 ## API clients
 
