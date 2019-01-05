@@ -118,6 +118,6 @@ The conductor design I proposed is very synchronous. This was just how I was thi
 
 I have lots of ideas here, but ultimately products need to be normalized somehow. UPC, name+producer, etc. Solvable problems for sure, big problems too. The current modelling will not support this. Multiple retail locations from multiple retailers selling the same products at different prices, etc. All of this will have to be considered and accommidated for, and presented in a very straight-forward way to consumers of the API.
 
-## Does this interest you / excited you?
+## Does this interest you / excite you?
 
-If so, get in touch and let's start discussing it, and building it! Open an [issue](https://github.com/heycarsten/lcbo-api/issues/new), tweet me [@heycarsten](https://twitter.com/heycarsten), or email me: heycarsten@gmail.com :+1:
+If so, get in touch and let's start discussing it and designing it! Open an [issue](https://github.com/heycarsten/lcbo-api/issues/new), tweet me [@heycarsten](https://twitter.com/heycarsten), or email me: heycarsten@gmail.com :+1:
