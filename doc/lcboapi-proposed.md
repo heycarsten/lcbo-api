@@ -56,9 +56,10 @@ An official CLI tool for interacting with the BevGraph API. Would be able to fet
 npm i -g @bevgraph/cli
 
 # Set your API key
-bevgraph config:set "api-key" "2YSFD8jhbFGaosf9823u923hwe8f7hq872oq3u4fhadjq7238rgfiauyerksbfZXMNV"
+bevgraph config:set "api-key" "2YSFD8jhbFGaosf9823u923hwe8f7hq872oq3u4fhadjq7238rerksbfZXMNV"
 
-# Find a product by source ID (products will be normalized to UPC but will retain various source IDs as well)
+# Find a product by source ID
+# (products will be normalized to UPC but will retain various source IDs as well)
 bevgraph product "lcbo/438457" --format="csv" > longslice.csv # Store CSV output in a file
 ```
 
@@ -110,6 +111,10 @@ Third parties that are non-profit would not have to pay a fee, and we would give
 ## Additional thoughts
 
 The conductor design I proposed is very synchronous. This was just how I was thinking at the time, it probably makes more sense to allow 3rd party nodes to report back whenever they want. The concept of a Dataset in LCBO API is based on a crawl beginning and ending, that could still be a thing, the concept of a "snapshot" but I feel like people who want that would really want to register as a 3rd party. :thinking: Something to consider.
+
+## Modelling changes
+
+I have lots of ideas here, but ultimately products need to be normalized somehow. UPC, name+producer, etc. Solvable problems for sure, big problems too. The current modelling will not support this. Multiple retail locations from multiple retailers selling the same products at different prices, etc. All of this will have to be considered and accommidated for, and presented in a very straight-forward way to consumers of the API.
 
 ## Does this interest you / excited you?
 
