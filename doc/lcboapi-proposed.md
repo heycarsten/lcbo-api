@@ -52,20 +52,20 @@ These are hard problems and I won't try to solve them here, but if anyone wants 
 
 An official CLI tool for interacting with the BevGraph API. Would be able to fetch all endpoints and return data in JSON, CSV, whatever makes sense. Would be written in Node.js to ensure maximum accessibility.
 
-```bash
+```
 npm i -g @bevgraph/cli
 
 # Set your API key
-bevgraph config set api-key 2YSFD8jhbFGaosf9823u923hwe8f7hq872oq3u4fhadjq7238rgfiauyerksbfZXMNV
+bevgraph config:set "api-key" "2YSFD8jhbFGaosf9823u923hwe8f7hq872oq3u4fhadjq7238rgfiauyerksbfZXMNV"
 
 # Find a product by source ID (products will be normalized to UPC but will retain various source IDs as well)
-bevgraph get-product lcbo:438457 --format="csv" > longslice.csv # Store CSV output in a file
+bevgraph product "lcbo/438457" --format="csv" > longslice.csv # Store CSV output in a file
 ```
 
 Also human-readable output would be available (perhaps even the default, could be changed via config of course)
 
 ```bash
-bevgraph search-products --producer="collective arts" --format="human"
+bevgraph products --producer="collective arts" --format="human"
 ```
 
 Might output something like:
