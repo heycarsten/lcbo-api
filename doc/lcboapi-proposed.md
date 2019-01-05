@@ -1,7 +1,7 @@
 # BevGraph: Proposal for the future of LCBO API
 
 <p align="center">
-  <img width="33%" src="https://snappities.s3.amazonaws.com/kq9rvf8ohu6c9a4y9ph0.png" alt="BevGraph">
+  <img width="33%" src="https://snappities.s3.amazonaws.com/i0ifq827x65w3vtfgrk6.png" alt="BevGraph">
 </p>
 
 I can't stop thinking about this, so I'm just going to get it out in the open so I can stop thinking about it! :laughing: I can see a bigger vision for this API and data, read on and give it a think, also let me know what you think! I need your help :pray:
