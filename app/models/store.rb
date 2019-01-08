@@ -26,7 +26,7 @@ class Store < ApplicationRecord
     'Toronto-Scarborough' => 'Scarborough'
   }
 
-  belongs_to :crawl
+  belongs_to :crawl, optional: true
   has_many :inventories
 
   before_save :set_latlonrad

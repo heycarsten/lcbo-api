@@ -32,7 +32,7 @@ class Crawl < ApplicationRecord
 
   scope :is, ->(*states) { where(state: states.map(&:to_s)) }
 
-  belongs_to :crawl_event
+  belongs_to :crawl_event, optional: true
   has_many :crawl_events
 
   def self.latest

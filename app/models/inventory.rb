@@ -1,5 +1,5 @@
 class Inventory < ApplicationRecord
-  belongs_to :crawl
+  belongs_to :crawl, optional: true
   belongs_to :product
   belongs_to :store
 

@@ -165,12 +165,18 @@ module Magiq
           else
             tbl = model.table_name
 
-            sql = ids.each_with_index.map { |raw_id, i|
-              id = raw_id.is_a?(Numeric) ? raw_id : "'#{raw_id}'"
-              "WHEN #{id} THEN #{i}"
-            }.join(' ')
+            sql = Arel.sql(
+              ids.each_with_index.map { |raw_id, i|
+                id = raw_id.is_a?(Numeric) ? raw_id : "'#{raw_id}'"
+                "WHEN #{id} THEN #{i}"
+              }.join(' ')
+            )
 
-            scope.where(column => ids).order("CASE #{tbl}.#{column} #{sql} END")
+            scope.
+              where(column => ids).
+              order(
+                Arel.sql("CASE #{tbl}.#{column} #{sql} END")
+              )
           end
         end
       end

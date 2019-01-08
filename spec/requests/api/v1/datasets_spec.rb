@@ -20,7 +20,7 @@ RSpec.describe 'Datasets API (V1)', type: :request do
 
     get '/datasets'
 
-    expect(response).to be_success
+    expect(response).to be_successful
     expect(response).to be_json
     expect(response.payload[:result].size).to eq 2
   end
@@ -30,7 +30,7 @@ RSpec.describe 'Datasets API (V1)', type: :request do
 
     get "/datasets/#{@crawls[0].id}"
 
-    expect(response).to be_success
+    expect(response).to be_successful
     expect(response).to be_json
     expect(response.payload[:result][:id]).to eq @crawls[0].id
   end
@@ -40,7 +40,7 @@ RSpec.describe 'Datasets API (V1)', type: :request do
 
     get '/datasets', headers: { 'Authorization' => "Token #{@server_key}" }
 
-    expect(response).to be_success
+    expect(response).to be_successful
     expect(response).to be_json
     expect(response.payload[:result].size).to eq 2
 

@@ -15,7 +15,7 @@ class Category < ApplicationRecord
 
   has_many :categories, foreign_key: :parent_category_id
 
-  belongs_to :parent_category, class_name: 'Category'
+  belongs_to :parent_category, class_name: 'Category', optional: true
 
   scope :by_ids, ->(*raw_ids) {
     ids   = raw_ids.flatten.map(&:to_i)
