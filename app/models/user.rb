@@ -7,7 +7,7 @@ class User < ApplicationRecord
   has_many :keys,   dependent: :destroy
   has_many :emails, dependent: :destroy
 
-  belongs_to :plan
+  belongs_to :plan, optional: true
 
   before_create :generate_auth_secret, :generate_verification_secret
   before_save   :set_password_digest, if: :password_changed?

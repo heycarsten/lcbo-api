@@ -24,8 +24,8 @@ class Product < ApplicationRecord
       }
     }
 
-  belongs_to :crawl
-  belongs_to :producer
+  belongs_to :crawl, optional: true
+  belongs_to :producer, optional: true
 
   has_many :inventories
 
@@ -43,7 +43,10 @@ class Product < ApplicationRecord
       sql = ids.each_with_index.map { |id, i|
         "WHEN #{id} THEN #{i}"
       }.join(' ')
-      scope.order("CASE products.id #{sql} END")
+
+      scope.order(
+        Arel.sql("CASE products.id #{sql} END")
+      )
     end
   }
 

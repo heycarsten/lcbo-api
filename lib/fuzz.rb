@@ -7,7 +7,7 @@ module Fuzz
   end
 
   def self.redis
-    @redis ||= Redis.connect
+    @redis ||= Redis.new
   end
 
   def self.dictionaries
