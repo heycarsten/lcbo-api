@@ -7,6 +7,9 @@ require 'capistrano/bundler'
 require 'capistrano/rails'
 require 'capistrano/rails/migrations'
 require 'capistrano/rvm'
+require 'capistrano/scm/git'
+
+install_plugin Capistrano::SCM::Git
 
 # Include 3rd party cap tasks
 #require 'capistrano/honeybadger'
