@@ -40,7 +40,7 @@ jobs:
       - run:
           name: install system dependencies
           command: |
-            RUN DEBIAN_FRONTEND=noninteractive \
+            DEBIAN_FRONTEND=noninteractive \
               apt-get -yqq update && \
               apt-get -yqq install \
               software-properties-common \
