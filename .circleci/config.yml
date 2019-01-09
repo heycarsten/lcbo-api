@@ -7,11 +7,11 @@ jobs:
   build:
     docker:
       # Ruby for Rails app
-      - image: circleci/ruby:2.5-node-browsers
+      - image: circleci/ruby:2.5-stretch-node-browsers
         environment:
+          RAILS_ENV: test
           PGHOST: 127.0.0.1
           PGUSER: postgres
-          RAILS_ENV: test
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -38,8 +38,24 @@ jobs:
           - v1-dependencies-
 
       - run:
-          name: install dependencies
+          name: install system dependencies
           command: |
+            RUN DEBIAN_FRONTEND=noninteractive \
+              apt-get -yqq update && \
+              apt-get -yqq install \
+              software-properties-common \
+              apt-transport-https \
+              acl \
+              zip \
+              postgresql-client-9.6 \
+              libpq-dev \
+              nodejs \
+              yarn
+      - run:
+          name: install Rubygems via bundler
+          command: |
+            gem update --system && \
+            gem install bundler --force && \
             bundle install --jobs=4 --retry=3 --path vendor/bundle
 
       - save_cache:

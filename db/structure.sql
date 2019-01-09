@@ -1,13 +1,12 @@
---
--- PostgreSQL database dump
---
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET row_security = off;
 
 --
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
@@ -191,17 +190,27 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
 
 
-SET search_path = public, pg_catalog;
-
 SET default_tablespace = '';
 
 SET default_with_oids = false;
 
 --
--- Name: categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE categories (
+CREATE TABLE public.ar_internal_metadata (
+    key character varying NOT NULL,
+    value character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: categories; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.categories (
     id integer NOT NULL,
     name character varying(40) NOT NULL,
     lcbo_ref character varying(40) NOT NULL,
@@ -211,7 +220,7 @@ CREATE TABLE categories (
     depth smallint NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    name_vectors pg_catalog.tsvector
+    name_vectors tsvector
 );
 
 
@@ -219,7 +228,7 @@ CREATE TABLE categories (
 -- Name: categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE categories_id_seq
+CREATE SEQUENCE public.categories_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -231,14 +240,14 @@ CREATE SEQUENCE categories_id_seq
 -- Name: categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE categories_id_seq OWNED BY categories.id;
+ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.id;
 
 
 --
--- Name: crawl_events; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: crawl_events; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE crawl_events (
+CREATE TABLE public.crawl_events (
     id integer NOT NULL,
     crawl_id integer,
     level character varying(25),
@@ -252,7 +261,7 @@ CREATE TABLE crawl_events (
 -- Name: crawl_events_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE crawl_events_id_seq
+CREATE SEQUENCE public.crawl_events_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -264,14 +273,14 @@ CREATE SEQUENCE crawl_events_id_seq
 -- Name: crawl_events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE crawl_events_id_seq OWNED BY crawl_events.id;
+ALTER SEQUENCE public.crawl_events_id_seq OWNED BY public.crawl_events.id;
 
 
 --
--- Name: crawls; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: crawls; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE crawls (
+CREATE TABLE public.crawls (
     id integer NOT NULL,
     crawl_event_id integer,
     state character varying(20),
@@ -299,7 +308,7 @@ CREATE TABLE crawls (
 -- Name: crawls_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE crawls_id_seq
+CREATE SEQUENCE public.crawls_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -311,15 +320,15 @@ CREATE SEQUENCE crawls_id_seq
 -- Name: crawls_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE crawls_id_seq OWNED BY crawls.id;
+ALTER SEQUENCE public.crawls_id_seq OWNED BY public.crawls.id;
 
 
 --
--- Name: emails; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: emails; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE emails (
-    id uuid DEFAULT uuid_generate_v1() NOT NULL,
+CREATE TABLE public.emails (
+    id uuid DEFAULT public.uuid_generate_v1() NOT NULL,
     user_id uuid NOT NULL,
     address character varying(120) NOT NULL,
     is_verified boolean DEFAULT false NOT NULL,
@@ -330,10 +339,10 @@ CREATE TABLE emails (
 
 
 --
--- Name: inventories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: inventories; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE inventories (
+CREATE TABLE public.inventories (
     product_id integer NOT NULL,
     store_id integer NOT NULL,
     crawl_id integer,
@@ -350,7 +359,7 @@ CREATE TABLE inventories (
 -- Name: inventories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE inventories_id_seq
+CREATE SEQUENCE public.inventories_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -362,15 +371,15 @@ CREATE SEQUENCE inventories_id_seq
 -- Name: inventories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE inventories_id_seq OWNED BY inventories.id;
+ALTER SEQUENCE public.inventories_id_seq OWNED BY public.inventories.id;
 
 
 --
--- Name: keys; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: keys; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE keys (
-    id uuid DEFAULT uuid_generate_v1() NOT NULL,
+CREATE TABLE public.keys (
+    id uuid DEFAULT public.uuid_generate_v1() NOT NULL,
     secret character varying(255) NOT NULL,
     label character varying(255),
     info text,
@@ -385,11 +394,11 @@ CREATE TABLE keys (
 
 
 --
--- Name: plans; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: plans; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE plans (
-    id uuid DEFAULT uuid_generate_v4() NOT NULL,
+CREATE TABLE public.plans (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     is_active boolean DEFAULT true NOT NULL,
     stripe_uid character varying(45),
     title character varying(60),
@@ -407,10 +416,10 @@ CREATE TABLE plans (
 
 
 --
--- Name: producers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: producers; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE producers (
+CREATE TABLE public.producers (
     id integer NOT NULL,
     name character varying(80) NOT NULL,
     lcbo_ref character varying(100) NOT NULL,
@@ -418,7 +427,7 @@ CREATE TABLE producers (
     is_ocb boolean DEFAULT false NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    name_vectors pg_catalog.tsvector
+    name_vectors tsvector
 );
 
 
@@ -426,7 +435,7 @@ CREATE TABLE producers (
 -- Name: producers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE producers_id_seq
+CREATE SEQUENCE public.producers_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -438,14 +447,14 @@ CREATE SEQUENCE producers_id_seq
 -- Name: producers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE producers_id_seq OWNED BY producers.id;
+ALTER SEQUENCE public.producers_id_seq OWNED BY public.producers.id;
 
 
 --
--- Name: products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: products; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE products (
+CREATE TABLE public.products (
     id integer NOT NULL,
     crawl_id integer,
     is_dead boolean DEFAULT false,
@@ -497,7 +506,7 @@ CREATE TABLE products (
     sugar_in_grams_per_liter smallint DEFAULT 0,
     clearance_sale_savings_in_cents integer DEFAULT 0,
     has_clearance_sale boolean DEFAULT false,
-    tag_vectors pg_catalog.tsvector,
+    tag_vectors tsvector,
     upc bigint,
     scc bigint,
     style_flavour character varying(255),
@@ -516,7 +525,7 @@ CREATE TABLE products (
 -- Name: products_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE products_id_seq
+CREATE SEQUENCE public.products_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -528,23 +537,23 @@ CREATE SEQUENCE products_id_seq
 -- Name: products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE products_id_seq OWNED BY products.id;
+ALTER SEQUENCE public.products_id_seq OWNED BY public.products.id;
 
 
 --
--- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE schema_migrations (
+CREATE TABLE public.schema_migrations (
     version character varying(255) NOT NULL
 );
 
 
 --
--- Name: stores; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: stores; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE stores (
+CREATE TABLE public.stores (
     id integer NOT NULL,
     crawl_id integer,
     is_dead boolean DEFAULT false,
@@ -589,7 +598,7 @@ CREATE TABLE stores (
     saturday_close smallint,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    tag_vectors pg_catalog.tsvector,
+    tag_vectors tsvector,
     kind character varying(255),
     landmark_name character varying(255)
 );
@@ -599,7 +608,7 @@ CREATE TABLE stores (
 -- Name: stores_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE stores_id_seq
+CREATE SEQUENCE public.stores_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -611,15 +620,15 @@ CREATE SEQUENCE stores_id_seq
 -- Name: stores_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE stores_id_seq OWNED BY stores.id;
+ALTER SEQUENCE public.stores_id_seq OWNED BY public.stores.id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE users (
-    id uuid DEFAULT uuid_generate_v1() NOT NULL,
+CREATE TABLE public.users (
+    id uuid DEFAULT public.uuid_generate_v1() NOT NULL,
     name character varying(255),
     email character varying(120),
     password_digest character varying(60) NOT NULL,
@@ -635,834 +644,812 @@ CREATE TABLE users (
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: categories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY categories ALTER COLUMN id SET DEFAULT nextval('categories_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY crawl_events ALTER COLUMN id SET DEFAULT nextval('crawl_events_id_seq'::regclass);
+ALTER TABLE ONLY public.categories ALTER COLUMN id SET DEFAULT nextval('public.categories_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: crawl_events id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY crawls ALTER COLUMN id SET DEFAULT nextval('crawls_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY inventories ALTER COLUMN id SET DEFAULT nextval('inventories_id_seq'::regclass);
+ALTER TABLE ONLY public.crawl_events ALTER COLUMN id SET DEFAULT nextval('public.crawl_events_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: crawls id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY producers ALTER COLUMN id SET DEFAULT nextval('producers_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY products ALTER COLUMN id SET DEFAULT nextval('products_id_seq'::regclass);
+ALTER TABLE ONLY public.crawls ALTER COLUMN id SET DEFAULT nextval('public.crawls_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: inventories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY stores ALTER COLUMN id SET DEFAULT nextval('stores_id_seq'::regclass);
+ALTER TABLE ONLY public.inventories ALTER COLUMN id SET DEFAULT nextval('public.inventories_id_seq'::regclass);
 
 
 --
--- Name: categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: producers id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY categories
+ALTER TABLE ONLY public.producers ALTER COLUMN id SET DEFAULT nextval('public.producers_id_seq'::regclass);
+
+
+--
+-- Name: products id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.products ALTER COLUMN id SET DEFAULT nextval('public.products_id_seq'::regclass);
+
+
+--
+-- Name: stores id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.stores ALTER COLUMN id SET DEFAULT nextval('public.stores_id_seq'::regclass);
+
+
+--
+-- Name: ar_internal_metadata ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.ar_internal_metadata
+    ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.categories
     ADD CONSTRAINT categories_pkey PRIMARY KEY (id);
 
 
 --
--- Name: crawl_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: crawl_events crawl_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY crawl_events
+ALTER TABLE ONLY public.crawl_events
     ADD CONSTRAINT crawl_events_pkey PRIMARY KEY (id);
 
 
 --
--- Name: crawls_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: crawls crawls_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY crawls
+ALTER TABLE ONLY public.crawls
     ADD CONSTRAINT crawls_pkey PRIMARY KEY (id);
 
 
 --
--- Name: emails_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: emails emails_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY emails
+ALTER TABLE ONLY public.emails
     ADD CONSTRAINT emails_pkey PRIMARY KEY (id);
 
 
 --
--- Name: inventories_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: inventories inventories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY inventories
+ALTER TABLE ONLY public.inventories
     ADD CONSTRAINT inventories_pkey PRIMARY KEY (id);
 
 
 --
--- Name: keys_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: keys keys_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY keys
+ALTER TABLE ONLY public.keys
     ADD CONSTRAINT keys_pkey PRIMARY KEY (id);
 
 
 --
--- Name: plans_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: plans plans_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY plans
+ALTER TABLE ONLY public.plans
     ADD CONSTRAINT plans_pkey PRIMARY KEY (id);
 
 
 --
--- Name: producers_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: producers producers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY producers
+ALTER TABLE ONLY public.producers
     ADD CONSTRAINT producers_pkey PRIMARY KEY (id);
 
 
 --
--- Name: products_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: products products_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY products
+ALTER TABLE ONLY public.products
     ADD CONSTRAINT products_pkey PRIMARY KEY (id);
 
 
 --
--- Name: stores_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: stores stores_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY stores
+ALTER TABLE ONLY public.stores
     ADD CONSTRAINT stores_pkey PRIMARY KEY (id);
 
 
 --
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY users
+ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
 
 
 --
--- Name: crawl_events_crawl_id_created_at_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: crawl_events_crawl_id_created_at_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX crawl_events_crawl_id_created_at_index ON crawl_events USING btree (crawl_id, created_at);
+CREATE INDEX crawl_events_crawl_id_created_at_index ON public.crawl_events USING btree (crawl_id, created_at);
 
 
 --
--- Name: crawls_created_at_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: crawls_created_at_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX crawls_created_at_index ON crawls USING btree (created_at);
+CREATE INDEX crawls_created_at_index ON public.crawls USING btree (created_at);
 
 
 --
--- Name: crawls_state_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: crawls_state_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX crawls_state_index ON crawls USING btree (state);
+CREATE INDEX crawls_state_index ON public.crawls USING btree (state);
 
 
 --
--- Name: crawls_total_inventories_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: crawls_total_inventories_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX crawls_total_inventories_index ON crawls USING btree (total_inventories);
+CREATE INDEX crawls_total_inventories_index ON public.crawls USING btree (total_inventories);
 
 
 --
--- Name: crawls_total_product_inventory_count_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: crawls_total_product_inventory_count_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX crawls_total_product_inventory_count_index ON crawls USING btree (total_product_inventory_count);
+CREATE INDEX crawls_total_product_inventory_count_index ON public.crawls USING btree (total_product_inventory_count);
 
 
 --
--- Name: crawls_total_product_inventory_price_in_cents_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: crawls_total_product_inventory_price_in_cents_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX crawls_total_product_inventory_price_in_cents_index ON crawls USING btree (total_product_inventory_price_in_cents);
+CREATE INDEX crawls_total_product_inventory_price_in_cents_index ON public.crawls USING btree (total_product_inventory_price_in_cents);
 
 
 --
--- Name: crawls_total_product_inventory_volume_in_milliliters_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: crawls_total_product_inventory_volume_in_milliliters_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX crawls_total_product_inventory_volume_in_milliliters_index ON crawls USING btree (total_product_inventory_volume_in_milliliters);
+CREATE INDEX crawls_total_product_inventory_volume_in_milliliters_index ON public.crawls USING btree (total_product_inventory_volume_in_milliliters);
 
 
 --
--- Name: crawls_total_products_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: crawls_total_products_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX crawls_total_products_index ON crawls USING btree (total_products);
+CREATE INDEX crawls_total_products_index ON public.crawls USING btree (total_products);
 
 
 --
--- Name: crawls_total_stores_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: crawls_total_stores_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX crawls_total_stores_index ON crawls USING btree (total_stores);
+CREATE INDEX crawls_total_stores_index ON public.crawls USING btree (total_stores);
 
 
 --
--- Name: crawls_updated_at_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: crawls_updated_at_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX crawls_updated_at_index ON crawls USING btree (updated_at);
+CREATE INDEX crawls_updated_at_index ON public.crawls USING btree (updated_at);
 
 
 --
--- Name: index_categories_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_categories_on_created_at; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_categories_on_created_at ON categories USING btree (created_at);
+CREATE INDEX index_categories_on_created_at ON public.categories USING btree (created_at);
 
 
 --
--- Name: index_categories_on_depth; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_categories_on_depth; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_categories_on_depth ON categories USING btree (depth);
+CREATE INDEX index_categories_on_depth ON public.categories USING btree (depth);
 
 
 --
--- Name: index_categories_on_is_dead; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_categories_on_is_dead; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_categories_on_is_dead ON categories USING btree (is_dead);
+CREATE INDEX index_categories_on_is_dead ON public.categories USING btree (is_dead);
 
 
 --
--- Name: index_categories_on_lcbo_ref; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_categories_on_lcbo_ref; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_categories_on_lcbo_ref ON categories USING btree (lcbo_ref);
+CREATE INDEX index_categories_on_lcbo_ref ON public.categories USING btree (lcbo_ref);
 
 
 --
--- Name: index_categories_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_categories_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_categories_on_name ON categories USING btree (name);
+CREATE INDEX index_categories_on_name ON public.categories USING btree (name);
 
 
 --
--- Name: index_categories_on_name_vectors; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_categories_on_name_vectors; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_categories_on_name_vectors ON categories USING gin (name_vectors);
+CREATE INDEX index_categories_on_name_vectors ON public.categories USING gin (name_vectors);
 
 
 --
--- Name: index_categories_on_parent_category_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_categories_on_parent_category_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_categories_on_parent_category_id ON categories USING btree (parent_category_id);
+CREATE INDEX index_categories_on_parent_category_id ON public.categories USING btree (parent_category_id);
 
 
 --
--- Name: index_categories_on_parent_category_ids; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_categories_on_parent_category_ids; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_categories_on_parent_category_ids ON categories USING gin (parent_category_ids);
+CREATE INDEX index_categories_on_parent_category_ids ON public.categories USING gin (parent_category_ids);
 
 
 --
--- Name: index_categories_on_updated_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_categories_on_updated_at; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_categories_on_updated_at ON categories USING btree (updated_at);
+CREATE INDEX index_categories_on_updated_at ON public.categories USING btree (updated_at);
 
 
 --
--- Name: index_emails_on_address; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_emails_on_address; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_emails_on_address ON emails USING btree (address);
+CREATE UNIQUE INDEX index_emails_on_address ON public.emails USING btree (address);
 
 
 --
--- Name: index_emails_on_is_verified_and_address; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_emails_on_is_verified_and_address; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_emails_on_is_verified_and_address ON emails USING btree (is_verified, address);
+CREATE INDEX index_emails_on_is_verified_and_address ON public.emails USING btree (is_verified, address);
 
 
 --
--- Name: index_emails_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_emails_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_emails_on_user_id ON emails USING btree (user_id);
+CREATE INDEX index_emails_on_user_id ON public.emails USING btree (user_id);
 
 
 --
--- Name: index_inventories_on_product_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_inventories_on_product_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_inventories_on_product_id ON inventories USING btree (product_id);
+CREATE INDEX index_inventories_on_product_id ON public.inventories USING btree (product_id);
 
 
 --
--- Name: index_inventories_on_product_id_and_store_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_inventories_on_product_id_and_store_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_inventories_on_product_id_and_store_id ON inventories USING btree (product_id, store_id);
+CREATE INDEX index_inventories_on_product_id_and_store_id ON public.inventories USING btree (product_id, store_id);
 
 
 --
--- Name: index_inventories_on_quantity; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_inventories_on_quantity; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_inventories_on_quantity ON inventories USING btree (quantity);
+CREATE INDEX index_inventories_on_quantity ON public.inventories USING btree (quantity);
 
 
 --
--- Name: index_inventories_on_store_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_inventories_on_store_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_inventories_on_store_id ON inventories USING btree (store_id);
+CREATE INDEX index_inventories_on_store_id ON public.inventories USING btree (store_id);
 
 
 --
--- Name: index_keys_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_keys_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_keys_on_user_id ON keys USING btree (user_id);
+CREATE INDEX index_keys_on_user_id ON public.keys USING btree (user_id);
 
 
 --
--- Name: index_plans_on_is_active; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_plans_on_is_active; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_plans_on_is_active ON plans USING btree (is_active);
+CREATE INDEX index_plans_on_is_active ON public.plans USING btree (is_active);
 
 
 --
--- Name: index_producers_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_producers_on_created_at; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_producers_on_created_at ON producers USING btree (created_at);
+CREATE INDEX index_producers_on_created_at ON public.producers USING btree (created_at);
 
 
 --
--- Name: index_producers_on_is_dead; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_producers_on_is_dead; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_producers_on_is_dead ON producers USING btree (is_dead);
+CREATE INDEX index_producers_on_is_dead ON public.producers USING btree (is_dead);
 
 
 --
--- Name: index_producers_on_is_ocb; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_producers_on_is_ocb; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_producers_on_is_ocb ON producers USING btree (is_ocb);
+CREATE INDEX index_producers_on_is_ocb ON public.producers USING btree (is_ocb);
 
 
 --
--- Name: index_producers_on_lcbo_ref; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_producers_on_lcbo_ref; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_producers_on_lcbo_ref ON producers USING btree (lcbo_ref);
+CREATE UNIQUE INDEX index_producers_on_lcbo_ref ON public.producers USING btree (lcbo_ref);
 
 
 --
--- Name: index_producers_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_producers_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_producers_on_name ON producers USING btree (name);
+CREATE INDEX index_producers_on_name ON public.producers USING btree (name);
 
 
 --
--- Name: index_producers_on_name_vectors; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_producers_on_name_vectors; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_producers_on_name_vectors ON producers USING gin (name_vectors);
+CREATE INDEX index_producers_on_name_vectors ON public.producers USING gin (name_vectors);
 
 
 --
--- Name: index_producers_on_updated_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_producers_on_updated_at; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_producers_on_updated_at ON producers USING btree (updated_at);
+CREATE INDEX index_producers_on_updated_at ON public.producers USING btree (updated_at);
 
 
 --
--- Name: index_products_on_catalog_refs; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_products_on_catalog_refs; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_products_on_catalog_refs ON products USING gin (catalog_refs);
+CREATE INDEX index_products_on_catalog_refs ON public.products USING gin (catalog_refs);
 
 
 --
--- Name: index_products_on_category_ids; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_products_on_category_ids; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_products_on_category_ids ON products USING gin (category_ids);
+CREATE INDEX index_products_on_category_ids ON public.products USING gin (category_ids);
 
 
 --
--- Name: index_products_on_is_dead_and_inventory_volume_in_milliliters; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_products_on_is_dead_and_inventory_volume_in_milliliters; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_products_on_is_dead_and_inventory_volume_in_milliliters ON products USING btree (is_dead, inventory_volume_in_milliliters);
+CREATE INDEX index_products_on_is_dead_and_inventory_volume_in_milliliters ON public.products USING btree (is_dead, inventory_volume_in_milliliters);
 
 
 --
--- Name: index_products_on_is_ocb; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_products_on_is_ocb; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_products_on_is_ocb ON products USING btree (is_ocb);
+CREATE INDEX index_products_on_is_ocb ON public.products USING btree (is_ocb);
 
 
 --
--- Name: index_products_on_producer_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_products_on_producer_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_products_on_producer_id ON products USING btree (producer_id);
+CREATE INDEX index_products_on_producer_id ON public.products USING btree (producer_id);
 
 
 --
--- Name: index_products_on_tag_vectors; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_products_on_tag_vectors; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_products_on_tag_vectors ON products USING gin (tag_vectors);
+CREATE INDEX index_products_on_tag_vectors ON public.products USING gin (tag_vectors);
 
 
 --
--- Name: index_products_on_upc; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_products_on_upc; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_products_on_upc ON products USING btree (upc);
+CREATE INDEX index_products_on_upc ON public.products USING btree (upc);
 
 
 --
--- Name: index_products_on_value_added_promotion_ends_on; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_products_on_value_added_promotion_ends_on; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_products_on_value_added_promotion_ends_on ON products USING btree (value_added_promotion_ends_on);
+CREATE INDEX index_products_on_value_added_promotion_ends_on ON public.products USING btree (value_added_promotion_ends_on);
 
 
 --
--- Name: index_stores_on_tag_vectors; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_stores_on_tag_vectors; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_stores_on_tag_vectors ON stores USING gin (tag_vectors);
+CREATE INDEX index_stores_on_tag_vectors ON public.stores USING gin (tag_vectors);
 
 
 --
--- Name: index_users_on_is_disabled; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_is_disabled; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_users_on_is_disabled ON users USING btree (is_disabled);
+CREATE INDEX index_users_on_is_disabled ON public.users USING btree (is_disabled);
 
 
 --
--- Name: inventories_is_dead_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: inventories_is_dead_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX inventories_is_dead_index ON inventories USING btree (is_dead);
+CREATE INDEX inventories_is_dead_index ON public.inventories USING btree (is_dead);
 
 
 --
--- Name: products_alcohol_content_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_alcohol_content_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_alcohol_content_index ON products USING btree (alcohol_content);
+CREATE INDEX products_alcohol_content_index ON public.products USING btree (alcohol_content);
 
 
 --
--- Name: products_bonus_reward_miles_ends_on_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_bonus_reward_miles_ends_on_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_bonus_reward_miles_ends_on_index ON products USING btree (bonus_reward_miles_ends_on);
+CREATE INDEX products_bonus_reward_miles_ends_on_index ON public.products USING btree (bonus_reward_miles_ends_on);
 
 
 --
--- Name: products_bonus_reward_miles_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_bonus_reward_miles_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_bonus_reward_miles_index ON products USING btree (bonus_reward_miles);
+CREATE INDEX products_bonus_reward_miles_index ON public.products USING btree (bonus_reward_miles);
 
 
 --
--- Name: products_clearance_sale_savings_in_cents_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_clearance_sale_savings_in_cents_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_clearance_sale_savings_in_cents_index ON products USING btree (clearance_sale_savings_in_cents);
+CREATE INDEX products_clearance_sale_savings_in_cents_index ON public.products USING btree (clearance_sale_savings_in_cents);
 
 
 --
--- Name: products_created_at_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_created_at_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_created_at_index ON products USING btree (created_at);
+CREATE INDEX products_created_at_index ON public.products USING btree (created_at);
 
 
 --
--- Name: products_has_value_added_promotion_has_limited_time_offer_has_b; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_has_value_added_promotion_has_limited_time_offer_has_b; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_has_value_added_promotion_has_limited_time_offer_has_b ON products USING btree (has_value_added_promotion, has_limited_time_offer, has_bonus_reward_miles, is_seasonal, is_vqa, is_kosher);
+CREATE INDEX products_has_value_added_promotion_has_limited_time_offer_has_b ON public.products USING btree (has_value_added_promotion, has_limited_time_offer, has_bonus_reward_miles, is_seasonal, is_vqa, is_kosher);
 
 
 --
--- Name: products_inventory_count_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_inventory_count_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_inventory_count_index ON products USING btree (inventory_count);
+CREATE INDEX products_inventory_count_index ON public.products USING btree (inventory_count);
 
 
 --
--- Name: products_inventory_price_in_cents_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_inventory_price_in_cents_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_inventory_price_in_cents_index ON products USING btree (inventory_price_in_cents);
+CREATE INDEX products_inventory_price_in_cents_index ON public.products USING btree (inventory_price_in_cents);
 
 
 --
--- Name: products_inventory_volume_in_milliliters_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_inventory_volume_in_milliliters_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_inventory_volume_in_milliliters_index ON products USING btree (inventory_volume_in_milliliters);
+CREATE INDEX products_inventory_volume_in_milliliters_index ON public.products USING btree (inventory_volume_in_milliliters);
 
 
 --
--- Name: products_is_dead_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_is_dead_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_is_dead_index ON products USING btree (is_dead);
+CREATE INDEX products_is_dead_index ON public.products USING btree (is_dead);
 
 
 --
--- Name: products_is_discontinued_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_is_discontinued_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_is_discontinued_index ON products USING btree (is_discontinued);
+CREATE INDEX products_is_discontinued_index ON public.products USING btree (is_discontinued);
 
 
 --
--- Name: products_limited_time_offer_ends_on_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_limited_time_offer_ends_on_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_limited_time_offer_ends_on_index ON products USING btree (limited_time_offer_ends_on);
+CREATE INDEX products_limited_time_offer_ends_on_index ON public.products USING btree (limited_time_offer_ends_on);
 
 
 --
--- Name: products_limited_time_offer_savings_in_cents_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_limited_time_offer_savings_in_cents_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_limited_time_offer_savings_in_cents_index ON products USING btree (limited_time_offer_savings_in_cents);
+CREATE INDEX products_limited_time_offer_savings_in_cents_index ON public.products USING btree (limited_time_offer_savings_in_cents);
 
 
 --
--- Name: products_package_unit_volume_in_milliliters_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_package_unit_volume_in_milliliters_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_package_unit_volume_in_milliliters_index ON products USING btree (package_unit_volume_in_milliliters);
+CREATE INDEX products_package_unit_volume_in_milliliters_index ON public.products USING btree (package_unit_volume_in_milliliters);
 
 
 --
--- Name: products_price_in_cents_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_price_in_cents_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_price_in_cents_index ON products USING btree (price_in_cents);
+CREATE INDEX products_price_in_cents_index ON public.products USING btree (price_in_cents);
 
 
 --
--- Name: products_price_per_liter_in_cents_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_price_per_liter_in_cents_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_price_per_liter_in_cents_index ON products USING btree (price_per_liter_in_cents);
+CREATE INDEX products_price_per_liter_in_cents_index ON public.products USING btree (price_per_liter_in_cents);
 
 
 --
--- Name: products_price_per_liter_of_alcohol_in_cents_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_price_per_liter_of_alcohol_in_cents_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_price_per_liter_of_alcohol_in_cents_index ON products USING btree (price_per_liter_of_alcohol_in_cents);
+CREATE INDEX products_price_per_liter_of_alcohol_in_cents_index ON public.products USING btree (price_per_liter_of_alcohol_in_cents);
 
 
 --
--- Name: products_primary_category_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_primary_category_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_primary_category_index ON products USING btree (primary_category);
+CREATE INDEX products_primary_category_index ON public.products USING btree (primary_category);
 
 
 --
--- Name: products_regular_price_in_cents_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_regular_price_in_cents_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_regular_price_in_cents_index ON products USING btree (regular_price_in_cents);
+CREATE INDEX products_regular_price_in_cents_index ON public.products USING btree (regular_price_in_cents);
 
 
 --
--- Name: products_released_on_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_released_on_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_released_on_index ON products USING btree (released_on);
+CREATE INDEX products_released_on_index ON public.products USING btree (released_on);
 
 
 --
--- Name: products_secondary_category_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_secondary_category_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_secondary_category_index ON products USING btree (secondary_category);
+CREATE INDEX products_secondary_category_index ON public.products USING btree (secondary_category);
 
 
 --
--- Name: products_stock_type_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_stock_type_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_stock_type_index ON products USING btree (stock_type);
+CREATE INDEX products_stock_type_index ON public.products USING btree (stock_type);
 
 
 --
--- Name: products_style_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_style_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_style_index ON products USING btree (style);
+CREATE INDEX products_style_index ON public.products USING btree (style);
 
 
 --
--- Name: products_sugar_in_grams_per_liter_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_sugar_in_grams_per_liter_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_sugar_in_grams_per_liter_index ON products USING btree (sugar_in_grams_per_liter);
+CREATE INDEX products_sugar_in_grams_per_liter_index ON public.products USING btree (sugar_in_grams_per_liter);
 
 
 --
--- Name: products_tags_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_tags_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_tags_index ON products USING gin (to_tsvector('simple'::regconfig, (COALESCE(tags, ''::character varying))::text));
+CREATE INDEX products_tags_index ON public.products USING gin (to_tsvector('simple'::regconfig, (COALESCE(tags, ''::character varying))::text));
 
 
 --
--- Name: products_tertiary_category_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_tertiary_category_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_tertiary_category_index ON products USING btree (tertiary_category);
+CREATE INDEX products_tertiary_category_index ON public.products USING btree (tertiary_category);
 
 
 --
--- Name: products_updated_at_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_updated_at_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_updated_at_index ON products USING btree (updated_at);
+CREATE INDEX products_updated_at_index ON public.products USING btree (updated_at);
 
 
 --
--- Name: products_varietal_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_varietal_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_varietal_index ON products USING btree (varietal);
+CREATE INDEX products_varietal_index ON public.products USING btree (varietal);
 
 
 --
--- Name: products_volume_in_milliliters_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: products_volume_in_milliliters_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX products_volume_in_milliliters_index ON products USING btree (volume_in_milliliters);
+CREATE INDEX products_volume_in_milliliters_index ON public.products USING btree (volume_in_milliliters);
 
 
 --
--- Name: stores_created_at_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: stores_created_at_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX stores_created_at_index ON stores USING btree (created_at);
+CREATE INDEX stores_created_at_index ON public.stores USING btree (created_at);
 
 
 --
--- Name: stores_has_wheelchair_accessability_has_bilingual_services_has_; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: stores_has_wheelchair_accessability_has_bilingual_services_has_; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX stores_has_wheelchair_accessability_has_bilingual_services_has_ ON stores USING btree (has_wheelchair_accessability, has_bilingual_services, has_product_consultant, has_tasting_bar, has_beer_cold_room, has_special_occasion_permits, has_vintages_corner, has_parking, has_transit_access);
+CREATE INDEX stores_has_wheelchair_accessability_has_bilingual_services_has_ ON public.stores USING btree (has_wheelchair_accessability, has_bilingual_services, has_product_consultant, has_tasting_bar, has_beer_cold_room, has_special_occasion_permits, has_vintages_corner, has_parking, has_transit_access);
 
 
 --
--- Name: stores_inventory_count_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: stores_inventory_count_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX stores_inventory_count_index ON stores USING btree (inventory_count);
+CREATE INDEX stores_inventory_count_index ON public.stores USING btree (inventory_count);
 
 
 --
--- Name: stores_inventory_price_in_cents_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: stores_inventory_price_in_cents_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX stores_inventory_price_in_cents_index ON stores USING btree (inventory_price_in_cents);
+CREATE INDEX stores_inventory_price_in_cents_index ON public.stores USING btree (inventory_price_in_cents);
 
 
 --
--- Name: stores_inventory_volume_in_milliliters_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: stores_inventory_volume_in_milliliters_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX stores_inventory_volume_in_milliliters_index ON stores USING btree (inventory_volume_in_milliliters);
+CREATE INDEX stores_inventory_volume_in_milliliters_index ON public.stores USING btree (inventory_volume_in_milliliters);
 
 
 --
--- Name: stores_is_dead_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: stores_is_dead_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX stores_is_dead_index ON stores USING btree (is_dead);
+CREATE INDEX stores_is_dead_index ON public.stores USING btree (is_dead);
 
 
 --
--- Name: stores_products_count_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: stores_products_count_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX stores_products_count_index ON stores USING btree (products_count);
+CREATE INDEX stores_products_count_index ON public.stores USING btree (products_count);
 
 
 --
--- Name: stores_tags_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: stores_tags_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX stores_tags_index ON stores USING gin (to_tsvector('simple'::regconfig, (COALESCE(tags, ''::character varying))::text));
+CREATE INDEX stores_tags_index ON public.stores USING gin (to_tsvector('simple'::regconfig, (COALESCE(tags, ''::character varying))::text));
 
 
 --
--- Name: stores_updated_at_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: stores_updated_at_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX stores_updated_at_index ON stores USING btree (updated_at);
+CREATE INDEX stores_updated_at_index ON public.stores USING btree (updated_at);
 
 
 --
--- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
+CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING btree (version);
 
 
 --
--- Name: categories_tsvectorupdate; Type: TRIGGER; Schema: public; Owner: -
+-- Name: categories categories_tsvectorupdate; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER categories_tsvectorupdate BEFORE INSERT OR UPDATE ON categories FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('name_vectors', 'pg_catalog.simple', 'name');
+CREATE TRIGGER categories_tsvectorupdate BEFORE INSERT OR UPDATE ON public.categories FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('name_vectors', 'pg_catalog.simple', 'name');
 
 
 --
--- Name: producers_tsvectorupdate; Type: TRIGGER; Schema: public; Owner: -
+-- Name: producers producers_tsvectorupdate; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER producers_tsvectorupdate BEFORE INSERT OR UPDATE ON producers FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('name_vectors', 'pg_catalog.simple', 'name');
+CREATE TRIGGER producers_tsvectorupdate BEFORE INSERT OR UPDATE ON public.producers FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('name_vectors', 'pg_catalog.simple', 'name');
 
 
 --
--- Name: products_tsvectorupdate; Type: TRIGGER; Schema: public; Owner: -
+-- Name: products products_tsvectorupdate; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER products_tsvectorupdate BEFORE INSERT OR UPDATE ON products FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('tag_vectors', 'pg_catalog.simple', 'tags');
+CREATE TRIGGER products_tsvectorupdate BEFORE INSERT OR UPDATE ON public.products FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('tag_vectors', 'pg_catalog.simple', 'tags');
 
 
 --
--- Name: stores_tsvectorupdate; Type: TRIGGER; Schema: public; Owner: -
+-- Name: stores stores_tsvectorupdate; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER stores_tsvectorupdate BEFORE INSERT OR UPDATE ON stores FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('tag_vectors', 'pg_catalog.simple', 'tags');
+CREATE TRIGGER stores_tsvectorupdate BEFORE INSERT OR UPDATE ON public.stores FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger('tag_vectors', 'pg_catalog.simple', 'tags');
 
 
 --
 -- PostgreSQL database dump complete
 --
 
-SET search_path TO "$user",public;
+SET search_path TO "$user", public;
 
-INSERT INTO schema_migrations (version) VALUES ('20140613161248');
+INSERT INTO "schema_migrations" (version) VALUES
+('20140613161248'),
+('20140613173103'),
+('20140613182304'),
+('20140616233032'),
+('20140621143738'),
+('20140621151939'),
+('20140625021830'),
+('20140627024053'),
+('20140706215519'),
+('20140707151430'),
+('20140707173828'),
+('20140709004216'),
+('20140712015328'),
+('20140714201631'),
+('20140714202224'),
+('20140717031508'),
+('20140801013002'),
+('20141110021113'),
+('20141110023249'),
+('20141110171340'),
+('20141111022512'),
+('20141111023631'),
+('20150211195035'),
+('20150211202803'),
+('20150212011542'),
+('20150212015705'),
+('20150212040211'),
+('20150212141949'),
+('20150213020057'),
+('20150213173003'),
+('20150213203700'),
+('20150214035627'),
+('20150924205712');
 
-INSERT INTO schema_migrations (version) VALUES ('20140613173103');
-
-INSERT INTO schema_migrations (version) VALUES ('20140613182304');
-
-INSERT INTO schema_migrations (version) VALUES ('20140616233032');
-
-INSERT INTO schema_migrations (version) VALUES ('20140621143738');
-
-INSERT INTO schema_migrations (version) VALUES ('20140621151939');
-
-INSERT INTO schema_migrations (version) VALUES ('20140625021830');
-
-INSERT INTO schema_migrations (version) VALUES ('20140627024053');
-
-INSERT INTO schema_migrations (version) VALUES ('20140706215519');
-
-INSERT INTO schema_migrations (version) VALUES ('20140707151430');
-
-INSERT INTO schema_migrations (version) VALUES ('20140707173828');
-
-INSERT INTO schema_migrations (version) VALUES ('20140709004216');
-
-INSERT INTO schema_migrations (version) VALUES ('20140712015328');
-
-INSERT INTO schema_migrations (version) VALUES ('20140714201631');
-
-INSERT INTO schema_migrations (version) VALUES ('20140714202224');
-
-INSERT INTO schema_migrations (version) VALUES ('20140717031508');
-
-INSERT INTO schema_migrations (version) VALUES ('20140801013002');
-
-INSERT INTO schema_migrations (version) VALUES ('20141110021113');
-
-INSERT INTO schema_migrations (version) VALUES ('20141110023249');
-
-INSERT INTO schema_migrations (version) VALUES ('20141110171340');
-
-INSERT INTO schema_migrations (version) VALUES ('20141111022512');
-
-INSERT INTO schema_migrations (version) VALUES ('20141111023631');
-
-INSERT INTO schema_migrations (version) VALUES ('20150211195035');
-
-INSERT INTO schema_migrations (version) VALUES ('20150211202803');
-
-INSERT INTO schema_migrations (version) VALUES ('20150212011542');
-
-INSERT INTO schema_migrations (version) VALUES ('20150212015705');
-
-INSERT INTO schema_migrations (version) VALUES ('20150212040211');
-
-INSERT INTO schema_migrations (version) VALUES ('20150212141949');
-
-INSERT INTO schema_migrations (version) VALUES ('20150213020057');
-
-INSERT INTO schema_migrations (version) VALUES ('20150213173003');
-
-INSERT INTO schema_migrations (version) VALUES ('20150213203700');
-
-INSERT INTO schema_migrations (version) VALUES ('20150214035627');
-
-INSERT INTO schema_migrations (version) VALUES ('20150924205712');
 
