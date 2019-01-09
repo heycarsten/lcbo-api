@@ -24,7 +24,7 @@ jobs:
       # Postgres
       - image: circleci/postgres:9.6-alpine
         environment:
-          PGUSER: postgres
+          POSTGRES_USER: postgres
           POSTGRES_DB: lcboapi_test
           POSTGRES_PASSWORD: ''
 
@@ -62,8 +62,8 @@ jobs:
       - run:
           name: install Rubygems via bundler
           command: |
-            gem update --system && \
-            gem install bundler --force && \
+            sudo gem update --system && \
+            gem install --force bundler && \
             bundle install --jobs=4 --retry=3 --path vendor/bundle
 
       - save_cache:
@@ -72,8 +72,7 @@ jobs:
           key: v1-dependencies-{{ checksum "Gemfile.lock" }}
 
       # Database setup
-      - run: bundle exec rails db:create
-      - run: bundle exec rails db:test:prepare
+      - run: bundle exec rails db:setup
 
       # run tests!
       - run:
