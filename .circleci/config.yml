@@ -41,8 +41,8 @@ jobs:
           name: install system dependencies
           command: |
             DEBIAN_FRONTEND=noninteractive \
-              apt-get -yqq update && \
-              apt-get -yqq install \
+            sudo apt-get -yqq update && \
+            sudo apt-get -yqq install \
               software-properties-common \
               apt-transport-https \
               acl \
@@ -51,6 +51,7 @@ jobs:
               libpq-dev \
               nodejs \
               yarn
+
       - run:
           name: install Rubygems via bundler
           command: |
