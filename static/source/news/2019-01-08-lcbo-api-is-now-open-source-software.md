@@ -21,7 +21,7 @@ I&rsquo;m also very open to bringing the project back up again! I can no longer 
 
 My ideal setup for LCBO API would look something like:
 
-- Contanerized - [Amazon ECS](https://aws.amazon.com/ecs/)
+- Containerized - [Amazon ECS](https://aws.amazon.com/ecs/)
 - Managed Postgres - [Amazon RDS](https://aws.amazon.com/rds/postgresql/)
 - Managed Redis - [Amazon ElastiCache](https://aws.amazon.com/elasticache/redis/)
 - Continuous Integration &amp; Deployment - [CircleCI](https://circleci.com/)
