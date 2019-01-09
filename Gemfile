@@ -18,7 +18,6 @@ gem 'stripe'          #git: 'https://github.com/stripe/stripe-ruby'
 gem 'dotenv-rails'
 gem 'bootsnap', '>= 1.1.0', require: false
 
-#gem 'capistrano',         #'~> 3.3.5'
 gem 'capistrano-rails'
 gem 'capistrano-bundler'
 gem 'capistrano-rvm'
@@ -45,6 +44,7 @@ end
 group :test, :development do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails'
+  gem 'rspec_junit_formatter', require: false
   gem 'fabrication',   require: false
   gem 'awesome_print', require: 'ap'
 end
