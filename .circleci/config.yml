@@ -12,6 +12,8 @@ jobs:
           RAILS_ENV: test
           PGHOST: 127.0.0.1
           PGUSER: postgres
+          REDIS_HOST: 127.0.0.1
+          REDIS_CACHE_DB: 1
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -52,6 +54,10 @@ jobs:
               nodejs \
               yarn
 
+      # Copy over secrets.yml for CI
+      - run: cp config/secrets.yml.ci config/secrets.yml
+
+      # Install bundle
       - run:
           name: install Rubygems via bundler
           command: |
@@ -66,27 +72,25 @@ jobs:
 
       # Database setup
       - run: bundle exec rails db:create
-      - run: bundle exec rails db:schema:load
       - run: bundle exec rails db:test:prepare
 
       # run tests!
       - run:
           name: run tests
-          command: bundle exec rspec --format progress
-          # command: |
-          #   mkdir /tmp/test-results
-          #   TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
+          command: |
+            mkdir /tmp/test-results
+            TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
 
-          #   bundle exec rspec --format progress \
-          #                   --format RspecJunitFormatter \
-          #                   --out /tmp/test-results/rspec.xml \
-          #                   --format progress \
-          #                   $TEST_FILES
+            bundle exec rspec --format progress \
+                            --format RspecJunitFormatter \
+                            --out /tmp/test-results/rspec.xml \
+                            --format progress \
+                            $TEST_FILES
 
       # collect reports
-      # - store_test_results:
-      #     path: /tmp/test-results
+      - store_test_results:
+          path: /tmp/test-results
 
-      # - store_artifacts:
-      #     path: /tmp/test-results
-      #     destination: test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
