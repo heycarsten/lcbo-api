@@ -56,6 +56,70 @@
     <article class="document">
       <header>
         <h1>
+          <a class="link" href="/news/lcbo-api-is-now-open-source-software/">LCBO API is now Open Source Software</a>
+        </h1>
+        <div class="meta">
+          <span class="date">
+            January  8, 2019
+          </span>
+          <span class="sep">
+            &mdash;
+          </span>
+          <span class="author">
+            <a href="https://twitter.com/heycarsten">heycarsten</a>
+          </span>
+        </div>
+      </header>
+      <p>Hello everyone!</p>
+
+<p>My-oh-my have things changed since my last update a month ago in November!</p>
+
+<ul>
+<li>Shortly after that post, my lymphoma symptoms started to return and I found out that my <a href="https://en.wikipedia.org/wiki/Diffuse_large_B-cell_lymphoma">lymphoma</a> is still active, considered aggressively refractory</li>
+<li><strong><a href="https://github.com/heycarsten/lcbo-api">I released LCBO API as open source software, check it out!</a></strong></li>
+<li>I will be undergoing immunotherapy (<a href="https://yescarta.com">Yescarta</a>) as a third-line treatment at <a href="https://www.roswellpark.org">Roswell Park</a> in <a href="https://en.wikipedia.org/wiki/Buffalo,_New_York">Buffalo, NY</a></li>
+<li>My <a href="https://twitter.com/heycarsten/status/1082630102003998721">treatment plan</a> begins on January 15th, 2019 (the same day I was planning to turn off LCBO API)</li>
+</ul>
+
+<p>The service is currently hosted on <a href="https://linode.com">Linode</a>, has been since 2009. Linode prorates for the month of usage. Since I will be undergoing T-cell harvest on the 15th I won&rsquo;t be turning it off that day. I will however be shutting it down by the end of January.</p>
+
+<blockquote>
+<p>Please plan to discontinue using LCBO API on January 15th, but service will continue for a few days after that.</p>
+</blockquote>
+
+<p>I&rsquo;m also very open to bringing the project back up again! I can no longer personally cover this burden, I can not singlehandedly support and maintain it anymore, however, I&rsquo;d love to be a part of it though, and I have lots of ideas.</p>
+
+<p>My ideal setup for LCBO API would look something like:</p>
+
+<ul>
+<li>Contanerized - <a href="https://aws.amazon.com/ecs/">Amazon ECS</a></li>
+<li>Managed Postgres - <a href="https://aws.amazon.com/rds/postgresql/">Amazon RDS</a></li>
+<li>Managed Redis - <a href="https://aws.amazon.com/elasticache/redis/">Amazon ElastiCache</a></li>
+<li>Continuous Integration &amp; Deployment - <a href="https://circleci.com/">CircleCI</a></li>
+<li>Monitoring - <a href="https://aws.amazon.com/cloudwatch/">Amazon CloudWatch</a></li>
+</ul>
+
+<p>I use these technologies and others daily at <a href="https://crowdmark.com">work</a> with great success. I&rsquo;m not tied to AWS, but I have a lot of experience with the platform. Site reliability, scalability, and security is a big part of my job. If I&rsquo;m involved with the future of lcboapi.com, this is the direction I want to go in. Please note: if you want to host your own instance of LCBO API on your own server, <strong>I fully support you!</strong> I think we could do <a href="https://github.com/heycarsten/lcbo-api/blob/master/doc/lcboapi-proposed.md">something even better</a> than that, but in the meantime do what you need to do to keep your stuff working!</p>
+
+<p>I have been trying to appeal to corporate sponsors without too much luck so far, but it&rsquo;s still early days. I reached out to <a href="https://heroku.com">Heroku</a>, <a href="https://aws.amazon.com">Amazon AWS</a>, and <a href="https://azure.microsoft.com">Microsoft Azure</a>, this sort of stuff takes time though. <em>I am positive that something will connect in the coming months.</em></p>
+
+<p>I&rsquo;ll be sure to keep everyone updated as things develop. If you wish you can follow me and LCBO API on Twitter, I update fairly frequently:</p>
+
+<ul>
+<li><a href="https://twitter.com/heycarsten">@heycarsten</a></li>
+<li><a href="https://twitter.com/lcboapi">@lcboapi</a></li>
+</ul>
+
+<p>Take care, everyone!</p>
+
+<p>&mdash; Carsten</p>
+
+<hr>
+
+    </article>
+    <article class="document">
+      <header>
+        <h1>
           <a class="link" href="/news/lcbo-api-shutting-down/">LCBO API Shutting Down</a>
         </h1>
         <div class="meta">
@@ -70,7 +134,9 @@
           </span>
         </div>
       </header>
-      <p>Hey y&rsquo;all!</p>
+      <p><em>UPDATE: LCBO API is open source software now, please <a href="/news/lcbo-api-is-now-open-source-software/">read more</a></em></p>
+
+<p>Hey y&rsquo;all!</p>
 
 <p>2018 has been a wild year. In March I was diagnosed with Diffuse Large B-Cell Lymphoma, an aggressive form of Non-Hodgekin Lymphoma. It was a shock. My treatment was progressing well until May when it stopped working. After a couple rounds of salvage chemotherapy I underwent an <a href="https://twitter.com/heycarsten/status/1024494222521638912">Autologus Stem Cell Transplant</a>&ndash;<em>and so far it seems to be working!</em> I&rsquo;m feeling better every day and I&rsquo;m finally in a place where I can work again and mostly live my normal life.</p>
 
@@ -567,7 +633,7 @@ proud of, and I am. Thanks for listening.</p>
       </p>
 
       <p class="copyright">
-        &copy; 2009&ndash;2018
+        &copy; 2009&ndash;2019
         <a href="http://heycarsten.com">Carsten Nielsen</a>
       </p>
     </footer>
