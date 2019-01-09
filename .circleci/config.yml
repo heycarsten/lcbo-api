@@ -21,7 +21,7 @@ jobs:
       # Postgres
       - image: circleci/postgres:9.6-alpine
         environment:
-          POSTGRES_USER: lcboapi
+          PGUSER: lcboapi
           POSTGRES_DB: lcboapi_test
           POSTGRES_PASSWORD: ''
 
