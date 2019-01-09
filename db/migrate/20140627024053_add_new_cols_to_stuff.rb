@@ -1,4 +1,4 @@
-class AddNewColsToStuff < ActiveRecord::Migration
+class AddNewColsToStuff < ActiveRecord::Migration[4.2]
   def change
     add_column :stores,   :kind,          :string
     add_column :stores,   :landmark_name, :string

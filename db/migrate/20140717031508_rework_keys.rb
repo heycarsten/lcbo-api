@@ -1,4 +1,4 @@
-class ReworkKeys < ActiveRecord::Migration
+class ReworkKeys < ActiveRecord::Migration[4.2]
   def change
     remove_column :keys, :usage, :integer
     remove_column :keys, :url,   :string

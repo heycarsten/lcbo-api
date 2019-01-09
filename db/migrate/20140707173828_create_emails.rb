@@ -1,4 +1,4 @@
-class CreateEmails < ActiveRecord::Migration
+class CreateEmails < ActiveRecord::Migration[4.2]
   def change
     create_table :emails, id: false do |t|
       t.primary_key :id, :uuid, default: 'uuid_generate_v1()'

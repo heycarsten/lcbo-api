@@ -1,4 +1,4 @@
-class CreateKeys < ActiveRecord::Migration
+class CreateKeys < ActiveRecord::Migration[4.2]
   def change
     create_table :keys, id: false do |t|
       t.primary_key :id, :uuid, default: 'uuid_generate_v1()'

@@ -1,4 +1,4 @@
-class AddFullTextIndexesToProducersAndCategories < ActiveRecord::Migration
+class AddFullTextIndexesToProducersAndCategories < ActiveRecord::Migration[5.0]
   def up
     add_column :categories, :name_vectors, :tsvector
     add_column :producers,  :name_vectors, :tsvector

@@ -1,4 +1,4 @@
-class SpeedUpFullTextSearch < ActiveRecord::Migration
+class SpeedUpFullTextSearch < ActiveRecord::Migration[4.2]
   def change
     add_column :products, :tag_vectors, :tsvector
     add_column :stores,   :tag_vectors, :tsvector
