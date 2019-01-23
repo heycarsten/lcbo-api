@@ -120,14 +120,14 @@ Ctrl-C
 
 That means, press the `Control` + `C` keys simultaneously.
 
-You can download an archive of the latest production database dump from my personal Amazon S3 account [here](https://s3.amazonaws.com/heycarsten/lcboapi-2018-12-17.tbz2). Please note that there are sensitive tables (emails, users, keys) and that data has been excluded from this file.
+You can download an archive of the latest production database dump from my personal Amazon S3 account [here](https://heycarsten.s3.amazonaws.com/lcboapi-2019-01-21.tgz). Please note that there are sensitive tables (emails, users, keys) and that data has been excluded from this file.
 
 Download and extract the archive in the `tmp` directory of this project:
 
 ```
 cd tmp
-curl -O https://s3.amazonaws.com/heycarsten/lcboapi-2018-12-17.bz2
-tar xzf lcboapi-2018-12-17.bz2
+curl -O https://heycarsten.s3.amazonaws.com/lcboapi-2019-01-21.tgz
+tar xzf lcboapi-2019-01-21.tgz
 cd ..
 ```
 
@@ -137,7 +137,7 @@ Once you've downloaded and extracted the database file, you can load the data in
 
 ```
 docker-compose run --rm app rake db:create
-docker-compose run --rm app bash -c 'pv tmp/lcboapi-2018-12-17.sql | psql -q -h db -U $POSTGRES_USER $POSTGRES_DB > /dev/null'
+docker-compose run --rm app bash -c 'pv tmp/lcboapi-2019-01-21.sql | psql -q -h db -U $POSTGRES_USER $POSTGRES_DB > /dev/null'
 ```
 
 The first line, ending in `rake db:create` will create the database schemas in Postgres for development and testing, the second line will load the database dump into the development database. The progress bar indicates how much of the data has been piped into the database, once that completes indexes will be built. This might take some time depending on your machine, it's a fair amount of data. Then you can fire up the app again:
