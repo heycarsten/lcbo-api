@@ -131,7 +131,7 @@ tar xzf lcboapi-2019-01-21.tgz
 cd ..
 ```
 
-The file is about 180MiB, so it might take a while to download depending on your connection speed (this happens on the line that starts with `curl`).
+The file is about 300MiB, so it might take a while to download depending on your connection speed (this happens on the line that starts with `curl`).
 
 Once you've downloaded and extracted the database file, you can load the data into the database:
 
