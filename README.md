@@ -202,7 +202,7 @@ docker-compose exec app rspec
 
 You'll see a bunch of green dots `.`, each one of those represents a passed test case. That's good. If a failure occurs you'll see a red `F`, that's bad... JUST KIDDING! Actually it's good! Tests give you the power to change things in an existing codebase and see if you cause any regressions to existing functionality. Of course nothing is perfect, but I can tell you without a doubt, from experience, tests are good.
 
-As applications get bigger and bigger and more and more complex not having tests becomes a literal nightmare, it makes changing your application and adding features an extremely brittle process. Things like using languages with type systems and other various different programming paradimgs can go a long way to help with this too, but I am of the opinion that there really is no replacement for at least a solid acceptance test suite.
+As applications get bigger and bigger and more and more complex not having tests becomes a literal nightmare, it makes changing your application and adding features an extremely brittle process. Things like using languages with type systems and other various different programming paradigms can go a long way to help with this too, but I am of the opinion that there really is no replacement for at least a solid acceptance test suite.
 
 ## Crawler
 
