@@ -109,7 +109,7 @@ module V1
       @key = key
       @dir = File.join(Dir.tmpdir, 'lcboapi-tmp')
       @s3 = Aws::S3::Client.new(
-        region: 'us-east-1',
+        region: Rails.application.secrets.s3_region,
         credentials: Aws::Credentials.new(
           Rails.application.secrets.s3_access_key,
           Rails.application.secrets.s3_secret_key
