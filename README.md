@@ -12,6 +12,20 @@ If you find yourself here wondering "what's an LCBO API?", let me explain. In [O
 - You are curious to learn how some types of web crawlers work
 - You are curious to learn what a production Rails application spanning 10 years of development might look like
 
+## Support the Education Fund  :gift:
+
+You can donate to support the Education Fund for Erin & Carsten's Daughter, Rosa through [GoFundMe](https://www.gofundme.com/f/rosaeducationfund)
+
+
+<p align="center">
+  <b>
+    <a href="https://www.gofundme.com/f/rosaeducationfund">
+     Donate to support the Education Fund for Erin & Carsten's Daughter, Rosa
+    </a>
+  </b>
+</p>
+
+
 ## An important notice :gift:
 
 Over the entire course of this project I have struggled massively with the idea of accepting financial support. On one hand LCBO API needed it, on the other I was weary of the complications it would cause. Well, now I have **THE PERFECT** solution to this problem!
